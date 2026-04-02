@@ -1,0 +1,38 @@
+{
+  "name": "obrez-ts",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "build": "bun build.ts",
+    "dev": "bun build.ts --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IrSent/obrez-ts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/IrSent/obrez-ts/issues"
+  },
+  "homepage": "https://github.com/IrSent/obrez-ts#readme",
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "tsx": "^4.21.0",
+    "typescript": "^5.9.3",
+    "@types/bun": "latest"
+  },
+  "dependencies": {
+    "@fontsource-variable/rubik": "^5.2.8",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "bun-plugin-tailwind": "^0.1.2",
+    "mediabunny": "^1.38.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "tailwindcss": "^4.2.1"
+  },
+  "private": true
+}
