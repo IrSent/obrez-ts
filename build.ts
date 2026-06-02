@@ -1,16 +1,38 @@
-import tailwind from "bun-plugin-tailwind";
+import { $ } from 'bun';
+import { mkdir, rm } from 'fs/promises';
+import tailwind from 'bun-plugin-tailwind';
 
-let outdir = './dist';
+async function build() {
+  try {
+    // Clean dist folder
+    console.log('Cleaning dist folder...');
+    await rm('dist', { recursive: true, force: true });
 
-await Bun.build({
-    entrypoints: ['./public/index.html'],
-    outdir: outdir,
-    // minify: true,
-    minify: false,
-    target: "browser",
-    plugins: [tailwind],
-    compile: true,
-    sourcemap: 'external',
-});
+    // Create dist folder
+    console.log('Creating dist folder...');
+    await mkdir('dist', { recursive: true });
 
-console.log(`Сборка завершена в папку ${outdir}`);
+    // Copy public assets
+    console.log('Copying public assets...');
+    await $`cp -r public/* dist/`;
+
+    // Build with Bun and Tailwind
+    console.log('Building with Bun and Tailwind...');
+    await Bun.build({
+      entrypoints: ['./src/index.html'],
+      outdir: './dist',
+      target: 'browser',
+      plugins: [tailwind],
+      sourcemap: 'external',
+      minify: false,
+      splitting: false,
+    });
+
+    console.log('Build completed successfully!');
+  } catch (error) {
+    console.error('Build failed:', error);
+    process.exit(1);
+  }
+}
+
+build();
