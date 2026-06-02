@@ -1,10 +1,15 @@
 {
   "name": "obrez-ts",
   "version": "1.0.0",
-  "description": "",
+  "private": true,
+  "type": "module",
   "scripts": {
-    "build": "bun build.ts",
-    "dev": "bun build.ts --watch"
+    "dev": "bun run build && bun run server.ts",
+    "build": "bun run build.ts",
+    "serve": "bun run server.ts",
+    "test": "bun test",
+    "test:e2e": "bunx playwright test e2e/ && bunx playwright show-report test-results",
+    "typecheck": "tsc --noEmit"
   },
   "repository": {
     "type": "git",
@@ -13,26 +18,23 @@
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "type": "commonjs",
   "bugs": {
     "url": "https://github.com/IrSent/obrez-ts/issues"
   },
   "homepage": "https://github.com/IrSent/obrez-ts#readme",
-  "devDependencies": {
-    "@types/node": "^25.3.5",
-    "tsx": "^4.21.0",
-    "typescript": "^5.9.3",
-    "@types/bun": "latest"
-  },
   "dependencies": {
     "@fontsource-variable/rubik": "^5.2.8",
-    "@types/react": "^19.0.0",
-    "@types/react-dom": "^19.0.0",
-    "bun-plugin-tailwind": "^0.1.2",
     "mediabunny": "^1.38.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
-    "tailwindcss": "^4.2.1"
+    "zustand": "^5.0.14"
   },
-  "private": true
+  "devDependencies": {
+    "@types/node": "^25.3.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "bun-plugin-tailwind": "^0.1.2",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.9.3"
+  }
 }
