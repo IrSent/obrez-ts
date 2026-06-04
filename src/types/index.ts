@@ -1,3 +1,5 @@
+import { FastAhoScanner } from '../aho-corasick';
+
 /**
  * Represents a single word in a transcription with timing information
  */
@@ -30,6 +32,9 @@ export interface Dictionary {
 
   /** Whether the dictionary is currently active */
   active: boolean;
+
+  /** Aho-Corasick scanner built from the dictionary data */
+  scanner: FastAhoScanner;
 }
 
 /**

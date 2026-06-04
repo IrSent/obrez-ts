@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { PlayerState, Dictionary } from '../types';
+import { FastAhoScanner } from '../aho-corasick';
 
 export const usePlayerStore = create<PlayerState>((set) => ({
   // Playback state
@@ -45,8 +46,8 @@ export const playerActions = {
   }> | null) => usePlayerStore.setState({ censoringEffects: effects }),
 
   // Dictionary actions
-  loadDictionary: (slug: string, name: string) => {
-    const dict: Dictionary = { id: slug, name, active: true };
+  loadDictionary: (slug: string, name: string, scanner: FastAhoScanner) => {
+    const dict: Dictionary = { id: slug, name, active: true, scanner };
     usePlayerStore.setState((state) => ({
       loadedDictionaries: { ...state.loadedDictionaries, [slug]: dict },
       activeDictionaries: new Set([...state.activeDictionaries, slug]),

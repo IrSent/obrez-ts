@@ -27,9 +27,9 @@ const DictionaryManagerInner = () => {
       }
 
       const buffer = await response.arrayBuffer();
-      new FastAhoScanner(buffer); // Validate that the buffer is a valid dictionary
+      const scanner = new FastAhoScanner(buffer);
 
-      actions.loadDictionary(slug, slug);
+      actions.loadDictionary(slug, slug, scanner);
     } catch (error) {
       console.error('Error loading dictionary:', error);
       alert('Failed to load dictionary: ' + (error as Error).message);
