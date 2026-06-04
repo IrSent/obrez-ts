@@ -38,8 +38,18 @@ const server = serve({
 
     // Serve assets from public directory
     if (url.pathname.startsWith('/assets/')) {
+      const ext = url.pathname.split('.').pop() || '';
+      const contentTypes: Record<string, string> = {
+        svg: 'image/svg+xml',
+        png: 'image/png',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        ico: 'image/x-icon',
+        gif: 'image/gif',
+        webp: 'image/webp',
+      };
       return new Response(Bun.file(join(__dirname, 'public', url.pathname)), {
-        headers: { 'Content-Type': 'image/svg+xml' },
+        headers: { 'Content-Type': contentTypes[ext] || 'application/octet-stream' },
       });
     }
 

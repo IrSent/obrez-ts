@@ -24,15 +24,7 @@ const PlayerControlsInner = () => {
         className="p-2 rounded-md hover:bg-zinc-700 transition-colors"
         aria-label={isPlaying ? 'Pause' : 'Play'}
       >
-        {isPlaying ? (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="M6 4h4v16H6V4zm8 0h4v16h-4V4z" />
-          </svg>
-        ) : (
-          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-            <path d="m12 3 10.5 6.5-10.5 6.5L12 21l8-5-8-5z" />
-          </svg>
-        )}
+        <img src={isPlaying ? '/assets/pause-icon.svg' : '/assets/play-icon.svg'} alt={isPlaying ? 'Pause' : 'Play'} className="w-6 h-6" />
       </button>
 
       <ProgressBar />
