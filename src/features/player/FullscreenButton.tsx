@@ -34,9 +34,11 @@ export const FullscreenButton = () => {
       className="p-1 rounded-md hover:bg-zinc-700 transition-colors"
       aria-label={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
     >
-      <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-        <path d="M8 3H5v18h14V5h-3V3H8zm11 16H7V8h11v11z" />
-      </svg>
+      <img
+        src="/assets/fullscreen-icon.svg"
+        alt={isFullscreen ? 'Exit fullscreen' : 'Enter fullscreen'}
+        className="w-5 h-5"
+      />
     </button>
   );
 };
