@@ -1,5 +1,5 @@
-import { useCallback, useRef } from 'react';
-import { usePlayerStore } from '../store/playerStore';
+import { useCallback, useRef, useEffect } from 'react';
+import { usePlayerStore, playerActions } from '../store/playerStore';
 import {
   ALL_FORMATS,
   AudioBufferSink,
@@ -15,13 +15,12 @@ import { audioBuffersToWav } from '../audio';
 
 /**
  * Хук для управления воспроизведением медиафайлов через MediaBunny.
- * Синхронизирует состояние с Zustand-стором.
+ *
+ * rAF-цикл работает всегда (как в оригинале MediaBunny) — никогда не останавливается.
+ * Все функции хранятся в refs — полностью независимы от React-рендера.
  */
 export function useMediaPlayer() {
-  const store = usePlayerStore();
-  const { actions } = store;
-
-  // Refs для хранения состояния воспроизведения
+  // === Refs для хранения состояния воспроизведения ===
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
@@ -32,7 +31,6 @@ export function useMediaPlayer() {
   const videoSinkRef = useRef<CanvasSink | null>(null);
   const audioSinkRef = useRef<AudioBufferSink | null>(null);
 
-  // Refs для состояния воспроизведения
   const audioContextStartTimeRef = useRef<number | null>(null);
   const playbackTimeAtStartRef = useRef<number>(0);
   const videoFrameIteratorRef = useRef<AsyncGenerator<WrappedCanvas, void, unknown> | null>(null);
@@ -40,256 +38,144 @@ export function useMediaPlayer() {
   const nextFrameRef = useRef<WrappedCanvas | null>(null);
   const queuedAudioNodesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const asyncIdRef = useRef<number>(0);
+  const playingRef = useRef<boolean>(false); // local, not from store — как в оригинале
   const playLoopRef = useRef<number>(0);
+  const lastTranscribeFocusRef = useRef<number>(0);
+  const lastProgressBarUpdateRef = useRef<number>(0);
 
-  // Инициализация AudioContext
-  const initAudioContext = useCallback(() => {
-    const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
-    audioContextRef.current = new AudioContextClass();
-    gainNodeRef.current = audioContextRef.current.createGain();
-    gainNodeRef.current.connect(audioContextRef.current.destination);
-    actions.setVolume(0.7);
-  }, [actions]);
+  const canvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
 
-  // Инициализация при первом вызове
-  initAudioContext();
+  const domCacheRef = useRef<{
+    currentTimeEl: HTMLElement | null;
+    durationEl: HTMLElement | null;
+    progressFill: HTMLElement | null;
+    progressThumb: HTMLElement | null;
+  }>({ currentTimeEl: null, durationEl: null, progressFill: null, progressThumb: null });
 
-  /**
-   * Возвращает текущее время воспроизведения в секундах.
-   */
-  const getPlaybackTime = useCallback((): number => {
-    if (store.isPlaying) {
-      return (
-        audioContextRef.current!.currentTime -
-        audioContextStartTimeRef.current! +
-        playbackTimeAtStartRef.current
-      );
-    }
-    return playbackTimeAtStartRef.current;
-  }, [store.isPlaying]);
+  // AudioContext создаётся при загрузке файла с правильной sampleRate,
+ // не на маунте — как в оригинале MediaBunny
 
-  /**
-   * Форматирует секунды в строку времени.
-   */
-  const formatSeconds = useCallback((seconds: number): string => {
-    const showMilliseconds = window.innerWidth >= 640;
-    seconds = Math.round(seconds * 1000) / 1000;
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const remainingSeconds = Math.floor(seconds % 60);
-    const millisecs = Math.floor((1000 * seconds) % 1000)
-      .toString()
-      .padStart(3, '0');
+  // === Утилиты через ref — стабильные, не зависят от React ===
+  const utilsRef = useRef({
+    getPlaybackTime: (): number => {
+      if (playingRef.current && audioContextRef.current && audioContextStartTimeRef.current != null) {
+        return (
+          audioContextRef.current.currentTime -
+          audioContextStartTimeRef.current +
+          playbackTimeAtStartRef.current
+        );
+      }
+      return playbackTimeAtStartRef.current;
+    },
 
-    let result: string;
-    if (hours > 0) {
-      result =
-        `${hours}:${minutes.toString().padStart(2, '0')}` +
-        `:${remainingSeconds.toString().padStart(2, '0')}`;
-    } else {
-      result = `${minutes.toString().padStart(2, '0')}:${remainingSeconds
+    formatSeconds: (seconds: number): string => {
+      const showMilliseconds = window.innerWidth >= 640;
+      seconds = Math.round(seconds * 1000) / 1000;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      const millisecs = Math.floor((1000 * seconds) % 1000)
         .toString()
-        .padStart(2, '0')}`;
+        .padStart(3, '0');
+
+      let result: string;
+      if (hours > 0) {
+        result =
+          `${hours}:${minutes.toString().padStart(2, '0')}` +
+          `:${remainingSeconds.toString().padStart(2, '0')}`;
+      } else {
+        result = `${minutes.toString().padStart(2, '0')}:${remainingSeconds
+          .toString()
+          .padStart(2, '0')}`;
+      }
+
+      if (showMilliseconds) {
+        result += `.${millisecs}`;
+      }
+
+      return result;
+    },
+
+    drawFrame: (frame: WrappedCanvas) => {
+      if (!canvasRef.current || !canvasCtxRef.current) return;
+      const ctx = canvasCtxRef.current;
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.drawImage(frame.canvas, 0, 0);
+    },
+
+    updateProgressBarTime: (seconds: number) => {
+      const now = performance.now();
+      if (now - lastProgressBarUpdateRef.current < 100) return;
+      lastProgressBarUpdateRef.current = now;
+
+      const cache = domCacheRef.current;
+      if (!cache.currentTimeEl) cache.currentTimeEl = document.querySelector('[data-testid="current-time"]') as HTMLElement | null;
+      if (!cache.durationEl) cache.durationEl = document.querySelector('[data-testid="duration"]') as HTMLElement | null;
+      if (!cache.progressFill) cache.progressFill = document.querySelector('[data-testid="progress-fill"]') as HTMLElement | null;
+      if (!cache.progressThumb) cache.progressThumb = document.querySelector('[data-testid="progress-thumb"]') as HTMLElement | null;
+
+      if (cache.currentTimeEl) {
+        cache.currentTimeEl.textContent = utilsRef.current.formatSeconds(seconds);
+      }
+      if (cache.progressFill && cache.durationEl) {
+        const dur = Number(cache.durationEl.dataset.seconds) || 0;
+        const pct = dur > 0 ? Math.max(0, Math.min(100, (seconds / dur) * 100)) : 0;
+        cache.progressFill.style.width = `${pct}%`;
+        cache.progressThumb.style.left = `${pct}%`;
+      }
+    },
+  });
+
+  // === updateNextFrame — как в оригинале, без мютекса ===
+  const updateNextFrameRef = useRef(async () => {
+    const currentAsyncId = asyncIdRef.current;
+
+    while (true) {
+      const iterator = videoFrameIteratorRef.current;
+      if (!iterator) break;
+
+      const newNextFrame = (await iterator.next()).value ?? null;
+      if (!newNextFrame) break;
+
+      if (currentAsyncId !== asyncIdRef.current) break;
+
+      const playbackTime = utilsRef.current.getPlaybackTime();
+      if (newNextFrame.timestamp <= playbackTime) {
+        utilsRef.current.drawFrame(newNextFrame);
+      } else {
+        nextFrameRef.current = newNextFrame;
+        break;
+      }
     }
+  });
 
-    if (showMilliseconds) {
-      result += `.${millisecs}`;
-    }
-
-    return result;
-  }, []);
-
-  /**
-   * Обновляет прогресс-бар и время.
-   */
-  const updateProgressBarTime = useCallback((seconds: number) => {
-    actions.setCurrentTime(seconds);
-  }, [actions]);
-
-  /**
-   * Создаёт новый итератор кадров видео и отображает первый кадр.
-   */
-  const startVideoIterator = useCallback(async () => {
+  // === startVideoIterator ===
+  const startVideoIteratorRef = useRef(async () => {
     if (!videoSinkRef.current) return;
 
     asyncIdRef.current++;
-
     await videoFrameIteratorRef.current?.return();
 
-    videoFrameIteratorRef.current = videoSinkRef.current.canvases(getPlaybackTime());
+    videoFrameIteratorRef.current = videoSinkRef.current.canvases(utilsRef.current.getPlaybackTime());
 
     const firstFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
     const secondFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
 
     nextFrameRef.current = secondFrame;
 
-    if (firstFrame && canvasRef.current) {
-      const ctx = canvasRef.current.getContext('2d')!;
-      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-      ctx.drawImage(firstFrame.canvas, 0, 0);
+    if (firstFrame) {
+      utilsRef.current.drawFrame(firstFrame);
     }
-  }, [getPlaybackTime]);
+  });
 
-  /**
-   * Обновляет следующий кадр видео.
-   */
-  const updateNextFrame = useCallback(async () => {
-    const currentAsyncId = asyncIdRef.current;
+  // === pause ===
+  const pauseRef = useRef(() => {
+    const currentTime = utilsRef.current.getPlaybackTime();
+    playbackTimeAtStartRef.current = currentTime;
+    playerActions.setCurrentTime(currentTime);
+    playingRef.current = false;
+    playerActions.setIsPlaying(false);
 
-    while (true) {
-      const newNextFrame = (await videoFrameIteratorRef.current!.next()).value ?? null;
-      if (!newNextFrame) break;
-
-      if (currentAsyncId !== asyncIdRef.current) break;
-
-      const playbackTime = getPlaybackTime();
-      if (newNextFrame.timestamp <= playbackTime) {
-        if (canvasRef.current) {
-          const ctx = canvasRef.current.getContext('2d')!;
-          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-          ctx.drawImage(newNextFrame.canvas, 0, 0);
-        }
-      } else {
-        nextFrameRef.current = newNextFrame;
-        break;
-      }
-    }
-  }, [getPlaybackTime]);
-
-  /**
-   * Обновляет подсветку активной строки транскрипции.
-   */
-  const updateTranscribeFocus = useCallback((playbackTime: number) => {
-    if (store.transcriptionResults) {
-      const currentIndex = store.transcriptionResults.findIndex(
-        ([start, end]) => playbackTime >= start && playbackTime <= end
-      );
-
-      if (currentIndex !== -1) {
-        const activeRow = document.querySelector(`tr[data-index="${currentIndex}"]`);
-        if (activeRow) {
-          activeRow.classList.add('active-playing');
-          activeRow.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-        }
-      }
-
-      // Снимаем старую подсветку
-      document.querySelectorAll('tr.active-playing').forEach((row) => {
-        if (!row.classList.contains('active-playing')) return;
-        const index = row.getAttribute('data-index');
-        if (index && Number(index) !== currentIndex) {
-          row.classList.remove('active-playing');
-        }
-      });
-    }
-  }, [store.transcriptionResults]);
-
-  /**
-   * Основной цикл рендеринга видео.
-   */
-  const render = useCallback((requestFrame = true) => {
-    if (store.fileName) {
-      const playbackTime = getPlaybackTime();
-
-      if (store.transcriptionResults) {
-        updateTranscribeFocus(playbackTime);
-      }
-
-      if (playbackTime >= store.duration) {
-        pause();
-        playbackTimeAtStartRef.current = store.duration;
-      }
-
-      if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
-        if (canvasRef.current) {
-          const ctx = canvasRef.current.getContext('2d')!;
-          ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
-          ctx.drawImage(nextFrameRef.current.canvas, 0, 0);
-        }
-        nextFrameRef.current = null;
-        void updateNextFrame();
-      }
-
-      updateProgressBarTime(playbackTime);
-    }
-
-    if (requestFrame) {
-      playLoopRef.current = requestAnimationFrame(() => render());
-    }
-  }, [
-    store.fileName,
-    store.duration,
-    store.transcriptionResults,
-    getPlaybackTime,
-    updateTranscribeFocus,
-    updateNextFrame,
-    updateProgressBarTime,
-  ]);
-
-  /**
-   * Запускает цикл рендеринга.
-   */
-  const startRenderLoop = useCallback(() => {
-    render();
-  }, [render]);
-
-  /**
-   * Останавливает цикл рендеринга.
-   */
-  const stopRenderLoop = useCallback(() => {
-    if (playLoopRef.current) {
-      cancelAnimationFrame(playLoopRef.current);
-      playLoopRef.current = 0;
-    }
-  }, []);
-
-  /**
-   * Запускает воспроизведение.
-   */
-  const play = useCallback(async () => {
-    try {
-      if (!audioContextRef.current) {
-        actions.setError('Audio system not available');
-        return;
-      }
-
-      if (audioContextRef.current.state === 'suspended') {
-        await audioContextRef.current.resume();
-      }
-
-      if (getPlaybackTime() === store.duration) {
-        playbackTimeAtStartRef.current = 0;
-        await startVideoIterator();
-      }
-
-      audioContextStartTimeRef.current = audioContextRef.current.currentTime;
-      actions.setIsPlaying(true);
-
-      if (audioSinkRef.current) {
-        audioBufferIteratorRef.current = audioSinkRef.current.buffers(getPlaybackTime());
-        void runAudioIterator();
-      }
-
-      startRenderLoop();
-    } catch (error) {
-      console.error('Playback error:', error);
-      actions.setError(error instanceof Error ? error.message : 'Playback failed');
-    }
-  }, [
-    audioSinkRef,
-    actions,
-    getPlaybackTime,
-    store.duration,
-    startVideoIterator,
-    startRenderLoop,
-  ]);
-
-  /**
-   * Останавливает воспроизведение.
-   */
-  const pause = useCallback(() => {
-    actions.setIsPlaying(false);
-    playbackTimeAtStartRef.current = getPlaybackTime();
     void audioBufferIteratorRef.current?.return();
     audioBufferIteratorRef.current = null;
 
@@ -298,73 +184,256 @@ export function useMediaPlayer() {
     }
     queuedAudioNodesRef.current.clear();
 
-    stopRenderLoop();
-  }, [actions, getPlaybackTime, stopRenderLoop]);
+    // НЕ останавливаем rAF-цикл — как в оригинале MediaBunny
+  });
 
-  /**
-   * Переключает воспроизведение/паузу.
-   */
+  // === rAF-цикл — работает ВСЕГДА, никогда не останавливается ===
+  useEffect(() => {
+    const renderLoop = () => {
+      const state = usePlayerStore.getState();
+
+      if (state.fileName) {
+        const playbackTime = utilsRef.current.getPlaybackTime();
+
+        if (playbackTime >= state.duration) {
+          pauseRef.current();
+          playbackTimeAtStartRef.current = state.duration;
+        }
+
+        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+          utilsRef.current.drawFrame(nextFrameRef.current);
+          nextFrameRef.current = null;
+          void updateNextFrameRef.current();
+        }
+
+        utilsRef.current.updateProgressBarTime(playbackTime);
+      }
+
+      playLoopRef.current = requestAnimationFrame(renderLoop);
+    };
+
+    playLoopRef.current = requestAnimationFrame(renderLoop);
+
+    // Also call render on an interval to keep updating even if the tab isn't visible
+    // (as in the original MediaBunny example)
+    const fallbackInterval = setInterval(() => {
+      const state = usePlayerStore.getState();
+      if (state.fileName) {
+        const playbackTime = utilsRef.current.getPlaybackTime();
+        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+          utilsRef.current.drawFrame(nextFrameRef.current);
+          nextFrameRef.current = null;
+          void updateNextFrameRef.current();
+        }
+        utilsRef.current.updateProgressBarTime(playbackTime);
+      }
+    }, 500);
+
+    return () => {
+      if (playLoopRef.current) {
+        cancelAnimationFrame(playLoopRef.current);
+        playLoopRef.current = 0;
+      }
+      clearInterval(fallbackInterval);
+    };
+  }, []);
+
+  // === Транскрипция — отдельный setInterval, не конкурирует с rAF ===
+  const transcribeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startTranscribeFocus = useCallback(() => {
+    stopTranscribeFocus();
+    transcribeIntervalRef.current = setInterval(() => {
+      const state = usePlayerStore.getState();
+      if (state.transcriptionResults) {
+        const playbackTime = utilsRef.current.getPlaybackTime();
+        const currentIndex = state.transcriptionResults.findIndex(
+          ([start, end]) => playbackTime >= start && playbackTime <= end
+        );
+
+        if (currentIndex === -1) return;
+
+        const prevActive = document.querySelectorAll('tr.active-playing');
+        prevActive.forEach((row) => {
+          const index = row.getAttribute('data-index');
+          if (index && Number(index) !== currentIndex) {
+            row.classList.remove('active-playing');
+          }
+        });
+
+        const activeRow = document.querySelector(`tr[data-index="${currentIndex}"]`);
+        if (activeRow) {
+          activeRow.classList.add('active-playing');
+          activeRow.scrollIntoView({ block: 'nearest' });
+        }
+      }
+    }, 100);
+  }, []);
+
+  const stopTranscribeFocus = useCallback(() => {
+    if (transcribeIntervalRef.current) {
+      clearInterval(transcribeIntervalRef.current);
+      transcribeIntervalRef.current = null;
+    }
+  }, []);
+
+  // === Публичные методы ===
+
+  const stopRenderLoop = useCallback(() => {
+    if (playLoopRef.current) {
+      cancelAnimationFrame(playLoopRef.current);
+      playLoopRef.current = 0;
+    }
+  }, []);
+
+  const pause = useCallback(() => {
+    pauseRef.current();
+  }, []);
+
+  const startRenderLoop = useCallback(() => {
+    // rAF работает всегда, так что это no-op
+  }, []);
+
+  const runAudioIterator = useCallback(async () => {
+    if (!audioBufferIteratorRef.current || !audioContextRef.current || !gainNodeRef.current) return;
+
+    const ctx = audioContextRef.current;
+    const gainNode = gainNodeRef.current;
+    const contextStart = audioContextStartTimeRef.current!;
+    const playbackOffset = playbackTimeAtStartRef.current;
+
+    try {
+      for await (const wrapped of audioBufferIteratorRef.current) {
+        const source = ctx.createBufferSource();
+        source.buffer = wrapped.buffer;
+        source.connect(gainNode);
+
+        const bufferStart = wrapped.timestamp;
+        let startTimestamp = contextStart + (bufferStart - playbackOffset);
+
+        // Round to sample boundaries to prevent subsample audio glitches
+        startTimestamp = Math.round(ctx.sampleRate * startTimestamp) / ctx.sampleRate;
+
+        // Two cases: audio starts in the future or in the past
+        if (startTimestamp >= ctx.currentTime) {
+          source.start(startTimestamp);
+        } else {
+          source.start(ctx.currentTime, ctx.currentTime - startTimestamp);
+        }
+
+        queuedAudioNodesRef.current.add(source);
+        source.onended = () => queuedAudioNodesRef.current.delete(source);
+
+        // Slow down if we're more than a second ahead
+        if (bufferStart - utilsRef.current.getPlaybackTime() >= 1) {
+          await new Promise((resolve) => {
+            const id = setInterval(() => {
+              if (bufferStart - utilsRef.current.getPlaybackTime() < 1) {
+                clearInterval(id);
+                resolve();
+              }
+            }, 100);
+          });
+        }
+      }
+    } catch {
+      // Итератор остановлен (pause) — нормально
+    }
+  }, []);
+
+  const play = useCallback(async () => {
+    try {
+      if (!audioContextRef.current) {
+        playerActions.setError('Audio system not available');
+        return;
+      }
+
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+
+      const currentDuration = usePlayerStore.getState().duration;
+      if (utilsRef.current.getPlaybackTime() === currentDuration) {
+        playbackTimeAtStartRef.current = 0;
+        await startVideoIteratorRef.current();
+      }
+
+      audioContextStartTimeRef.current = audioContextRef.current.currentTime;
+      playingRef.current = true;
+      playerActions.setIsPlaying(true);
+
+      if (audioSinkRef.current) {
+        audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
+        void runAudioIterator();
+      }
+
+      startTranscribeFocus();
+    } catch (error) {
+      console.error('Playback error:', error);
+      playerActions.setError(error instanceof Error ? error.message : 'Playback failed');
+    }
+  }, [audioSinkRef, runAudioIterator, startTranscribeFocus]);
+
   const togglePlay = useCallback(() => {
-    if (store.isPlaying) {
+    const isPlaying = usePlayerStore.getState().isPlaying;
+    if (isPlaying) {
       pause();
     } else {
       void play();
     }
-  }, [store.isPlaying, pause, play]);
+  }, [pause, play]);
 
-  /**
-   * Перемотка к указанному времени.
-   */
   const seekToTime = useCallback(async (seconds: number) => {
-    const wasPlaying = store.isPlaying;
+    const wasPlaying = usePlayerStore.getState().isPlaying;
 
     if (wasPlaying) {
       pause();
     }
 
     playbackTimeAtStartRef.current = seconds;
-    actions.setCurrentTime(seconds);
+    playerActions.setCurrentTime(seconds);
 
-    await startVideoIterator();
+    await startVideoIteratorRef.current();
 
     if (wasPlaying) {
       await play();
     }
-  }, [store.isPlaying, pause, play, startVideoIterator, actions]);
+  }, [pause, play]);
 
-  /**
-   * Устанавливает громкость.
-   */
   const setVolume = useCallback((volume: number) => {
     if (gainNodeRef.current) {
       gainNodeRef.current.gain.value = volume ** 2;
     }
-    actions.setVolume(volume);
-  }, [actions]);
+    playerActions.setVolume(volume);
+  }, []);
 
-  /**
-   * Переключает режим mute/unmute.
-   */
   const toggleMute = useCallback(() => {
     if (!gainNodeRef.current) return;
-    const currentVolume = gainNodeRef.current.gain.value;
+    const currentVolume = usePlayerStore.getState().volume;
     const muted = currentVolume === 0;
-    gainNodeRef.current.gain.value = muted ? 0.7 : 0;
-    actions.setIsMuted(muted);
-  }, [actions]);
+    const targetVolume = muted ? 0.7 : 0;
+    gainNodeRef.current.gain.value = targetVolume ** 2;
+    playerActions.setIsMuted(muted);
+    if (muted) playerActions.setVolume(0.7);
+  }, []);
 
-  /**
-   * Инициализирует медиаплеер с указанным ресурсом.
-   */
   const initMediaPlayer = useCallback(async (resource: File | string) => {
     try {
-      if (store.isPlaying) {
+      const isCurrentlyPlaying = usePlayerStore.getState().isPlaying;
+      if (isCurrentlyPlaying) {
         pause();
       }
 
-      actions.setError(null);
-      actions.setWarning(null);
-      actions.setFileName(resource instanceof File ? resource.name : resource);
+      // Close old audio context if any (sampleRate may differ for new file)
+      if (audioContextRef.current) {
+        await audioContextRef.current.close();
+        audioContextRef.current = null;
+        gainNodeRef.current = null;
+      }
+
+      playerActions.setError(null);
+      playerActions.setWarning(null);
+      playerActions.setFileName(resource instanceof File ? resource.name : resource);
 
       const source =
         resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
@@ -373,7 +442,7 @@ export function useMediaPlayer() {
 
       playbackTimeAtStartRef.current = 0;
       const totalDuration = await input.computeDuration();
-      actions.setDuration(totalDuration);
+      playerActions.setDuration(totalDuration);
 
       let videoTrack = await input.getPrimaryVideoTrack();
       let audioTrack = await input.getPrimaryAudioTrack();
@@ -408,7 +477,20 @@ export function useMediaPlayer() {
       }
 
       if (problemMessage) {
-        actions.setWarning(problemMessage);
+        playerActions.setWarning(problemMessage);
+      }
+
+      // Create AudioContext with matching sampleRate — КРИТИЧНО для правильного звука!
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (audioTrack) {
+        const sampleRate = audioTrack.sampleRate;
+        audioContextRef.current = new AudioContextClass({ sampleRate });
+        gainNodeRef.current = audioContextRef.current.createGain();
+        gainNodeRef.current.connect(audioContextRef.current.destination);
+        playerActions.setVolume(0.7);
+      } else {
+        // No audio — create context for timing only
+        audioContextRef.current = new AudioContextClass();
       }
 
       const videoCanBeTransparent = videoTrack
@@ -431,34 +513,23 @@ export function useMediaPlayer() {
       if (canvasRef.current && videoTrack) {
         canvasRef.current.width = videoTrack.displayWidth;
         canvasRef.current.height = videoTrack.displayHeight;
+        canvasCtxRef.current = canvasRef.current.getContext('2d');
       }
 
-      await startVideoIterator();
+      await startVideoIteratorRef.current();
 
       if (audioContextRef.current?.state === 'running') {
         await play();
       }
-
-      startRenderLoop();
     } catch (error) {
       console.error('Error initializing media player:', error);
-      actions.setError(error instanceof Error ? error.message : 'Failed to load media');
+      playerActions.setError(error instanceof Error ? error.message : 'Failed to load media');
     }
-  }, [
-    store.isPlaying,
-    pause,
-    actions,
-    startVideoIterator,
-    play,
-    startRenderLoop,
-  ]);
+  }, [pause, play]);
 
-  /**
-   * Собирает все аудио-чанки и отправляет на сервер для транскрипции.
-   */
   const transcribe = useCallback(async () => {
     if (!audioSinkRef.current || !audioTrackRef.current) {
-      actions.setError('No audio track available for transcription');
+      playerActions.setError('No audio track available for transcription');
       return;
     }
 
@@ -468,9 +539,10 @@ export function useMediaPlayer() {
         chunks.push(buffer);
       }
 
+      const fileName = usePlayerStore.getState().fileName;
       const audioBlob = audioBuffersToWav(chunks, audioTrackRef.current.sampleRate);
       const formData = new FormData();
-      formData.append('file', audioBlob, `${store.fileName}.wav`);
+      formData.append('file', audioBlob, `${fileName}.wav`);
 
       const response = await fetch('http://localhost:8686/transcribe', {
         method: 'POST',
@@ -491,25 +563,25 @@ export function useMediaPlayer() {
         if (msg.status === 'PROCESSING') {
           // Обновить состояние кнопки
         } else if (msg.status === 'DONE') {
-          actions.setTranscriptionResults(msg.results);
+          playerActions.setTranscriptionResults(msg.results);
           socket.close();
         }
       };
 
       socket.onerror = (error) => {
         console.error('WebSocket error:', error);
-        actions.setError('Failed to connect to transcription server');
+        playerActions.setError('Failed to connect to transcription server');
         socket.close();
       };
     } catch (error) {
       console.error('Transcription error:', error);
-      actions.setError(error instanceof Error ? error.message : 'Transcription failed');
+      playerActions.setError(error instanceof Error ? error.message : 'Transcription failed');
     }
-  }, [audioSinkRef, audioTrackRef, store.fileName, actions]);
+  }, [audioSinkRef, audioTrackRef]);
 
-  // Cleanup при размонтировании
   const cleanup = useCallback(() => {
     stopRenderLoop();
+    stopTranscribeFocus();
     void audioBufferIteratorRef.current?.return();
     audioBufferIteratorRef.current = null;
 
@@ -525,7 +597,14 @@ export function useMediaPlayer() {
       audioContextRef.current.close();
       audioContextRef.current = null;
     }
-  }, [stopRenderLoop]);
+  }, [stopRenderLoop, stopTranscribeFocus]);
+
+  const getPlaybackTime = useCallback(() => utilsRef.current.getPlaybackTime(), []);
+  const formatSeconds = useCallback((s: number) => utilsRef.current.formatSeconds(s), []);
+
+  const render = useCallback(() => {
+    // no-op — rAF работает всегда
+  }, []);
 
   return {
     canvasRef,

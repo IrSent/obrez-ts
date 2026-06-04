@@ -1,11 +1,14 @@
-import { useState } from 'react';
-import { usePlayerStore } from '../../store/playerStore';
-import { useMediaPlayer } from '../../hooks/useMediaPlayer';
+import { memo, useState } from 'react';
+import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { FastAhoScanner } from '../../aho-corasick';
 
-export const TranscriptionResults = () => {
-  const { transcriptionResults, loadedDictionaries, activeDictionaries, actions } = usePlayerStore();
-  const { transcribe, seekToTime } = useMediaPlayer();
+const TranscriptionResultsInner = () => {
+  const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
+  const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
+  const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
+  const actions = usePlayerActions();
+  const { transcribe, seekToTime } = useMediaPlayerContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -108,3 +111,5 @@ export const TranscriptionResults = () => {
     </div>
   );
 };
+
+export const TranscriptionResults = memo(TranscriptionResultsInner);

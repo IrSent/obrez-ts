@@ -1,9 +1,11 @@
-import { useState } from 'react';
-import { usePlayerStore } from '../../store/playerStore';
+import { memo, useState } from 'react';
+import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { FastAhoScanner } from '../../aho-corasick';
 
-export const DictionaryManager = () => {
-  const { loadedDictionaries, activeDictionaries, actions } = usePlayerStore();
+const DictionaryManagerInner = () => {
+  const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
+  const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
+  const actions = usePlayerActions();
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
 
   const handleAddDictionary = async () => {
@@ -99,3 +101,5 @@ export const DictionaryManager = () => {
     </div>
   );
 };
+
+export const DictionaryManager = memo(DictionaryManagerInner);

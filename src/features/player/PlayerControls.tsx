@@ -1,12 +1,13 @@
+import { memo } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
-import { useMediaPlayer } from '../../hooks/useMediaPlayer';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { ProgressBar } from './ProgressBar';
 import { VolumeControls } from './VolumeControls';
 import { FullscreenButton } from './FullscreenButton';
 
-export const PlayerControls = () => {
-  const { isPlaying } = usePlayerStore();
-  const { play, pause } = useMediaPlayer();
+const PlayerControlsInner = () => {
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const { play, pause } = useMediaPlayerContext();
 
   const handlePlayPause = async () => {
     if (isPlaying) {
@@ -42,3 +43,5 @@ export const PlayerControls = () => {
     </div>
   );
 };
+
+export const PlayerControls = memo(PlayerControlsInner);

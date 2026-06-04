@@ -90,22 +90,4 @@ export type PlayerState = {
 
   /** Active dictionary slugs */
   activeDictionaries: Set<string>;
-
-  /** Actions for updating the store */
-  actions: {
-    setIsPlaying: (isPlaying: boolean) => void;
-    setCurrentTime: (currentTime: number) => void;
-    setDuration: (duration: number) => void;
-    setVolume: (volume: number) => void;
-    setIsMuted: (isMuted: boolean) => void;
-    setFileName: (fileName: string) => void;
-    setError: (error: string | null) => void;
-    setWarning: (warning: string | null) => void;
-    setTranscriptionResults: (results: Array<TranscriptionResultTuple> | null) => void;
-    setCensoringEffects: (effects: Array<CensoringEffect> | null) => void;
-    loadDictionary: (slug: string, name: string) => void;
-    removeDictionary: (slug: string) => void;
-    toggleDictionary: (slug: string) => void;
-    clearAllDictionaries: () => void;
-  };
 };

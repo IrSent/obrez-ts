@@ -24,12 +24,13 @@
   "homepage": "https://github.com/IrSent/obrez-ts#readme",
   "dependencies": {
     "@fontsource-variable/rubik": "^5.2.8",
-    "mediabunny": "^1.38.0",
+    "mediabunny": "^1.46.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "zustand": "^5.0.14"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@types/node": "^25.3.5",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
