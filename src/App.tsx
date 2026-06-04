@@ -1,4 +1,3 @@
-import { PlayerProvider } from './features/player/PlayerProvider';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
 import { PlayerControls } from './features/player/PlayerControls';
@@ -8,8 +7,7 @@ import { TranscriptionResults } from './features/transcription/TranscriptionResu
 
 export const App = () => {
   return (
-    <PlayerProvider>
-      <MediaPlayerProvider>
+    <MediaPlayerProvider>
         <div className="min-h-screen bg-zinc-900 text-zinc-100 p-4">
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
@@ -40,6 +38,5 @@ export const App = () => {
           </div>
         </div>
       </MediaPlayerProvider>
-    </PlayerProvider>
   );
 };
