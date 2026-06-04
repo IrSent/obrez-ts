@@ -412,19 +412,20 @@ export function useMediaPlayer() {
   }, []);
 
   const toggleMute = useCallback(() => {
-    if (!gainNodeRef.current) return;
     const state = usePlayerStore.getState();
     const currentlyMuted = state.isMuted;
     const previousVolume = state.volume;
 
-    if (currentlyMuted) {
-      // Unmute: restore previous volume
-      const restoreVolume = previousVolume === 0 ? 0.7 : previousVolume;
-      gainNodeRef.current.gain.value = restoreVolume ** 2;
-      playerActions.setVolume(restoreVolume);
-    } else {
-      // Mute: save current volume and silence
-      gainNodeRef.current.gain.value = 0;
+    if (gainNodeRef.current) {
+      if (currentlyMuted) {
+        // Unmute: restore previous volume
+        const restoreVolume = previousVolume === 0 ? 0.5 : previousVolume;
+        gainNodeRef.current.gain.value = restoreVolume ** 2;
+        playerActions.setVolume(restoreVolume);
+      } else {
+        // Mute: silence
+        gainNodeRef.current.gain.value = 0;
+      }
     }
     playerActions.setIsMuted(!currentlyMuted);
   }, []);
@@ -499,7 +500,8 @@ export function useMediaPlayer() {
         audioContextRef.current = new AudioContextClass({ sampleRate });
         gainNodeRef.current = audioContextRef.current.createGain();
         gainNodeRef.current.connect(audioContextRef.current.destination);
-        playerActions.setVolume(0.7);
+        gainNodeRef.current.gain.value = 0.5 ** 2;
+        playerActions.setVolume(0.5);
       } else {
         // No audio — create context for timing only
         audioContextRef.current = new AudioContextClass();

@@ -7,7 +7,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   isPlaying: false,
   currentTime: 0,
   duration: 0,
-  volume: 0.7,
+  volume: 0.5,
   isMuted: false,
 
   // File state

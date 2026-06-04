@@ -41,24 +41,26 @@ const ProgressBarInner = () => {
       <div
         ref={progressRef}
         onClick={handleClick}
-        className="flex-1 h-1 bg-zinc-700 rounded-full cursor-pointer relative"
+        className="flex-1 py-1 flex items-center cursor-pointer relative"
         role="progressbar"
         aria-valuenow={currentTime}
         aria-valuemin={0}
         aria-valuemax={duration}
         aria-label="Playback progress"
       >
-        <div
-          data-testid="progress-fill"
-          style={{ width: `${progress}%` }}
-          className="h-full bg-purple-500 rounded-full"
-        />
-        <div
-          onMouseDown={handleDragStart}
-          data-testid="progress-thumb"
-          style={{ left: `${progress}%` }}
-          className="absolute w-4 h-4 bg-purple-500 rounded-full -top-1.5 -translate-x-1/2 cursor-grab active:cursor-grabbing"
-        />
+        <div className="w-full h-1 bg-zinc-700 rounded-full relative">
+          <div
+            data-testid="progress-fill"
+            style={{ width: `${progress}%` }}
+            className="h-full bg-purple-500 rounded-full"
+          />
+          <div
+            onMouseDown={handleDragStart}
+            data-testid="progress-thumb"
+            style={{ left: `${progress}%` }}
+            className="absolute w-4 h-4 bg-purple-500 rounded-full -top-1.5 -translate-x-1/2 cursor-grab active:cursor-grabbing"
+          />
+        </div>
       </div>
 
       <span className="text-xs opacity-60" data-testid="duration" data-seconds={duration}>{formatSeconds(duration)}</span>
