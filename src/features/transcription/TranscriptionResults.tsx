@@ -1,7 +1,6 @@
 import { memo, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
-import { FastAhoScanner } from '../../aho-corasick';
 
 const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
@@ -36,17 +35,17 @@ const TranscriptionResultsInner = () => {
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Получаем список слов для подсветки
-  const getTriggeredWords = (text: string): string[] => {
-    const triggered: string[] = [];
+  // Получаем slug-и активных словарей, в которых найдены совпадения в тексте
+  const getTriggeredDictionaries = (text: string): { slug: string; count: number }[] => {
+    const triggered: { slug: string; count: number }[] = [];
     activeDictionaries.forEach((slug) => {
       const dict = loadedDictionaries[slug];
       if (!dict) return;
 
-      // Здесь нужно использовать FastAhoScanner для поиска совпадений
-      // Но так как у нас нет доступа к самому сканеру, мы используем результаты транскрипции
-      // В реальном приложении нужно хранить сканеры в каком-то хранилище
-      triggered.push(slug);
+      const matches = dict.scanner.findMatches(text.toLowerCase());
+      if (matches.length > 0) {
+        triggered.push({ slug, count: matches.length });
+      }
     });
     return triggered;
   };
@@ -75,10 +74,10 @@ const TranscriptionResultsInner = () => {
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
         <div className="space-y-1">
           {transcriptionResults.map(([start, end, text], index) => {
-            const triggered = getTriggeredWords(text);
+            const triggered = getTriggeredDictionaries(text);
 
             return (
-              <div key={index} className="flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700">
+              <div key={index} className={`flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${triggered.length > 0 ? 'ring-1 ring-red-800/50' : ''}`}>
                 <span className="timestamp text-zinc-400 w-16">
                   {formatTime(start)}
                 </span>
@@ -86,12 +85,12 @@ const TranscriptionResultsInner = () => {
                   {text}
                 </span>
                 <div className="flex items-center gap-1">
-                  {triggered.map((slug) => (
+                  {triggered.map(({ slug, count }) => (
                     <span
                       key={slug}
                       className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded"
                     >
-                      {slug}
+                      {slug} ×{count}
                     </span>
                   ))}
                   <button
