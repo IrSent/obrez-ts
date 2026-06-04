@@ -16,6 +16,11 @@ const VolumeControlsInner = () => {
     toggleMute();
   };
 
+  const volumeIcon = isMuted ? '/assets/volume-off-icon.svg'
+    : volume >= 0.67 ? '/assets/volume-2-icon.svg'
+    : volume >= 0.34 ? '/assets/volume-1-icon.svg'
+    : '/assets/volume-0-icon.svg';
+
   return (
     <div className="flex items-center gap-2">
       <button
@@ -23,7 +28,7 @@ const VolumeControlsInner = () => {
         className="p-1 rounded-md hover:bg-zinc-700 transition-colors"
         aria-label={isMuted ? 'Unmute' : 'Mute'}
       >
-        <img src={isMuted ? '/assets/volume-off-icon.svg' : '/assets/volume-1-icon.svg'} alt={isMuted ? 'Unmute' : 'Mute'} className="w-5 h-5" />
+        <img src={volumeIcon} alt={isMuted ? 'Unmute' : 'Mute'} className="w-5 h-5" />
       </button>
 
       <input
