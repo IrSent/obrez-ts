@@ -405,16 +405,28 @@ export function useMediaPlayer() {
       gainNodeRef.current.gain.value = volume ** 2;
     }
     playerActions.setVolume(volume);
+    // Поднимаем mute, если громкость установлена > 0
+    if (volume > 0) {
+      playerActions.setIsMuted(false);
+    }
   }, []);
 
   const toggleMute = useCallback(() => {
     if (!gainNodeRef.current) return;
-    const currentVolume = usePlayerStore.getState().volume;
-    const muted = currentVolume === 0;
-    const targetVolume = muted ? 0.7 : 0;
-    gainNodeRef.current.gain.value = targetVolume ** 2;
-    playerActions.setIsMuted(muted);
-    if (muted) playerActions.setVolume(0.7);
+    const state = usePlayerStore.getState();
+    const currentlyMuted = state.isMuted;
+    const previousVolume = state.volume;
+
+    if (currentlyMuted) {
+      // Unmute: restore previous volume
+      const restoreVolume = previousVolume === 0 ? 0.7 : previousVolume;
+      gainNodeRef.current.gain.value = restoreVolume ** 2;
+      playerActions.setVolume(restoreVolume);
+    } else {
+      // Mute: save current volume and silence
+      gainNodeRef.current.gain.value = 0;
+    }
+    playerActions.setIsMuted(!currentlyMuted);
   }, []);
 
   const initMediaPlayer = useCallback(async (resource: File | string) => {
