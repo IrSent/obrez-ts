@@ -1,10 +1,11 @@
-import { useState, useRef, useCallback } from 'react';
+import { memo, useState, useRef, useCallback } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
-import { useMediaPlayer } from '../../hooks/useMediaPlayer';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
-export const ProgressBar = () => {
-  const { currentTime, duration } = usePlayerStore();
-  const { seekToTime, formatSeconds } = useMediaPlayer();
+const ProgressBarInner = () => {
+  const currentTime = usePlayerStore((state) => state.currentTime);
+  const duration = usePlayerStore((state) => state.duration);
+  const { seekToTime, formatSeconds } = useMediaPlayerContext();
   const [isDragging, setIsDragging] = useState(false);
   const progressRef = useRef<HTMLDivElement>(null);
 
@@ -35,7 +36,7 @@ export const ProgressBar = () => {
 
   return (
     <div className="flex-1 flex items-center gap-2">
-      <span className="text-xs opacity-60">{formatSeconds(currentTime)}</span>
+      <span className="text-xs opacity-60" data-testid="current-time">{formatSeconds(currentTime)}</span>
 
       <div
         ref={progressRef}
@@ -60,7 +61,9 @@ export const ProgressBar = () => {
         />
       </div>
 
-      <span className="text-xs opacity-60">{formatSeconds(duration)}</span>
+      <span className="text-xs opacity-60" data-testid="duration" data-seconds={duration}>{formatSeconds(duration)}</span>
     </div>
   );
 };
+
+export const ProgressBar = memo(ProgressBarInner);

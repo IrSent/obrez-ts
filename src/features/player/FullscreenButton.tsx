@@ -1,10 +1,9 @@
 import { useRef, useState, useEffect } from 'react';
-import { usePlayerStore } from '../../store/playerStore';
 
 export const FullscreenButton = () => {
   const buttonRef = useRef<HTMLButtonElement>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
-  const playerContainer = usePlayerStore((state) => state.fileName ? document.getElementById('player-container') : null);
+  // FIX: убрал бесполезный DOM-запрос в селекторе — он не использовался
 
   useEffect(() => {
     const handleFullscreenChange = () => {

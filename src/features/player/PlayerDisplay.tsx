@@ -1,10 +1,11 @@
+import { memo } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
-import { useMediaPlayer } from '../../hooks/useMediaPlayer';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
-export const PlayerDisplay = () => {
+const PlayerDisplayInner = () => {
   const fileName = usePlayerStore((state) => state.fileName);
   const error = usePlayerStore((state) => state.error);
-  const { canvasRef } = useMediaPlayer();
+  const { canvasRef } = useMediaPlayerContext();
 
   return (
     <div
@@ -33,3 +34,5 @@ export const PlayerDisplay = () => {
     </div>
   );
 };
+
+export const PlayerDisplay = memo(PlayerDisplayInner);

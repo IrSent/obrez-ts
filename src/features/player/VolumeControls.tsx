@@ -1,9 +1,11 @@
+import { memo } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
-import { useMediaPlayer } from '../../hooks/useMediaPlayer';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
-export const VolumeControls = () => {
-  const { volume, isMuted } = usePlayerStore();
-  const { setVolume, toggleMute } = useMediaPlayer();
+const VolumeControlsInner = () => {
+  const volume = usePlayerStore((state) => state.volume);
+  const isMuted = usePlayerStore((state) => state.isMuted);
+  const { setVolume, toggleMute } = useMediaPlayerContext();
 
   const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const newVolume = parseFloat(e.target.value);
@@ -45,3 +47,5 @@ export const VolumeControls = () => {
     </div>
   );
 };
+
+export const VolumeControls = memo(VolumeControlsInner);

@@ -5,7 +5,8 @@ import { dirname, join } from 'path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
 const server = serve({
-  port: 8080,
+  hostname: '0.0.0.0',
+  port: 3000,
   fetch(req) {
     const url = new URL(req.url);
 
@@ -65,7 +66,7 @@ async function handleTranscriptionRequest(req: Request) {
     }
 
     // Forward the audio file to the Python transcribe server
-    const pythonServerUrl = 'http://127.0.0.1:8686/transcribe';
+    const pythonServerUrl = 'http://192.168.3.250:8686/transcribe';
 
     const pythonFormData = new FormData();
     pythonFormData.append(
@@ -113,4 +114,4 @@ async function handleTranscriptionRequest(req: Request) {
   }
 }
 
-console.log(`Server running at http://localhost:${server.port}`);
+console.log(`Server running at http://${server.hostname}:${server.port}`);

@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { PlayerState, Dictionary } from '../types';
 
-export const usePlayerStore = create<PlayerState>((set, get) => ({
+export const usePlayerStore = create<PlayerState>((set) => ({
   // Playback state
   isPlaying: false,
   currentTime: 0,
@@ -21,56 +21,67 @@ export const usePlayerStore = create<PlayerState>((set, get) => ({
   // Dictionary state
   loadedDictionaries: {},
   activeDictionaries: new Set(),
-
-  // Actions
-  actions: {
-    setIsPlaying: (isPlaying: boolean) => set({ isPlaying }),
-    setCurrentTime: (currentTime: number) => set({ currentTime }),
-    setDuration: (duration: number) => set({ duration }),
-    setVolume: (volume: number) => set({ volume }),
-    setIsMuted: (isMuted: boolean) => set({ isMuted }),
-    setFileName: (fileName: string) => set({ fileName }),
-    setError: (error: string | null) => set({ error }),
-    setWarning: (warning: string | null) => set({ warning }),
-    setTranscriptionResults: (results: Array<[number, number, string]> | null) =>
-      set({ transcriptionResults: results }),
-    setCensoringEffects: (effects: Array<{
-      startTime: number;
-      endTime: number;
-      effectType: 'beep' | 'mute' | 'blur' | 'replace';
-    }> | null) => set({ censoringEffects: effects }),
-
-    // Dictionary actions
-    loadDictionary: (slug: string, name: string) => {
-      const dict: Dictionary = { id: slug, name, active: true };
-      set((state) => ({
-        loadedDictionaries: { ...state.loadedDictionaries, [slug]: dict },
-        activeDictionaries: new Set([...state.activeDictionaries, slug]),
-      }));
-    },
-
-    removeDictionary: (slug: string) => {
-      const { loadedDictionaries, activeDictionaries } = get();
-      const newDictionaries = { ...loadedDictionaries };
-      delete newDictionaries[slug];
-      const newActive = new Set(activeDictionaries);
-      newActive.delete(slug);
-      set({ loadedDictionaries: newDictionaries, activeDictionaries: newActive });
-    },
-
-    toggleDictionary: (slug: string) => {
-      const { activeDictionaries } = get();
-      const newActive = new Set(activeDictionaries);
-      if (newActive.has(slug)) {
-        newActive.delete(slug);
-      } else {
-        newActive.add(slug);
-      }
-      set({ activeDictionaries: newActive });
-    },
-
-    clearAllDictionaries: () => {
-      set({ loadedDictionaries: {}, activeDictionaries: new Set() });
-    },
-  },
 }));
+
+/**
+ * Actions — вне состояния, чтобы их пересоздание не триггерило
+ * ре-рендеры подписчиков. Каждый экшн пишет напрямую через set().
+ */
+export const playerActions = {
+  setIsPlaying: (isPlaying: boolean) => usePlayerStore.setState({ isPlaying }),
+  setCurrentTime: (currentTime: number) => usePlayerStore.setState({ currentTime }),
+  setDuration: (duration: number) => usePlayerStore.setState({ duration }),
+  setVolume: (volume: number) => usePlayerStore.setState({ volume }),
+  setIsMuted: (isMuted: boolean) => usePlayerStore.setState({ isMuted }),
+  setFileName: (fileName: string) => usePlayerStore.setState({ fileName }),
+  setError: (error: string | null) => usePlayerStore.setState({ error }),
+  setWarning: (warning: string | null) => usePlayerStore.setState({ warning }),
+  setTranscriptionResults: (results: Array<[number, number, string]> | null) =>
+    usePlayerStore.setState({ transcriptionResults: results }),
+  setCensoringEffects: (effects: Array<{
+    startTime: number;
+    endTime: number;
+    effectType: 'beep' | 'mute' | 'blur' | 'replace';
+  }> | null) => usePlayerStore.setState({ censoringEffects: effects }),
+
+  // Dictionary actions
+  loadDictionary: (slug: string, name: string) => {
+    const dict: Dictionary = { id: slug, name, active: true };
+    usePlayerStore.setState((state) => ({
+      loadedDictionaries: { ...state.loadedDictionaries, [slug]: dict },
+      activeDictionaries: new Set([...state.activeDictionaries, slug]),
+    }));
+  },
+
+  removeDictionary: (slug: string) => {
+    const state = usePlayerStore.getState();
+    const newDictionaries = { ...state.loadedDictionaries };
+    delete newDictionaries[slug];
+    const newActive = new Set(state.activeDictionaries);
+    newActive.delete(slug);
+    usePlayerStore.setState({ loadedDictionaries: newDictionaries, activeDictionaries: newActive });
+  },
+
+  toggleDictionary: (slug: string) => {
+    const { activeDictionaries } = usePlayerStore.getState();
+    const newActive = new Set(activeDictionaries);
+    if (newActive.has(slug)) {
+      newActive.delete(slug);
+    } else {
+      newActive.add(slug);
+    }
+    usePlayerStore.setState({ activeDictionaries: newActive });
+  },
+
+  clearAllDictionaries: () => {
+    usePlayerStore.setState({ loadedDictionaries: {}, activeDictionaries: new Set() });
+  },
+};
+
+/**
+ * Хук для удобного доступа к экшнам из компонентов.
+ * Возвращает стабильную ссылку — не ломает useCallback-зависимости.
+ */
+export function usePlayerActions() {
+  return playerActions;
+}

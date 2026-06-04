@@ -1,12 +1,12 @@
 import { useRef } from 'react';
-import { usePlayerStore } from '../../store/playerStore';
-import { useMediaPlayer } from '../../hooks/useMediaPlayer';
+import { usePlayerActions } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
 export const FileLoader = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const urlInputRef = useRef<HTMLInputElement>(null);
-  const { actions } = usePlayerStore();
-  const { initMediaPlayer } = useMediaPlayer();
+  const actions = usePlayerActions();
+  const { initMediaPlayer } = useMediaPlayerContext();
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
