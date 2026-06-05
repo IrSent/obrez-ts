@@ -447,6 +447,9 @@ export function useMediaPlayer() {
       playerActions.setError(null);
       playerActions.setWarning(null);
       playerActions.setFileName(resource instanceof File ? resource.name : resource);
+      playerActions.setTranscriptionResults(null);
+      playerActions.setTranscribing(false);
+      playerActions.setCensoringEffects(null);
 
       const source =
         resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
@@ -572,21 +575,33 @@ export function useMediaPlayer() {
 
       const socket = new WebSocket(`ws://localhost:8686/ws/status/${task_id}`);
 
-      socket.onmessage = (event) => {
-        const msg = JSON.parse(event.data);
-        if (msg.status === 'PROCESSING') {
-          // Обновить состояние кнопки
-        } else if (msg.status === 'DONE') {
-          playerActions.setTranscriptionResults(msg.results);
-          socket.close();
-        }
-      };
+      await new Promise((resolve, reject) => {
+        socket.onmessage = (event) => {
+          const msg = JSON.parse(event.data);
+          if (msg.status === 'PROCESSING') {
+            playerActions.setTranscribing(true);
+          } else if (msg.status === 'DONE') {
+            playerActions.setTranscribing(false);
+            const resultsInSeconds = msg.results.map(
+              ([start, end, text]: [number, number, string]) => [start / 1000, end / 1000, text] as [number, number, string]
+            );
+            playerActions.setTranscriptionResults(resultsInSeconds);
+            socket.close();
+            resolve(true);
+          } else if (msg.status === 'ERROR') {
+            playerActions.setTranscribing(false);
+            reject(new Error(msg.results || 'Transcription error'));
+          }
+        };
 
-      socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        playerActions.setError('Failed to connect to transcription server');
-        socket.close();
-      };
+        socket.onerror = (error) => {
+          playerActions.setTranscribing(false);
+          console.error('WebSocket error:', error);
+          playerActions.setError('Failed to connect to transcription server');
+          socket.close();
+          reject(new Error('WebSocket error'));
+        };
+      });
     } catch (error) {
       console.error('Transcription error:', error);
       playerActions.setError(error instanceof Error ? error.message : 'Transcription failed');
@@ -594,6 +609,7 @@ export function useMediaPlayer() {
   }, [audioSinkRef, audioTrackRef]);
 
   const cleanup = useCallback(() => {
+    playerActions.setTranscribing(false);
     stopRenderLoop();
     stopTranscribeFocus();
     void audioBufferIteratorRef.current?.return();
