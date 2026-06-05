@@ -17,6 +17,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   // Transcription state
   transcriptionResults: null,
+  transcribing: false,
   censoringEffects: null,
 
   // Dictionary state
@@ -39,6 +40,8 @@ export const playerActions = {
   setWarning: (warning: string | null) => usePlayerStore.setState({ warning }),
   setTranscriptionResults: (results: Array<[number, number, string]> | null) =>
     usePlayerStore.setState({ transcriptionResults: results }),
+  setTranscribing: (transcribing: boolean) =>
+    usePlayerStore.setState({ transcribing }),
   setCensoringEffects: (effects: Array<{
     startTime: number;
     endTime: number;

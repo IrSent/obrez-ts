@@ -15,6 +15,9 @@ export const FileLoader = () => {
     actions.setFileName(file.name);
     actions.setError(null);
     actions.setWarning(null);
+    actions.setTranscriptionResults(null);
+    actions.setTranscribing(false);
+    actions.setCensoringEffects(null);
 
     try {
       await initMediaPlayer(file);
@@ -38,6 +41,9 @@ export const FileLoader = () => {
     actions.setFileName(url);
     actions.setError(null);
     actions.setWarning(null);
+    actions.setTranscriptionResults(null);
+    actions.setTranscribing(false);
+    actions.setCensoringEffects(null);
 
     initMediaPlayer(url);
   };

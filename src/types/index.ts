@@ -87,6 +87,9 @@ export type PlayerState = {
   /** Transcription results if available */
   transcriptionResults: Array<TranscriptionResultTuple> | null;
 
+  /** Whether transcription is currently processing on the backend */
+  transcribing: boolean;
+
   /** Censoring effects if available */
   censoringEffects: Array<CensoringEffect> | null;
 

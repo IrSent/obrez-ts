@@ -1,12 +1,33 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { FastAhoScanner } from '../../aho-corasick';
+
+const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords'];
 
 const DictionaryManagerInner = () => {
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
   const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
+
+  // Auto-load default dictionaries on mount
+  useEffect(() => {
+    const loadDefaults = async () => {
+      for (const slug of DEFAULT_DICTIONARIES) {
+        if (slug in loadedDictionaries) continue;
+        try {
+          const response = await fetch(`http://localhost:8686/dictionary/${slug}`);
+          if (!response.ok) continue;
+          const buffer = await response.arrayBuffer();
+          const scanner = new FastAhoScanner(buffer);
+          actions.loadDictionary(slug, slug, scanner);
+        } catch (error) {
+          console.error(`Failed to load default dictionary ${slug}:`, error);
+        }
+      }
+    };
+    loadDefaults();
+  }, []);
 
   const handleAddDictionary = async () => {
     const slug = prompt('Enter dictionary slug:');
