@@ -10,6 +10,13 @@ function uid(): string {
 }
 
 /**
+ * Check if a URL is a remote URL (http/https) rather than a data URL.
+ */
+function isRemoteUrl(url: string): boolean {
+  return url.startsWith('http://') || url.startsWith('https://');
+}
+
+/**
  * Decode an audio source (base64 data URL or remote URL) into an AudioBuffer.
  * Prefers dataUrl if available; falls back to url.
  */
@@ -65,7 +72,7 @@ async function exportBleepSounds(sounds: Record<string, BleepSound>): Promise<vo
       const binary = atob(sound.dataUrl.split(',')[1] || sound.dataUrl);
       const bytes = new Uint8Array(binary.length);
       for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
-      stmt.run([sound.id, sound.label, sound.url, bytes.buffer]);
+      stmt.run([sound.id, sound.label, sound.url, bytes]);
     } else {
       stmt.run([sound.id, sound.label, sound.url, null]);
     }
@@ -112,16 +119,12 @@ async function importBleepSounds(
 
   if (rows.length && rows[0].values) {
     for (const row of rows[0].values) {
-      const [id, label, url, data] = row as [string, string, string, ArrayBuffer | string | null];
+      const [id, label, url, data] = row as [string, string, string, ArrayBuffer | Uint8Array | string | null];
 
-      if (data instanceof ArrayBuffer) {
-        // Convert to base64 for in-memory store
-        const bytes = new Uint8Array(data);
-        let binary = '';
-        for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
-        const base64 = btoa(binary);
-        const dataUrl = `data:audio/*;base64,${base64}`;
-        onAdd(id, label, url, data);
+      if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
+        // sql.js returns BLOB data as Uint8Array, not ArrayBuffer
+        const arrayBuffer = data instanceof ArrayBuffer ? data : data.slice().buffer;
+        onAdd(id, label, url, arrayBuffer);
       } else if (typeof data === 'string') {
         onAdd(id, label, data);
       } else if (url) {
@@ -206,7 +209,7 @@ const SavedIcon = () => (
     <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
     <polyline points="17,21 17,13 7,13 7,21" />
     <polyline points="7,3 7,8 15,8" />
-    <path d="M9 15l2 2 4-4" />
+    <path d="M7 15l3 3 7-7" />
   </svg>
 );
 
@@ -255,23 +258,25 @@ const AddModal = memo(({ onAdd, onClose }: AddModalProps) => {
     }
   };
 
+  const cleanUrl = (s: string) => s.trim().replace(/^["'"]+|["'"]+$/g, '');
+
   const handleUrlSubmit = async () => {
-    const trimmed = url.trim();
-    if (!trimmed) return;
+    const cleaned = cleanUrl(url);
+    if (!cleaned) return;
     setError(null);
     setLoading(true);
 
-    const labelText = label.trim() || trimmed;
+    const labelText = label.trim() || cleaned;
 
     try {
-      const res = await fetch(trimmed, { method: 'HEAD' });
+      const res = await fetch(cleaned, { method: 'HEAD' });
       if (!res.ok) {
         setError(`URL not accessible (status ${res.status})`);
         return;
       }
 
       const id = uid();
-      onAdd(id, labelText, trimmed);
+      onAdd(id, labelText, cleaned);
       onClose();
     } catch {
       setError('Failed to reach URL');
@@ -374,26 +379,64 @@ interface SoundRowProps {
   onDownload: (id: string) => void;
   isDownloading: boolean;
   onUpdateLabel: (id: string, label: string) => void;
+  onUpdateUrl: (id: string, url: string) => void;
   onRemove: (id: string) => void;
   onPlay: (buffer: AudioBuffer) => void;
   onDecode: (id: string) => void;
 }
 
 const SoundRow = memo(({
-  sound, loading, onDownload, isDownloading, onUpdateLabel, onRemove, onPlay, onDecode,
+  sound, loading, onDownload, isDownloading, onUpdateLabel, onUpdateUrl, onRemove, onPlay, onDecode,
 }: SoundRowProps) => {
-  const [editing, setEditing] = useState(false);
-  const [draft, setDraft] = useState(sound.label);
-  const inputRef = useRef<HTMLInputElement>(null);
+  const [editing, setEditing] = useState<'label' | 'url' | null>(null);
+  const [draftLabel, setDraftLabel] = useState(sound.label);
+  const [draftUrl, setDraftUrl] = useState(sound.url);
+  const labelInputRef = useRef<HTMLInputElement>(null);
+  const urlInputRef = useRef<HTMLInputElement>(null);
 
-  const handleSave = () => {
-    const trimmed = draft.trim();
+  const handleSaveLabel = () => {
+    const trimmed = draftLabel.trim();
     if (trimmed && trimmed !== sound.label) {
       onUpdateLabel(sound.id, trimmed);
     } else {
-      setDraft(sound.label);
+      setDraftLabel(sound.label);
     }
-    setEditing(false);
+    setEditing(null);
+  };
+
+  const cleanUrl = (s: string) => s.trim().replace(/^["'"]+|["'"]+$/g, '');
+
+  const isValidUrl = (s: string) => {
+    const cleaned = cleanUrl(s);
+    try { const u = new URL(cleaned); return u.protocol === 'http:' || u.protocol === 'https:'; }
+    catch { return false; }
+  };
+
+  const handleSaveUrl = async () => {
+    const cleaned = cleanUrl(draftUrl);
+    if (!cleaned) { setDraftUrl(sound.url); setEditing(null); return; }
+
+    if (!isValidUrl(cleaned)) {
+      alert('Invalid URL — must start with http:// or https://');
+      return;
+    }
+
+    // Verify the URL is reachable
+    try {
+      const res = await fetch(cleaned, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+      if (!res.ok) {
+        alert(`URL not accessible (status ${res.status})`);
+        return;
+      }
+    } catch {
+      alert('Failed to reach URL');
+      return;
+    }
+
+    if (cleaned !== sound.url) {
+      onUpdateUrl(sound.id, cleaned);
+    }
+    setEditing(null);
   };
 
   const hasBlob = !!sound.dataUrl;
@@ -425,8 +468,69 @@ const SoundRow = memo(({
         </button>
       )}
 
-      {/* Download blob button — only if URL exists and not yet saved */}
-      {!hasBlob && sound.url && (isDownloading ? (
+      {/* Label */}
+      <div className="flex-1 min-w-0">
+        {editing === 'label' ? (
+          <input
+            ref={labelInputRef}
+            type="text"
+            value={draftLabel}
+            onChange={(e) => setDraftLabel(e.target.value)}
+            onBlur={handleSaveLabel}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveLabel();
+              if (e.key === 'Escape') { setDraftLabel(sound.label); setEditing(null); }
+            }}
+            className="w-full bg-zinc-600 rounded px-2 py-0.5 text-xs outline-none focus:ring-1 focus:ring-purple-500"
+            autoFocus
+          />
+        ) : (
+          <span
+            className="block text-xs truncate cursor-pointer hover:text-zinc-200"
+            onDoubleClick={() => setEditing('label')}
+            title="Double-click to edit label"
+          >
+            {sound.label}
+          </span>
+        )}
+      </div>
+
+      {/* URL badge — editable on double-click (only for remote URLs) */}
+      {isRemoteUrl(sound.url) && (
+        editing === 'url' ? (
+          <input
+            ref={urlInputRef}
+            type="text"
+            value={draftUrl}
+            onChange={(e) => setDraftUrl(e.target.value)}
+            onBlur={handleSaveUrl}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveUrl();
+              if (e.key === 'Escape') { setDraftUrl(sound.url); setEditing(null); }
+            }}
+            className="bg-zinc-600 rounded px-1.5 py-0.5 text-[10px] outline-none focus:ring-1 focus:ring-purple-500 w-40"
+            autoFocus
+          />
+        ) : (
+          <span
+            className="text-[10px] text-zinc-500 cursor-pointer hover:text-zinc-300"
+            onDoubleClick={() => { setDraftUrl(sound.url); setEditing('url'); }}
+            title={`Double-click to edit URL: ${sound.url}`}
+          >
+            url
+          </span>
+        )
+      )}
+
+      {/* Blob badge / saved indicator */}
+      {hasBlob && (
+        <span className="text-zinc-500" title="Saved in IndexedDB">
+          <SavedIcon />
+        </span>
+      )}
+
+      {/* Download blob button — only if remote URL exists and not yet saved */}
+      {!hasBlob && isRemoteUrl(sound.url) && (isDownloading ? (
         <button disabled className="p-1 rounded text-zinc-500" title="Downloading to IndexedDB...">
           <LoadingIcon />
         </button>
@@ -439,53 +543,6 @@ const SoundRow = memo(({
           <SaveIcon />
         </button>
       ))}
-
-      {/* Saved indicator — blob is in IndexedDB */}
-      {hasBlob && (
-        <span className="text-zinc-500" title="Saved in IndexedDB">
-          <SavedIcon />
-        </span>
-      )}
-
-      {/* Label */}
-      <div className="flex-1 min-w-0">
-        {editing ? (
-          <input
-            ref={inputRef}
-            type="text"
-            value={draft}
-            onChange={(e) => setDraft(e.target.value)}
-            onBlur={handleSave}
-            onKeyDown={(e) => {
-              if (e.key === 'Enter') handleSave();
-              if (e.key === 'Escape') {
-                setDraft(sound.label);
-                setEditing(false);
-              }
-            }}
-            className="w-full bg-zinc-600 rounded px-2 py-0.5 text-xs outline-none focus:ring-1 focus:ring-purple-500"
-            autoFocus
-          />
-        ) : (
-          <span
-            className="block text-xs truncate cursor-pointer hover:text-zinc-200"
-            onDoubleClick={() => setEditing(true)}
-            title="Double-click to edit"
-          >
-            {sound.label}
-          </span>
-        )}
-      </div>
-
-      {/* URL badge */}
-      {sound.url && (
-        <span className="text-[10px] text-zinc-500" title={sound.url}>url</span>
-      )}
-
-      {/* Blob badge */}
-      {hasBlob && (
-        <span className="text-[10px] text-zinc-500" title="Stored in IndexedDB">blob</span>
-      )}
 
       {/* Remove */}
       <button
@@ -678,6 +735,7 @@ const BleepSoundManagerInner = () => {
               onDownload={handleDownload}
               isDownloading={downloadingIds.has(sound.id)}
               onUpdateLabel={actions.updateBleepLabel}
+              onUpdateUrl={actions.updateBleepUrl}
               onRemove={actions.removeBleepSound}
               onPlay={handlePlay}
               onDecode={handleDecode}
