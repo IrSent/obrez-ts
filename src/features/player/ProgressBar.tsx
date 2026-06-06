@@ -1,13 +1,29 @@
-import { memo, useRef, useCallback, useEffect } from 'react';
+import { memo, useRef, useCallback, useEffect, useState } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
 const ProgressBarInner = () => {
-  const currentTime = usePlayerStore((state) => state.currentTime);
   const duration = usePlayerStore((state) => state.duration);
-  const { seekToTime, formatSeconds } = useMediaPlayerContext();
+  const { seekToTime, formatSeconds, getPlaybackTime } = useMediaPlayerContext();
   const isDraggingRef = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
+
+  // Read currentTime directly from playback, not from store — avoids setState
+  // in the hot path. Only update local state when the displayed seconds change.
+  const [currentTime, setCurrentTime] = useState(0);
+  const prevTimeRef = useRef(currentTime);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const t = getPlaybackTime();
+      // Only trigger re-render if the time actually changed (in whole seconds)
+      if (Math.floor(t) !== Math.floor(prevTimeRef.current)) {
+        prevTimeRef.current = t;
+        setCurrentTime(t);
+      }
+    }, 200);
+    return () => clearInterval(interval);
+  }, [getPlaybackTime]);
 
   const handleClick = (e: React.MouseEvent) => {
     if (!progressRef.current) return;

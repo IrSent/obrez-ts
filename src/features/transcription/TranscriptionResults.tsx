@@ -1,6 +1,24 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+
+/**
+ * Find the segment closest to a given time.
+ */
+function findClosestSegment(
+  segments: Array<[number, number, string]> | null,
+  time: number,
+): number | null {
+  if (!segments || segments.length === 0) return null;
+  let best = segments[0][0];
+  let bestDist = Math.abs(time - best);
+  for (const [start, end, text] of segments) {
+    if (time >= start && time <= end) return start;
+    const d = Math.abs(time - start);
+    if (d < bestDist) { bestDist = d; best = start; }
+  }
+  return best;
+}
 
 const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
@@ -8,11 +26,56 @@ const TranscriptionResultsInner = () => {
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
-  const { transcribe, seekToTime } = useMediaPlayerContext();
+  const { transcribe, seekToTime, getPlaybackTime } = useMediaPlayerContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+
+  // closestSegmentStart stored in a ref — updated via DOM, no React re-render
+  const closestRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    // Apply highlight to a segment — DOM-only, no React re-render
+    const applyHighlight = (closest: number | null, scroll: boolean) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-zinc-700');
+        el.classList.add('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+        if (scroll) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    };
+
+    const removeHighlight = (closest: number | null) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+        el.classList.add('bg-zinc-700');
+      }
+    };
+
+    // Initial highlight on mount / when transcriptionResults changes
+    const t = getPlaybackTime();
+    const newClosest = findClosestSegment(transcriptionResults, t);
+    closestRef.current = newClosest;
+    applyHighlight(newClosest, false);
+
+    const interval = setInterval(() => {
+      const t = getPlaybackTime();
+      const newClosest = findClosestSegment(transcriptionResults, t);
+      if (newClosest === closestRef.current) return;
+
+      removeHighlight(closestRef.current);
+      closestRef.current = newClosest;
+      applyHighlight(newClosest, true);
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [transcriptionResults, getPlaybackTime]);
 
   const handleTranscribe = async () => {
     setIsLoading(true);
@@ -83,6 +146,19 @@ const TranscriptionResultsInner = () => {
       <div className="flex items-center justify-between mb-3 gap-3">
         <h2 className="text-sm font-semibold text-zinc-300 shrink-0">Transcription Results</h2>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => {
+              document.getElementById(`seg-${closestRef.current}`)?.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }}
+            className="p-1 rounded hover:bg-zinc-600 text-zinc-400 hover:text-zinc-200 transition-colors shrink-0"
+            title="Scroll to current time segment"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+          </button>
           <input
             type="text"
             value={searchQuery}
@@ -118,7 +194,7 @@ const TranscriptionResultsInner = () => {
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
-        <div className="space-y-1">
+        <div className="space-y-1 max-h-[400px] overflow-y-auto pr-1">
           {transcriptionResults.map(([start, end, text]) => {
             const triggered = getTriggeredDictionaries(text);
 
@@ -132,8 +208,11 @@ const TranscriptionResultsInner = () => {
 
             const highlightedText = highlightSearch(text);
 
+            const hasMatches = triggered.length > 0;
+            const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
+
             return (
-              <div key={start} className={`flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${triggered.length > 0 ? 'ring-1 ring-red-800/50' : ''}`}>
+              <div key={start} className={rowClass} data-segment={start} id={`seg-${start}`}>
                 <span className="timestamp text-zinc-400 w-16">
                   {formatTime(start)}
                 </span>
