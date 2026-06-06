@@ -3,14 +3,13 @@ import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
 /**
- * Binary-search the segment containing *time* (segments are sorted by start).
+* Binary-search the segment containing *time* (segments are sorted by start).
  */
 function findClosestSegment(
   segments: Array<[number, number, string]> | null,
   time: number,
 ): number | null {
   if (!segments || segments.length === 0) return null;
-
   let lo = 0, hi = segments.length - 1;
   while (lo <= hi) {
     const mid = (lo + hi) >> 1;
@@ -145,6 +144,51 @@ const TranscriptionResultsInner = () => {
     return () => clearInterval(interval);
   }, [transcriptionResults, getPlaybackTime]);
 
+  // closestSegmentStart stored in a ref — updated via DOM, no React re-render
+  const closestRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    // Apply highlight to a segment — DOM-only, no React re-render
+    const applyHighlight = (closest: number | null, scroll: boolean) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-zinc-700');
+        el.classList.add('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+        if (scroll) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        }
+      }
+    };
+
+    const removeHighlight = (closest: number | null) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+        el.classList.add('bg-zinc-700');
+      }
+    };
+
+    // Initial highlight on mount / when transcriptionResults changes
+    const t = getPlaybackTime();
+    const newClosest = findClosestSegment(transcriptionResults, t);
+    closestRef.current = newClosest;
+    applyHighlight(newClosest, false);
+
+    const interval = setInterval(() => {
+      const t = getPlaybackTime();
+      const newClosest = findClosestSegment(transcriptionResults, t);
+      if (newClosest === closestRef.current) return;
+
+      removeHighlight(closestRef.current);
+      closestRef.current = newClosest;
+      applyHighlight(newClosest, true);
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [transcriptionResults, getPlaybackTime]);
+
   const handleTranscribe = async () => {
     setIsLoading(true);
     setError(null);
@@ -197,7 +241,7 @@ const TranscriptionResultsInner = () => {
         <h2 className="text-sm font-semibold text-zinc-300 shrink-0">Transcription Results</h2>
         <div className="flex items-center gap-2">
           <button
-            onClick={() => setAutoScroll((v) => !v)}
+           onClick={() => setAutoScroll((v) => !v)}
             className={`p-1 rounded transition-colors shrink-0 ${autoScroll ? 'text-purple-400 bg-purple-900/30' : 'text-zinc-400 hover:bg-zinc-600 hover:text-zinc-200'}`}
             title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
           >
@@ -261,6 +305,9 @@ const TranscriptionResultsInner = () => {
             }
 
             const highlightedText = highlightSearch(text);
+            const hasMatches = triggered.length > 0;
+            const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
+
             const hasMatches = triggered.length > 0;
             const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
 
