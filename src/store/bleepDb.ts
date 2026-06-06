@@ -90,6 +90,29 @@ export async function updateBleepLabel(id: string, label: string): Promise<void>
 }
 
 /**
+ * Update the url field of a record.
+ */
+export async function dbUpdateUrl(id: string, url: string): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const req = store.get(id);
+    req.onsuccess = () => {
+      const rec = req.result as DbRecord | undefined;
+      if (rec) {
+        rec.url = url;
+        store.put(rec);
+      }
+      resolve();
+    };
+    req.onerror = () => reject(req.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => { reject(tx.error); db.close(); };
+  });
+}
+
+/**
  * Upsert: save audio blob data for an existing record.
  * If the record doesn't exist, creates it with the given id.
  */

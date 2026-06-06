@@ -1,7 +1,7 @@
 import { create } from 'zustand';
 import type { PlayerState, Dictionary, BleepSound } from '../types';
 import { FastAhoScanner } from '../aho-corasick';
-import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData } from './bleepDb';
+import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData, dbUpdateUrl } from './bleepDb';
 
 /**
  * Convert IndexedDB records to BleepSound map.
@@ -148,24 +148,42 @@ export const playerActions = {
   addBleepSound: async (
     id: string,
     label: string,
-    url: string,
+    remoteUrl: string,
     fileData?: ArrayBuffer,
   ) => {
     // Persist to IndexedDB
     if (fileData) {
-      await putBleepRecord({ id, label, url, data: fileData });
+      // File sound — store blob; also preserve url if provided (e.g. from SQLite import)
+      await putBleepRecord({ id, label, url: remoteUrl || undefined, data: fileData });
     } else {
-      await putBleepRecord({ id, label, url });
+      // URL sound — store remote URL
+      await putBleepRecord({ id, label, url: remoteUrl });
     }
 
     // Update in-memory store
-    const sound: BleepSound = {
-      id,
-      label,
-      url,
-      dataUrl: fileData ? url : '',
-      audioBuffer: null,
-    };
+    let sound: BleepSound;
+    if (fileData) {
+      // Convert ArrayBuffer to base64 data URL for in-memory playback
+      const bytes = new Uint8Array(fileData);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const base64 = btoa(binary);
+      sound = {
+        id,
+        label,
+        url: remoteUrl || '',
+        dataUrl: `data:audio/*;base64,${base64}`,
+        audioBuffer: null,
+      };
+    } else {
+      sound = {
+        id,
+        label,
+        url: remoteUrl,
+        dataUrl: '',
+        audioBuffer: null,
+      };
+    }
     usePlayerStore.setState((state) => ({
       bleepSounds: { ...state.bleepSounds, [id]: sound },
     }));
@@ -186,6 +204,15 @@ export const playerActions = {
       const sound = state.bleepSounds[id];
       if (!sound) return {};
       return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, label } } };
+    });
+  },
+
+  updateBleepUrl: async (id: string, url: string) => {
+    await dbUpdateUrl(id, url);
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, url } } };
     });
   },
 
