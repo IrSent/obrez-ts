@@ -1,6 +1,76 @@
 import { create } from 'zustand';
-import type { PlayerState, Dictionary } from '../types';
+import type { PlayerState, Dictionary, BleepSound } from '../types';
 import { FastAhoScanner } from '../aho-corasick';
+
+const BLEEP_SOUNDS_KEY = 'obrez-bleep-sounds';
+
+/**
+ * Serializable shape stored in localStorage.
+ * Audio buffers are not persisted — they are re-hydrated on load.
+ */
+interface BleepSoundMeta {
+  id: string;
+  label: string;
+  source: 'file' | 'url';
+  sourceUrl: string;
+}
+
+function loadBleepMeta(): BleepSoundMeta[] {
+  try {
+    const raw = localStorage.getItem(BLEEP_SOUNDS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+function saveBleepMeta(meta: BleepSoundMeta[]): void {
+  localStorage.setItem(BLEEP_SOUNDS_KEY, JSON.stringify(meta));
+}
+
+function metaToSounds(metaList: BleepSoundMeta[]): Record<string, BleepSound> {
+  const result: Record<string, BleepSound> = {};
+  for (const m of metaList) {
+    result[m.id] = { ...m, audioBuffer: null };
+  }
+  return result;
+}
+
+function soundsToMeta(
+  sounds: Record<string, BleepSound>,
+): BleepSoundMeta[] {
+  return Object.values(sounds).map(({ id, label, source, sourceUrl }) => ({
+    id,
+    label,
+    source,
+    sourceUrl,
+  }));
+}
+
+/**
+ * Decode an audio source (base64 data or URL) into an AudioBuffer.
+ */
+async function decodeAudio(
+  source: 'file' | 'url',
+  sourceUrl: string,
+  context: AudioContext,
+): Promise<AudioBuffer> {
+  let arrayBuffer: ArrayBuffer;
+
+  if (source === 'file') {
+    // base64 → binary
+    const binary = atob(sourceUrl.split(',')[1] || sourceUrl);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    arrayBuffer = bytes.buffer;
+  } else {
+    const res = await fetch(sourceUrl);
+    if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+    arrayBuffer = await res.arrayBuffer();
+  }
+
+  return context.decodeAudioData(arrayBuffer);
+}
 
 export const usePlayerStore = create<PlayerState>((set) => ({
   // Playback state
@@ -23,6 +93,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   // Dictionary state
   loadedDictionaries: {},
   activeDictionaries: new Set(),
+
+  // Bleep sounds
+  bleepSounds: metaToSounds(loadBleepMeta()),
 }));
 
 /**
@@ -79,6 +152,45 @@ export const playerActions = {
 
   clearAllDictionaries: () => {
     usePlayerStore.setState({ loadedDictionaries: {}, activeDictionaries: new Set() });
+  },
+
+  // Bleep sound actions
+
+  addBleepSound: (id: string, label: string, source: 'file' | 'url', sourceUrl: string) => {
+    const sound: BleepSound = { id, label, source, sourceUrl, audioBuffer: null };
+    usePlayerStore.setState((state) => {
+      const newSounds = { ...state.bleepSounds, [id]: sound };
+      saveBleepMeta(soundsToMeta(newSounds));
+      return { bleepSounds: newSounds };
+    });
+  },
+
+  removeBleepSound: (id: string) => {
+    usePlayerStore.setState((state) => {
+      const newSounds = { ...state.bleepSounds };
+      delete newSounds[id];
+      saveBleepMeta(soundsToMeta(newSounds));
+      return { bleepSounds: newSounds };
+    });
+  },
+
+  updateBleepLabel: (id: string, label: string) => {
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      const updated = { ...sound, label };
+      const newSounds = { ...state.bleepSounds, [id]: updated };
+      saveBleepMeta(soundsToMeta(newSounds));
+      return { bleepSounds: newSounds };
+    });
+  },
+
+  setBleepBuffer: (id: string, buffer: AudioBuffer | null) => {
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, audioBuffer: buffer } } };
+    });
   },
 };
 

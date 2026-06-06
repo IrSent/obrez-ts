@@ -57,6 +57,26 @@ export interface CensoringEffect {
 export type TranscriptionResultTuple = [number, number, string];
 
 /**
+ * Represents a sound available for censoring (bleep / beep)
+ */
+export interface BleepSound {
+  /** Unique identifier */
+  id: string;
+
+  /** Display label */
+  label: string;
+
+  /** Where the sound came from */
+  source: 'file' | 'url';
+
+  /** For 'url': the remote URL. For 'file': base64-encoded audio data */
+  sourceUrl: string;
+
+  /** Decoded audio buffer — null while loading */
+  audioBuffer: AudioBuffer | null;
+}
+
+/**
  * Represents the state of the media player
  */
 export type PlayerState = {
@@ -98,4 +118,7 @@ export type PlayerState = {
 
   /** Active dictionary slugs */
   activeDictionaries: Set<string>;
+
+  /** Available bleep sounds for censoring */
+  bleepSounds: Record<string, BleepSound>;
 };
