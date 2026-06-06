@@ -1,4 +1,4 @@
-import { memo, useState, useRef, useCallback } from 'react';
+import { memo, useRef, useCallback, useEffect } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
@@ -6,7 +6,7 @@ const ProgressBarInner = () => {
   const currentTime = usePlayerStore((state) => state.currentTime);
   const duration = usePlayerStore((state) => state.duration);
   const { seekToTime, formatSeconds } = useMediaPlayerContext();
-  const [isDragging, setIsDragging] = useState(false);
+  const isDraggingRef = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
 
   const handleClick = (e: React.MouseEvent) => {
@@ -18,19 +18,31 @@ const ProgressBarInner = () => {
   };
 
   const handleDragStart = (e: React.MouseEvent) => {
-    setIsDragging(true);
+    e.preventDefault();
+    isDraggingRef.current = true;
     handleClick(e);
   };
 
-  const handleDragEnd = () => setIsDragging(false);
+  const handleDragEnd = useCallback(() => {
+    isDraggingRef.current = false;
+  }, []);
 
   const handleDrag = useCallback((e: MouseEvent) => {
-    if (!progressRef.current || !isDragging) return;
+    if (!progressRef.current || !isDraggingRef.current) return;
     const rect = progressRef.current.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
+    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const time = duration * percent;
     seekToTime(time);
-  }, [isDragging, duration, seekToTime]);
+  }, [duration, seekToTime]);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleDrag);
+    window.addEventListener('mouseup', handleDragEnd);
+    return () => {
+      window.removeEventListener('mousemove', handleDrag);
+      window.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [handleDrag, handleDragEnd]);
 
   const progress = duration > 0 ? Math.max(0, Math.min(100, (currentTime / duration) * 100)) : 0;
 
