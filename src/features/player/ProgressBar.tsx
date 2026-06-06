@@ -60,7 +60,7 @@ const ProgressBarInner = () => {
         aria-valuemax={duration}
         aria-label="Playback progress"
       >
-        <div className="w-full h-1 bg-zinc-700 rounded-full relative">
+        <div className="flex-1 h-1 bg-zinc-700 rounded-full relative mx-2">
           <div
             data-testid="progress-fill"
             style={{ width: `${progress}%` }}
