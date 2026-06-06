@@ -686,5 +686,6 @@ export function useMediaPlayer() {
     getVideoSink: () => videoSinkRef.current,
     getAudioSink: () => audioSinkRef.current,
     getAudioTrack: () => audioTrackRef.current,
+    getAudioContext: () => audioContextRef.current,
   };
 }
