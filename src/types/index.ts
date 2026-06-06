@@ -66,11 +66,11 @@ export interface BleepSound {
   /** Display label */
   label: string;
 
-  /** Where the sound came from */
-  source: 'file' | 'url';
+  /** Original URL — may be empty if sound was added from disk */
+  url: string;
 
-  /** For 'url': the remote URL. For 'file': base64-encoded audio data */
-  sourceUrl: string;
+  /** base64 data URL (data:audio/*;base64,...) — set when the blob is stored in IndexedDB */
+  dataUrl: string;
 
   /** Decoded audio buffer — null while loading */
   audioBuffer: AudioBuffer | null;
