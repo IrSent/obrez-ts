@@ -48,6 +48,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   fileName: '',
   error: null,
   warning: null,
+  isEnded: false,
 
   // Transcription state
   transcriptionResults: null,
@@ -89,6 +90,7 @@ export const playerActions = {
   setFileName: (fileName: string) => usePlayerStore.setState({ fileName }),
   setError: (error: string | null) => usePlayerStore.setState({ error }),
   setWarning: (warning: string | null) => usePlayerStore.setState({ warning }),
+  setIsEnded: (isEnded: boolean) => usePlayerStore.setState({ isEnded }),
   setTranscriptionResults: (results: Array<[number, number, string]> | null) =>
     usePlayerStore.setState({ transcriptionResults: results }),
   setTranscribing: (transcribing: boolean) =>

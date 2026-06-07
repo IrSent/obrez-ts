@@ -1,5 +1,5 @@
 import { memo, useRef, useCallback, useEffect, useState } from 'react';
-import { usePlayerStore } from '../../store/playerStore';
+import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
 const ProgressBarInner = () => {
@@ -30,35 +30,57 @@ const ProgressBarInner = () => {
     const rect = progressRef.current.getBoundingClientRect();
     const percent = (e.clientX - rect.left) / rect.width;
     const time = duration * percent;
-    seekToTime(time);
+    void seekToTime(time);
   };
 
   const handleDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
     isDraggingRef.current = true;
+    // Update visual immediately on drag start
     handleClick(e);
   };
 
-  const handleDragEnd = useCallback(() => {
+  const handleDragEnd = useCallback((e: MouseEvent) => {
+    if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
-  }, []);
 
-  const handleDrag = useCallback((e: MouseEvent) => {
+    // Seek to the final position only once on drag end
+    if (!progressRef.current) return;
+    const rect = progressRef.current.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const time = duration * percent;
+    void seekToTime(time);
+  }, [duration]);
+
+  // During drag: update visuals only — no seek, no iterator restart
+  const handleDragVisual = useCallback((e: MouseEvent) => {
     if (!progressRef.current || !isDraggingRef.current) return;
     const rect = progressRef.current.getBoundingClientRect();
     const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
     const time = duration * percent;
-    seekToTime(time);
-  }, [duration, seekToTime]);
+
+    // Update store time for display
+    playerActions.setCurrentTime(time);
+
+    // Update progress bar DOM directly
+    const cache = {
+      currentTimeEl: document.querySelector('[data-testid="current-time"]') as HTMLElement | null,
+      progressFill: document.querySelector('[data-testid="progress-fill"]') as HTMLElement | null,
+      progressThumb: document.querySelector('[data-testid="progress-thumb"]') as HTMLElement | null,
+    };
+    if (cache.currentTimeEl) cache.currentTimeEl.textContent = formatSeconds(time);
+    if (cache.progressFill) cache.progressFill.style.width = `${percent * 100}%`;
+    if (cache.progressThumb) cache.progressThumb.style.left = `${percent * 100}%`;
+  }, [duration, formatSeconds]);
 
   useEffect(() => {
-    window.addEventListener('mousemove', handleDrag);
+    window.addEventListener('mousemove', handleDragVisual);
     window.addEventListener('mouseup', handleDragEnd);
     return () => {
-      window.removeEventListener('mousemove', handleDrag);
+      window.removeEventListener('mousemove', handleDragVisual);
       window.removeEventListener('mouseup', handleDragEnd);
     };
-  }, [handleDrag, handleDragEnd]);
+  }, [handleDragVisual, handleDragEnd]);
 
   const progress = duration > 0 ? Math.max(0, Math.min(100, (currentTime / duration) * 100)) : 0;
 

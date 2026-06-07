@@ -1,6 +1,5 @@
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
-import { PlayerControls } from './features/player/PlayerControls';
 import { FileLoader } from './features/file-loader/FileLoader';
 import { DictionaryManager } from './features/dictionary/DictionaryManager';
 import { BleepSoundManager } from './features/bleep-sounds/BleepSoundManager';
@@ -23,10 +22,7 @@ export const App = () => {
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
               <div className="lg:col-span-2 space-y-6">
                 <FileLoader />
-                <div className="space-y-4">
-                  <PlayerDisplay />
-                  <PlayerControls />
-                </div>
+                <PlayerDisplay />
                 <TranscriptionResults />
               </div>
 
