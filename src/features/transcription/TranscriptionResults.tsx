@@ -254,10 +254,10 @@ const TranscriptionResultsInner = () => {
             className={`p-1 rounded transition-colors shrink-0 ${autoScroll ? 'text-purple-400 bg-purple-900/30' : 'text-zinc-400 hover:bg-zinc-600 hover:text-zinc-200'}`}
             title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
           >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <circle cx="12" cy="12" r="10" />
-              <line x1="12" y1="8" x2="12" y2="16" />
-              <line x1="8" y1="12" x2="16" y2="12" />
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="2" width="18" height="20" rx="3" />
+              <line x1="12" y1="10" x2="12" y2="16" />
+              <polyline points="9 13 12 16 15 13" />
             </svg>
           </button>
           <input
