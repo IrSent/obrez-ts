@@ -1,23 +1,153 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useRef, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+
+/**
+ * Binary-search the segment containing *time* (segments are sorted by start).
+ */
+function findClosestSegment(
+  segments: Array<[number, number, string]> | null,
+  time: number,
+): number | null {
+  if (!segments || segments.length === 0) return null;
+
+  let lo = 0, hi = segments.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (segments[mid][0] <= time) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  if (hi >= 0 && time <= segments[hi][1]) return segments[hi][0];
+
+  const a = segments[Math.max(0, hi)][0];
+  const b = segments[Math.min(segments.length - 1, lo)][0];
+  return Math.abs(time - a) <= Math.abs(time - b) ? a : b;
+}
+
+/**
+ * Parse "Stage — 1,234 / 5,678 (42%)" → { label, pct }
+ * For non-numeric stages like "Sending to server…" → { label, pct: null }.
+ */
+function parseStage(stage: string): { label: string; pct: number | null } {
+  const m = stage.match(/^(.+?)\s+—\s+\d+[,\d\s]*\s*\/\s*\d+[,\d\s]*\s*\((\d+)%\)$/);
+  if (m) return { label: m[1].trim(), pct: parseInt(m[2], 10) };
+  const m2 = stage.match(/^(.+?)\s+—\s+(\d+[,\d\s]*)\s*\/\s*(\d+[,\d\s]*)$/);
+  if (m2) {
+    const done = parseFloat(m2[2].replace(/,/g, ''));
+    const total = parseFloat(m2[3].replace(/,/g, ''));
+    return { label: m2[1].trim(), pct: Math.round((done / total) * 100) };
+  }
+  return { label: stage, pct: null };
+}
+
+function TranscribeProgressBar({ stage }: { stage: string }) {
+  const { label, pct } = parseStage(stage);
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-zinc-400">
+        <span>{label}</span>
+        {pct != null && <span>{pct}%</span>}
+      </div>
+      <div className="w-full bg-zinc-700 rounded-full h-1.5 overflow-hidden">
+        <div
+          className={`bg-purple-500 h-1.5 rounded-full transition-all duration-200 ${pct == null ? 'animate-pulse' : ''}`}
+          style={{ width: pct != null ? `${pct}%` : '100%' }}
+        />
+      </div>
+    </div>
+  );
+}
 
 const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const transcribing = usePlayerStore((state) => state.transcribing);
+  const transcribeStage = usePlayerStore((state) => state.transcribeStage);
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
-  const { transcribe, seekToTime } = useMediaPlayerContext();
+  const { transcribe, seekToTime, getPlaybackTime } = useMediaPlayerContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  // Dictionary matches — computed asynchronously after the first render
+  // so Aho-Corasick doesn't block the video rAF loop.
+  const [dictMatches, setDictMatches] = useState<Map<number, { slug: string; count: number }[]>>(null);
+  const matchesVersionRef = useRef(0);
+
+  useEffect(() => {
+    if (!transcriptionResults) {
+      setDictMatches(null);
+      return;
+    }
+
+    const version = ++matchesVersionRef.current;
+
+    setTimeout(() => {
+      if (version !== matchesVersionRef.current) return;
+
+      const map = new Map<number, { slug: string; count: number }[]>();
+      for (const [start, _end, text] of transcriptionResults) {
+        const triggered: { slug: string; count: number }[] = [];
+        for (const slug of activeDictionaries) {
+          const dict = loadedDictionaries[slug];
+          if (!dict) continue;
+          const matches = dict.scanner.findMatches(text.toLowerCase());
+          if (matches.length > 0) triggered.push({ slug, count: matches.length });
+        }
+        if (triggered.length > 0) map.set(start, triggered);
+      }
+      setDictMatches(map);
+    }, 0);
+  }, [transcriptionResults, activeDictionaries, loadedDictionaries]);
+
+  // closestSegmentStart — ref, no React re-render
+  const closestRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const applyHighlight = (closest: number | null, scroll: boolean) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-zinc-700');
+        el.classList.add('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+        if (scroll) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    };
+
+    const removeHighlight = (closest: number | null) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+        el.classList.add('bg-zinc-700');
+      }
+    };
+
+    const t = getPlaybackTime();
+    const newClosest = findClosestSegment(transcriptionResults, t);
+    closestRef.current = newClosest;
+    applyHighlight(newClosest, false);
+
+    const interval = setInterval(() => {
+      const t = getPlaybackTime();
+      const newClosest = findClosestSegment(transcriptionResults, t);
+      if (newClosest === closestRef.current) return;
+
+      removeHighlight(closestRef.current);
+      closestRef.current = newClosest;
+      applyHighlight(newClosest, autoScroll);
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [transcriptionResults, getPlaybackTime]);
 
   const handleTranscribe = async () => {
     setIsLoading(true);
     setError(null);
-
     try {
       await transcribe();
       setIsLoading(false);
@@ -33,29 +163,12 @@ const TranscriptionResultsInner = () => {
     document.getElementById('videoCanvas')?.scrollIntoView({ behavior: 'smooth' });
   };
 
-  // Форматируем время для отображения
   const formatTime = (seconds: number): string => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
   };
 
-  // Получаем slug-и активных словарей, в которых найдены совпадения в тексте
-  const getTriggeredDictionaries = (text: string): { slug: string; count: number }[] => {
-    const triggered: { slug: string; count: number }[] = [];
-    activeDictionaries.forEach((slug) => {
-      const dict = loadedDictionaries[slug];
-      if (!dict) return;
-
-      const matches = dict.scanner.findMatches(text.toLowerCase());
-      if (matches.length > 0) {
-        triggered.push({ slug, count: matches.length });
-      }
-    });
-    return triggered;
-  };
-
-  // Подсветка подстроки поиска в тексте — разбиваем на части и обёртываем совпадение в <mark>
   const highlightSearch = (text: string): Array<{ key: string; highlighted: boolean; content: string }> => {
     if (!searchQuery) {
       return [{ key: '', highlighted: false, content: text }];
@@ -83,6 +196,17 @@ const TranscriptionResultsInner = () => {
       <div className="flex items-center justify-between mb-3 gap-3">
         <h2 className="text-sm font-semibold text-zinc-300 shrink-0">Transcription Results</h2>
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setAutoScroll((v) => !v)}
+            className={`p-1 rounded transition-colors shrink-0 ${autoScroll ? 'text-purple-400 bg-purple-900/30' : 'text-zinc-400 hover:bg-zinc-600 hover:text-zinc-200'}`}
+            title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <circle cx="12" cy="12" r="10" />
+              <line x1="12" y1="8" x2="12" y2="16" />
+              <line x1="8" y1="12" x2="16" y2="12" />
+            </svg>
+          </button>
           <input
             type="text"
             value={searchQuery}
@@ -114,13 +238,19 @@ const TranscriptionResultsInner = () => {
       )}
 
       {transcribing ? (
-        <div className="text-xs text-zinc-500 py-2">Transcribing...</div>
+        <div className="text-xs py-2">
+          {transcribeStage ? (
+            <TranscribeProgressBar stage={transcribeStage} />
+          ) : (
+            <div className="text-zinc-500">Transcribing...</div>
+          )}
+        </div>
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
-        <div className="space-y-1">
+        <div className="space-y-1 max-h-[400px] overflow-y-auto pr-1">
           {transcriptionResults.map(([start, end, text]) => {
-            const triggered = getTriggeredDictionaries(text);
+            const triggered = dictMatches?.get(start) ?? [];
 
             if (showMatchesOnly && triggered.length === 0) {
               return null;
@@ -131,9 +261,11 @@ const TranscriptionResultsInner = () => {
             }
 
             const highlightedText = highlightSearch(text);
+            const hasMatches = triggered.length > 0;
+            const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
 
             return (
-              <div key={start} className={`flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${triggered.length > 0 ? 'ring-1 ring-red-800/50' : ''}`}>
+              <div key={start} className={rowClass} data-segment={start} id={`seg-${start}`}>
                 <span className="timestamp text-zinc-400 w-16">
                   {formatTime(start)}
                 </span>
@@ -150,10 +282,7 @@ const TranscriptionResultsInner = () => {
                 </span>
                 <div className="flex items-center gap-1">
                   {triggered.map(({ slug, count }) => (
-                    <span
-                      key={slug}
-                      className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded"
-                    >
+                    <span key={slug} className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded">
                       {slug} ×{count}
                     </span>
                   ))}

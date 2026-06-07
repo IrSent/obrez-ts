@@ -18,6 +18,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   // Transcription state
   transcriptionResults: null,
   transcribing: false,
+  transcribeStage: null,
   censoringEffects: null,
 
   // Dictionary state
@@ -42,6 +43,17 @@ export const playerActions = {
     usePlayerStore.setState({ transcriptionResults: results }),
   setTranscribing: (transcribing: boolean) =>
     usePlayerStore.setState({ transcribing }),
+  setTranscribeStage: (stage: string | null) =>
+    usePlayerStore.setState({ transcribeStage: stage }),
+  /**
+   * Set transcription results + transcribing=false + clear stage in one setState.
+   */
+  setTranscriptionDone: (results: Array<[number, number, string]>) =>
+    usePlayerStore.setState({
+      transcriptionResults: results,
+      transcribing: false,
+      transcribeStage: null,
+    }),
   setCensoringEffects: (effects: Array<{
     startTime: number;
     endTime: number;
