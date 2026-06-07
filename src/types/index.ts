@@ -90,6 +90,9 @@ export type PlayerState = {
   /** Whether transcription is currently processing on the backend */
   transcribing: boolean;
 
+  /** Current transcription stage for UI visualization */
+  transcribeStage: string | null;
+
   /** Censoring effects if available */
   censoringEffects: Array<CensoringEffect> | null;
 

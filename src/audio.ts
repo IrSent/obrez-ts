@@ -4,53 +4,78 @@ function writeString(view: DataView, offset: number, string: string) {
   }
 }
 
-export function audioBuffersToWav(chunks: AudioBuffer[], sampleRate: number): Blob {
-  // 1. Подсчитываем общую длину всех буферов
+function yieldToEventLoop(): Promise<void> {
+  return new Promise((r) => setTimeout(r, 0));
+}
+
+export type WavProgress = (stage: string, done: number, total: number) => void;
+
+export async function audioBuffersToWav(
+  chunks: AudioBuffer[],
+  sampleRate: number,
+  onProgress?: WavProgress,
+): Promise<Blob> {
   const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
   const numberOfChannels = chunks[0]?.numberOfChannels;
   console.log('numberOfChannels:', numberOfChannels);
   if (!numberOfChannels) {
     console.error("could not get numberOfChannels from the first chunk");
   }
-  // Создаем результирующий Float32Array
-  const result = new Float32Array(totalLength * numberOfChannels);
 
-  // 2. Копируем данные из всех чанков в один массив (Interleaved формат)
+  // --- Phase 1: interleave channels (yield every 5 chunks) ---
+  const result = new Float32Array(totalLength * numberOfChannels);
   let offset = 0;
-  for (const chunk of chunks) {
-    for (let i = 0; i < chunk.length; i++) {
-      for (let channel = 0; channel < numberOfChannels; channel++) {
-        result[offset++] = chunk.getChannelData(channel)[i];
+  let accumulated = 0;
+  const YIELD_EVERY = 10;
+
+  for (let ci = 0; ci < chunks.length; ci++) {
+    const chunk = chunks[ci];
+    const len = chunk.length;
+    for (let i = 0; i < len; i++) {
+      for (let ch = 0; ch < numberOfChannels; ch++) {
+        result[offset++] = chunk.getChannelData(ch)[i];
       }
+    }
+    accumulated += len;
+
+    if (onProgress) onProgress('Interleaving channels', accumulated, totalLength);
+
+    if ((ci + 1) % YIELD_EVERY === 0) {
+      await yieldToEventLoop();
     }
   }
 
-  // 3. Создаем WAV заголовок и конвертируем данные в Int16 (стандарт для WAV)
+  // --- Phase 2: Float32 → Int16 (batched) ---
   const buffer = new ArrayBuffer(44 + result.length * 2);
   const view = new DataView(buffer);
 
-  // Пишем заголовки RIFF/WAV
   writeString(view, 0, "RIFF");
   view.setUint32(4, 36 + result.length * 2, true);
   writeString(view, 8, "WAVE");
   writeString(view, 12, "fmt ");
   view.setUint32(16, 16, true);
-  view.setUint16(20, 1, true); // PCM формат
+  view.setUint16(20, 1, true);
   view.setUint16(22, numberOfChannels, true);
   view.setUint32(24, sampleRate, true);
   view.setUint32(28, sampleRate * numberOfChannels * 2, true);
   view.setUint16(32, numberOfChannels * 2, true);
-  view.setUint16(34, 16, true); // Bits per sample
+  view.setUint16(34, 16, true);
   writeString(view, 36, "data");
   view.setUint32(40, result.length * 2, true);
 
-  // Записываем PCM данные
+  const BATCH = 200000;
+  const totalBatches = Math.ceil(result.length / BATCH);
   let index = 44;
-  for (let i = 0; i < result.length; i++) {
-    // Ограничиваем амплитуду и конвертируем в 16-битное целое число
-    const s = Math.max(-1, Math.min(1, result[i]));
-    view.setInt16(index, s < 0 ? s * 0x8000 : s * 0x7fff, true);
-    index += 2;
+
+  for (let start = 0; start < result.length; start += BATCH) {
+    const end = Math.min(start + BATCH, result.length);
+    for (let i = start; i < end; i++) {
+      const s = result[i];
+      view.setInt16(index, s < 0 ? s * 0x8000 : Math.min(s, 1) * 0x7fff, true);
+      index += 2;
+    }
+    if (onProgress) onProgress('Converting to PCM', end, result.length);
+    if (end < result.length) await yieldToEventLoop();
   }
 
   return new Blob([buffer], { type: "audio/wav" });

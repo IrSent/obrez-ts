@@ -551,13 +551,23 @@ export function useMediaPlayer() {
     }
 
     try {
+      playerActions.setTranscribing(true);
+      playerActions.setTranscribeStage('Collecting audio data…');
+
       const chunks: AudioBuffer[] = [];
       for await (const { buffer } of audioSinkRef.current.buffers(0)) {
         chunks.push(buffer);
+        playerActions.setTranscribeStage(`Collecting audio data… (${chunks.length} chunks)`);
       }
 
+      playerActions.setTranscribeStage(`Encoding WAV — ${chunks.length} chunks to process`);
       const fileName = usePlayerStore.getState().fileName;
-      const audioBlob = audioBuffersToWav(chunks, audioTrackRef.current.sampleRate);
+      const audioBlob = await audioBuffersToWav(chunks, audioTrackRef.current.sampleRate, (stage, done, total) => {
+        const pct = Math.round((done / total) * 100);
+        playerActions.setTranscribeStage(`${stage} — ${done.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`);
+      });
+
+      playerActions.setTranscribeStage('Sending to server…');
       const formData = new FormData();
       formData.append('file', audioBlob, `${fileName}.wav`);
 
@@ -573,21 +583,35 @@ export function useMediaPlayer() {
 
       const { task_id } = await response.json();
 
+      playerActions.setTranscribeStage('Waiting for transcription…');
+
+      // Count seconds while waiting for the server
+      const waitStart = Date.now();
+      const waitInterval = setInterval(() => {
+        const secs = Math.floor((Date.now() - waitStart) / 1000);
+        playerActions.setTranscribeStage(`Waiting for server… (${secs}s)`);
+      }, 1000);
+
       const socket = new WebSocket(`ws://localhost:8686/ws/status/${task_id}`);
 
       await new Promise((resolve, reject) => {
         socket.onmessage = (event) => {
+          clearInterval(waitInterval);
           const msg = JSON.parse(event.data);
           if (msg.status === 'PROCESSING') {
             playerActions.setTranscribing(true);
+            playerActions.setTranscribeStage('Server is transcribing…');
           } else if (msg.status === 'DONE') {
-            playerActions.setTranscribing(false);
             const resultsInSeconds = msg.results.map(
               ([start, end, text]: [number, number, string]) => [start / 1000, end / 1000, text] as [number, number, string]
             );
-            playerActions.setTranscriptionResults(resultsInSeconds);
-            socket.close();
-            resolve(true);
+            // Defer to macrotask: rAF render loop gets to finish the current
+            // video frame before React starts the expensive transcription render.
+            setTimeout(() => {
+              playerActions.setTranscriptionDone(resultsInSeconds);
+              socket.close();
+              resolve(true);
+            }, 0);
           } else if (msg.status === 'ERROR') {
             playerActions.setTranscribing(false);
             reject(new Error(msg.results || 'Transcription error'));
@@ -595,6 +619,7 @@ export function useMediaPlayer() {
         };
 
         socket.onerror = (error) => {
+          clearInterval(waitInterval);
           playerActions.setTranscribing(false);
           console.error('WebSocket error:', error);
           playerActions.setError('Failed to connect to transcription server');
@@ -622,6 +647,11 @@ export function useMediaPlayer() {
 
     void videoFrameIteratorRef.current?.return();
     videoFrameIteratorRef.current = null;
+
+    // Clear canvas so the last frame doesn't linger
+    if (canvasRef.current && canvasCtxRef.current) {
+      canvasCtxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
 
     if (audioContextRef.current) {
       audioContextRef.current.close();
