@@ -106,6 +106,7 @@ const TranscriptionResultsInner = () => {
 
   // closestSegmentStart — ref, no React re-render
   const closestRef = useRef<number | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const applyHighlight = (closest: number | null, scroll: boolean) => {
@@ -114,7 +115,15 @@ const TranscriptionResultsInner = () => {
       if (el) {
         el.classList.remove('bg-zinc-700');
         el.classList.add('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
-        if (scroll) el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+        if (scroll && listRef.current) {
+          const container = listRef.current;
+          const containerRect = container.getBoundingClientRect();
+          const elRect = el.getBoundingClientRect();
+          // Center the element in the visible area of the container
+          const targetScroll = container.scrollTop + (elRect.top - containerRect.top) - (containerRect.height / 2) + (elRect.height / 2);
+          container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        }
       }
     };
 
@@ -143,7 +152,7 @@ const TranscriptionResultsInner = () => {
     }, 500);
 
     return () => clearInterval(interval);
-  }, [transcriptionResults, getPlaybackTime]);
+  }, [transcriptionResults, getPlaybackTime, autoScroll]);
 
   const handleTranscribe = async () => {
     setIsLoading(true);
@@ -248,7 +257,7 @@ const TranscriptionResultsInner = () => {
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
-        <div className="space-y-1 max-h-[400px] overflow-y-auto pr-1">
+        <div ref={listRef} className="space-y-1 max-h-[400px] overflow-y-auto pr-1">
           {transcriptionResults.map(([start, end, text]) => {
             const triggered = dictMatches?.get(start) ?? [];
 
