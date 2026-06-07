@@ -195,9 +195,10 @@ export function useMediaPlayer() {
       if (state.fileName) {
         const playbackTime = utilsRef.current.getPlaybackTime();
 
-        if (playbackTime >= state.duration) {
+        if (state.duration > 0 && playbackTime >= state.duration) {
           pauseRef.current();
           playbackTimeAtStartRef.current = state.duration;
+          playerActions.setIsEnded(true);
         }
 
         if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
@@ -355,6 +356,7 @@ export function useMediaPlayer() {
       const currentDuration = usePlayerStore.getState().duration;
       if (utilsRef.current.getPlaybackTime() === currentDuration) {
         playbackTimeAtStartRef.current = 0;
+        playerActions.setIsEnded(false);
         await startVideoIteratorRef.current();
       }
 
@@ -393,6 +395,7 @@ export function useMediaPlayer() {
 
     playbackTimeAtStartRef.current = seconds;
     playerActions.setCurrentTime(seconds);
+    playerActions.setIsEnded(false);
 
     await startVideoIteratorRef.current();
 
@@ -447,6 +450,7 @@ export function useMediaPlayer() {
 
       playerActions.setError(null);
       playerActions.setWarning(null);
+      playerActions.setIsEnded(false);
       playerActions.setFileName(resource instanceof File ? resource.name : resource);
       playerActions.setTranscriptionResults(null);
       playerActions.setTranscribing(false);
@@ -636,6 +640,7 @@ export function useMediaPlayer() {
 
   const cleanup = useCallback(() => {
     playerActions.setTranscribing(false);
+    playerActions.setIsEnded(false);
     stopRenderLoop();
     stopTranscribeFocus();
     void audioBufferIteratorRef.current?.return();

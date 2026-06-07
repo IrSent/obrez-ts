@@ -104,6 +104,9 @@ export type PlayerState = {
   /** Warning message if any */
   warning: string | null;
 
+  /** Whether playback has reached the end */
+  isEnded: boolean;
+
   /** Transcription results if available */
   transcriptionResults: Array<TranscriptionResultTuple> | null;
 
