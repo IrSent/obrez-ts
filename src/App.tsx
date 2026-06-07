@@ -24,9 +24,7 @@ export const App = () => {
               <div className="lg:col-span-2 space-y-6">
                 <FileLoader />
                 <div className="space-y-4">
-                  <h2 className="text-sm font-semibold text-zinc-300">Player</h2>
                   <PlayerDisplay />
-                  <h2 className="text-sm font-semibold text-zinc-300">Controls</h2>
                   <PlayerControls />
                 </div>
                 <TranscriptionResults />
