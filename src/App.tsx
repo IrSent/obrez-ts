@@ -3,6 +3,7 @@ import { PlayerDisplay } from './features/player/PlayerDisplay';
 import { PlayerControls } from './features/player/PlayerControls';
 import { FileLoader } from './features/file-loader/FileLoader';
 import { DictionaryManager } from './features/dictionary/DictionaryManager';
+import { BleepSoundManager } from './features/bleep-sounds/BleepSoundManager';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 
 export const App = () => {
@@ -31,8 +32,9 @@ export const App = () => {
                 <TranscriptionResults />
               </div>
 
-              <div className="lg:col-span-1">
+              <div className="lg:col-span-1 space-y-6">
                 <DictionaryManager />
+                <BleepSoundManager />
               </div>
             </div>
           </div>

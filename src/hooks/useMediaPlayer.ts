@@ -367,12 +367,13 @@ export function useMediaPlayer() {
         void runAudioIterator();
       }
 
-      startTranscribeFocus();
+      // startTranscribeFocus removed — closestSegmentStart in TranscriptionResults
+      // handles highlighting via DOM without re-rendering React
     } catch (error) {
       console.error('Playback error:', error);
       playerActions.setError(error instanceof Error ? error.message : 'Playback failed');
     }
-  }, [audioSinkRef, runAudioIterator, startTranscribeFocus]);
+  }, [audioSinkRef, runAudioIterator]);
 
   const togglePlay = useCallback(() => {
     const isPlaying = usePlayerStore.getState().isPlaying;
@@ -686,5 +687,6 @@ export function useMediaPlayer() {
     getVideoSink: () => videoSinkRef.current,
     getAudioSink: () => audioSinkRef.current,
     getAudioTrack: () => audioTrackRef.current,
+    getAudioContext: () => audioContextRef.current,
   };
 }

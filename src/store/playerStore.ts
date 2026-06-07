@@ -1,6 +1,40 @@
 import { create } from 'zustand';
-import type { PlayerState, Dictionary } from '../types';
+import type { PlayerState, Dictionary, BleepSound } from '../types';
 import { FastAhoScanner } from '../aho-corasick';
+import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData, dbUpdateUrl } from './bleepDb';
+
+/**
+ * Convert IndexedDB records to BleepSound map.
+ */
+function recordsToSounds(records: Awaited<ReturnType<typeof getAllBleepRecords>>): Record<string, BleepSound> {
+  const result: Record<string, BleepSound> = {};
+  for (const rec of records) {
+    if (rec.data) {
+      // Convert ArrayBuffer to base64 data URL for in-memory use
+      const bytes = new Uint8Array(rec.data);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const base64 = btoa(binary);
+      result[rec.id] = {
+        id: rec.id,
+        label: rec.label,
+        url: rec.url ?? '',
+        dataUrl: `data:audio/*;base64,${base64}`,
+        audioBuffer: null,
+      };
+    } else {
+      // No blob data — rely on URL
+      result[rec.id] = {
+        id: rec.id,
+        label: rec.label,
+        url: rec.url ?? '',
+        dataUrl: '',
+        audioBuffer: null,
+      };
+    }
+  }
+  return result;
+}
 
 export const usePlayerStore = create<PlayerState>((set) => ({
   // Playback state
@@ -24,7 +58,23 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   // Dictionary state
   loadedDictionaries: {},
   activeDictionaries: new Set(),
+
+  // Bleep sounds — loaded async from IndexedDB
+  bleepSounds: {},
 }));
+
+/**
+ * Hydrate bleep sounds from IndexedDB on app start.
+ */
+export async function hydrateBleepSounds(): Promise<void> {
+  try {
+    const records = await getAllBleepRecords();
+    const sounds = recordsToSounds(records);
+    usePlayerStore.setState({ bleepSounds: sounds });
+  } catch (err) {
+    console.error('Failed to hydrate bleep sounds:', err);
+  }
+}
 
 /**
  * Actions — вне состояния, чтобы их пересоздание не триггерило
@@ -91,6 +141,121 @@ export const playerActions = {
 
   clearAllDictionaries: () => {
     usePlayerStore.setState({ loadedDictionaries: {}, activeDictionaries: new Set() });
+  },
+
+  // Bleep sound actions
+
+  addBleepSound: async (
+    id: string,
+    label: string,
+    remoteUrl: string,
+    fileData?: ArrayBuffer,
+  ) => {
+    // Persist to IndexedDB
+    if (fileData) {
+      // File sound — store blob; also preserve url if provided (e.g. from SQLite import)
+      await putBleepRecord({ id, label, url: remoteUrl || undefined, data: fileData });
+    } else {
+      // URL sound — store remote URL
+      await putBleepRecord({ id, label, url: remoteUrl });
+    }
+
+    // Update in-memory store
+    let sound: BleepSound;
+    if (fileData) {
+      // Convert ArrayBuffer to base64 data URL for in-memory playback
+      const bytes = new Uint8Array(fileData);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const base64 = btoa(binary);
+      sound = {
+        id,
+        label,
+        url: remoteUrl || '',
+        dataUrl: `data:audio/*;base64,${base64}`,
+        audioBuffer: null,
+      };
+    } else {
+      sound = {
+        id,
+        label,
+        url: remoteUrl,
+        dataUrl: '',
+        audioBuffer: null,
+      };
+    }
+    usePlayerStore.setState((state) => ({
+      bleepSounds: { ...state.bleepSounds, [id]: sound },
+    }));
+  },
+
+  removeBleepSound: async (id: string) => {
+    await deleteBleepRecord(id);
+    usePlayerStore.setState((state) => {
+      const newSounds = { ...state.bleepSounds };
+      delete newSounds[id];
+      return { bleepSounds: newSounds };
+    });
+  },
+
+  updateBleepLabel: async (id: string, label: string) => {
+    await dbUpdateLabel(id, label);
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, label } } };
+    });
+  },
+
+  updateBleepUrl: async (id: string, url: string) => {
+    await dbUpdateUrl(id, url);
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, url } } };
+    });
+  },
+
+  setBleepBuffer: (id: string, buffer: AudioBuffer | null) => {
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, audioBuffer: buffer } } };
+    });
+  },
+
+  /**
+   * Download a sound's audio blob from its URL and store it in IndexedDB.
+   * After this, the sound no longer depends on the remote URL.
+   */
+  downloadUrlSound: async (id: string) => {
+    const sound = usePlayerStore.getState().bleepSounds[id];
+    if (!sound || !sound.url) return;
+
+    try {
+      const res = await fetch(sound.url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const arrayBuffer = await res.arrayBuffer();
+
+      // Store blob in IndexedDB
+      await upsertBleepData(id, arrayBuffer);
+
+      // Convert to base64 data URL for in-memory use
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const base64 = btoa(binary);
+      const dataUrl = `data:audio/*;base64,${base64}`;
+
+      usePlayerStore.setState((state) => {
+        const s = state.bleepSounds[id];
+        if (!s) return {};
+        return { bleepSounds: { ...state.bleepSounds, [id]: { ...s, dataUrl } } };
+      });
+    } catch (err) {
+      console.error(`Failed to download sound ${id}:`, err);
+      throw err;
+    }
   },
 };
 

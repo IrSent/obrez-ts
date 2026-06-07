@@ -53,6 +53,13 @@ const server = serve({
       });
     }
 
+    // Serve WASM files
+    if (url.pathname.endsWith('.wasm')) {
+      return new Response(Bun.file(join(__dirname, 'dist', url.pathname)), {
+        headers: { 'Content-Type': 'application/wasm' },
+      });
+    }
+
     // Serve other static assets from dist
     return new Response(Bun.file(join(__dirname, 'dist', url.pathname)), {
       headers: { 'Content-Type': 'application/octet-stream' },
