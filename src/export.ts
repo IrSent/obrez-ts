@@ -283,23 +283,20 @@ export async function exportCensoredVideo(
     // Build a Float32Array with the right number of frames, planar layout
     const data = new Float32Array(numChannels * framesNeeded);
 
+    // Determine how many censored frames we can copy for this sample
+    const available = Math.max(0, totalCensoredFrames - censoredFrameCursor);
+    const copyLen = Math.min(available, framesNeeded);
+
     for (let ch = 0; ch < numChannels; ch++) {
       const dstOffset = ch * framesNeeded;
       const src = censoredChannelData[ch];
-
-      if (censoredFrameCursor < totalCensoredFrames) {
-        // We have censored audio — copy it
-        const available = totalCensoredFrames - censoredFrameCursor;
-        const copyLen = Math.min(available, framesNeeded);
-        // planar: source is contiguous, destination stride = numChannels
-        for (let i = 0; i < copyLen; i++) {
-          data[dstOffset + i] = src[censoredFrameCursor + i];
-        }
-        censoredFrameCursor += copyLen;
-        // If fewer frames available than needed, rest stays zero (silence)
+      for (let i = 0; i < copyLen; i++) {
+        data[dstOffset + i] = src[censoredFrameCursor + i];
       }
-      // else: all censored audio exhausted — data stays zero (silence)
+      // rest stays zero (silence) if copyLen < framesNeeded
     }
+
+    censoredFrameCursor += copyLen;
 
     _sample.close();
 
