@@ -46,9 +46,10 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
 
   const [selectedSoundId, setSelectedSoundId] = useState('');
   const [volume, setVolume] = useState(1);
+  const [volumeMode, setVolumeMode] = useState<'manual' | 'auto'>('manual');
   const [playbackRate, setPlaybackRate] = useState(1);
-  const [dampenOriginal, setDampenOriginal] = useState(false);
-  const [dampenAmount, setDampenAmount] = useState(0.7);
+  const [dampenOriginal, setDampenOriginal] = useState(true);
+  const [dampenAmount, setDampenAmount] = useState(1);
   const [dampenType, setDampenType] = useState<'sharp' | 'parabolic'>('sharp');
 
   const handleSubmit = () => {
@@ -59,6 +60,7 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
       segmentStart,
       soundId: selectedSoundId,
       volume,
+      volumeMode,
       playbackRate,
       dampenOriginal,
       dampenAmount,
@@ -114,15 +116,46 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
             <label className="text-xs text-zinc-400">Effect Volume</label>
             <span className="text-xs text-zinc-300">{Math.round(volume * 100)}%</span>
           </div>
-          <input
-            type="range"
-            min="0"
-            max="1"
-            step="0.05"
-            value={volume}
-            onChange={(e) => setVolume(Number(e.target.value))}
-            className="w-full accent-purple-500"
-          />
+          <div className="flex gap-2 mb-2">
+            <button
+              type="button"
+              onClick={() => setVolumeMode('manual')}
+              className={`flex-1 text-xs py-1 rounded transition-colors ${
+                volumeMode === 'manual'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+              }`}
+            >
+              Manual
+            </button>
+            <button
+              type="button"
+              onClick={() => setVolumeMode('auto')}
+              className={`flex-1 text-xs py-1 rounded transition-colors ${
+                volumeMode === 'auto'
+                  ? 'bg-purple-600 text-white'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+              }`}
+            >
+              Match Word Gain
+            </button>
+          </div>
+          {volumeMode === 'manual' && (
+            <input
+              type="range"
+              min="0"
+              max="1"
+              step="0.05"
+              value={volume}
+              onChange={(e) => setVolume(Number(e.target.value))}
+              className="w-full accent-purple-500"
+            />
+          )}
+          {volumeMode === 'auto' && (
+            <p className="text-[10px] text-zinc-500">
+              Bleep volume will match the loudness of the word being censored.
+            </p>
+          )}
         </div>
 
         {/* Playback rate */}
@@ -231,11 +264,15 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
 const EffectBadge = memo(({ effect, onRemove }: { effect: SoundCensoringEffect; onRemove: (id: string) => void }) => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
   const soundLabel = bleepSounds[effect.soundId]?.label ?? 'Unknown';
+  const volMode = (effect as any).volumeMode ?? 'manual';
 
   return (
     <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-900/30 text-blue-400 rounded group">
       <BoltIcon />
       <span className="truncate max-w-[80px]">{soundLabel}</span>
+      {volMode === 'auto' && (
+        <span className="text-[9px] text-blue-300" title="Auto volume">auto</span>
+      )}
       <button
         onClick={(e) => { e.stopPropagation(); onRemove(effect.id); }}
         className="hidden group-hover:flex items-center text-red-400 hover:text-red-300"
