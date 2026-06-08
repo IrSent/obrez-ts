@@ -4,6 +4,7 @@ import { FileLoader } from './features/file-loader/FileLoader';
 import { DictionaryManager } from './features/dictionary/DictionaryManager';
 import { BleepSoundManager } from './features/bleep-sounds/BleepSoundManager';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
+import { ExportButton } from './features/export/ExportModal';
 
 export const App = () => {
   return (
@@ -27,6 +28,7 @@ export const App = () => {
               </div>
 
               <div className="lg:col-span-1 space-y-6">
+                <ExportButton />
                 <DictionaryManager />
                 <BleepSoundManager />
               </div>

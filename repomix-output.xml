@@ -1,0 +1,4616 @@
+This file is a merged representation of the entire codebase, combined into a single document by Repomix.
+
+<file_summary>
+This section contains a summary of this file.
+
+<purpose>
+This file contains a packed representation of the entire repository's contents.
+It is designed to be easily consumable by AI systems for analysis, code review,
+or other automated processes.
+</purpose>
+
+<file_format>
+The content is organized as follows:
+1. This summary section
+2. Repository information
+3. Directory structure
+4. Repository files (if enabled)
+5. Multiple file entries, each consisting of:
+  - File path as an attribute
+  - Full contents of the file
+</file_format>
+
+<usage_guidelines>
+- This file should be treated as read-only. Any changes should be made to the
+  original repository files, not this packed version.
+- When processing this file, use the file path to distinguish
+  between different files in the repository.
+- Be aware that this file may contain sensitive information. Handle it with
+  the same level of security as you would the original repository.
+</usage_guidelines>
+
+<notes>
+- Some files may have been excluded based on .gitignore rules and Repomix's configuration
+- Binary files are not included in this packed representation. Please refer to the Repository Structure section for a complete list of file paths, including binary files
+- Files matching patterns in .gitignore are excluded
+- Files matching default ignore patterns are excluded
+- Files are sorted by Git change count (files with more changes are at the bottom)
+</notes>
+
+</file_summary>
+
+<directory_structure>
+e2e/
+  playback.spec.ts
+  ru-profanity.mp4
+  valid-with-aac.mp4
+public/
+  assets/
+    favicon.ico
+    obrez-logo.png
+    pause-icon.svg
+    play-icon.svg
+    replay-icon.svg
+    volume-0-icon.svg
+    volume-1-icon.svg
+    volume-2-icon.svg
+    volume-off-icon.svg
+    volume-x-icon.svg
+src/
+  context/
+    MediaPlayerContext.tsx
+  features/
+    bleep-sounds/
+      BleepSoundManager.tsx
+    dictionary/
+      DictionaryManager.tsx
+    export/
+      ExportModal.tsx
+    file-loader/
+      FileLoader.tsx
+    player/
+      PlayerDisplay.tsx
+      ProgressBar.tsx
+      VolumeControls.tsx
+    transcription/
+      EffectModal.tsx
+      TranscriptionResults.tsx
+  hooks/
+    useMediaPlayer.ts
+  store/
+    bleepDb.ts
+    playerStore.ts
+  types/
+    index.ts
+  aho-corasick.ts
+  App.tsx
+  audio.ts
+  export.ts
+  index.css
+  index.html
+  main.tsx
+  search.worker.ts
+.gitignore
+build.ts
+package.json
+playwright.config.ts
+README.md
+server.ts
+tailwind.config.js
+tsconfig.json
+</directory_structure>
+
+<files>
+This section contains the contents of the repository's files.
+
+<file path="src/features/export/ExportModal.tsx">
+import { memo, useState, useCallback, useEffect } from 'react';
+import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+import { exportCensoredVideo } from '../../export';
+
+/**
+ * Icon: close (X)
+ */
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 6 6 18M6 6l12 12" />
+  </svg>
+);
+
+/**
+ * Icon: download
+ */
+const DownloadIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+    <polyline points="7 10 12 15 17 10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </svg>
+);
+
+/**
+ * Progress bar component reused from TranscriptionResults styling.
+ */
+function ExportProgressBar({ stage }: { stage: string }) {
+  const pctMatch = stage.match(/\((\d+)%\)/) || stage.match(/(\d+)%$/);
+  const pct = pctMatch ? parseInt(pctMatch[1], 10) : null;
+  const label = pct != null ? stage.replace(/\s*\(?\d+%?\)?\s*$/, '').trim() : stage;
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-zinc-400">
+        <span>{label}</span>
+        {pct != null && <span>{pct}%</span>}
+      </div>
+      <div className="w-full bg-zinc-700 rounded-full h-1.5 overflow-hidden">
+        <div
+          className={`bg-green-500 h-1.5 rounded-full transition-all duration-200 ${pct == null ? 'animate-pulse' : ''}`}
+          style={{ width: pct != null ? `${pct}%` : '100%' }}
+        />
+      </div>
+    </div>
+  );
+}
+
+interface ExportModalProps {
+  onClose: () => void;
+}
+
+const ExportModal = memo(({ onClose }: ExportModalProps) => {
+  const actions = usePlayerActions();
+  const { getInput, getAudioTrack, getAudioSink } = useMediaPlayerContext();
+
+  const [format, setFormat] = useState<'mp4' | 'webm'>('mp4');
+  const [exporting, setExporting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  const handleExport = useCallback(async () => {
+    setExporting(true);
+    setError(null);
+    actions.setExporting(true);
+
+    try {
+      const input = getInput();
+      const audioTrack = getAudioTrack();
+      const audioSink = getAudioSink();
+
+      if (!input) throw new Error('No media loaded');
+      if (!audioTrack) throw new Error('No audio track found');
+      if (!audioSink) throw new Error('Audio sink not available');
+
+      const buffer = await exportCensoredVideo(input, audioTrack, audioSink, format);
+
+      // Create download link
+      const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm';
+      const extension = format === 'mp4' ? 'mp4' : 'webm';
+      const fileName = usePlayerStore.getState().fileName || 'video';
+      const baseName = fileName.replace(/\.[^.]+$/, '');
+
+      const blob = new Blob([buffer], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${baseName}_censored.${extension}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+
+      actions.setExportDone();
+      onClose();
+    } catch (err) {
+      const message = err instanceof Error ? err.message : 'Export failed';
+      setError(message);
+      console.error('Export error:', err);
+      actions.setExportDone();
+    } finally {
+      setExporting(false);
+    }
+  }, [format, getInput, getAudioTrack, getAudioSink, actions, onClose]);
+
+  const exportStage = usePlayerStore((state) => state.exportStage);
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div className="bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <DownloadIcon /> Export Video
+          </h3>
+          <button onClick={onClose} className="p-1 rounded hover:bg-zinc-600 text-zinc-400">
+            <CloseIcon />
+          </button>
+        </div>
+
+        {/* Format selection */}
+        <div>
+          <label className="block text-xs text-zinc-400 mb-1.5">Format</label>
+          <div className="flex gap-2">
+            {(['mp4', 'webm'] as const).map((f) => (
+              <button
+                key={f}
+                type="button"
+                onClick={() => setFormat(f)}
+                className={`flex-1 text-xs py-2 rounded font-semibold uppercase transition-colors ${
+                  format === f
+                    ? 'bg-green-600 text-white'
+                    : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                }`}
+              >
+                .{f}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Error message */}
+        {error && (
+          <div className="text-xs text-red-400 p-2 bg-red-900/20 rounded">
+            {error}
+          </div>
+        )}
+
+        {/* Progress */}
+        {exporting && exportStage && (
+          <ExportProgressBar stage={exportStage} />
+        )}
+
+        {/* Export button */}
+        <button
+          onClick={handleExport}
+          disabled={exporting}
+          className="w-full bg-green-600 hover:bg-green-500 text-white text-xs font-semibold py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+        >
+          <DownloadIcon />
+          {exporting ? 'Exporting...' : 'Export'}
+        </button>
+
+        {/* Note */}
+        <p className="text-[10px] text-zinc-500 leading-relaxed">
+          Video will be re-encoded with censored audio (bleep sounds + dampening).
+          Original video quality may vary depending on browser codec support.
+        </p>
+      </div>
+    </div>
+  );
+});
+
+/**
+ * Export button shown in the sidebar.
+ */
+const ExportButtonInner = () => {
+  const fileName = usePlayerStore((state) => state.fileName);
+  const censoringEffects = usePlayerStore((state) => state.censoringEffects);
+  const [showModal, setShowModal] = useState(false);
+
+  // Only show when there's a file and censoring effects
+  const canExport = fileName && censoringEffects.length > 0;
+
+  if (!canExport) return null;
+
+  return (
+    <>
+      <div className="bg-zinc-800 rounded-lg p-4">
+        <button
+          onClick={() => setShowModal(true)}
+          className="w-full flex items-center justify-center gap-2 text-xs font-semibold bg-green-700 hover:bg-green-600 text-white px-3 py-2 rounded transition-colors"
+        >
+          <DownloadIcon />
+          Export Censored Video
+        </button>
+      </div>
+      {showModal && <ExportModal onClose={() => setShowModal(false)} />}
+    </>
+  );
+};
+
+export const ExportButton = memo(ExportButtonInner);
+</file>
+
+<file path="src/export.ts">
+import {
+  Conversion,
+  BufferTarget,
+  Mp4OutputFormat,
+  WebMOutputFormat,
+  AudioSample,
+  getEncodableVideoCodecs,
+  canEncodeAudio,
+  Output,
+} from 'mediabunny';
+import { usePlayerStore, playerActions } from './store/playerStore';
+import type { SoundCensoringEffect } from './types';
+import type {
+  Input,
+  InputAudioTrack,
+  AudioBufferSink,
+  VideoCodec,
+  AudioCodec,
+} from 'mediabunny';
+
+/**
+ * Decode a bleep sound's dataUrl or url into an AudioBuffer.
+ */
+async function ensureBleepDecoded(
+  soundId: string,
+  ctx: OfflineAudioContext,
+): Promise<AudioBuffer | null> {
+  const sound = usePlayerStore.getState().bleepSounds[soundId];
+  if (!sound) return null;
+  if (sound.audioBuffer) return sound.audioBuffer;
+
+  if (sound.dataUrl) {
+    try {
+      const resp = await fetch(sound.dataUrl);
+      const arrayBuffer = await resp.arrayBuffer();
+      return ctx.decodeAudioData(arrayBuffer);
+    } catch { /* fall through */ }
+  }
+
+  if (sound.url) {
+    try {
+      const resp = await fetch(sound.url);
+      const arrayBuffer = await resp.arrayBuffer();
+      return ctx.decodeAudioData(arrayBuffer);
+    } catch { /* fall through */ }
+  }
+
+  return null;
+}
+
+function getSoundEffects(): SoundCensoringEffect[] {
+  const raw = usePlayerStore.getState().censoringEffects ?? [];
+  return raw
+    .filter((e: typeof raw[number]): e is SoundCensoringEffect => e.effectType === 'sound')
+    .sort((a, b) => a.segmentStart - b.segmentStart);
+}
+
+/**
+ * Render censored audio using OfflineAudioContext.
+ * Each chunk is played sequentially through the gain node.
+ */
+async function renderCensoredAudio(
+  audioChunks: AudioBuffer[],
+  sampleRate: number,
+  numChannels: number,
+): Promise<AudioBuffer> {
+  const totalFrames = audioChunks.reduce((sum, buf) => sum + buf.length, 0);
+  const ctx = new OfflineAudioContext(numChannels, totalFrames, sampleRate);
+
+  // Gain node for dampening
+  const gainNode = ctx.createGain();
+  gainNode.gain.value = 1;
+  gainNode.connect(ctx.destination);
+
+  const soundEffects = getSoundEffects();
+  const transcriptionResults = usePlayerStore.getState().transcriptionResults;
+
+  // Apply dampening
+  for (const effect of soundEffects) {
+    if (!effect.dampenOriginal) continue;
+
+    const seg = transcriptionResults?.find(
+      ([s]: number) => Math.abs(s - effect.segmentStart) < 0.01,
+    );
+    if (!seg) continue;
+
+    const [start, end] = seg;
+    const segmentDuration = end - start;
+    const effectDuration = segmentDuration / effect.playbackRate;
+    const dampenedGain = 1 - effect.dampenAmount;
+
+    if (effect.dampenType === 'sharp') {
+      gainNode.gain.setValueAtTime(dampenedGain, start);
+      gainNode.gain.setValueAtTime(1, start + effectDuration);
+    } else {
+      const tau = effectDuration * 0.3;
+      gainNode.gain.setValueAtTime(dampenedGain, start);
+      gainNode.gain.setTargetAtTime(1, start + tau, tau);
+      gainNode.gain.setValueAtTime(1, start + effectDuration);
+    }
+  }
+
+  // Play each chunk sequentially through the gain node
+  let cumulativeTime = 0;
+  for (const chunk of audioChunks) {
+    const source = ctx.createBufferSource();
+    source.buffer = chunk;
+    source.connect(gainNode);
+    source.start(cumulativeTime);
+    cumulativeTime += chunk.length / sampleRate;
+  }
+
+  // Schedule bleep sounds
+  for (const effect of soundEffects) {
+    const seg = transcriptionResults?.find(
+      ([s]: number) => Math.abs(s - effect.segmentStart) < 0.01,
+    );
+    if (!seg) continue;
+
+    const bleepBuffer = await ensureBleepDecoded(effect.soundId, ctx);
+    if (!bleepBuffer) continue;
+
+    const bleepSource = ctx.createBufferSource();
+    bleepSource.buffer = bleepBuffer;
+    bleepSource.playbackRate.value = effect.playbackRate;
+
+    const bleepGain = ctx.createGain();
+    bleepGain.gain.value = effect.volume ** 2;
+    bleepSource.connect(bleepGain);
+    bleepGain.connect(ctx.destination);
+    bleepSource.start(effect.segmentStart);
+  }
+
+  return ctx.startRendering();
+}
+
+/**
+ * Pick best video codec for the output format.
+ */
+async function pickVideoCodec(format: 'mp4' | 'webm'): Promise<VideoCodec> {
+  const preferred: VideoCodec[] = format === 'mp4' ? ['avc', 'hevc'] : ['vp9', 'vp8'];
+  const encodable = await getEncodableVideoCodecs(preferred);
+  if (encodable.length > 0) return encodable[0];
+
+  const allEncodable = await getEncodableVideoCodecs(['avc', 'hevc', 'vp9', 'vp8', 'av1']);
+  if (format === 'mp4') {
+    return (allEncodable.find((c) => c === 'avc' || c === 'hevc') ?? allEncodable[0]) as VideoCodec;
+  }
+  return (allEncodable.find((c) => c === 'vp9' || c === 'vp8') as VideoCodec) ?? (allEncodable[0] as VideoCodec);
+}
+
+/**
+ * Pick best audio codec for the output format.
+ */
+async function pickAudioCodec(format: 'mp4' | 'webm'): Promise<AudioCodec> {
+  if (format === 'mp4') {
+    if (await canEncodeAudio('aac')) return 'aac';
+    if (await canEncodeAudio('mp3')) return 'mp3';
+  } else {
+    if (await canEncodeAudio('opus')) return 'opus';
+    if (await canEncodeAudio('vorbis')) return 'vorbis';
+  }
+  throw new Error(`No suitable audio codec found for ${format} output`);
+}
+
+/**
+ * Main export function.
+ *
+ * Strategy: Use Conversion API with audio process callback.
+ * Pre-build censored AudioSamples from the OfflineAudioContext output,
+ * then consume them one-by-one in the callback.
+ */
+export async function exportCensoredVideo(
+  input: Input,
+  audioTrack: InputAudioTrack,
+  audioSink: AudioBufferSink,
+  outputFormat: 'mp4' | 'webm',
+): Promise<ArrayBuffer> {
+  // Guard against double export
+  if (usePlayerStore.getState().exporting) {
+    throw new Error('Export already in progress');
+  }
+
+  const numChannels = audioTrack.numberOfChannels;
+  const sampleRate = audioTrack.sampleRate;
+
+  // --- Phase 1: Collect original audio buffers ---
+  playerActions.setExportStage('Collecting audio...');
+
+  const audioBuffers: AudioBuffer[] = [];
+  for await (const { buffer } of audioSink.buffers(0)) {
+    audioBuffers.push(buffer);
+  }
+
+  // --- Phase 2: Decode bleep sounds ---
+  playerActions.setExportStage('Preparing bleep sounds...');
+
+  const decodeCtx = new OfflineAudioContext(1, 1, sampleRate);
+  const soundEffects = getSoundEffects();
+
+  for (const effect of soundEffects) {
+    const buf = await ensureBleepDecoded(effect.soundId, decodeCtx);
+    if (!buf) {
+      throw new Error(`Bleep sound "${effect.soundId}" could not be decoded`);
+    }
+  }
+  await decodeCtx.startRendering();
+
+  // --- Phase 3: Render censored audio ---
+  playerActions.setExportStage('Rendering censored audio...');
+
+  const censoredBuffer = await renderCensoredAudio(
+    audioBuffers,
+    sampleRate,
+    numChannels,
+  );
+
+  // Free original audio buffers
+  audioBuffers.length = 0;
+
+  // --- Phase 4: Choose codecs ---
+  const vidCodec = await pickVideoCodec(outputFormat);
+  const audCodec = await pickAudioCodec(outputFormat);
+
+  // --- Phase 5: Convert with mediabunny ---
+  const format = outputFormat === 'mp4'
+    ? new Mp4OutputFormat()
+    : new WebMOutputFormat();
+
+  const bufferTarget = new BufferTarget();
+  const output = new Output({ format, target: bufferTarget });
+
+ // Pre-build censored AudioSamples using mediabunny's own factory
+  const censoredSamples = AudioSample.fromAudioBuffer(censoredBuffer, 0);
+  const censoredState = { sampleIndex: 0, framesRemaining: 0, currentSample: null as AudioSample | null };
+
+  const audioProcess = async (sample: AudioSample) => {
+    const framesNeeded = sample.numberOfFrames;
+
+    try {
+      const resultSamples: AudioSample[] = [];
+
+      while (framesNeeded > 0) {
+        if (!censoredState.currentSample || censoredState.framesRemaining <= 0) {
+          if (censoredState.sampleIndex >= censoredSamples.length) {
+            // Out of censored audio — drop remaining
+            return null;
+          }
+          censoredState.currentSample = censoredSamples[censoredState.sampleIndex++];
+          censoredState.framesRemaining = censoredState.currentSample.numberOfFrames;
+        }
+
+        const takeFrames = Math.min(framesNeeded, censoredState.framesRemaining);
+        const remaining = censoredState.currentSample.numberOfFrames - censoredState.framesRemaining;
+
+        // Create a slice of the current censored sample
+        const sliced = new AudioBuffer({
+          sampleRate: censoredState.currentSample.sampleRate,
+          length: takeFrames,
+          numberOfChannels: censoredState.currentSample.numberOfChannels,
+        });
+
+        for (let ch = 0; ch < sliced.numberOfChannels; ch++) {
+          const srcData = censoredState.currentSample.toAudioBuffer().getChannelData(ch);
+          const dstData = sliced.getChannelData(ch);
+          for (let i = 0; i < takeFrames; i++) {
+            dstData[i] = srcData[remaining + i];
+          }
+        }
+
+        const audioData = sliced.toAudioData(Math.floor(sample.timestamp * sample.sampleRate));
+        resultSamples.push(new AudioSample(audioData));
+
+        censoredState.framesRemaining -= takeFrames;
+        framesNeeded -= takeFrames;
+      }
+
+      return resultSamples.length === 1 ? resultSamples[0] : resultSamples;
+    } catch (err) {
+      console.error('Failed to create censored AudioSample:', err);
+      return null;
+    }
+  };
+
+  try {
+    const conversion = await Conversion.init({
+      input,
+      output,
+      tracks: 'primary',
+      video: { codec: vidCodec },
+      audio: {
+        codec: audCodec,
+        process: audioProcess,
+      },
+    });
+
+    if (!conversion.isValid) {
+      console.warn('Conversion discarded tracks:', conversion.discardedTracks);
+    }
+
+    conversion.onProgress = (progress) => {
+      const pct = Math.round(progress * 100);
+      playerActions.setExportStage(`Encoding... ${pct}%`);
+    };
+
+    await conversion.execute();
+
+    const result = bufferTarget.buffer;
+    if (!result) {
+      throw new Error('Export completed but no output buffer was produced');
+    }
+    return result;
+  } catch (err) {
+    await output.cancel();
+    throw err;
+  }
+}
+</file>
+
+<file path="e2e/playback.spec.ts">
+import { test, expect } from '@playwright/test';
+
+test.describe('Video Playback', () => {
+  test('loads a video file, plays it, and time progresses', async ({ page }) => {
+    await page.goto('/');
+
+    // 1. Click "Load File" to open the file picker
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await page.getByRole('button', { name: 'Load File' }).click();
+    const fileChooser = await fileChooserPromise;
+
+    // 2. Set the test video file
+    await fileChooser.setFiles('e2e/valid-with-aac.mp4');
+
+    // 3. Wait for the duration to be computed (right-side time display changes from "00:00")
+    const durationText = page.locator('span.text-xs.opacity-60').last();
+    await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
+
+    // 4. Record the initial current time (left-side time display)
+    const currentTimeBefore = page.locator('span.text-xs.opacity-60').first();
+    const initialTime = await currentTimeBefore.textContent();
+    expect(initialTime).not.toBeNull();
+
+    // 5. Click the Play button
+    await page.getByRole('button', { name: /play/i }).click();
+
+    // 6. Wait a few seconds for playback to progress
+    await page.waitForTimeout(5000);
+
+    // 7. Check that current time has changed (playback is progressing)
+    const currentTimeAfter = await page.locator('span.text-xs.opacity-60').first().textContent();
+    expect(currentTimeAfter).not.toBe(initialTime);
+
+    // 8. Verify no error is shown
+    const errorText = page.locator('text=Playback failed');
+    await expect(errorText).not.toBeVisible();
+  });
+
+  test('pauses playback and time stops changing', async ({ page }) => {
+    await page.goto('/');
+
+    const fileChooserPromise = page.waitForEvent('filechooser');
+    await page.getByRole('button', { name: 'Load File' }).click();
+    const fileChooser = await fileChooserPromise;
+    await fileChooser.setFiles('e2e/valid-with-aac.mp4');
+
+    // Wait for file to load
+    const durationText = page.locator('span.text-xs.opacity-60').last();
+    await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
+
+    // Play
+    await page.getByRole('button', { name: /play/i }).click();
+    await page.waitForTimeout(3000);
+
+    const currentTimeWhilePlaying = await page.locator('span.text-xs.opacity-60').first().textContent();
+
+    // Pause
+    await page.getByRole('button', { name: /pause/i }).click();
+    await page.waitForTimeout(3000);
+
+    const currentTimeAfterPause = await page.locator('span.text-xs.opacity-60').first().textContent();
+
+    // Time should be the same or very close (one extra frame may render before pause takes effect)
+    // Compare seconds without milliseconds to allow for small tolerance
+    const secondsWhilePlaying = currentTimeWhilePlaying?.match(/(\d{2}:\d{2})/)?.[1];
+    const secondsAfterPause = currentTimeAfterPause?.match(/(\d{2}:\d{2})/)?.[1];
+    expect(secondsAfterPause).toBe(secondsWhilePlaying);
+  });
+});
+</file>
+
+<file path="public/assets/replay-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <polyline points="1 4 1 10 7 10"></polyline>
+  <path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"></path>
+</svg>
+</file>
+
+<file path="src/context/MediaPlayerContext.tsx">
+import { createContext, useContext, ReactNode } from 'react';
+import { useMediaPlayer } from '../hooks/useMediaPlayer';
+
+const MediaPlayerContext = createContext<ReturnType<typeof useMediaPlayer> | null>(null);
+
+export const MediaPlayerProvider = ({ children }: { children: ReactNode }) => {
+  const mediaPlayer = useMediaPlayer();
+  return (
+    <MediaPlayerContext.Provider value={mediaPlayer}>
+      {children}
+    </MediaPlayerContext.Provider>
+  );
+};
+
+export const useMediaPlayerContext = () => {
+  const context = useContext(MediaPlayerContext);
+  if (!context) {
+    throw new Error('useMediaPlayerContext must be used within MediaPlayerProvider');
+  }
+  return context;
+};
+</file>
+
+<file path="src/features/transcription/EffectModal.tsx">
+import { memo, useState } from 'react';
+import { usePlayerStore } from '../../store/playerStore';
+import type { SoundCensoringEffect } from '../../types';
+
+/**
+ * Icon: close (X)
+ */
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 6 6 18M6 6l12 12" />
+  </svg>
+);
+
+/**
+ * Icon: lightning bolt (effect)
+ */
+const BoltIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
+  </svg>
+);
+
+/**
+ * Icon: trash (remove)
+ */
+const TrashIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="3,6 5,6 21,6" />
+    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+  </svg>
+);
+
+interface EffectModalProps {
+  segmentStart: number;
+  onClose: () => void;
+  onAdd: (effect: SoundCensoringEffect) => void;
+}
+
+function uid(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) => {
+  const bleepSounds = usePlayerStore((state) => state.bleepSounds);
+  const soundList = Object.values(bleepSounds);
+
+  const [selectedSoundId, setSelectedSoundId] = useState('');
+  const [volume, setVolume] = useState(1);
+  const [playbackRate, setPlaybackRate] = useState(1);
+  const [dampenOriginal, setDampenOriginal] = useState(false);
+  const [dampenAmount, setDampenAmount] = useState(0.7);
+  const [dampenType, setDampenType] = useState<'sharp' | 'parabolic'>('sharp');
+
+  const handleSubmit = () => {
+    if (!selectedSoundId) return;
+
+    const effect: SoundCensoringEffect = {
+      id: uid(),
+      segmentStart,
+      soundId: selectedSoundId,
+      volume,
+      playbackRate,
+      dampenOriginal,
+      dampenAmount,
+      dampenType,
+      effectType: 'sound',
+    };
+    onAdd(effect);
+    onClose();
+  };
+
+  const canSubmit = selectedSoundId !== '';
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        className="bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4"
+      >
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold flex items-center gap-2">
+            <BoltIcon /> Add Effect
+          </h3>
+          <button onClick={onClose} className="p-1 rounded hover:bg-zinc-600 text-zinc-400">
+            <CloseIcon />
+          </button>
+        </div>
+
+        {/* Sound selection */}
+        <div>
+          <label className="block text-xs text-zinc-400 mb-1">Bleep Sound</label>
+          <select
+            value={selectedSoundId}
+            onChange={(e) => setSelectedSoundId(e.target.value)}
+            className="w-full bg-zinc-700 rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-purple-500"
+          >
+            <option value="">— Select a sound —</option>
+            {soundList.map((s) => (
+              <option key={s.id} value={s.id}>
+                {s.label}
+              </option>
+            ))}
+          </select>
+          {soundList.length === 0 && (
+            <p className="text-[11px] text-zinc-500 mt-1">
+              No bleep sounds available. Add sounds in the Bleep Sounds section first.
+            </p>
+          )}
+        </div>
+
+        {/* Volume */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-xs text-zinc-400">Effect Volume</label>
+            <span className="text-xs text-zinc-300">{Math.round(volume * 100)}%</span>
+          </div>
+          <input
+            type="range"
+            min="0"
+            max="1"
+            step="0.05"
+            value={volume}
+            onChange={(e) => setVolume(Number(e.target.value))}
+            className="w-full accent-purple-500"
+          />
+        </div>
+
+        {/* Playback rate */}
+        <div>
+          <div className="flex items-center justify-between mb-1">
+            <label className="text-xs text-zinc-400">Playback Speed</label>
+            <span className="text-xs text-zinc-300">{playbackRate.toFixed(2)}x</span>
+          </div>
+          <input
+            type="range"
+            min="0.25"
+            max="4"
+            step="0.25"
+            value={playbackRate}
+            onChange={(e) => setPlaybackRate(Number(e.target.value))}
+            className="w-full accent-purple-500"
+          />
+        </div>
+
+        {/* Dampen original */}
+        <div className="space-y-3">
+          <div className="flex items-center gap-2">
+            <input
+              type="checkbox"
+              id="dampenToggle"
+              checked={dampenOriginal}
+              onChange={(e) => setDampenOriginal(e.target.checked)}
+              className="accent-purple-500"
+            />
+            <label htmlFor="dampenToggle" className="text-xs text-zinc-300">
+              Dampen original audio
+            </label>
+          </div>
+
+          {dampenOriginal && (
+            <>
+              {/* Dampen amount */}
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <label className="text-xs text-zinc-400">Dampen Amount</label>
+                  <span className="text-xs text-zinc-300">{Math.round(dampenAmount * 100)}%</span>
+                </div>
+                <input
+                  type="range"
+                  min="50"
+                  max="100"
+                  step="5"
+                  value={dampenAmount * 100}
+                  onChange={(e) => setDampenAmount(Number(e.target.value) / 100)}
+                  className="w-full accent-purple-500"
+                />
+                <div className="flex justify-between text-[10px] text-zinc-500">
+                  <span>50%</span>
+                  <span>100% (mute)</span>
+                </div>
+              </div>
+
+              {/* Dampen type */}
+              <div>
+                <label className="block text-xs text-zinc-400 mb-1.5">Dampen Type</label>
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setDampenType('sharp')}
+                    className={`flex-1 text-xs py-1.5 rounded transition-colors ${
+                      dampenType === 'sharp'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                    }`}
+                  >
+                    Sharp
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setDampenType('parabolic')}
+                    className={`flex-1 text-xs py-1.5 rounded transition-colors ${
+                      dampenType === 'parabolic'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                    }`}
+                  >
+                    Parabolic
+                  </button>
+                </div>
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Submit */}
+        <button
+          onClick={handleSubmit}
+          disabled={!canSubmit}
+          className="w-full bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          Add Effect
+        </button>
+      </div>
+    </div>
+  );
+});
+
+/**
+ * Badge shown on a transcription row that has a sound effect attached.
+ */
+const EffectBadge = memo(({ effect, onRemove }: { effect: SoundCensoringEffect; onRemove: (id: string) => void }) => {
+  const bleepSounds = usePlayerStore((state) => state.bleepSounds);
+  const soundLabel = bleepSounds[effect.soundId]?.label ?? 'Unknown';
+
+  return (
+    <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-900/30 text-blue-400 rounded group">
+      <BoltIcon />
+      <span className="truncate max-w-[80px]">{soundLabel}</span>
+      <button
+        onClick={(e) => { e.stopPropagation(); onRemove(effect.id); }}
+        className="hidden group-hover:flex items-center text-red-400 hover:text-red-300"
+        title="Remove effect"
+      >
+        <TrashIcon />
+      </button>
+    </span>
+  );
+});
+
+export { EffectModal, EffectBadge };
+</file>
+
+<file path="src/aho-corasick.ts">
+export class FastAhoScanner {
+    private nodesData: DataView;
+    private edges: Record<number, Record<string, number>>;
+    private readonly NODE_SIZE = 8;
+
+    constructor(buffer: ArrayBuffer) {
+        const view = new DataView(buffer);
+        const nodeCount = view.getUint32(0, true);
+
+        // Срез данных узлов
+        this.nodesData = new DataView(buffer, 4, nodeCount * this.NODE_SIZE);
+
+        // Читаем JSON переходов, который мы приклеили в конец файла
+        const jsonOffset = 4 + (nodeCount * this.NODE_SIZE);
+        const decoder = new TextDecoder();
+        this.edges = JSON.parse(decoder.decode(new Uint8Array(buffer, jsonOffset)));
+    }
+
+    private getFailId(nodeId: number): number {
+        return this.nodesData.getInt32(nodeId * this.NODE_SIZE, true);
+    }
+
+    private isTerminal(nodeId: number): boolean {
+        return this.nodesData.getUint8(nodeId * this.NODE_SIZE + 4) === 1;
+    }
+
+    public findMatches(text: string) {
+        let currentState = 0;
+        const results = [];
+
+        for (let i = 0; i < text.length; i++) {
+            const char = text[i];
+
+            // Ищем переход в объекте edges
+            while (currentState !== 0 && !(this.edges[currentState]?.[char])) {
+                currentState = this.getFailId(currentState);
+            }
+
+            currentState = this.edges[currentState]?.[char] ?? 0;
+
+            if (this.isTerminal(currentState)) {
+                results.push({ index: i, state: currentState });
+            }
+        }
+        return results;
+    }
+}
+</file>
+
+<file path="src/index.css">
+@import "tailwindcss";
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+@theme {
+  --color-zinc-750: oklch(32.2% 0.0095 285.919);
+  --font-sans: 'Rubik Variable', sans-serif;
+}
+
+.active-playing {
+  background-color: rgba(168, 85, 247, 0.15) !important;
+  border-left: 4px solid #a855f7;
+}
+
+.row-highlight {
+  background-color: rgba(59, 130, 246, 0.2) !important;
+  outline: 2px solid #3b82f6;
+}
+</file>
+
+<file path="src/main.tsx">
+import { createRoot } from 'react-dom/client';
+import { App } from './App';
+
+const root = document.getElementById('root')!;
+createRoot(root).render(<App />);
+</file>
+
+<file path="src/search.worker.ts">
+import { FastAhoScanner } from "./aho-corasick.ts";
+
+let scanner: FastAhoScanner | null = null;
+
+self.onmessage = (e) => {
+  const { type, payload } = e.data;
+
+  if (type === "INIT_DICT") {
+    // payload — это массив строк/словарь
+    scanner = new FastAhoScanner(payload);
+  }
+
+  if (type === "SEARCH" && scanner) {
+    const { text, timestamp } = payload;
+    const hits = scanner.findMatches(text);
+    if (hits.length > 0) {
+      self.postMessage({ type: "RESULTS", payload: { hits, timestamp } });
+    }
+  }
+};
+</file>
+
+<file path="playwright.config.ts">
+import { defineConfig } from '@playwright/test';
+
+export default defineConfig({
+  testDir: './e2e',
+  timeout: 60_000,
+  expect: {
+    timeout: 15_000,
+  },
+  fullyParallel: true,
+  forbidOnly: !!process.env.CI,
+  retries: process.env.CI ? 2 : 0,
+  workers: 1,
+
+  use: {
+    baseURL: 'http://localhost:3000',
+    trace: 'on-first-retry',
+    screenshot: 'only-on-failure',
+  },
+
+  projects: [
+    {
+      name: 'chromium',
+      use: { browserName: 'chromium' },
+    },
+  ],
+});
+</file>
+
+<file path="tailwind.config.js">
+export default {
+    content: ["./src/**/*.{ts,js}", "./public/index.html"],
+    theme: { extend: {} },
+    plugins: [],
+}
+</file>
+
+<file path="public/assets/pause-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><g fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2"><rect width="4" height="16" x="14" y="4" rx="1"/><rect width="4" height="16" x="6" y="4" rx="1"/></g></svg>
+</file>
+
+<file path="public/assets/play-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="m6 3l14 9l-14 9z"/></svg>
+</file>
+
+<file path="public/assets/volume-1-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298zM16 9a5 5 0 0 1 0 6"/></svg>
+</file>
+
+<file path="public/assets/volume-off-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 9a5 5 0 0 1 .95 2.293m2.414-5.657a9 9 0 0 1 1.889 9.96M2 2l20 20M7 7l-.587.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298V11M9.828 4.172A.686.686 0 0 1 11 4.657v.686"/></svg>
+</file>
+
+<file path="src/store/bleepDb.ts">
+/**
+ * IndexedDB-backed storage for bleep sounds.
+ *
+ * Schema:
+ *   DB name: obrez-bleep
+ *   Store: sounds  (keyPath: id)
+ *   Record: { id, label, source: 'file' | 'url', sourceUrl?: string, data?: ArrayBuffer }
+ *
+ *   - 'url' sounds store the remote URL in sourceUrl.
+ *   - 'file' sounds store the raw audio bytes in data (no base64, no localStorage bloat).
+ */
+
+const DB_NAME = 'obrez-bleep';
+const DB_VERSION = 1;
+const STORE = 'sounds';
+
+interface DbRecord {
+  id: string;
+  label: string;
+  url?: string;
+  data?: ArrayBuffer;
+}
+
+function openDb(): Promise<IDBDatabase> {
+  return new Promise((resolve, reject) => {
+    const req = indexedDB.open(DB_NAME, DB_VERSION);
+    req.onerror = () => reject(req.error);
+    req.onsuccess = () => resolve(req.result);
+    req.onupgradeneeded = (evt: any) => {
+      const db = evt.target.result as IDBDatabase;
+      if (!db.objectStoreNames.contains(STORE)) {
+        db.createObjectStore(STORE, { keyPath: 'id' });
+      }
+    };
+  });
+}
+
+export async function getAllBleepRecords(): Promise<DbRecord[]> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readonly');
+    const store = tx.objectStore(STORE);
+    const req = store.getAll();
+    req.onsuccess = () => resolve(req.result);
+    req.onerror = () => reject(req.error);
+    db.close();
+  });
+}
+
+export async function putBleepRecord(rec: DbRecord): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    store.put(rec);
+    tx.oncomplete = () => { resolve(); db.close(); };
+    tx.onerror = () => { reject(tx.error); db.close(); };
+  });
+}
+
+export async function deleteBleepRecord(id: string): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    store.delete(id);
+    tx.oncomplete = () => { resolve(); db.close(); };
+    tx.onerror = () => { reject(tx.error); db.close(); };
+  });
+}
+
+export async function updateBleepLabel(id: string, label: string): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const req = store.get(id);
+    req.onsuccess = () => {
+      const rec = req.result as DbRecord;
+      if (rec) {
+        rec.label = label;
+        store.put(rec);
+      }
+      resolve();
+    };
+    req.onerror = () => reject(req.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => { reject(tx.error); db.close(); };
+  });
+}
+
+/**
+ * Update the url field of a record.
+ */
+export async function dbUpdateUrl(id: string, url: string): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const req = store.get(id);
+    req.onsuccess = () => {
+      const rec = req.result as DbRecord | undefined;
+      if (rec) {
+        rec.url = url;
+        store.put(rec);
+      }
+      resolve();
+    };
+    req.onerror = () => reject(req.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => { reject(tx.error); db.close(); };
+  });
+}
+
+/**
+ * Upsert: save audio blob data for an existing record.
+ * If the record doesn't exist, creates it with the given id.
+ */
+export async function upsertBleepData(id: string, data: ArrayBuffer): Promise<void> {
+  const db = await openDb();
+  return new Promise((resolve, reject) => {
+    const tx = db.transaction(STORE, 'readwrite');
+    const store = tx.objectStore(STORE);
+    const req = store.get(id);
+    req.onsuccess = () => {
+      const rec = req.result as DbRecord | undefined;
+      if (rec) {
+        rec.data = data;
+        store.put(rec);
+      } else {
+        store.add({ id, label: '', data });
+      }
+      resolve();
+    };
+    req.onerror = () => reject(req.error);
+    tx.oncomplete = () => db.close();
+    tx.onerror = () => { reject(tx.error); db.close(); };
+  });
+}
+</file>
+
+<file path="src/audio.ts">
+function writeString(view: DataView, offset: number, string: string) {
+  for (let i = 0; i < string.length; i++) {
+    view.setUint8(offset + i, string.charCodeAt(i));
+  }
+}
+
+function yieldToEventLoop(): Promise<void> {
+  return new Promise((r) => setTimeout(r, 0));
+}
+
+export type WavProgress = (stage: string, done: number, total: number) => void;
+
+export async function audioBuffersToWav(
+  chunks: AudioBuffer[],
+  sampleRate: number,
+  onProgress?: WavProgress,
+): Promise<Blob> {
+  const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
+  const numberOfChannels = chunks[0]?.numberOfChannels;
+  console.log('numberOfChannels:', numberOfChannels);
+  if (!numberOfChannels) {
+    console.error("could not get numberOfChannels from the first chunk");
+  }
+
+  // --- Phase 1: interleave channels (yield every 5 chunks) ---
+  const result = new Float32Array(totalLength * numberOfChannels);
+  let offset = 0;
+  let accumulated = 0;
+  const YIELD_EVERY = 10;
+
+  for (let ci = 0; ci < chunks.length; ci++) {
+    const chunk = chunks[ci];
+    const len = chunk.length;
+    for (let i = 0; i < len; i++) {
+      for (let ch = 0; ch < numberOfChannels; ch++) {
+        result[offset++] = chunk.getChannelData(ch)[i];
+      }
+    }
+    accumulated += len;
+
+    if (onProgress) onProgress('Interleaving channels', accumulated, totalLength);
+
+    if ((ci + 1) % YIELD_EVERY === 0) {
+      await yieldToEventLoop();
+    }
+  }
+
+  // --- Phase 2: Float32 → Int16 (batched) ---
+  const buffer = new ArrayBuffer(44 + result.length * 2);
+  const view = new DataView(buffer);
+
+  writeString(view, 0, "RIFF");
+  view.setUint32(4, 36 + result.length * 2, true);
+  writeString(view, 8, "WAVE");
+  writeString(view, 12, "fmt ");
+  view.setUint32(16, 16, true);
+  view.setUint16(20, 1, true);
+  view.setUint16(22, numberOfChannels, true);
+  view.setUint32(24, sampleRate, true);
+  view.setUint32(28, sampleRate * numberOfChannels * 2, true);
+  view.setUint16(32, numberOfChannels * 2, true);
+  view.setUint16(34, 16, true);
+  writeString(view, 36, "data");
+  view.setUint32(40, result.length * 2, true);
+
+  const BATCH = 200000;
+  const totalBatches = Math.ceil(result.length / BATCH);
+  let index = 44;
+
+  for (let start = 0; start < result.length; start += BATCH) {
+    const end = Math.min(start + BATCH, result.length);
+    for (let i = start; i < end; i++) {
+      const s = result[i];
+      view.setInt16(index, s < 0 ? s * 0x8000 : Math.min(s, 1) * 0x7fff, true);
+      index += 2;
+    }
+    if (onProgress) onProgress('Converting to PCM', end, result.length);
+    if (end < result.length) await yieldToEventLoop();
+  }
+
+  return new Blob([buffer], { type: "audio/wav" });
+}
+</file>
+
+<file path="src/index.html">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/x-icon" href="../public/assets/favicon.ico" />
+  <title>Obrez</title>
+  <link rel="stylesheet" href="./index.css">
+</head>
+<body>
+  <div id="root"></div>
+  <script src="./main.tsx" type="module"></script>
+</body>
+</html>
+</file>
+
+<file path=".gitignore">
+node_modules/
+dist/
+test-results/
+.claude/
+.aider*
+</file>
+
+<file path="build.ts">
+import { $ } from 'bun';
+import { mkdir, rm } from 'fs/promises';
+import tailwind from 'bun-plugin-tailwind';
+
+async function build() {
+  try {
+    // Clean dist folder
+    console.log('Cleaning dist folder...');
+    await rm('dist', { recursive: true, force: true });
+
+    // Create dist folder
+    console.log('Creating dist folder...');
+    await mkdir('dist', { recursive: true });
+
+    // Copy public assets
+    console.log('Copying public assets...');
+    await $`cp -r public/* dist/`;
+
+    // Build with Bun and Tailwind
+    console.log('Building with Bun and Tailwind...');
+    await Bun.build({
+      entrypoints: ['./src/index.html'],
+      outdir: './dist',
+      target: 'browser',
+      plugins: [tailwind],
+      sourcemap: 'external',
+      minify: false,
+      splitting: false,
+    });
+
+    console.log('Build completed successfully!');
+  } catch (error) {
+    console.error('Build failed:', error);
+    process.exit(1);
+  }
+}
+
+build();
+</file>
+
+<file path="README.md">
+# obrez-ts
+
+## Install
+
+```bun run build```
+
+## Use
+
+```bun x serve ./dist/```
+</file>
+
+<file path="tsconfig.json">
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "lib": ["DOM", "DOM.Iterable", "ESNext"],
+    "strict": true,
+    "jsx": "react-jsx",
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "paths": {
+      "@/*": ["./src/*"]
+    },
+    "outDir": "dist",
+    "rootDir": "src"
+  },
+  "include": ["src"],
+  "exclude": ["node_modules", "dist"]
+}
+</file>
+
+<file path="public/assets/volume-0-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298z"/></svg>
+</file>
+
+<file path="public/assets/volume-2-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298zM16 9a5 5 0 0 1 0 6m3.364 3.364a9 9 0 0 0 0-12.728"/></svg>
+</file>
+
+<file path="public/assets/volume-x-icon.svg">
+<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path fill="none" stroke="#fff" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 4.702a.705.705 0 0 0-1.203-.498L6.413 7.587A1.4 1.4 0 0 1 5.416 8H3a1 1 0 0 0-1 1v6a1 1 0 0 0 1 1h2.416a1.4 1.4 0 0 1 .997.413l3.383 3.384A.705.705 0 0 0 11 19.298zM22 9l-6 6m0-6l6 6"/></svg>
+</file>
+
+<file path="src/features/file-loader/FileLoader.tsx">
+import { useRef } from 'react';
+import { usePlayerActions } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+
+export const FileLoader = () => {
+  const fileInputRef = useRef<HTMLInputElement>(null);
+  const urlInputRef = useRef<HTMLInputElement>(null);
+  const actions = usePlayerActions();
+  const { initMediaPlayer } = useMediaPlayerContext();
+
+  const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    actions.setFileName(file.name);
+    actions.setError(null);
+    actions.setWarning(null);
+    actions.setTranscriptionResults(null);
+    actions.setTranscribing(false);
+    actions.setCensoringEffects(null);
+
+    try {
+      await initMediaPlayer(file);
+    } catch (error) {
+      console.error('Error loading file:', error);
+      actions.setError('Failed to load file: ' + (error as Error).message);
+    }
+  };
+
+  const handleFileClick = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleUrlClick = () => {
+    const url = prompt(
+      'Please enter a URL of a media file. Note that it must be HTTPS and support cross-origin requests, so have the right CORS headers set.',
+      'https://remotion.media/BigBuckBunny.mp4'
+    );
+    if (!url) return;
+
+    actions.setFileName(url);
+    actions.setError(null);
+    actions.setWarning(null);
+    actions.setTranscriptionResults(null);
+    actions.setTranscribing(false);
+    actions.setCensoringEffects(null);
+
+    initMediaPlayer(url);
+  };
+
+  return (
+    <div className="space-y-4">
+      <div className="flex gap-2">
+        <button
+          onClick={handleFileClick}
+          className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg transition-colors"
+        >
+          Load File
+        </button>
+        <button
+          onClick={handleUrlClick}
+          className="flex-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 px-4 py-2 rounded-lg transition-colors"
+        >
+          Load URL
+        </button>
+      </div>
+
+      <input
+        ref={fileInputRef}
+        type="file"
+        accept="video/*,video/x-matroska,video/mp2t,.ts,audio/*,audio/aac"
+        onChange={handleFileChange}
+        className="hidden"
+      />
+    </div>
+  );
+};
+</file>
+
+<file path="src/features/bleep-sounds/BleepSoundManager.tsx">
+import { memo, useRef, useState, useCallback, useEffect } from 'react';
+import { usePlayerStore, usePlayerActions, hydrateBleepSounds } from '../../store/playerStore';
+import type { BleepSound } from '../../types';
+
+/**
+ * Generate a short unique id.
+ */
+function uid(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+
+/**
+ * Check if a URL is a remote URL (http/https) rather than a data URL.
+ */
+function isRemoteUrl(url: string): boolean {
+  return url.startsWith('http://') || url.startsWith('https://');
+}
+
+/**
+ * Decode an audio source (base64 data URL or remote URL) into an AudioBuffer.
+ * Prefers dataUrl if available; falls back to url.
+ */
+async function decodeAudio(
+  sound: BleepSound,
+  context: AudioContext,
+): Promise<AudioBuffer> {
+  const src = sound.dataUrl || sound.url;
+  if (!src) throw new Error('No audio source');
+
+  let arrayBuffer: ArrayBuffer;
+
+  if (src.startsWith('data:')) {
+    // base64 data URL
+    const binary = atob(src.split(',')[1] || src);
+    const bytes = new Uint8Array(binary.length);
+    for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+    arrayBuffer = bytes.buffer;
+  } else {
+    // remote URL
+    const res = await fetch(src);
+    if (!res.ok) throw new Error(`Failed to fetch: ${res.status}`);
+    arrayBuffer = await res.arrayBuffer();
+  }
+
+  return context.decodeAudioData(arrayBuffer);
+}
+
+/**
+ * Export all bleep sounds as a SQLite database file.
+ */
+async function exportBleepSounds(sounds: Record<string, BleepSound>): Promise<void> {
+  const initSqlJs = (await import('sql.js')).default;
+  const sqlWasmUrl = (await import('sql.js/dist/sql-wasm.wasm')).default;
+  const SQL = await initSqlJs({ locateFile: () => sqlWasmUrl });
+
+  const db = new SQL.Database();
+
+  db.run(`
+    CREATE TABLE IF NOT EXISTS bleep_sounds (
+      id       TEXT    PRIMARY KEY,
+      label    TEXT    NOT NULL,
+      url      TEXT    DEFAULT '',
+      data     BLOB    DEFAULT NULL
+    )
+  `);
+
+  const stmt = db.prepare('INSERT INTO bleep_sounds (id, label, url, data) VALUES (?, ?, ?, ?)');
+
+  for (const sound of Object.values(sounds)) {
+    if (sound.dataUrl) {
+      // Extract raw bytes from base64 data URL
+      const binary = atob(sound.dataUrl.split(',')[1] || sound.dataUrl);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      stmt.run([sound.id, sound.label, sound.url, bytes]);
+    } else {
+      stmt.run([sound.id, sound.label, sound.url, null]);
+    }
+  }
+
+  stmt.free();
+
+  const fileBytes = db.export();
+  const blob = new Blob([fileBytes], { type: 'application/x-sqlite3' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `bleep-sounds-${Date.now()}.sqlite`;
+  a.click();
+  URL.revokeObjectURL(url);
+  db.close();
+}
+
+/**
+ * Import bleep sounds from a SQLite database file.
+ */
+async function importBleepSounds(
+  file: File,
+  onAdd: (id: string, label: string, url: string, fileData?: ArrayBuffer) => void,
+): Promise<number> {
+  const initSqlJs = (await import('sql.js')).default;
+  const sqlWasmUrl = (await import('sql.js/dist/sql-wasm.wasm')).default;
+  const SQL = await initSqlJs({ locateFile: () => sqlWasmUrl });
+
+  const buffer = await file.arrayBuffer();
+  const db = new SQL.Database(new Uint8Array(buffer));
+
+  // Check that the table exists
+  const tableCheck = db.exec(
+    `SELECT name FROM sqlite_master WHERE type='table' AND name='bleep_sounds'`,
+  );
+  if (!tableCheck.length || !tableCheck[0].values?.length) {
+    db.close();
+    throw new Error('File is not a valid bleep sounds SQLite export');
+  }
+
+  const rows = db.exec('SELECT id, label, url, data FROM bleep_sounds');
+  let count = 0;
+
+  if (rows.length && rows[0].values) {
+    for (const row of rows[0].values) {
+      const [id, label, url, data] = row as [string, string, string, ArrayBuffer | Uint8Array | string | null];
+
+      if (data instanceof ArrayBuffer || data instanceof Uint8Array) {
+        // sql.js returns BLOB data as Uint8Array, not ArrayBuffer
+        const arrayBuffer = data instanceof ArrayBuffer ? data : data.slice().buffer;
+        onAdd(id, label, url, arrayBuffer);
+      } else if (typeof data === 'string') {
+        onAdd(id, label, data);
+      } else if (url) {
+        onAdd(id, label, url);
+      }
+
+      count++;
+    }
+  }
+
+  db.close();
+  return count;
+}
+
+// --- Icons ---
+
+const CloseIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M18 6 6 18M6 6l12 12" />
+  </svg>
+);
+
+const PlayIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+    <path d="M8 5v14l11-7z" />
+  </svg>
+);
+
+const PlusIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M12 5v14M5 12h14" />
+  </svg>
+);
+
+const DownloadIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+    <polyline points="7,10 12,15 17,10" />
+    <line x1="12" y1="15" x2="12" y2="3" />
+  </svg>
+);
+
+const UploadIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+    <polyline points="17,8 12,3 7,8" />
+    <line x1="12" y1="3" x2="12" y2="15" />
+  </svg>
+);
+
+const FileIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+    <polyline points="14,2 14,8 20,8" />
+  </svg>
+);
+
+const LinkIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71" />
+    <path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71" />
+  </svg>
+);
+
+const LoadingIcon = () => (
+  <svg className="animate-spin" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+    <path d="M12 2a10 10 0 0110 10" strokeOpacity="0.75" />
+  </svg>
+);
+
+const SaveIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+    <polyline points="17,21 17,13 7,13 7,21" />
+    <polyline points="7,3 7,8 15,8" />
+  </svg>
+);
+
+const SavedIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+    <polyline points="17,21 17,13 7,13 7,21" />
+    <polyline points="7,3 7,8 15,8" />
+    <path d="M7 15l3 3 7-7" />
+  </svg>
+);
+
+// --- Add Modal ---
+
+interface AddModalProps {
+  onAdd: (id: string, label: string, url: string, fileData?: ArrayBuffer) => void;
+  onClose: () => void;
+}
+
+const AddModal = memo(({ onAdd, onClose }: AddModalProps) => {
+  const [mode, setMode] = useState<'file' | 'url'>('file');
+  const [label, setLabel] = useState('');
+  const [url, setUrl] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleFileSelect = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setError(null);
+    setLoading(true);
+
+    const labelText = label.trim() || file.name;
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+
+      // base64 for in-memory store
+      const reader = new FileReader();
+      const base64 = await new Promise<string>((resolve, reject) => {
+        reader.onload = () => resolve(reader.result as string);
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const id = uid();
+      onAdd(id, labelText, base64, arrayBuffer);
+      onClose();
+    } catch {
+      setError('Failed to read file');
+    } finally {
+      setLoading(false);
+      if (fileInputRef.current) fileInputRef.current.value = '';
+    }
+  };
+
+  const cleanUrl = (s: string) => s.trim().replace(/^["'"]+|["'"]+$/g, '');
+
+  const handleUrlSubmit = async () => {
+    const cleaned = cleanUrl(url);
+    if (!cleaned) return;
+    setError(null);
+    setLoading(true);
+
+    const labelText = label.trim() || cleaned;
+
+    try {
+      const res = await fetch(cleaned, { method: 'HEAD' });
+      if (!res.ok) {
+        setError(`URL not accessible (status ${res.status})`);
+        return;
+      }
+
+      const id = uid();
+      onAdd(id, labelText, cleaned);
+      onClose();
+    } catch {
+      setError('Failed to reach URL');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
+      <div
+        className="bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4"
+      >
+        <div className="flex items-center justify-between">
+          <h3 className="text-sm font-semibold">Add Bleep Sound</h3>
+          <button onClick={onClose} className="p-1 rounded hover:bg-zinc-600 text-zinc-400">
+            <CloseIcon />
+          </button>
+        </div>
+
+        {/* Label input */}
+        <div>
+          <label className="block text-xs text-zinc-400 mb-1">Label (optional)</label>
+          <input
+            type="text"
+            value={label}
+            onChange={(e) => setLabel(e.target.value)}
+            placeholder="e.g. Classic Beep"
+            className="w-full bg-zinc-700 rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-purple-500"
+          />
+        </div>
+
+        {/* Mode toggle */}
+        <div className="flex gap-2">
+          <button
+            onClick={() => setMode('file')}
+            className={`flex-1 flex items-center justify-center gap-2 text-xs py-2 rounded transition-colors ${
+              mode === 'file'
+                ? 'bg-purple-600 text-white'
+                : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+            }`}
+          >
+            <FileIcon /> From Disk
+          </button>
+          <button
+            onClick={() => setMode('url')}
+            className={`flex-1 flex items-center justify-center gap-2 text-xs py-2 rounded transition-colors ${
+              mode === 'url'
+                ? 'bg-purple-600 text-white'
+                : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+            }`}
+          >
+            <LinkIcon /> From URL
+          </button>
+        </div>
+
+        {/* File mode */}
+        {mode === 'file' && (
+          <input
+            ref={fileInputRef}
+            type="file"
+            accept="audio/*"
+            onChange={handleFileSelect}
+            className="w-full text-xs bg-zinc-700 rounded px-3 py-2 outline-none file:mr-3 file:py-1 file:px-3 file:rounded file:bg-purple-600 file:text-white file:cursor-pointer"
+          />
+        )}
+
+        {/* URL mode */}
+        {mode === 'url' && (
+          <div>
+            <input
+              type="url"
+              value={url}
+              onChange={(e) => setUrl(e.target.value)}
+              placeholder="https://example.com/sound.mp3"
+              className="w-full bg-zinc-700 rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-purple-500 mb-2"
+            />
+            <button
+              onClick={handleUrlSubmit}
+              disabled={!url.trim() || loading}
+              className="w-full bg-purple-600 hover:bg-purple-500 text-white text-xs py-2 rounded transition-colors disabled:opacity-50"
+            >
+              {loading ? 'Checking...' : 'Add Sound'}
+            </button>
+          </div>
+        )}
+
+        {error && <p className="text-xs text-red-400">{error}</p>}
+      </div>
+    </div>
+  );
+});
+
+// --- Sound Row ---
+
+interface SoundRowProps {
+  sound: BleepSound;
+  loading: boolean;
+  onDownload: (id: string) => void;
+  isDownloading: boolean;
+  onUpdateLabel: (id: string, label: string) => void;
+  onUpdateUrl: (id: string, url: string) => void;
+  onRemove: (id: string) => void;
+  onPlay: (buffer: AudioBuffer) => void;
+  onDecode: (id: string) => void;
+}
+
+const SoundRow = memo(({
+  sound, loading, onDownload, isDownloading, onUpdateLabel, onUpdateUrl, onRemove, onPlay, onDecode,
+}: SoundRowProps) => {
+  const [editing, setEditing] = useState<'label' | 'url' | null>(null);
+  const [draftLabel, setDraftLabel] = useState(sound.label);
+  const [draftUrl, setDraftUrl] = useState(sound.url);
+  const labelInputRef = useRef<HTMLInputElement>(null);
+  const urlInputRef = useRef<HTMLInputElement>(null);
+
+  const handleSaveLabel = () => {
+    const trimmed = draftLabel.trim();
+    if (trimmed && trimmed !== sound.label) {
+      onUpdateLabel(sound.id, trimmed);
+    } else {
+      setDraftLabel(sound.label);
+    }
+    setEditing(null);
+  };
+
+  const cleanUrl = (s: string) => s.trim().replace(/^["'"]+|["'"]+$/g, '');
+
+  const isValidUrl = (s: string) => {
+    const cleaned = cleanUrl(s);
+    try { const u = new URL(cleaned); return u.protocol === 'http:' || u.protocol === 'https:'; }
+    catch { return false; }
+  };
+
+  const handleSaveUrl = async () => {
+    const cleaned = cleanUrl(draftUrl);
+    if (!cleaned) { setDraftUrl(sound.url); setEditing(null); return; }
+
+    if (!isValidUrl(cleaned)) {
+      alert('Invalid URL — must start with http:// or https://');
+      return;
+    }
+
+    // Verify the URL is reachable
+    try {
+      const res = await fetch(cleaned, { method: 'HEAD', signal: AbortSignal.timeout(5000) });
+      if (!res.ok) {
+        alert(`URL not accessible (status ${res.status})`);
+        return;
+      }
+    } catch {
+      alert('Failed to reach URL');
+      return;
+    }
+
+    if (cleaned !== sound.url) {
+      onUpdateUrl(sound.id, cleaned);
+    }
+    setEditing(null);
+  };
+
+  const hasBlob = !!sound.dataUrl;
+
+  return (
+    <div className="flex items-center gap-2 py-1.5 px-2 rounded bg-zinc-700">
+      {/* Play / decode button */}
+      {sound.audioBuffer ? (
+        <button
+          onClick={() => onPlay(sound.audioBuffer)}
+          className="p-1 rounded hover:bg-zinc-600 text-zinc-400"
+          aria-label="Preview"
+          title="Preview sound"
+        >
+          <PlayIcon />
+        </button>
+      ) : loading ? (
+        <button disabled className="p-1 rounded text-zinc-500" title="Decoding...">
+          <LoadingIcon />
+        </button>
+      ) : (
+        <button
+          onClick={() => onDecode(sound.id)}
+          className="p-1 rounded hover:bg-zinc-600 text-zinc-500 hover:text-zinc-300"
+          aria-label="Load sound"
+          title="Load sound (decode on demand)"
+        >
+          <PlayIcon />
+        </button>
+      )}
+
+      {/* Label */}
+      <div className="flex-1 min-w-0">
+        {editing === 'label' ? (
+          <input
+            ref={labelInputRef}
+            type="text"
+            value={draftLabel}
+            onChange={(e) => setDraftLabel(e.target.value)}
+            onBlur={handleSaveLabel}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveLabel();
+              if (e.key === 'Escape') { setDraftLabel(sound.label); setEditing(null); }
+            }}
+            className="w-full bg-zinc-600 rounded px-2 py-0.5 text-xs outline-none focus:ring-1 focus:ring-purple-500"
+            autoFocus
+          />
+        ) : (
+          <span
+            className="block text-xs truncate cursor-pointer hover:text-zinc-200"
+            onDoubleClick={() => setEditing('label')}
+            title="Double-click to edit label"
+          >
+            {sound.label}
+          </span>
+        )}
+      </div>
+
+      {/* URL badge — editable on double-click (only for remote URLs) */}
+      {isRemoteUrl(sound.url) && (
+        editing === 'url' ? (
+          <input
+            ref={urlInputRef}
+            type="text"
+            value={draftUrl}
+            onChange={(e) => setDraftUrl(e.target.value)}
+            onBlur={handleSaveUrl}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') handleSaveUrl();
+              if (e.key === 'Escape') { setDraftUrl(sound.url); setEditing(null); }
+            }}
+            className="bg-zinc-600 rounded px-1.5 py-0.5 text-[10px] outline-none focus:ring-1 focus:ring-purple-500 w-40"
+            autoFocus
+          />
+        ) : (
+          <span
+            className="text-[10px] text-zinc-500 cursor-pointer hover:text-zinc-300"
+            onDoubleClick={() => { setDraftUrl(sound.url); setEditing('url'); }}
+            title={`Double-click to edit URL: ${sound.url}`}
+          >
+            url
+          </span>
+        )
+      )}
+
+      {/* Blob badge / saved indicator */}
+      {hasBlob && (
+        <span className="text-zinc-500" title="Saved in IndexedDB">
+          <SavedIcon />
+        </span>
+      )}
+
+      {/* Download blob button — only if remote URL exists and not yet saved */}
+      {!hasBlob && isRemoteUrl(sound.url) && (isDownloading ? (
+        <button disabled className="p-1 rounded text-zinc-500" title="Downloading to IndexedDB...">
+          <LoadingIcon />
+        </button>
+      ) : (
+        <button
+          onClick={() => onDownload(sound.id)}
+          className="p-1 rounded hover:bg-zinc-600 text-zinc-500 hover:text-zinc-300"
+          title="Download to IndexedDB (save as blob)"
+        >
+          <SaveIcon />
+        </button>
+      ))}
+
+      {/* Remove */}
+      <button
+        onClick={() => onRemove(sound.id)}
+        className="p-1 rounded hover:bg-zinc-600 text-zinc-400"
+        aria-label="Remove"
+      >
+        <CloseIcon />
+      </button>
+    </div>
+  );
+});
+
+// --- Main Manager ---
+
+const BleepSoundManagerInner = () => {
+  const bleepSounds = usePlayerStore((state) => state.bleepSounds);
+  const actions = usePlayerActions();
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [loadingIds, setLoadingIds] = useState<Set<string>>(new Set());
+  const [downloadingIds, setDownloadingIds] = useState<Set<string>>(new Set());
+  const audioCtxRef = useRef<AudioContext | null>(null);
+
+  // Hydrate from IndexedDB on mount
+  useEffect(() => {
+    hydrateBleepSounds();
+  }, []);
+
+  // Decode sounds on mount (lazy, in background)
+  useEffect(() => {
+    const ctx = new AudioContext();
+    audioCtxRef.current = ctx;
+
+    const ids = Object.keys(bleepSounds);
+    if (ids.length === 0) return;
+
+    for (const id of ids) {
+      const sound = bleepSounds[id];
+      if (sound.audioBuffer) continue;
+
+      setLoadingIds((prev) => new Set(prev).add(id));
+
+      decodeAudio(sound, ctx)
+        .then((buffer) => {
+          actions.setBleepBuffer(id, buffer);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setLoadingIds((prev) => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+          });
+        });
+    }
+
+    return () => {
+      ctx.close();
+      audioCtxRef.current = null;
+    };
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps -- run once on mount
+
+  const getAudioCtx = useCallback(() => {
+    if (!audioCtxRef.current || audioCtxRef.current.state === 'closed') {
+      audioCtxRef.current = new AudioContext();
+    }
+    return audioCtxRef.current;
+  }, []);
+
+  const handlePlay = useCallback((buffer: AudioBuffer) => {
+    const ctx = getAudioCtx();
+    const source = ctx.createBufferSource();
+    source.buffer = buffer;
+    source.connect(ctx.destination);
+    source.start();
+  }, [getAudioCtx]);
+
+  const handleAdd = useCallback(
+    (id: string, label: string, url: string, fileData?: ArrayBuffer) => {
+      actions.addBleepSound(id, label, url, fileData);
+    },
+    [actions],
+  );
+
+  const handleDecode = useCallback(
+    (id: string) => {
+      const sound = bleepSounds[id];
+      if (!sound) return;
+
+      setLoadingIds((prev) => new Set(prev).add(id));
+
+      decodeAudio(sound, getAudioCtx())
+        .then((buffer) => {
+          actions.setBleepBuffer(id, buffer);
+        })
+        .catch(() => {})
+        .finally(() => {
+          setLoadingIds((prev) => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+          });
+        });
+    },
+    [bleepSounds, actions, getAudioCtx],
+  );
+
+  const handleDownload = useCallback(
+    async (id: string) => {
+      setDownloadingIds((prev) => new Set(prev).add(id));
+      try {
+        await actions.downloadUrlSound(id);
+      } catch {
+        // error handled in action
+      } finally {
+        setDownloadingIds((prev) => {
+          const next = new Set(prev);
+          next.delete(id);
+          return next;
+        });
+      }
+    },
+    [actions],
+  );
+
+  const handleExport = useCallback(() => {
+    exportBleepSounds(bleepSounds);
+  }, [bleepSounds]);
+
+  const importInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImport = useCallback(async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const count = await importBleepSounds(file, async (id, label, url, fileData) => {
+        await actions.addBleepSound(id, label, url, fileData);
+      });
+      alert(`Imported ${count} sound(s)`);
+    } catch (err) {
+      alert('Import failed: ' + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      if (importInputRef.current) importInputRef.current.value = '';
+    }
+  }, [actions]);
+
+  return (
+    <div className="bg-zinc-800 rounded-lg p-4">
+      <h2 className="text-sm font-semibold text-zinc-300 mb-3">Bleep Sounds</h2>
+
+      <div className="flex gap-2 mb-3">
+        <button
+          onClick={() => setShowAddModal(true)}
+          className="flex-1 flex items-center justify-center gap-2 text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors"
+        >
+          <PlusIcon /> Add Sound
+        </button>
+        <button
+          onClick={() => importInputRef.current?.click()}
+          className="flex items-center justify-center gap-2 text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors"
+          title="Import sounds from SQLite"
+        >
+          <UploadIcon />
+        </button>
+        <button
+          onClick={handleExport}
+          disabled={Object.keys(bleepSounds).length === 0}
+          className="flex items-center justify-center gap-2 text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed"
+          title="Export sounds to SQLite"
+        >
+          <DownloadIcon />
+        </button>
+        <input
+          ref={importInputRef}
+          type="file"
+          accept=".sqlite,.db"
+          onChange={handleImport}
+          className="hidden"
+        />
+      </div>
+
+      {Object.keys(bleepSounds).length > 0 ? (
+        <div className="space-y-2">
+          {Object.values(bleepSounds).map((sound) => (
+            <SoundRow
+              key={sound.id}
+              sound={sound}
+              loading={loadingIds.has(sound.id)}
+              onDownload={handleDownload}
+              isDownloading={downloadingIds.has(sound.id)}
+              onUpdateLabel={actions.updateBleepLabel}
+              onUpdateUrl={actions.updateBleepUrl}
+              onRemove={actions.removeBleepSound}
+              onPlay={handlePlay}
+              onDecode={handleDecode}
+            />
+          ))}
+        </div>
+      ) : (
+        <div className="text-xs text-zinc-500 py-2">No bleep sounds added</div>
+      )}
+
+      {showAddModal && <AddModal onAdd={handleAdd} onClose={() => setShowAddModal(false)} />}
+    </div>
+  );
+};
+
+export const BleepSoundManager = memo(BleepSoundManagerInner);
+</file>
+
+<file path="src/features/player/PlayerDisplay.tsx">
+import { memo, useCallback } from 'react';
+import { usePlayerStore, playerActions } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+import { ProgressBar } from './ProgressBar';
+import { VolumeControls } from './VolumeControls';
+
+const PlayerDisplayInner = () => {
+  const fileName = usePlayerStore((state) => state.fileName);
+  const error = usePlayerStore((state) => state.error);
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const isEnded = usePlayerStore((state) => state.isEnded);
+  const censoringMode = usePlayerStore((state) => state.censoringMode);
+  const censoringEffects = usePlayerStore((state) => state.censoringEffects);
+  const { canvasRef, play, pause, togglePlay, seekToTime } = useMediaPlayerContext();
+
+  const handleCanvasClick = useCallback((e: React.MouseEvent) => {
+    // Ignore clicks that originate from controls
+    if ((e.target as HTMLElement).closest('.player-controls')) return;
+    void togglePlay();
+  }, [togglePlay]);
+
+  const handleReplay = useCallback((e: React.MouseEvent) => {
+    e.stopPropagation();
+    playerActions.setIsEnded(false);
+    void seekToTime(0);
+    void play();
+  }, [seekToTime, play]);
+
+  return (
+    <div
+      data-testid="player-display-container"
+      className="relative w-full bg-zinc-900 rounded-lg overflow-hidden group"
+    >
+      <canvas
+        id="videoCanvas"
+        ref={canvasRef}
+        aria-label="Video canvas"
+        role="img"
+        className="w-full bg-zinc-800 cursor-pointer"
+        onClick={handleCanvasClick}
+      />
+
+      {!fileName && !error && (
+        <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <p className="text-zinc-500 text-center">Load video or audio file</p>
+        </div>
+      )}
+
+      {/* Replay overlay — shown when video ends */}
+      {isEnded && (
+        <div className="absolute inset-0 flex items-center justify-center bg-black/40">
+          <button
+            onClick={handleReplay}
+            className="p-4 rounded-full bg-zinc-800/90 hover:bg-zinc-700 transition-colors"
+            aria-label="Replay from start"
+          >
+            <img
+              src="/assets/replay-icon.svg"
+              alt="Replay"
+              className="w-10 h-10"
+            />
+          </button>
+        </div>
+      )}
+
+      {/* Controls overlay at the bottom */}
+      <div className="player-controls absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+        <div className="flex items-center gap-4">
+          <button
+            onClick={() => {
+              if (isPlaying) void pause();
+              else void play();
+            }}
+            className="p-2 rounded-md hover:bg-zinc-700 transition-colors flex-shrink-0"
+            aria-label={isPlaying ? 'Pause' : 'Play'}
+          >
+            <img
+              src={isPlaying ? '/assets/pause-icon.svg' : '/assets/play-icon.svg'}
+              alt={isPlaying ? 'Pause' : 'Play'}
+              className="w-6 h-6"
+            />
+          </button>
+
+          <ProgressBar />
+
+          {/* Censoring mode toggle — visible only when effects exist */}
+          {censoringEffects && censoringEffects.length > 0 && (
+            <button
+              onClick={() => playerActions.setCensoringMode(!censoringMode)}
+              className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors flex-shrink-0 ${
+                censoringMode
+                  ? 'bg-red-600 text-white hover:bg-red-500'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+              }`}
+              title={censoringMode ? 'Censoring ON — click to play original audio' : 'Censoring OFF — click to play with effects'}
+            >
+              {censoringMode ? '⚡ CENSORED' : '🔊 ORIGINAL'}
+            </button>
+          )}
+
+          <VolumeControls />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export const PlayerDisplay = memo(PlayerDisplayInner);
+</file>
+
+<file path="src/features/player/VolumeControls.tsx">
+import { memo } from 'react';
+import { usePlayerStore } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+
+const VolumeControlsInner = () => {
+  const volume = usePlayerStore((state) => state.volume);
+  const isMuted = usePlayerStore((state) => state.isMuted);
+  const { setVolume, toggleMute } = useMediaPlayerContext();
+
+  const handleVolumeChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newVolume = parseFloat(e.target.value);
+    setVolume(newVolume);
+  };
+
+  const handleMuteToggle = () => {
+    toggleMute();
+  };
+
+  const volumeIcon = isMuted ? '/assets/volume-off-icon.svg'
+    : volume >= 0.67 ? '/assets/volume-2-icon.svg'
+    : volume >= 0.34 ? '/assets/volume-1-icon.svg'
+    : '/assets/volume-0-icon.svg';
+
+  return (
+    <div className="flex items-center gap-2">
+      <button
+        onClick={handleMuteToggle}
+        className="p-1 rounded-md hover:bg-zinc-700 transition-colors"
+        aria-label={isMuted ? 'Unmute' : 'Mute'}
+      >
+        <img src={volumeIcon} alt={isMuted ? 'Unmute' : 'Mute'} className="w-5 h-5" />
+      </button>
+
+      <input
+        type="range"
+        min="0"
+        max="1"
+        step="0.01"
+        value={isMuted ? 0 : volume}
+        onChange={handleVolumeChange}
+        className="w-16 h-1 bg-zinc-700 rounded-lg appearance-none cursor-pointer"
+        aria-label="Volume"
+      />
+    </div>
+  );
+};
+
+export const VolumeControls = memo(VolumeControlsInner);
+</file>
+
+<file path="package.json">
+{
+  "name": "obrez-ts",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "bun run build && bun run server.ts",
+    "build": "bun run build.ts",
+    "serve": "bun run server.ts",
+    "test": "bun test",
+    "test:e2e": "bunx playwright test e2e/ && bunx playwright show-report test-results",
+    "typecheck": "tsc --noEmit"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IrSent/obrez-ts.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/IrSent/obrez-ts/issues"
+  },
+  "homepage": "https://github.com/IrSent/obrez-ts#readme",
+  "dependencies": {
+    "@fontsource-variable/rubik": "^5.2.8",
+    "mediabunny": "^1.46.0",
+    "react": "^19.0.0",
+    "react-dom": "^19.0.0",
+    "sql.js": "^1.14.1",
+    "zustand": "^5.0.14"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.3.5",
+    "@types/react": "^19.0.0",
+    "@types/react-dom": "^19.0.0",
+    "bun-plugin-tailwind": "^0.1.2",
+    "tailwindcss": "^4.2.1",
+    "typescript": "^5.9.3"
+  }
+}
+</file>
+
+<file path="server.ts">
+import { serve } from 'bun';
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+
+const server = serve({
+  hostname: '0.0.0.0',
+  port: 3000,
+  fetch(req) {
+    const url = new URL(req.url);
+
+    // API: Transcription endpoint - forwards to Python transcribe server
+    if (url.pathname === '/api/transcribe' && req.method === 'POST') {
+      return handleTranscriptionRequest(req);
+    }
+
+    // Serve static files from dist directory
+    if (url.pathname === '/' || url.pathname.endsWith('.html')) {
+      return new Response(Bun.file(join(__dirname, 'dist', 'index.html')), {
+        headers: { 'Content-Type': 'text/html' },
+      });
+    }
+
+    // Serve JS files
+    if (url.pathname.endsWith('.js')) {
+      return new Response(Bun.file(join(__dirname, 'dist', url.pathname)), {
+        headers: { 'Content-Type': 'application/javascript' },
+      });
+    }
+
+    // Serve CSS files
+    if (url.pathname.endsWith('.css')) {
+      return new Response(Bun.file(join(__dirname, 'dist', url.pathname)), {
+        headers: { 'Content-Type': 'text/css' },
+      });
+    }
+
+    // Serve assets from public directory
+    if (url.pathname.startsWith('/assets/')) {
+      const ext = url.pathname.split('.').pop() || '';
+      const contentTypes: Record<string, string> = {
+        svg: 'image/svg+xml',
+        png: 'image/png',
+        jpg: 'image/jpeg',
+        jpeg: 'image/jpeg',
+        ico: 'image/x-icon',
+        gif: 'image/gif',
+        webp: 'image/webp',
+      };
+      return new Response(Bun.file(join(__dirname, 'public', url.pathname)), {
+        headers: { 'Content-Type': contentTypes[ext] || 'application/octet-stream' },
+      });
+    }
+
+    // Serve WASM files
+    if (url.pathname.endsWith('.wasm')) {
+      return new Response(Bun.file(join(__dirname, 'dist', url.pathname)), {
+        headers: { 'Content-Type': 'application/wasm' },
+      });
+    }
+
+    // Serve other static assets from dist
+    return new Response(Bun.file(join(__dirname, 'dist', url.pathname)), {
+      headers: { 'Content-Type': 'application/octet-stream' },
+    });
+  },
+});
+
+async function handleTranscriptionRequest(req: Request) {
+  try {
+    const formData = await req.formData();
+    const audioFile = formData.get('audio') as File;
+
+    if (!audioFile) {
+      return new Response(
+        JSON.stringify({ error: 'No audio file provided' }),
+        {
+          status: 400,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    // Forward the audio file to the Python transcribe server
+    const pythonServerUrl = 'http://192.168.3.250:8686/transcribe';
+
+    const pythonFormData = new FormData();
+    pythonFormData.append(
+      'file',
+      new Blob([await audioFile.arrayBuffer()], { type: audioFile.type }),
+      audioFile.name
+    );
+
+    const pythonResponse = await fetch(pythonServerUrl, {
+      method: 'POST',
+      body: pythonFormData,
+    });
+
+    if (!pythonResponse.ok) {
+      const errorData = await pythonResponse.json();
+      return new Response(
+        JSON.stringify({
+          error: 'Python transcription server error',
+          details: errorData,
+        }),
+        {
+          status: pythonResponse.status,
+          headers: { 'Content-Type': 'application/json' },
+        }
+      );
+    }
+
+    const pythonData = await pythonResponse.json();
+
+    return new Response(JSON.stringify(pythonData), {
+      headers: { 'Content-Type': 'application/json' },
+    });
+  } catch (error) {
+    console.error('Transcription error:', error);
+    return new Response(
+      JSON.stringify({
+        error: 'Internal server error',
+        details: error instanceof Error ? error.message : String(error),
+      }),
+      {
+        status: 500,
+        headers: { 'Content-Type': 'application/json' },
+      }
+    );
+  }
+}
+
+console.log(`Server running at http://${server.hostname}:${server.port}`);
+</file>
+
+<file path="src/features/dictionary/DictionaryManager.tsx">
+import { memo, useEffect, useState } from 'react';
+import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
+import { FastAhoScanner } from '../../aho-corasick';
+
+const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords'];
+
+const DictionaryManagerInner = () => {
+  const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
+  const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
+  const actions = usePlayerActions();
+  const [isLoading, setIsLoading] = useState<Record<string, boolean>>({});
+
+  // Auto-load default dictionaries on mount
+  useEffect(() => {
+    const loadDefaults = async () => {
+      for (const slug of DEFAULT_DICTIONARIES) {
+        if (slug in loadedDictionaries) continue;
+        try {
+          const response = await fetch(`http://localhost:8686/dictionary/${slug}`);
+          if (!response.ok) continue;
+          const buffer = await response.arrayBuffer();
+          const scanner = new FastAhoScanner(buffer);
+          actions.loadDictionary(slug, slug, scanner);
+        } catch (error) {
+          console.error(`Failed to load default dictionary ${slug}:`, error);
+        }
+      }
+    };
+    loadDefaults();
+  }, []);
+
+  const handleAddDictionary = async () => {
+    const slug = prompt('Enter dictionary slug:');
+    if (!slug) return;
+
+    if (slug in loadedDictionaries) {
+      alert('Dictionary already loaded: ' + slug);
+      return;
+    }
+
+    setIsLoading((prev) => ({ ...prev, [slug]: true }));
+
+    try {
+      const response = await fetch(`http://localhost:8686/dictionary/${slug}`);
+      if (!response.ok) {
+        alert(`Dictionary not found: ${slug}`);
+        return;
+      }
+
+      const buffer = await response.arrayBuffer();
+      const scanner = new FastAhoScanner(buffer);
+
+      actions.loadDictionary(slug, slug, scanner);
+    } catch (error) {
+      console.error('Error loading dictionary:', error);
+      alert('Failed to load dictionary: ' + (error as Error).message);
+    } finally {
+      setIsLoading((prev) => ({ ...prev, [slug]: false }));
+    }
+  };
+
+  const handleToggleDictionary = (slug: string) => {
+    actions.toggleDictionary(slug);
+  };
+
+  const handleRemoveDictionary = (slug: string) => {
+    actions.removeDictionary(slug);
+  };
+
+  return (
+    <div className="bg-zinc-800 rounded-lg p-4">
+      <h2 className="text-sm font-semibold text-zinc-300 mb-3">Dictionaries</h2>
+
+      <button
+        onClick={handleAddDictionary}
+        disabled={Object.values(isLoading).some((v) => v)}
+        className="w-full text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors mb-3 disabled:opacity-50"
+      >
+        {Object.values(isLoading).some((v) => v) ? 'Loading...' : '+ Load Dictionary'}
+      </button>
+
+      {Object.keys(loadedDictionaries).length > 0 ? (
+        <div className="space-y-2">
+          {Object.entries(loadedDictionaries).map(([slug, dict]) => (
+            <div
+              key={slug}
+              className="flex items-center justify-between text-xs py-1.5 px-2 rounded bg-zinc-700"
+            >
+              <span className="truncate">{dict.name}</span>
+              <div className="flex items-center gap-1">
+                <button
+                  onClick={() => handleToggleDictionary(slug)}
+                  className="p-1 rounded hover:bg-zinc-600"
+                  aria-label={activeDictionaries.has(slug) ? 'Deactivate' : 'Activate'}
+                >
+                  {activeDictionaries.has(slug) ? (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  ) : (
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <circle cx="12" cy="12" r="9" />
+                    </svg>
+                  )}
+                </button>
+                <button
+                  onClick={() => handleRemoveDictionary(slug)}
+                  className="p-1 rounded hover:bg-zinc-600"
+                  aria-label="Remove"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <path d="M18 6 6 18M6 6l12 12" />
+                  </svg>
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
+      ) : (
+        <div className="text-xs text-zinc-500 py-2">No dictionaries loaded</div>
+      )}
+    </div>
+  );
+};
+
+export const DictionaryManager = memo(DictionaryManagerInner);
+</file>
+
+<file path="src/App.tsx">
+import { MediaPlayerProvider } from './context/MediaPlayerContext';
+import { PlayerDisplay } from './features/player/PlayerDisplay';
+import { FileLoader } from './features/file-loader/FileLoader';
+import { DictionaryManager } from './features/dictionary/DictionaryManager';
+import { BleepSoundManager } from './features/bleep-sounds/BleepSoundManager';
+import { TranscriptionResults } from './features/transcription/TranscriptionResults';
+import { ExportButton } from './features/export/ExportModal';
+
+export const App = () => {
+  return (
+    <MediaPlayerProvider>
+        <div className="min-h-screen bg-zinc-900 text-zinc-100 p-4">
+          <div className="max-w-7xl mx-auto">
+            <div className="flex items-center gap-3 mb-6">
+              <img
+                src="/assets/obrez-logo.png"
+                alt="Obrez Logo"
+                className="w-8 h-8"
+              />
+              <h1 className="text-xl font-semibold text-purple-500">Obrez</h1>
+            </div>
+
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2 space-y-6">
+                <FileLoader />
+                <PlayerDisplay />
+                <TranscriptionResults />
+              </div>
+
+              <div className="lg:col-span-1 space-y-6">
+                <ExportButton />
+                <DictionaryManager />
+                <BleepSoundManager />
+              </div>
+            </div>
+          </div>
+        </div>
+      </MediaPlayerProvider>
+  );
+};
+</file>
+
+<file path="src/features/player/ProgressBar.tsx">
+import { memo, useRef, useCallback, useEffect, useState } from 'react';
+import { usePlayerStore, playerActions } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+
+const ProgressBarInner = () => {
+  const duration = usePlayerStore((state) => state.duration);
+  const { seekToTime, formatSeconds, getPlaybackTime } = useMediaPlayerContext();
+  const isDraggingRef = useRef(false);
+  const progressRef = useRef<HTMLDivElement>(null);
+
+  // Read currentTime directly from playback, not from store — avoids setState
+  // in the hot path. Only update local state when the displayed seconds change.
+  const [currentTime, setCurrentTime] = useState(0);
+  const prevTimeRef = useRef(currentTime);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const t = getPlaybackTime();
+      // Only trigger re-render if the time actually changed (in whole seconds)
+      if (Math.floor(t) !== Math.floor(prevTimeRef.current)) {
+        prevTimeRef.current = t;
+        setCurrentTime(t);
+      }
+    }, 200);
+    return () => clearInterval(interval);
+  }, [getPlaybackTime]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!progressRef.current) return;
+    const rect = progressRef.current.getBoundingClientRect();
+    const percent = (e.clientX - rect.left) / rect.width;
+    const time = duration * percent;
+    void seekToTime(time);
+  };
+
+  const handleDragStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isDraggingRef.current = true;
+    // Update visual immediately on drag start
+    handleClick(e);
+  };
+
+  const handleDragEnd = useCallback((e: MouseEvent) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+
+    // Seek to the final position only once on drag end
+    if (!progressRef.current) return;
+    const rect = progressRef.current.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const time = duration * percent;
+    void seekToTime(time);
+  }, [duration]);
+
+  // During drag: update visuals only — no seek, no iterator restart
+  const handleDragVisual = useCallback((e: MouseEvent) => {
+    if (!progressRef.current || !isDraggingRef.current) return;
+    const rect = progressRef.current.getBoundingClientRect();
+    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const time = duration * percent;
+
+    // Update store time for display
+    playerActions.setCurrentTime(time);
+
+    // Update progress bar DOM directly
+    const cache = {
+      currentTimeEl: document.querySelector('[data-testid="current-time"]') as HTMLElement | null,
+      progressFill: document.querySelector('[data-testid="progress-fill"]') as HTMLElement | null,
+      progressThumb: document.querySelector('[data-testid="progress-thumb"]') as HTMLElement | null,
+    };
+    if (cache.currentTimeEl) cache.currentTimeEl.textContent = formatSeconds(time);
+    if (cache.progressFill) cache.progressFill.style.width = `${percent * 100}%`;
+    if (cache.progressThumb) cache.progressThumb.style.left = `${percent * 100}%`;
+  }, [duration, formatSeconds]);
+
+  useEffect(() => {
+    window.addEventListener('mousemove', handleDragVisual);
+    window.addEventListener('mouseup', handleDragEnd);
+    return () => {
+      window.removeEventListener('mousemove', handleDragVisual);
+      window.removeEventListener('mouseup', handleDragEnd);
+    };
+  }, [handleDragVisual, handleDragEnd]);
+
+  const progress = duration > 0 ? Math.max(0, Math.min(100, (currentTime / duration) * 100)) : 0;
+
+  return (
+    <div className="flex-1 flex items-center gap-2">
+      <span className="text-xs opacity-60" data-testid="current-time">{formatSeconds(currentTime)}</span>
+
+      <div
+        ref={progressRef}
+        onClick={handleClick}
+        className="flex-1 py-1 flex items-center cursor-pointer relative"
+        role="progressbar"
+        aria-valuenow={currentTime}
+        aria-valuemin={0}
+        aria-valuemax={duration}
+        aria-label="Playback progress"
+      >
+        <div className="flex-1 h-1 bg-zinc-700 rounded-full relative mx-2">
+          <div
+            data-testid="progress-fill"
+            style={{ width: `${progress}%` }}
+            className="h-full bg-purple-500 rounded-full"
+          />
+          <div
+            onMouseDown={handleDragStart}
+            data-testid="progress-thumb"
+            style={{ left: `${progress}%` }}
+            className="absolute w-4 h-4 bg-purple-500 rounded-full -top-1.5 -translate-x-1/2 cursor-grab active:cursor-grabbing"
+          />
+        </div>
+      </div>
+
+      <span className="text-xs opacity-60" data-testid="duration" data-seconds={duration}>{formatSeconds(duration)}</span>
+    </div>
+  );
+};
+
+export const ProgressBar = memo(ProgressBarInner);
+</file>
+
+<file path="src/features/transcription/TranscriptionResults.tsx">
+import { memo, useEffect, useRef, useState } from 'react';
+import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
+import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+import { EffectModal, EffectBadge } from './EffectModal';
+import type { SoundCensoringEffect } from '../../types';
+
+/**
+ * Binary-search the segment containing *time* (segments are sorted by start).
+ */
+function findClosestSegment(
+  segments: Array<[number, number, string]> | null,
+  time: number,
+): number | null {
+  if (!segments || segments.length === 0) return null;
+
+  let lo = 0, hi = segments.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (segments[mid][0] <= time) lo = mid + 1;
+    else hi = mid - 1;
+  }
+  if (hi >= 0 && time <= segments[hi][1]) return segments[hi][0];
+
+  const a = segments[Math.max(0, hi)][0];
+  const b = segments[Math.min(segments.length - 1, lo)][0];
+  return Math.abs(time - a) <= Math.abs(time - b) ? a : b;
+}
+
+/**
+ * Parse "Stage — 1,234 / 5,678 (42%)" → { label, pct }
+ * For non-numeric stages like "Sending to server…" → { label, pct: null }.
+ */
+function parseStage(stage: string): { label: string; pct: number | null } {
+  const m = stage.match(/^(.+?)\s+—\s+\d+[,\d\s]*\s*\/\s*\d+[,\d\s]*\s*\((\d+)%\)$/);
+  if (m) return { label: m[1].trim(), pct: parseInt(m[2], 10) };
+  const m2 = stage.match(/^(.+?)\s+—\s+(\d+[,\d\s]*)\s*\/\s*(\d+[,\d\s]*)$/);
+  if (m2) {
+    const done = parseFloat(m2[2].replace(/,/g, ''));
+    const total = parseFloat(m2[3].replace(/,/g, ''));
+    return { label: m2[1].trim(), pct: Math.round((done / total) * 100) };
+  }
+  return { label: stage, pct: null };
+}
+
+function TranscribeProgressBar({ stage }: { stage: string }) {
+  const { label, pct } = parseStage(stage);
+
+  return (
+    <div className="space-y-1">
+      <div className="flex items-center justify-between text-zinc-400">
+        <span>{label}</span>
+        {pct != null && <span>{pct}%</span>}
+      </div>
+      <div className="w-full bg-zinc-700 rounded-full h-1.5 overflow-hidden">
+        <div
+          className={`bg-purple-500 h-1.5 rounded-full transition-all duration-200 ${pct == null ? 'animate-pulse' : ''}`}
+          style={{ width: pct != null ? `${pct}%` : '100%' }}
+        />
+      </div>
+    </div>
+  );
+}
+
+const TranscriptionResultsInner = () => {
+  const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
+  const transcribing = usePlayerStore((state) => state.transcribing);
+  const transcribeStage = usePlayerStore((state) => state.transcribeStage);
+  const censoringEffects = usePlayerStore((state) => state.censoringEffects);
+  const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
+  const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
+  const actions = usePlayerActions();
+  const { transcribe, seekToTime, getPlaybackTime } = useMediaPlayerContext();
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [showMatchesOnly, setShowMatchesOnly] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [autoScroll, setAutoScroll] = useState(true);
+
+  // Effect modal
+  const [modalSegment, setModalSegment] = useState<number | null>(null);
+
+  const handleAddEffect = (effect: SoundCensoringEffect) => {
+    actions.addSoundEffect(effect);
+  };
+
+  const handleRemoveEffect = (id: string) => {
+    actions.removeSoundEffect(id);
+  };
+
+  // Build a quick lookup: segmentStart → SoundCensoringEffect[]
+  const segmentEffects = new Map<number, SoundCensoringEffect[]>();
+  for (const e of censoringEffects) {
+    if (e.effectType === 'sound') {
+      const list = segmentEffects.get(e.segmentStart) ?? [];
+      list.push(e as SoundCensoringEffect);
+      segmentEffects.set(e.segmentStart, list);
+    }
+  }
+
+  // Dictionary matches — computed asynchronously after the first render
+  // so Aho-Corasick doesn't block the video rAF loop.
+  const [dictMatches, setDictMatches] = useState<Map<number, { slug: string; count: number }[]>>(null);
+  const matchesVersionRef = useRef(0);
+
+  useEffect(() => {
+    if (!transcriptionResults) {
+      setDictMatches(null);
+      return;
+    }
+
+    const version = ++matchesVersionRef.current;
+
+    setTimeout(() => {
+      if (version !== matchesVersionRef.current) return;
+
+      const map = new Map<number, { slug: string; count: number }[]>();
+      for (const [start, _end, text] of transcriptionResults) {
+        const triggered: { slug: string; count: number }[] = [];
+        for (const slug of activeDictionaries) {
+          const dict = loadedDictionaries[slug];
+          if (!dict) continue;
+          const matches = dict.scanner.findMatches(text.toLowerCase());
+          if (matches.length > 0) triggered.push({ slug, count: matches.length });
+        }
+        if (triggered.length > 0) map.set(start, triggered);
+      }
+      setDictMatches(map);
+    }, 0);
+  }, [transcriptionResults, activeDictionaries, loadedDictionaries]);
+
+  // closestSegmentStart — ref, no React re-render
+  const closestRef = useRef<number | null>(null);
+  const listRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    const applyHighlight = (closest: number | null, scroll: boolean) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-zinc-700');
+        el.classList.add('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+
+        if (scroll && listRef.current) {
+          const container = listRef.current;
+          const containerRect = container.getBoundingClientRect();
+          const elRect = el.getBoundingClientRect();
+          // Center the element in the visible area of the container
+          const targetScroll = container.scrollTop + (elRect.top - containerRect.top) - (containerRect.height / 2) + (elRect.height / 2);
+          container.scrollTo({ top: targetScroll, behavior: 'smooth' });
+        }
+      }
+    };
+
+    const removeHighlight = (closest: number | null) => {
+      if (closest == null) return;
+      const el = document.getElementById(`seg-${closest}`);
+      if (el) {
+        el.classList.remove('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+        el.classList.add('bg-zinc-700');
+      }
+    };
+
+    const t = getPlaybackTime();
+    const newClosest = findClosestSegment(transcriptionResults, t);
+    closestRef.current = newClosest;
+    applyHighlight(newClosest, false);
+
+    const interval = setInterval(() => {
+      const t = getPlaybackTime();
+      const newClosest = findClosestSegment(transcriptionResults, t);
+      if (newClosest === closestRef.current) return;
+
+      removeHighlight(closestRef.current);
+      closestRef.current = newClosest;
+      applyHighlight(newClosest, autoScroll);
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [transcriptionResults, getPlaybackTime, autoScroll]);
+
+  const handleTranscribe = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await transcribe();
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Transcription error:', err);
+      setError('Failed to transcribe: ' + (err as Error).message);
+      setIsLoading(false);
+    }
+  };
+
+  const handleJumpToTime = (time: number) => {
+    seekToTime(time);
+    document.getElementById('videoCanvas')?.scrollIntoView({ behavior: 'smooth' });
+  };
+
+  const formatTime = (seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  };
+
+  const highlightSearch = (text: string): Array<{ key: string; highlighted: boolean; content: string }> => {
+    if (!searchQuery) {
+      return [{ key: '', highlighted: false, content: text }];
+    }
+    const parts: Array<{ key: string; highlighted: boolean; content: string }> = [];
+    const lower = text.toLowerCase();
+    const query = searchQuery.toLowerCase();
+    let idx = 0;
+    let pos = 0;
+    while ((idx = lower.indexOf(query, pos)) !== -1) {
+      if (idx > pos) {
+        parts.push({ key: idx + '-' + pos, highlighted: false, content: text.slice(pos, idx) });
+      }
+      parts.push({ key: idx + '-' + (idx + query.length), highlighted: true, content: text.slice(idx, idx + query.length) });
+      pos = idx + query.length;
+    }
+    if (pos < text.length) {
+      parts.push({ key: pos + '-end', highlighted: false, content: text.slice(pos) });
+    }
+    return parts;
+  };
+
+  return (
+    <div className="bg-zinc-800 rounded-lg p-4">
+      <div className="flex items-center justify-between mb-3 gap-3">
+        <h2 className="text-sm font-semibold text-zinc-300 shrink-0">Transcription Results</h2>
+        <div className="flex items-center gap-2">
+          <button
+            onClick={() => setAutoScroll((v) => !v)}
+            className={`p-1 rounded transition-colors shrink-0 ${autoScroll ? 'text-purple-400 bg-purple-900/30' : 'text-zinc-400 hover:bg-zinc-600 hover:text-zinc-200'}`}
+            title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+              <rect x="3" y="2" width="18" height="20" rx="3" />
+              <line x1="12" y1="10" x2="12" y2="16" />
+              <polyline points="9 13 12 16 15 13" />
+            </svg>
+          </button>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search..."
+            className="text-xs bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 focus:outline-none focus:border-purple-500 w-32 shrink-0"
+          />
+          <button
+            onClick={() => setShowMatchesOnly((v) => !v)}
+            className={`text-xs px-2 py-1 rounded transition-colors shrink-0 ${showMatchesOnly ? 'bg-purple-900/50 text-purple-300' : 'text-purple-400 hover:bg-purple-900/30'}`}
+            title="Show only dictionary matches"
+          >
+            Matches only
+          </button>
+          <button
+            onClick={handleTranscribe}
+            disabled={isLoading}
+            className="text-xs font-semibold px-3 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-50 transition-colors shrink-0"
+          >
+            {transcribing ? 'Transcribing...' : isLoading ? 'Loading...' : 'Transcribe'}
+          </button>
+        </div>
+      </div>
+
+      {error && (
+        <div className="mb-3 text-xs text-red-400 p-2 bg-red-900/20 rounded">
+          {error}
+        </div>
+      )}
+
+      {transcribing ? (
+        <div className="text-xs py-2">
+          {transcribeStage ? (
+            <TranscribeProgressBar stage={transcribeStage} />
+          ) : (
+            <div className="text-zinc-500">Transcribing...</div>
+          )}
+        </div>
+      ) : isLoading && !transcriptionResults ? (
+        <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
+      ) : transcriptionResults && transcriptionResults.length > 0 ? (
+        <div ref={listRef} className="space-y-1 max-h-[400px] overflow-y-auto pr-1">
+          {transcriptionResults.map(([start, end, text]) => {
+            const triggered = dictMatches?.get(start) ?? [];
+
+            if (showMatchesOnly && triggered.length === 0) {
+              return null;
+            }
+
+            if (searchQuery && !text.toLowerCase().includes(searchQuery.toLowerCase())) {
+              return null;
+            }
+
+            const highlightedText = highlightSearch(text);
+            const hasMatches = triggered.length > 0;
+            const rowEffects = segmentEffects.get(start) ?? [];
+            const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
+
+            return (
+              <div key={start} className={rowClass} data-segment={start} id={`seg-${start}`}>
+                <span className="timestamp text-zinc-400 w-16">
+                  {formatTime(start)}
+                </span>
+                <span className="text text-zinc-200 flex-1">
+                  {highlightedText.map((part) =>
+                    part.highlighted ? (
+                      <mark key={part.key} className="bg-yellow-900/60 text-yellow-200 rounded px-0.5">
+                        {part.content}
+                      </mark>
+                    ) : (
+                      <span key={part.key}>{part.content}</span>
+                    )
+                  )}
+                </span>
+                <div className="flex items-center gap-1">
+                  {triggered.map(({ slug, count }) => (
+                    <span key={slug} className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded">
+                      {slug} ×{count}
+                    </span>
+                  ))}
+                  {rowEffects.map((effect) => (
+                    <EffectBadge
+                      key={effect.id}
+                      effect={effect}
+                      onRemove={handleRemoveEffect}
+                    />
+                  ))}
+                  <button
+                    onClick={() => handleJumpToTime(start)}
+                    className="text-xs text-purple-400 hover:text-purple-300 px-1 py-0.5 hover:bg-purple-900/30 rounded"
+                  >
+                    Jump
+                  </button>
+                  <button
+                    onClick={() => setModalSegment(start)}
+                    className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded"
+                    title="Add effect"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
+                    </svg>
+                  </button>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      ) : (
+        <div className="text-xs text-zinc-500 py-2">No transcription data</div>
+      )}
+
+      {/* Effect modal */}
+      {modalSegment != null && (
+        <EffectModal
+          segmentStart={modalSegment}
+          onClose={() => setModalSegment(null)}
+          onAdd={handleAddEffect}
+        />
+      )}
+    </div>
+  );
+};
+
+export const TranscriptionResults = memo(TranscriptionResultsInner);
+</file>
+
+<file path="src/types/index.ts">
+import { FastAhoScanner } from '../aho-corasick';
+
+/**
+ * Represents a single word in a transcription with timing information
+ */
+export interface TranscriptionWord {
+  /** Start time of the word in seconds */
+  start: number;
+
+  /** End time of the word in seconds */
+  end: number;
+
+  /** The text content of the word */
+  text: string;
+
+  /** Optional confidence score (0-1) */
+  confidence?: number;
+
+  /** Optional speaker identifier */
+  speaker?: string;
+}
+
+/**
+ * Represents a dictionary for word matching
+ */
+export interface Dictionary {
+  /** Unique identifier for the dictionary */
+  id: string;
+
+  /** Display name of the dictionary */
+  name: string;
+
+  /** Whether the dictionary is currently active */
+  active: boolean;
+
+  /** Aho-Corasick scanner built from the dictionary data */
+  scanner: FastAhoScanner;
+}
+
+/**
+ * Represents a basic censoring effect (mute, blur, replace, beep).
+ * Times are in seconds (matches transcription timestamps).
+ */
+export interface BasicCensoringEffect {
+  startTime: number;
+  endTime: number;
+  effectType: 'beep' | 'mute' | 'blur' | 'replace';
+}
+
+/**
+ * A sound effect attached to a transcription segment.
+ * segmentStart references the transcription row by its start time.
+ * The end time is derived from the transcription results at runtime.
+ */
+export interface SoundCensoringEffect {
+  id: string;
+  segmentStart: number;
+  soundId: string;
+  volume: number;
+  playbackRate: number;
+  dampenOriginal: boolean;
+  dampenAmount: number;
+  dampenType: 'sharp' | 'parabolic';
+  effectType: 'sound';
+}
+
+export type CensoringEffect = BasicCensoringEffect | SoundCensoringEffect;
+
+/**
+ * Transcription result tuple for backward compatibility with the backend
+ */
+export type TranscriptionResultTuple = [number, number, string];
+
+/**
+ * Represents a sound available for censoring (bleep / beep)
+ */
+export interface BleepSound {
+  /** Unique identifier */
+  id: string;
+
+  /** Display label */
+  label: string;
+
+  /** Original URL — may be empty if sound was added from disk */
+  url: string;
+
+  /** base64 data URL (data:audio/*;base64,...) — set when the blob is stored in IndexedDB */
+  dataUrl: string;
+
+  /** Decoded audio buffer — null while loading */
+  audioBuffer: AudioBuffer | null;
+}
+
+/**
+ * Represents the state of the media player
+ */
+export type PlayerState = {
+  /** Whether the media is currently playing */
+  isPlaying: boolean;
+
+  /** Current playback time in seconds */
+  currentTime: number;
+
+  /** Total duration of the media in seconds */
+  duration: number;
+
+  /** Volume level (0-1) */
+  volume: number;
+
+  /** Whether the audio is muted */
+  isMuted: boolean;
+
+  /** Name of the currently loaded file */
+  fileName: string;
+
+  /** Error message if any */
+  error: string | null;
+
+  /** Warning message if any */
+  warning: string | null;
+
+  /** Whether playback has reached the end */
+  isEnded: boolean;
+
+  /** Transcription results if available */
+  transcriptionResults: Array<TranscriptionResultTuple> | null;
+
+  /** Whether transcription is currently processing on the backend */
+  transcribing: boolean;
+
+  /** Current transcription stage for UI visualization */
+  transcribeStage: string | null;
+
+  /** Censoring effects if available */
+  censoringEffects: Array<CensoringEffect> | null;
+
+  /** Loaded dictionaries by slug */
+  loadedDictionaries: Record<string, Dictionary>;
+
+  /** Active dictionary slugs */
+  activeDictionaries: Set<string>;
+
+  /** Available bleep sounds for censoring */
+  bleepSounds: Record<string, BleepSound>;
+
+  /** Whether censoring effects are active during playback */
+  censoringMode: boolean;
+
+  /** Whether video export is in progress */
+  exporting: boolean;
+
+  /** Current export stage for progress display */
+  exportStage: string | null;
+};
+</file>
+
+<file path="src/hooks/useMediaPlayer.ts">
+import { useCallback, useRef, useEffect } from 'react';
+import { usePlayerStore, playerActions } from '../store/playerStore';
+import {
+  ALL_FORMATS,
+  AudioBufferSink,
+  BlobSource,
+  CanvasSink,
+  Input,
+  InputAudioTrack,
+  UrlSource,
+  WrappedAudioBuffer,
+  WrappedCanvas,
+} from 'mediabunny';
+import { audioBuffersToWav } from '../audio';
+
+/**
+ * Хук для управления воспроизведением медиафайлов через MediaBunny.
+ *
+ * rAF-цикл работает всегда (как в оригинале MediaBunny) — никогда не останавливается.
+ * Все функции хранятся в refs — полностью независимы от React-рендера.
+ */
+export function useMediaPlayer() {
+  // === Refs для хранения состояния воспроизведения ===
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+  const playerContainerRef = useRef<HTMLDivElement>(null);
+  const audioContextRef = useRef<AudioContext | null>(null);
+  const gainNodeRef = useRef<GainNode | null>(null);
+  const inputRef = useRef<Input | null>(null);
+  const videoTrackRef = useRef<InputAudioTrack | null>(null);
+  const audioTrackRef = useRef<InputAudioTrack | null>(null);
+  const videoSinkRef = useRef<CanvasSink | null>(null);
+  const audioSinkRef = useRef<AudioBufferSink | null>(null);
+
+  const audioContextStartTimeRef = useRef<number | null>(null);
+  const playbackTimeAtStartRef = useRef<number>(0);
+  const videoFrameIteratorRef = useRef<AsyncGenerator<WrappedCanvas, void, unknown> | null>(null);
+  const audioBufferIteratorRef = useRef<AsyncGenerator<WrappedAudioBuffer, void, unknown> | null>(null);
+  const nextFrameRef = useRef<WrappedCanvas | null>(null);
+  const queuedAudioNodesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
+  const asyncIdRef = useRef<number>(0);
+
+  // Sound effect engine
+  const triggeredEffectsRef = useRef<Set<string>>(new Set());
+  const playingRef = useRef<boolean>(false); // local, not from store — как в оригинале
+  const playLoopRef = useRef<number>(0);
+  const lastTranscribeFocusRef = useRef<number>(0);
+  const lastProgressBarUpdateRef = useRef<number>(0);
+
+  const canvasCtxRef = useRef<CanvasRenderingContext2D | null>(null);
+
+  const domCacheRef = useRef<{
+    currentTimeEl: HTMLElement | null;
+    durationEl: HTMLElement | null;
+    progressFill: HTMLElement | null;
+    progressThumb: HTMLElement | null;
+  }>({ currentTimeEl: null, durationEl: null, progressFill: null, progressThumb: null });
+
+  // AudioContext создаётся при загрузке файла с правильной sampleRate,
+ // не на маунте — как в оригинале MediaBunny
+
+  // === Утилиты через ref — стабильные, не зависят от React ===
+  const utilsRef = useRef({
+    getPlaybackTime: (): number => {
+      if (playingRef.current && audioContextRef.current && audioContextStartTimeRef.current != null) {
+        return (
+          audioContextRef.current.currentTime -
+          audioContextStartTimeRef.current +
+          playbackTimeAtStartRef.current
+        );
+      }
+      return playbackTimeAtStartRef.current;
+    },
+
+    formatSeconds: (seconds: number): string => {
+      const showMilliseconds = window.innerWidth >= 640;
+      seconds = Math.round(seconds * 1000) / 1000;
+      const hours = Math.floor(seconds / 3600);
+      const minutes = Math.floor((seconds % 3600) / 60);
+      const remainingSeconds = Math.floor(seconds % 60);
+      const millisecs = Math.floor((1000 * seconds) % 1000)
+        .toString()
+        .padStart(3, '0');
+
+      let result: string;
+      if (hours > 0) {
+        result =
+          `${hours}:${minutes.toString().padStart(2, '0')}` +
+          `:${remainingSeconds.toString().padStart(2, '0')}`;
+      } else {
+        result = `${minutes.toString().padStart(2, '0')}:${remainingSeconds
+          .toString()
+          .padStart(2, '0')}`;
+      }
+
+      if (showMilliseconds) {
+        result += `.${millisecs}`;
+      }
+
+      return result;
+    },
+
+    drawFrame: (frame: WrappedCanvas) => {
+      if (!canvasRef.current || !canvasCtxRef.current) return;
+      const ctx = canvasCtxRef.current;
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      ctx.drawImage(frame.canvas, 0, 0);
+    },
+
+    updateProgressBarTime: (seconds: number) => {
+      const now = performance.now();
+      if (now - lastProgressBarUpdateRef.current < 100) return;
+      lastProgressBarUpdateRef.current = now;
+
+      const cache = domCacheRef.current;
+      if (!cache.currentTimeEl) cache.currentTimeEl = document.querySelector('[data-testid="current-time"]') as HTMLElement | null;
+      if (!cache.durationEl) cache.durationEl = document.querySelector('[data-testid="duration"]') as HTMLElement | null;
+      if (!cache.progressFill) cache.progressFill = document.querySelector('[data-testid="progress-fill"]') as HTMLElement | null;
+      if (!cache.progressThumb) cache.progressThumb = document.querySelector('[data-testid="progress-thumb"]') as HTMLElement | null;
+
+      if (cache.currentTimeEl) {
+        cache.currentTimeEl.textContent = utilsRef.current.formatSeconds(seconds);
+      }
+      if (cache.progressFill && cache.durationEl) {
+        const dur = Number(cache.durationEl.dataset.seconds) || 0;
+        const pct = dur > 0 ? Math.max(0, Math.min(100, (seconds / dur) * 100)) : 0;
+        cache.progressFill.style.width = `${pct}%`;
+        cache.progressThumb.style.left = `${pct}%`;
+      }
+    },
+  });
+
+  // === Sound effect engine ===
+
+  /**
+   * Trigger a sound effect: play the bleep sound and optionally dampen
+   * the original audio for the duration of the segment.
+   */
+  function triggerSoundEffect(
+    effect: import('../types').SoundCensoringEffect,
+    segmentEnd: number,
+  ): void {
+    const ctx = audioContextRef.current;
+    const gainNode = gainNodeRef.current;
+    if (!ctx || !gainNode) return;
+
+    const sound = usePlayerStore.getState().bleepSounds[effect.soundId];
+    if (!sound || !sound.audioBuffer) return;
+
+    const now = ctx.currentTime;
+
+    // Play the bleep sound at the configured volume and rate
+    const source = ctx.createBufferSource();
+    source.buffer = sound.audioBuffer;
+    source.playbackRate.value = effect.playbackRate;
+
+    const volGain = ctx.createGain();
+    volGain.gain.value = effect.volume ** 2; // perceptual scaling
+    source.connect(volGain);
+    volGain.connect(ctx.destination);
+    source.start(now);
+    queuedAudioNodesRef.current.add(source);
+    source.onended = () => queuedAudioNodesRef.current.delete(source);
+
+    // Dampen original audio if requested
+    if (effect.dampenOriginal) {
+      const currentGain = gainNode.gain.value;
+      const dampenedGain = currentGain * (1 - effect.dampenAmount);
+      const segmentDuration = segmentEnd - effect.segmentStart;
+      const effectDuration = segmentDuration / effect.playbackRate;
+
+      if (effect.dampenType === 'sharp') {
+        // Immediate drop, hold, immediate restore
+        gainNode.gain.setValueAtTime(dampenedGain, now);
+        gainNode.gain.setValueAtTime(currentGain, now + effectDuration);
+      } else {
+        // Parabolic: smooth dip and restore using setTargetAtTime (exponential approach)
+        // We dip to dampenedGain, then restore to currentGain
+        const tau = effectDuration * 0.3; // time constant for smooth curve
+        gainNode.gain.setValueAtTime(dampenedGain, now);
+        gainNode.gain.setTargetAtTime(currentGain, now + tau, tau);
+        // Force-restore after effect duration to avoid lingering drift
+        gainNode.gain.setValueAtTime(currentGain, now + effectDuration);
+      }
+    }
+  }
+
+  /**
+   * Check playback time against sound effects and trigger any that haven't
+   * fired yet for the current play session.
+   */
+  function checkSoundEffects(playbackTime: number): void {
+    const { censoringEffects, transcriptionResults, censoringMode } = usePlayerStore.getState();
+    if (!censoringMode || !censoringEffects || !transcriptionResults) return;
+
+    for (const e of censoringEffects) {
+      if (e.effectType !== 'sound') continue;
+      if (triggeredEffectsRef.current.has(e.id)) continue;
+
+      // Find the segment end time from transcription results
+      const seg = transcriptionResults.find(
+        ([s]) => Math.abs(s - e.segmentStart) < 0.01,
+      );
+      if (!seg) continue;
+
+      const [start, end] = seg;
+      if (playbackTime >= start && playbackTime < end) {
+        triggeredEffectsRef.current.add(e.id);
+        triggerSoundEffect(e, end);
+      }
+    }
+  }
+
+  // === updateNextFrame — как в оригинале, без мютекса ===
+  const updateNextFrameRef = useRef(async () => {
+    const currentAsyncId = asyncIdRef.current;
+
+    while (true) {
+      const iterator = videoFrameIteratorRef.current;
+      if (!iterator) break;
+
+      const newNextFrame = (await iterator.next()).value ?? null;
+      if (!newNextFrame) break;
+
+      if (currentAsyncId !== asyncIdRef.current) break;
+
+      const playbackTime = utilsRef.current.getPlaybackTime();
+      if (newNextFrame.timestamp <= playbackTime) {
+        utilsRef.current.drawFrame(newNextFrame);
+      } else {
+        nextFrameRef.current = newNextFrame;
+        break;
+      }
+    }
+  });
+
+  // === startVideoIterator ===
+  const startVideoIteratorRef = useRef(async () => {
+    if (!videoSinkRef.current) return;
+
+    asyncIdRef.current++;
+    await videoFrameIteratorRef.current?.return();
+
+    videoFrameIteratorRef.current = videoSinkRef.current.canvases(utilsRef.current.getPlaybackTime());
+
+    const firstFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
+    const secondFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
+
+    nextFrameRef.current = secondFrame;
+
+    if (firstFrame) {
+      utilsRef.current.drawFrame(firstFrame);
+    }
+  });
+
+  // === pause ===
+  const pauseRef = useRef(() => {
+    const currentTime = utilsRef.current.getPlaybackTime();
+    playbackTimeAtStartRef.current = currentTime;
+    playerActions.setCurrentTime(currentTime);
+    playingRef.current = false;
+    playerActions.setIsPlaying(false);
+
+    void audioBufferIteratorRef.current?.return();
+    audioBufferIteratorRef.current = null;
+
+    for (const node of queuedAudioNodesRef.current) {
+      node.stop();
+    }
+    queuedAudioNodesRef.current.clear();
+
+    // Reset triggered effects so they can fire again on next play
+    triggeredEffectsRef.current.clear();
+
+    // НЕ останавливаем rAF-цикл — как в оригинале MediaBunny
+  });
+
+  // === rAF-цикл — работает ВСЕГДА, никогда не останавливается ===
+  useEffect(() => {
+    const renderLoop = () => {
+      const state = usePlayerStore.getState();
+
+      if (state.fileName) {
+        const playbackTime = utilsRef.current.getPlaybackTime();
+
+        if (state.duration > 0 && playbackTime >= state.duration) {
+          pauseRef.current();
+          playbackTimeAtStartRef.current = state.duration;
+          playerActions.setIsEnded(true);
+        }
+
+        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+          utilsRef.current.drawFrame(nextFrameRef.current);
+          nextFrameRef.current = null;
+          void updateNextFrameRef.current();
+        }
+
+        utilsRef.current.updateProgressBarTime(playbackTime);
+
+        // Check and trigger sound effects
+        checkSoundEffects(playbackTime);
+      }
+
+      playLoopRef.current = requestAnimationFrame(renderLoop);
+    };
+
+    playLoopRef.current = requestAnimationFrame(renderLoop);
+
+    // Also call render on an interval to keep updating even if the tab isn't visible
+    // (as in the original MediaBunny example)
+    const fallbackInterval = setInterval(() => {
+      const state = usePlayerStore.getState();
+      if (state.fileName) {
+        const playbackTime = utilsRef.current.getPlaybackTime();
+        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+          utilsRef.current.drawFrame(nextFrameRef.current);
+          nextFrameRef.current = null;
+          void updateNextFrameRef.current();
+        }
+        utilsRef.current.updateProgressBarTime(playbackTime);
+        checkSoundEffects(playbackTime);
+      }
+    }, 500);
+
+    return () => {
+      if (playLoopRef.current) {
+        cancelAnimationFrame(playLoopRef.current);
+        playLoopRef.current = 0;
+      }
+      clearInterval(fallbackInterval);
+    };
+  }, []);
+
+  // === Транскрипция — отдельный setInterval, не конкурирует с rAF ===
+  const transcribeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
+  const startTranscribeFocus = useCallback(() => {
+    stopTranscribeFocus();
+    transcribeIntervalRef.current = setInterval(() => {
+      const state = usePlayerStore.getState();
+      if (state.transcriptionResults) {
+        const playbackTime = utilsRef.current.getPlaybackTime();
+        const currentIndex = state.transcriptionResults.findIndex(
+          ([start, end]) => playbackTime >= start && playbackTime <= end
+        );
+
+        if (currentIndex === -1) return;
+
+        const prevActive = document.querySelectorAll('tr.active-playing');
+        prevActive.forEach((row) => {
+          const index = row.getAttribute('data-index');
+          if (index && Number(index) !== currentIndex) {
+            row.classList.remove('active-playing');
+          }
+        });
+
+        const activeRow = document.querySelector(`tr[data-index="${currentIndex}"]`);
+        if (activeRow) {
+          activeRow.classList.add('active-playing');
+          activeRow.scrollIntoView({ block: 'nearest' });
+        }
+      }
+    }, 100);
+  }, []);
+
+  const stopTranscribeFocus = useCallback(() => {
+    if (transcribeIntervalRef.current) {
+      clearInterval(transcribeIntervalRef.current);
+      transcribeIntervalRef.current = null;
+    }
+  }, []);
+
+  // === Публичные методы ===
+
+  const stopRenderLoop = useCallback(() => {
+    if (playLoopRef.current) {
+      cancelAnimationFrame(playLoopRef.current);
+      playLoopRef.current = 0;
+    }
+  }, []);
+
+  const pause = useCallback(() => {
+    pauseRef.current();
+  }, []);
+
+  const startRenderLoop = useCallback(() => {
+    // rAF работает всегда, так что это no-op
+  }, []);
+
+  const runAudioIterator = useCallback(async () => {
+    if (!audioBufferIteratorRef.current || !audioContextRef.current || !gainNodeRef.current) return;
+
+    const ctx = audioContextRef.current;
+    const gainNode = gainNodeRef.current;
+    const contextStart = audioContextStartTimeRef.current!;
+    const playbackOffset = playbackTimeAtStartRef.current;
+
+    try {
+      for await (const wrapped of audioBufferIteratorRef.current) {
+        const source = ctx.createBufferSource();
+        source.buffer = wrapped.buffer;
+        source.connect(gainNode);
+
+        const bufferStart = wrapped.timestamp;
+        let startTimestamp = contextStart + (bufferStart - playbackOffset);
+
+        // Round to sample boundaries to prevent subsample audio glitches
+        startTimestamp = Math.round(ctx.sampleRate * startTimestamp) / ctx.sampleRate;
+
+        // Two cases: audio starts in the future or in the past
+        if (startTimestamp >= ctx.currentTime) {
+          source.start(startTimestamp);
+        } else {
+          source.start(ctx.currentTime, ctx.currentTime - startTimestamp);
+        }
+
+        queuedAudioNodesRef.current.add(source);
+        source.onended = () => queuedAudioNodesRef.current.delete(source);
+
+        // Slow down if we're more than a second ahead
+        if (bufferStart - utilsRef.current.getPlaybackTime() >= 1) {
+          await new Promise((resolve) => {
+            const id = setInterval(() => {
+              if (bufferStart - utilsRef.current.getPlaybackTime() < 1) {
+                clearInterval(id);
+                resolve();
+              }
+            }, 100);
+          });
+        }
+      }
+    } catch {
+      // Итератор остановлен (pause) — нормально
+    }
+  }, []);
+
+  const play = useCallback(async () => {
+    try {
+      if (!audioContextRef.current) {
+        playerActions.setError('Audio system not available');
+        return;
+      }
+
+      if (audioContextRef.current.state === 'suspended') {
+        await audioContextRef.current.resume();
+      }
+
+      const currentDuration = usePlayerStore.getState().duration;
+      if (utilsRef.current.getPlaybackTime() === currentDuration) {
+        playbackTimeAtStartRef.current = 0;
+        playerActions.setIsEnded(false);
+        await startVideoIteratorRef.current();
+      }
+
+      audioContextStartTimeRef.current = audioContextRef.current.currentTime;
+      playingRef.current = true;
+      playerActions.setIsPlaying(true);
+
+      if (audioSinkRef.current) {
+        audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
+        void runAudioIterator();
+      }
+
+      // startTranscribeFocus removed — closestSegmentStart in TranscriptionResults
+      // handles highlighting via DOM without re-rendering React
+    } catch (error) {
+      console.error('Playback error:', error);
+      playerActions.setError(error instanceof Error ? error.message : 'Playback failed');
+    }
+  }, [audioSinkRef, runAudioIterator]);
+
+  const togglePlay = useCallback(() => {
+    const isPlaying = usePlayerStore.getState().isPlaying;
+    if (isPlaying) {
+      pause();
+    } else {
+      void play();
+    }
+  }, [pause, play]);
+
+  const seekToTime = useCallback(async (seconds: number) => {
+    const wasPlaying = usePlayerStore.getState().isPlaying;
+
+    if (wasPlaying) {
+      pause();
+    }
+
+    playbackTimeAtStartRef.current = seconds;
+    playerActions.setCurrentTime(seconds);
+    playerActions.setIsEnded(false);
+
+    // Reset triggered effects so they can fire at the new position
+    triggeredEffectsRef.current.clear();
+
+    await startVideoIteratorRef.current();
+
+    if (wasPlaying) {
+      await play();
+    }
+  }, [pause, play]);
+
+  const setVolume = useCallback((volume: number) => {
+    if (gainNodeRef.current) {
+      gainNodeRef.current.gain.value = volume ** 2;
+    }
+    playerActions.setVolume(volume);
+    // Поднимаем mute, если громкость установлена > 0
+    if (volume > 0) {
+      playerActions.setIsMuted(false);
+    }
+  }, []);
+
+  const toggleMute = useCallback(() => {
+    const state = usePlayerStore.getState();
+    const currentlyMuted = state.isMuted;
+    const previousVolume = state.volume;
+
+    if (gainNodeRef.current) {
+      if (currentlyMuted) {
+        // Unmute: restore previous volume
+        const restoreVolume = previousVolume === 0 ? 0.5 : previousVolume;
+        gainNodeRef.current.gain.value = restoreVolume ** 2;
+        playerActions.setVolume(restoreVolume);
+      } else {
+        // Mute: silence
+        gainNodeRef.current.gain.value = 0;
+      }
+    }
+    playerActions.setIsMuted(!currentlyMuted);
+  }, []);
+
+  const initMediaPlayer = useCallback(async (resource: File | string) => {
+    try {
+      const isCurrentlyPlaying = usePlayerStore.getState().isPlaying;
+      if (isCurrentlyPlaying) {
+        pause();
+      }
+
+      // Close old audio context if any (sampleRate may differ for new file)
+      if (audioContextRef.current) {
+        await audioContextRef.current.close();
+        audioContextRef.current = null;
+        gainNodeRef.current = null;
+      }
+
+      playerActions.setError(null);
+      playerActions.setWarning(null);
+      playerActions.setIsEnded(false);
+      playerActions.setFileName(resource instanceof File ? resource.name : resource);
+      playerActions.setTranscriptionResults(null);
+      playerActions.setTranscribing(false);
+      playerActions.setCensoringEffects([]);
+      triggeredEffectsRef.current.clear();
+
+      const source =
+        resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
+      const input = new Input({ source, formats: ALL_FORMATS });
+      inputRef.current = input;
+
+      playbackTimeAtStartRef.current = 0;
+      const totalDuration = await input.computeDuration();
+      playerActions.setDuration(totalDuration);
+
+      let videoTrack = await input.getPrimaryVideoTrack();
+      let audioTrack = await input.getPrimaryAudioTrack();
+
+      let problemMessage = '';
+
+      if (videoTrack) {
+        if (videoTrack.codec === null) {
+          problemMessage += 'Unsupported video codec. ';
+          videoTrack = null;
+        } else if (!(await videoTrack.canDecode())) {
+          problemMessage += 'Unable to decode the video track. ';
+          videoTrack = null;
+        }
+      }
+
+      if (audioTrack) {
+        if (audioTrack.codec === null) {
+          problemMessage += 'Unsupported audio codec. ';
+          audioTrack = null;
+        } else if (!(await audioTrack.canDecode())) {
+          problemMessage += 'Unable to decode the audio track. ';
+          audioTrack = null;
+        }
+      }
+
+      if (!videoTrack && !audioTrack) {
+        if (!problemMessage) {
+          problemMessage = 'No audio or video track found.';
+        }
+        throw new Error(problemMessage);
+      }
+
+      if (problemMessage) {
+        playerActions.setWarning(problemMessage);
+      }
+
+      // Create AudioContext with matching sampleRate — КРИТИЧНО для правильного звука!
+      const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
+      if (audioTrack) {
+        const sampleRate = audioTrack.sampleRate;
+        audioContextRef.current = new AudioContextClass({ sampleRate });
+        gainNodeRef.current = audioContextRef.current.createGain();
+        gainNodeRef.current.connect(audioContextRef.current.destination);
+        gainNodeRef.current.gain.value = 0.5 ** 2;
+        playerActions.setVolume(0.5);
+      } else {
+        // No audio — create context for timing only
+        audioContextRef.current = new AudioContextClass();
+      }
+
+      const videoCanBeTransparent = videoTrack
+        ? await videoTrack.canBeTransparent()
+        : false;
+
+      videoSinkRef.current =
+        videoTrack &&
+        new CanvasSink(videoTrack, {
+          poolSize: 2,
+          fit: 'contain',
+          alpha: videoCanBeTransparent,
+        });
+
+      audioSinkRef.current = audioTrack && new AudioBufferSink(audioTrack);
+
+      videoTrackRef.current = videoTrack;
+      audioTrackRef.current = audioTrack;
+
+      if (canvasRef.current && videoTrack) {
+        canvasRef.current.width = videoTrack.displayWidth;
+        canvasRef.current.height = videoTrack.displayHeight;
+        canvasCtxRef.current = canvasRef.current.getContext('2d');
+      }
+
+      await startVideoIteratorRef.current();
+
+      if (audioContextRef.current?.state === 'running') {
+        await play();
+      }
+    } catch (error) {
+      console.error('Error initializing media player:', error);
+      playerActions.setError(error instanceof Error ? error.message : 'Failed to load media');
+    }
+  }, [pause, play]);
+
+  const transcribe = useCallback(async () => {
+    if (!audioSinkRef.current || !audioTrackRef.current) {
+      playerActions.setError('No audio track available for transcription');
+      return;
+    }
+
+    try {
+      playerActions.setTranscribing(true);
+      playerActions.setTranscribeStage('Collecting audio data…');
+
+      const chunks: AudioBuffer[] = [];
+      for await (const { buffer } of audioSinkRef.current.buffers(0)) {
+        chunks.push(buffer);
+        playerActions.setTranscribeStage(`Collecting audio data… (${chunks.length} chunks)`);
+      }
+
+      playerActions.setTranscribeStage(`Encoding WAV — ${chunks.length} chunks to process`);
+      const fileName = usePlayerStore.getState().fileName;
+      const audioBlob = await audioBuffersToWav(chunks, audioTrackRef.current.sampleRate, (stage, done, total) => {
+        const pct = Math.round((done / total) * 100);
+        playerActions.setTranscribeStage(`${stage} — ${done.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`);
+      });
+
+      playerActions.setTranscribeStage('Sending to server…');
+      const formData = new FormData();
+      formData.append('file', audioBlob, `${fileName}.wav`);
+
+      const response = await fetch('http://localhost:8686/transcribe', {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        throw new Error(errorData.error || 'Failed to transcribe audio');
+      }
+
+      const { task_id } = await response.json();
+
+      playerActions.setTranscribeStage('Waiting for transcription…');
+
+      // Count seconds while waiting for the server
+      const waitStart = Date.now();
+      const waitInterval = setInterval(() => {
+        const secs = Math.floor((Date.now() - waitStart) / 1000);
+        playerActions.setTranscribeStage(`Waiting for server… (${secs}s)`);
+      }, 1000);
+
+      const socket = new WebSocket(`ws://localhost:8686/ws/status/${task_id}`);
+
+      await new Promise((resolve, reject) => {
+        socket.onmessage = (event) => {
+          clearInterval(waitInterval);
+          const msg = JSON.parse(event.data);
+          if (msg.status === 'PROCESSING') {
+            playerActions.setTranscribing(true);
+            playerActions.setTranscribeStage('Server is transcribing…');
+          } else if (msg.status === 'DONE') {
+            const resultsInSeconds = msg.results.map(
+              ([start, end, text]: [number, number, string]) => [start / 1000, end / 1000, text] as [number, number, string]
+            );
+            // Defer to macrotask: rAF render loop gets to finish the current
+            // video frame before React starts the expensive transcription render.
+            setTimeout(() => {
+              playerActions.setTranscriptionDone(resultsInSeconds);
+              socket.close();
+              resolve(true);
+            }, 0);
+          } else if (msg.status === 'ERROR') {
+            playerActions.setTranscribing(false);
+            reject(new Error(msg.results || 'Transcription error'));
+          }
+        };
+
+        socket.onerror = (error) => {
+          clearInterval(waitInterval);
+          playerActions.setTranscribing(false);
+          console.error('WebSocket error:', error);
+          playerActions.setError('Failed to connect to transcription server');
+          socket.close();
+          reject(new Error('WebSocket error'));
+        };
+      });
+    } catch (error) {
+      console.error('Transcription error:', error);
+      playerActions.setError(error instanceof Error ? error.message : 'Transcription failed');
+    }
+  }, [audioSinkRef, audioTrackRef]);
+
+  const cleanup = useCallback(() => {
+    playerActions.setTranscribing(false);
+    playerActions.setIsEnded(false);
+    stopRenderLoop();
+    stopTranscribeFocus();
+    void audioBufferIteratorRef.current?.return();
+    audioBufferIteratorRef.current = null;
+
+    for (const node of queuedAudioNodesRef.current) {
+      node.stop();
+    }
+    queuedAudioNodesRef.current.clear();
+
+    void videoFrameIteratorRef.current?.return();
+    videoFrameIteratorRef.current = null;
+
+    // Clear canvas so the last frame doesn't linger
+    if (canvasRef.current && canvasCtxRef.current) {
+      canvasCtxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
+
+    if (audioContextRef.current) {
+      audioContextRef.current.close();
+      audioContextRef.current = null;
+    }
+  }, [stopRenderLoop, stopTranscribeFocus]);
+
+  const getPlaybackTime = useCallback(() => utilsRef.current.getPlaybackTime(), []);
+  const formatSeconds = useCallback((s: number) => utilsRef.current.formatSeconds(s), []);
+
+  const render = useCallback(() => {
+    // no-op — rAF работает всегда
+  }, []);
+
+  return {
+    canvasRef,
+    playerContainerRef,
+    initMediaPlayer,
+    play,
+    pause,
+    togglePlay,
+    seekToTime,
+    setVolume,
+    toggleMute,
+    transcribe,
+    getPlaybackTime,
+    formatSeconds,
+    render,
+    startRenderLoop,
+    stopRenderLoop,
+    cleanup,
+    getVideoSink: () => videoSinkRef.current,
+    getAudioSink: () => audioSinkRef.current,
+    getAudioTrack: () => audioTrackRef.current,
+    getVideoTrack: () => videoTrackRef.current,
+    getAudioContext: () => audioContextRef.current,
+    getInput: () => inputRef.current,
+  };
+}
+</file>
+
+<file path="src/store/playerStore.ts">
+import { create } from 'zustand';
+import type { PlayerState, Dictionary, BleepSound, CensoringEffect, SoundCensoringEffect } from '../types';
+import { FastAhoScanner } from '../aho-corasick';
+import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData, dbUpdateUrl } from './bleepDb';
+
+/**
+ * Convert IndexedDB records to BleepSound map.
+ */
+function recordsToSounds(records: Awaited<ReturnType<typeof getAllBleepRecords>>): Record<string, BleepSound> {
+  const result: Record<string, BleepSound> = {};
+  for (const rec of records) {
+    if (rec.data) {
+      // Convert ArrayBuffer to base64 data URL for in-memory use
+      const bytes = new Uint8Array(rec.data);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const base64 = btoa(binary);
+      result[rec.id] = {
+        id: rec.id,
+        label: rec.label,
+        url: rec.url ?? '',
+        dataUrl: `data:audio/*;base64,${base64}`,
+        audioBuffer: null,
+      };
+    } else {
+      // No blob data — rely on URL
+      result[rec.id] = {
+        id: rec.id,
+        label: rec.label,
+        url: rec.url ?? '',
+        dataUrl: '',
+        audioBuffer: null,
+      };
+    }
+  }
+  return result;
+}
+
+export const usePlayerStore = create<PlayerState>((set) => ({
+  // Playback state
+  isPlaying: false,
+  currentTime: 0,
+  duration: 0,
+  volume: 0.5,
+  isMuted: false,
+
+  // File state
+  fileName: '',
+  error: null,
+  warning: null,
+  isEnded: false,
+
+  // Transcription state
+  transcriptionResults: null,
+  transcribing: false,
+  transcribeStage: null,
+  censoringEffects: [],
+
+  // Dictionary state
+  loadedDictionaries: {},
+  activeDictionaries: new Set(),
+
+  // Bleep sounds — loaded async from IndexedDB
+  bleepSounds: {},
+
+  // Censoring mode
+  censoringMode: false,
+
+  // Export state
+  exporting: false,
+  exportStage: null,
+}));
+
+/**
+ * Hydrate bleep sounds from IndexedDB on app start.
+ */
+export async function hydrateBleepSounds(): Promise<void> {
+  try {
+    const records = await getAllBleepRecords();
+    const sounds = recordsToSounds(records);
+    usePlayerStore.setState({ bleepSounds: sounds });
+  } catch (err) {
+    console.error('Failed to hydrate bleep sounds:', err);
+  }
+}
+
+/**
+ * Actions — вне состояния, чтобы их пересоздание не триггерило
+ * ре-рендеры подписчиков. Каждый экшн пишет напрямую через set().
+ */
+export const playerActions = {
+  setIsPlaying: (isPlaying: boolean) => usePlayerStore.setState({ isPlaying }),
+  setCurrentTime: (currentTime: number) => usePlayerStore.setState({ currentTime }),
+  setDuration: (duration: number) => usePlayerStore.setState({ duration }),
+  setVolume: (volume: number) => usePlayerStore.setState({ volume }),
+  setIsMuted: (isMuted: boolean) => usePlayerStore.setState({ isMuted }),
+  setFileName: (fileName: string) => usePlayerStore.setState({ fileName }),
+  setError: (error: string | null) => usePlayerStore.setState({ error }),
+  setWarning: (warning: string | null) => usePlayerStore.setState({ warning }),
+  setIsEnded: (isEnded: boolean) => usePlayerStore.setState({ isEnded }),
+  setTranscriptionResults: (results: Array<[number, number, string]> | null) =>
+    usePlayerStore.setState({ transcriptionResults: results }),
+  setTranscribing: (transcribing: boolean) =>
+    usePlayerStore.setState({ transcribing }),
+  setTranscribeStage: (stage: string | null) =>
+    usePlayerStore.setState({ transcribeStage: stage }),
+  /**
+   * Set transcription results + transcribing=false + clear stage in one setState.
+   */
+  setTranscriptionDone: (results: Array<[number, number, string]>) =>
+    usePlayerStore.setState({
+      transcriptionResults: results,
+      transcribing: false,
+      transcribeStage: null,
+    }),
+  setCensoringEffects: (effects: CensoringEffect[]) =>
+    usePlayerStore.setState({ censoringEffects: effects }),
+
+  // Sound effect actions
+
+  addSoundEffect: (effect: SoundCensoringEffect) => {
+    usePlayerStore.setState((state) => ({
+      censoringEffects: [...(state.censoringEffects ?? []), effect],
+    }));
+  },
+
+  removeSoundEffect: (id: string) => {
+    usePlayerStore.setState((state) => ({
+      censoringEffects: (state.censoringEffects ?? []).filter(
+        (e) => e.effectType !== 'sound' || e.id !== id,
+      ),
+    }));
+  },
+
+  updateSoundEffect: (id: string, updates: Partial<SoundCensoringEffect>) => {
+    usePlayerStore.setState((state) => ({
+      censoringEffects: (state.censoringEffects ?? []).map((e) => {
+        if (e.effectType === 'sound' && e.id === id) {
+          return { ...e, ...updates };
+        }
+        return e;
+      }),
+    }));
+  },
+
+  setCensoringMode: (mode: boolean) => {
+    usePlayerStore.setState({ censoringMode: mode });
+  },
+
+  // Dictionary actions
+  loadDictionary: (slug: string, name: string, scanner: FastAhoScanner) => {
+    const dict: Dictionary = { id: slug, name, active: true, scanner };
+    usePlayerStore.setState((state) => ({
+      loadedDictionaries: { ...state.loadedDictionaries, [slug]: dict },
+      activeDictionaries: new Set([...state.activeDictionaries, slug]),
+    }));
+  },
+
+  removeDictionary: (slug: string) => {
+    const state = usePlayerStore.getState();
+    const newDictionaries = { ...state.loadedDictionaries };
+    delete newDictionaries[slug];
+    const newActive = new Set(state.activeDictionaries);
+    newActive.delete(slug);
+    usePlayerStore.setState({ loadedDictionaries: newDictionaries, activeDictionaries: newActive });
+  },
+
+  toggleDictionary: (slug: string) => {
+    const { activeDictionaries } = usePlayerStore.getState();
+    const newActive = new Set(activeDictionaries);
+    if (newActive.has(slug)) {
+      newActive.delete(slug);
+    } else {
+      newActive.add(slug);
+    }
+    usePlayerStore.setState({ activeDictionaries: newActive });
+  },
+
+  clearAllDictionaries: () => {
+    usePlayerStore.setState({ loadedDictionaries: {}, activeDictionaries: new Set() });
+  },
+
+  // Bleep sound actions
+
+  addBleepSound: async (
+    id: string,
+    label: string,
+    remoteUrl: string,
+    fileData?: ArrayBuffer,
+  ) => {
+    // Persist to IndexedDB
+    if (fileData) {
+      // File sound — store blob; also preserve url if provided (e.g. from SQLite import)
+      await putBleepRecord({ id, label, url: remoteUrl || undefined, data: fileData });
+    } else {
+      // URL sound — store remote URL
+      await putBleepRecord({ id, label, url: remoteUrl });
+    }
+
+    // Update in-memory store
+    let sound: BleepSound;
+    if (fileData) {
+      // Convert ArrayBuffer to base64 data URL for in-memory playback
+      const bytes = new Uint8Array(fileData);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const base64 = btoa(binary);
+      sound = {
+        id,
+        label,
+        url: remoteUrl || '',
+        dataUrl: `data:audio/*;base64,${base64}`,
+        audioBuffer: null,
+      };
+    } else {
+      sound = {
+        id,
+        label,
+        url: remoteUrl,
+        dataUrl: '',
+        audioBuffer: null,
+      };
+    }
+    usePlayerStore.setState((state) => ({
+      bleepSounds: { ...state.bleepSounds, [id]: sound },
+    }));
+  },
+
+  removeBleepSound: async (id: string) => {
+    await deleteBleepRecord(id);
+    usePlayerStore.setState((state) => {
+      const newSounds = { ...state.bleepSounds };
+      delete newSounds[id];
+      return { bleepSounds: newSounds };
+    });
+  },
+
+  updateBleepLabel: async (id: string, label: string) => {
+    await dbUpdateLabel(id, label);
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, label } } };
+    });
+  },
+
+  updateBleepUrl: async (id: string, url: string) => {
+    await dbUpdateUrl(id, url);
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, url } } };
+    });
+  },
+
+  setBleepBuffer: (id: string, buffer: AudioBuffer | null) => {
+    usePlayerStore.setState((state) => {
+      const sound = state.bleepSounds[id];
+      if (!sound) return {};
+      return { bleepSounds: { ...state.bleepSounds, [id]: { ...sound, audioBuffer: buffer } } };
+    });
+  },
+
+  /**
+   * Download a sound's audio blob from its URL and store it in IndexedDB.
+   * After this, the sound no longer depends on the remote URL.
+   */
+  downloadUrlSound: async (id: string) => {
+    const sound = usePlayerStore.getState().bleepSounds[id];
+    if (!sound || !sound.url) return;
+
+    try {
+      const res = await fetch(sound.url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      const arrayBuffer = await res.arrayBuffer();
+
+      // Store blob in IndexedDB
+      await upsertBleepData(id, arrayBuffer);
+
+      // Convert to base64 data URL for in-memory use
+      const bytes = new Uint8Array(arrayBuffer);
+      let binary = '';
+      for (let i = 0; i < bytes.length; i++) binary += String.fromCharCode(bytes[i]);
+      const base64 = btoa(binary);
+      const dataUrl = `data:audio/*;base64,${base64}`;
+
+      usePlayerStore.setState((state) => {
+        const s = state.bleepSounds[id];
+        if (!s) return {};
+        return { bleepSounds: { ...state.bleepSounds, [id]: { ...s, dataUrl } } };
+      });
+    } catch (err) {
+      console.error(`Failed to download sound ${id}:`, err);
+      throw err;
+    }
+  },
+
+  // Export actions
+  setExporting: (exporting: boolean) =>
+    usePlayerStore.setState({ exporting }),
+  setExportStage: (stage: string | null) =>
+    usePlayerStore.setState({ exportStage: stage }),
+  /**
+   * Set export done: exporting=false + clear stage in one setState.
+   */
+  setExportDone: () =>
+    usePlayerStore.setState({
+      exporting: false,
+      exportStage: null,
+    }),
+};
+
+/**
+ * Хук для удобного доступа к экшнам из компонентов.
+ * Возвращает стабильную ссылку — не ломает useCallback-зависимости.
+ */
+export function usePlayerActions() {
+  return playerActions;
+}
+
+/**
+ * Generate a short unique id.
+ */
+function uid(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
+}
+</file>
+
+</files>

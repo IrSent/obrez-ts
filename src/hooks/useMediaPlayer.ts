@@ -161,25 +161,24 @@ export function useMediaPlayer() {
     queuedAudioNodesRef.current.add(source);
     source.onended = () => queuedAudioNodesRef.current.delete(source);
 
-    // Dampen original audio if requested
+    // Dampen original audio for the full segment duration,
+    // independent of the bleep sound's playback rate.
     if (effect.dampenOriginal) {
       const currentGain = gainNode.gain.value;
       const dampenedGain = currentGain * (1 - effect.dampenAmount);
       const segmentDuration = segmentEnd - effect.segmentStart;
-      const effectDuration = segmentDuration / effect.playbackRate;
 
       if (effect.dampenType === 'sharp') {
-        // Immediate drop, hold, immediate restore
+        // Immediate drop, hold, immediate restore at segment end
         gainNode.gain.setValueAtTime(dampenedGain, now);
-        gainNode.gain.setValueAtTime(currentGain, now + effectDuration);
+        gainNode.gain.setValueAtTime(currentGain, now + segmentDuration);
       } else {
-        // Parabolic: smooth dip and restore using setTargetAtTime (exponential approach)
-        // We dip to dampenedGain, then restore to currentGain
-        const tau = effectDuration * 0.3; // time constant for smooth curve
+        // Parabolic: smooth dip and restore using setTargetAtTime
+        const tau = segmentDuration * 0.3;
         gainNode.gain.setValueAtTime(dampenedGain, now);
         gainNode.gain.setTargetAtTime(currentGain, now + tau, tau);
-        // Force-restore after effect duration to avoid lingering drift
-        gainNode.gain.setValueAtTime(currentGain, now + effectDuration);
+        // Force-restore at segment end to avoid lingering drift
+        gainNode.gain.setValueAtTime(currentGain, now + segmentDuration);
       }
     }
   }
@@ -787,6 +786,8 @@ export function useMediaPlayer() {
     getVideoSink: () => videoSinkRef.current,
     getAudioSink: () => audioSinkRef.current,
     getAudioTrack: () => audioTrackRef.current,
+    getVideoTrack: () => videoTrackRef.current,
     getAudioContext: () => audioContextRef.current,
+    getInput: () => inputRef.current,
   };
 }

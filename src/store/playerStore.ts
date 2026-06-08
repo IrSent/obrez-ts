@@ -65,6 +65,10 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   // Censoring mode
   censoringMode: false,
+
+  // Export state
+  exporting: false,
+  exportStage: null,
 }));
 
 /**
@@ -290,6 +294,20 @@ export const playerActions = {
       throw err;
     }
   },
+
+  // Export actions
+  setExporting: (exporting: boolean) =>
+    usePlayerStore.setState({ exporting }),
+  setExportStage: (stage: string | null) =>
+    usePlayerStore.setState({ exportStage: stage }),
+  /**
+   * Set export done: exporting=false + clear stage in one setState.
+   */
+  setExportDone: () =>
+    usePlayerStore.setState({
+      exporting: false,
+      exportStage: null,
+    }),
 };
 
 /**

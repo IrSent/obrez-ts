@@ -57,6 +57,7 @@ export interface SoundCensoringEffect {
   segmentStart: number;
   soundId: string;
   volume: number;
+  volumeMode: 'manual' | 'auto';
   playbackRate: number;
   dampenOriginal: boolean;
   dampenAmount: number;
@@ -145,4 +146,10 @@ export type PlayerState = {
 
   /** Whether censoring effects are active during playback */
   censoringMode: boolean;
+
+  /** Whether video export is in progress */
+  exporting: boolean;
+
+  /** Current export stage for progress display */
+  exportStage: string | null;
 };
