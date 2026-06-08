@@ -46,7 +46,7 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
 
   const [selectedSoundId, setSelectedSoundId] = useState('');
   const [volume, setVolume] = useState(1);
-  const [volumeMode, setVolumeMode] = useState<'manual' | 'auto'>('manual');
+  const [volumeMode, setVolumeMode] = useState<'manual' | 'auto'>('auto');
   const [playbackRate, setPlaybackRate] = useState(1);
   const [dampenOriginal, setDampenOriginal] = useState(true);
   const [dampenAmount, setDampenAmount] = useState(1);
