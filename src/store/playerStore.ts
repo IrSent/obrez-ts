@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { PlayerState, Dictionary, BleepSound } from '../types';
+import type { PlayerState, Dictionary, BleepSound, CensoringEffect, SoundCensoringEffect } from '../types';
 import { FastAhoScanner } from '../aho-corasick';
 import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData, dbUpdateUrl } from './bleepDb';
 
@@ -54,7 +54,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   transcriptionResults: null,
   transcribing: false,
   transcribeStage: null,
-  censoringEffects: null,
+  censoringEffects: [],
 
   // Dictionary state
   loadedDictionaries: {},
@@ -62,6 +62,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   // Bleep sounds — loaded async from IndexedDB
   bleepSounds: {},
+
+  // Censoring mode
+  censoringMode: false,
 }));
 
 /**
@@ -106,11 +109,39 @@ export const playerActions = {
       transcribing: false,
       transcribeStage: null,
     }),
-  setCensoringEffects: (effects: Array<{
-    startTime: number;
-    endTime: number;
-    effectType: 'beep' | 'mute' | 'blur' | 'replace';
-  }> | null) => usePlayerStore.setState({ censoringEffects: effects }),
+  setCensoringEffects: (effects: CensoringEffect[]) =>
+    usePlayerStore.setState({ censoringEffects: effects }),
+
+  // Sound effect actions
+
+  addSoundEffect: (effect: SoundCensoringEffect) => {
+    usePlayerStore.setState((state) => ({
+      censoringEffects: [...(state.censoringEffects ?? []), effect],
+    }));
+  },
+
+  removeSoundEffect: (id: string) => {
+    usePlayerStore.setState((state) => ({
+      censoringEffects: (state.censoringEffects ?? []).filter(
+        (e) => e.effectType !== 'sound' || e.id !== id,
+      ),
+    }));
+  },
+
+  updateSoundEffect: (id: string, updates: Partial<SoundCensoringEffect>) => {
+    usePlayerStore.setState((state) => ({
+      censoringEffects: (state.censoringEffects ?? []).map((e) => {
+        if (e.effectType === 'sound' && e.id === id) {
+          return { ...e, ...updates };
+        }
+        return e;
+      }),
+    }));
+  },
+
+  setCensoringMode: (mode: boolean) => {
+    usePlayerStore.setState({ censoringMode: mode });
+  },
 
   // Dictionary actions
   loadDictionary: (slug: string, name: string, scanner: FastAhoScanner) => {
@@ -267,4 +298,11 @@ export const playerActions = {
  */
 export function usePlayerActions() {
   return playerActions;
+}
+
+/**
+ * Generate a short unique id.
+ */
+function uid(): string {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }

@@ -286,10 +286,9 @@ const AddModal = memo(({ onAdd, onClose }: AddModalProps) => {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50" onClick={onClose}>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
       <div
         className="bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4"
-        onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold">Add Bleep Sound</h3>

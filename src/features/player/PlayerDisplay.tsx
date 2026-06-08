@@ -9,6 +9,8 @@ const PlayerDisplayInner = () => {
   const error = usePlayerStore((state) => state.error);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const isEnded = usePlayerStore((state) => state.isEnded);
+  const censoringMode = usePlayerStore((state) => state.censoringMode);
+  const censoringEffects = usePlayerStore((state) => state.censoringEffects);
   const { canvasRef, play, pause, togglePlay, seekToTime } = useMediaPlayerContext();
 
   const handleCanvasClick = useCallback((e: React.MouseEvent) => {
@@ -80,6 +82,21 @@ const PlayerDisplayInner = () => {
           </button>
 
           <ProgressBar />
+
+          {/* Censoring mode toggle — visible only when effects exist */}
+          {censoringEffects && censoringEffects.length > 0 && (
+            <button
+              onClick={() => playerActions.setCensoringMode(!censoringMode)}
+              className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors flex-shrink-0 ${
+                censoringMode
+                  ? 'bg-red-600 text-white hover:bg-red-500'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+              }`}
+              title={censoringMode ? 'Censoring ON — click to play original audio' : 'Censoring OFF — click to play with effects'}
+            >
+              {censoringMode ? '⚡ CENSORED' : '🔊 ORIGINAL'}
+            </button>
+          )}
 
           <VolumeControls />
         </div>

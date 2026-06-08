@@ -1,6 +1,8 @@
 import { memo, useEffect, useRef, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+import { EffectModal, EffectBadge } from './EffectModal';
+import type { SoundCensoringEffect } from '../../types';
 
 /**
 * Binary-search the segment containing *time* (segments are sorted by start).
@@ -62,6 +64,7 @@ const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const transcribing = usePlayerStore((state) => state.transcribing);
   const transcribeStage = usePlayerStore((state) => state.transcribeStage);
+  const censoringEffects = usePlayerStore((state) => state.censoringEffects);
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
@@ -71,6 +74,27 @@ const TranscriptionResultsInner = () => {
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
+
+  // Effect modal
+  const [modalSegment, setModalSegment] = useState<number | null>(null);
+
+  const handleAddEffect = (effect: SoundCensoringEffect) => {
+    actions.addSoundEffect(effect);
+  };
+
+  const handleRemoveEffect = (id: string) => {
+    actions.removeSoundEffect(id);
+  };
+
+  // Build a quick lookup: segmentStart → SoundCensoringEffect[]
+  const segmentEffects = new Map<number, SoundCensoringEffect[]>();
+  for (const e of censoringEffects) {
+    if (e.effectType === 'sound') {
+      const list = segmentEffects.get(e.segmentStart) ?? [];
+      list.push(e as SoundCensoringEffect);
+      segmentEffects.set(e.segmentStart, list);
+    }
+  }
 
   // Dictionary matches — computed asynchronously after the first render
   // so Aho-Corasick doesn't block the video rAF loop.
@@ -315,6 +339,7 @@ const TranscriptionResultsInner = () => {
 
             const highlightedText = highlightSearch(text);
             const hasMatches = triggered.length > 0;
+            const rowEffects = segmentEffects.get(start) ?? [];
             const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
 
             const hasMatches = triggered.length > 0;
@@ -342,11 +367,27 @@ const TranscriptionResultsInner = () => {
                       {slug} ×{count}
                     </span>
                   ))}
+                  {rowEffects.map((effect) => (
+                    <EffectBadge
+                      key={effect.id}
+                      effect={effect}
+                      onRemove={handleRemoveEffect}
+                    />
+                  ))}
                   <button
                     onClick={() => handleJumpToTime(start)}
                     className="text-xs text-purple-400 hover:text-purple-300 px-1 py-0.5 hover:bg-purple-900/30 rounded"
                   >
                     Jump
+                  </button>
+                  <button
+                    onClick={() => setModalSegment(start)}
+                    className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded"
+                    title="Add effect"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                      <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
+                    </svg>
                   </button>
                 </div>
               </div>
@@ -355,6 +396,15 @@ const TranscriptionResultsInner = () => {
         </div>
       ) : (
         <div className="text-xs text-zinc-500 py-2">No transcription data</div>
+      )}
+
+      {/* Effect modal */}
+      {modalSegment != null && (
+        <EffectModal
+          segmentStart={modalSegment}
+          onClose={() => setModalSegment(null)}
+          onAdd={handleAddEffect}
+        />
       )}
     </div>
   );

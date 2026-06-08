@@ -38,18 +38,33 @@ export interface Dictionary {
 }
 
 /**
- * Represents a censoring effect to be applied to a video segment
+ * Represents a basic censoring effect (mute, blur, replace, beep).
+ * Times are in seconds (matches transcription timestamps).
  */
-export interface CensoringEffect {
-  /** Start time of the effect in milliseconds */
+export interface BasicCensoringEffect {
   startTime: number;
-
-  /** End time of the effect in milliseconds */
   endTime: number;
-
-  /** Type of censoring effect */
   effectType: 'beep' | 'mute' | 'blur' | 'replace';
 }
+
+/**
+ * A sound effect attached to a transcription segment.
+ * segmentStart references the transcription row by its start time.
+ * The end time is derived from the transcription results at runtime.
+ */
+export interface SoundCensoringEffect {
+  id: string;
+  segmentStart: number;
+  soundId: string;
+  volume: number;
+  playbackRate: number;
+  dampenOriginal: boolean;
+  dampenAmount: number;
+  dampenType: 'sharp' | 'parabolic';
+  effectType: 'sound';
+}
+
+export type CensoringEffect = BasicCensoringEffect | SoundCensoringEffect;
 
 /**
  * Transcription result tuple for backward compatibility with the backend
@@ -127,4 +142,7 @@ export type PlayerState = {
 
   /** Available bleep sounds for censoring */
   bleepSounds: Record<string, BleepSound>;
+
+  /** Whether censoring effects are active during playback */
+  censoringMode: boolean;
 };

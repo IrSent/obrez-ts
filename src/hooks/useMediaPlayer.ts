@@ -38,6 +38,9 @@ export function useMediaPlayer() {
   const nextFrameRef = useRef<WrappedCanvas | null>(null);
   const queuedAudioNodesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const asyncIdRef = useRef<number>(0);
+
+  // Sound effect engine
+  const triggeredEffectsRef = useRef<Set<string>>(new Set());
   const playingRef = useRef<boolean>(false); // local, not from store — как в оригинале
   const playLoopRef = useRef<number>(0);
   const lastTranscribeFocusRef = useRef<number>(0);
@@ -126,6 +129,87 @@ export function useMediaPlayer() {
     },
   });
 
+  // === Sound effect engine ===
+
+  /**
+   * Trigger a sound effect: play the bleep sound and optionally dampen
+   * the original audio for the duration of the segment.
+   */
+  function triggerSoundEffect(
+    effect: import('../types').SoundCensoringEffect,
+    segmentEnd: number,
+  ): void {
+    const ctx = audioContextRef.current;
+    const gainNode = gainNodeRef.current;
+    if (!ctx || !gainNode) return;
+
+    const sound = usePlayerStore.getState().bleepSounds[effect.soundId];
+    if (!sound || !sound.audioBuffer) return;
+
+    const now = ctx.currentTime;
+
+    // Play the bleep sound at the configured volume and rate
+    const source = ctx.createBufferSource();
+    source.buffer = sound.audioBuffer;
+    source.playbackRate.value = effect.playbackRate;
+
+    const volGain = ctx.createGain();
+    volGain.gain.value = effect.volume ** 2; // perceptual scaling
+    source.connect(volGain);
+    volGain.connect(ctx.destination);
+    source.start(now);
+    queuedAudioNodesRef.current.add(source);
+    source.onended = () => queuedAudioNodesRef.current.delete(source);
+
+    // Dampen original audio if requested
+    if (effect.dampenOriginal) {
+      const currentGain = gainNode.gain.value;
+      const dampenedGain = currentGain * (1 - effect.dampenAmount);
+      const segmentDuration = segmentEnd - effect.segmentStart;
+      const effectDuration = segmentDuration / effect.playbackRate;
+
+      if (effect.dampenType === 'sharp') {
+        // Immediate drop, hold, immediate restore
+        gainNode.gain.setValueAtTime(dampenedGain, now);
+        gainNode.gain.setValueAtTime(currentGain, now + effectDuration);
+      } else {
+        // Parabolic: smooth dip and restore using setTargetAtTime (exponential approach)
+        // We dip to dampenedGain, then restore to currentGain
+        const tau = effectDuration * 0.3; // time constant for smooth curve
+        gainNode.gain.setValueAtTime(dampenedGain, now);
+        gainNode.gain.setTargetAtTime(currentGain, now + tau, tau);
+        // Force-restore after effect duration to avoid lingering drift
+        gainNode.gain.setValueAtTime(currentGain, now + effectDuration);
+      }
+    }
+  }
+
+  /**
+   * Check playback time against sound effects and trigger any that haven't
+   * fired yet for the current play session.
+   */
+  function checkSoundEffects(playbackTime: number): void {
+    const { censoringEffects, transcriptionResults, censoringMode } = usePlayerStore.getState();
+    if (!censoringMode || !censoringEffects || !transcriptionResults) return;
+
+    for (const e of censoringEffects) {
+      if (e.effectType !== 'sound') continue;
+      if (triggeredEffectsRef.current.has(e.id)) continue;
+
+      // Find the segment end time from transcription results
+      const seg = transcriptionResults.find(
+        ([s]) => Math.abs(s - e.segmentStart) < 0.01,
+      );
+      if (!seg) continue;
+
+      const [start, end] = seg;
+      if (playbackTime >= start && playbackTime < end) {
+        triggeredEffectsRef.current.add(e.id);
+        triggerSoundEffect(e, end);
+      }
+    }
+  }
+
   // === updateNextFrame — как в оригинале, без мютекса ===
   const updateNextFrameRef = useRef(async () => {
     const currentAsyncId = asyncIdRef.current;
@@ -184,6 +268,9 @@ export function useMediaPlayer() {
     }
     queuedAudioNodesRef.current.clear();
 
+    // Reset triggered effects so they can fire again on next play
+    triggeredEffectsRef.current.clear();
+
     // НЕ останавливаем rAF-цикл — как в оригинале MediaBunny
   });
 
@@ -208,6 +295,9 @@ export function useMediaPlayer() {
         }
 
         utilsRef.current.updateProgressBarTime(playbackTime);
+
+        // Check and trigger sound effects
+        checkSoundEffects(playbackTime);
       }
 
       playLoopRef.current = requestAnimationFrame(renderLoop);
@@ -227,6 +317,7 @@ export function useMediaPlayer() {
           void updateNextFrameRef.current();
         }
         utilsRef.current.updateProgressBarTime(playbackTime);
+        checkSoundEffects(playbackTime);
       }
     }, 500);
 
@@ -397,6 +488,9 @@ export function useMediaPlayer() {
     playerActions.setCurrentTime(seconds);
     playerActions.setIsEnded(false);
 
+    // Reset triggered effects so they can fire at the new position
+    triggeredEffectsRef.current.clear();
+
     await startVideoIteratorRef.current();
 
     if (wasPlaying) {
@@ -454,7 +548,8 @@ export function useMediaPlayer() {
       playerActions.setFileName(resource instanceof File ? resource.name : resource);
       playerActions.setTranscriptionResults(null);
       playerActions.setTranscribing(false);
-      playerActions.setCensoringEffects(null);
+      playerActions.setCensoringEffects([]);
+      triggeredEffectsRef.current.clear();
 
       const source =
         resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
