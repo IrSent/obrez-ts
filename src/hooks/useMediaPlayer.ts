@@ -18,6 +18,7 @@ import {
   WrappedCanvas,
 } from 'mediabunny';
 import { audioBuffersToWav } from '../audio';
+import { backendPath, backendWsPath } from '../config';
 
 /**
  * Хук для управления воспроизведением медиафайлов через MediaBunny.
@@ -811,7 +812,7 @@ export function useMediaPlayer() {
       const formData = new FormData();
       formData.append('file', audioBlob, audioFileName);
 
-      const response = await fetch('http://localhost:8686/transcribe', {
+      const response = await fetch(backendPath('/transcribe'), {
         method: 'POST',
         body: formData,
       });
@@ -832,7 +833,7 @@ export function useMediaPlayer() {
         playerActions.setTranscribeStage(`Waiting for server… (${secs}s)`);
       }, 1000);
 
-      const socket = new WebSocket(`ws://localhost:8686/ws/status/${task_id}`);
+      const socket = new WebSocket(backendWsPath(`/ws/status/${task_id}`));
 
       await new Promise((resolve, reject) => {
         socket.onmessage = (event) => {
