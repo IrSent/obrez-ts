@@ -1,18 +1,13 @@
-# Graph Report - obrez-ts  (2026-06-10)
+# Graph Report - .  (2026-06-10)
 
 ## Corpus Check
-- 29 files · ~73,888 words
+- 40 files · ~74,839 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 226 nodes · 413 edges · 24 communities (19 shown, 5 thin omitted)
+- 223 nodes · 411 edges · 24 communities (20 shown, 4 thin omitted)
 - Extraction: 93% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 26 edges (avg confidence: 0.87)
-- Token cost: 0 input · 0 output
-
-## Graph Freshness
-- Built from commit: `ef6a38da`
-- Run `git rev-parse HEAD` and compare to check if the graph is stale.
-- Run `graphify update .` after code changes (no API cost).
+- Token cost: 245,740 input · 245,740 output
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_Package Metadata|Package Metadata]]
@@ -49,16 +44,16 @@
 10. `exportCensoredVideo` - 9 edges
 
 ## Surprising Connections (you probably didn't know these)
-- `Censored Russian profanity transcript` --references--> `obrez-ts`  [INFERRED]
-  graphify-out/transcripts/ru-profanity.txt → README.md
-- `Raw Russian profanity transcript (AAC)` --references--> `obrez-ts`  [INFERRED]
-  graphify-out/transcripts/valid-with-aac.txt → README.md
+- `VideoPlayback E2E Tests` --references--> `PlaywrightConfig`  [INFERRED]
+  e2e/playback.spec.ts → playwright.config.ts
 - `ExportProgressBar()` --semantically_similar_to--> `TranscribeProgressBar()`  [INFERRED] [semantically similar]
   src/features/export/ExportModal.tsx → src/features/transcription/TranscriptionResults.tsx
 - `VideoPlayback E2E Tests` --references--> `FileLoader()`  [INFERRED]
   e2e/playback.spec.ts → src/features/file-loader/FileLoader.tsx
 - `VideoPlayback E2E Tests` --references--> `PlayerDisplay`  [INFERRED]
   e2e/playback.spec.ts → src/features/player/PlayerDisplay.tsx
+- `VideoPlayback E2E Tests` --references--> `ProgressBar`  [INFERRED]
+  e2e/playback.spec.ts → src/features/player/ProgressBar.tsx
 
 ## Import Cycles
 - None detected.
@@ -72,15 +67,15 @@
 - **Bleep Sound Lifecycle** — bleep_sounds_bleepsoundmanager_bleepsoundmanager, bleep_sounds_bleepsoundmanager_addmodal, bleep_sounds_bleepsoundmanager_decodeaudio, bleep_sounds_bleepsoundmanager_exportbleepsounds, bleep_sounds_bleepsoundmanager_importbleepsounds [EXTRACTED 1.00]
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 
-## Communities (24 total, 5 thin omitted)
+## Communities (24 total, 4 thin omitted)
 
 ### Community 0 - "Package Metadata"
 Cohesion: 0.06
 Nodes (35): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabunny, react, react-dom (+27 more)
 
 ### Community 1 - "Main UI Components"
-Cohesion: 0.16
-Nodes (18): App component, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), VideoPlayback E2E Tests, FileLoader(), React root entry, obrez-ts (+10 more)
+Cohesion: 0.19
+Nodes (18): BleepSoundManagerInner(), MediaPlayerContext, useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), VideoPlayback E2E Tests, FileLoader() (+10 more)
 
 ### Community 2 - "Bleep Sound Manager"
 Cohesion: 0.12
@@ -99,20 +94,20 @@ Cohesion: 0.23
 Nodes (11): ExportButton, ExportButtonInner(), ExportModal, ExportModalProps, ExportProgressBar(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects() (+3 more)
 
 ### Community 6 - "Audio Processing"
-Cohesion: 0.16
-Nodes (21): audioBuffersToWav, WavProgress type, writeString utility, yieldToEventLoop utility, BleepSoundManagerInner(), DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner() (+13 more)
+Cohesion: 0.21
+Nodes (14): audioBuffersToWav, WavProgress type, writeString utility, yieldToEventLoop utility, ensureBleepDecoded, exportCensoredVideo, getSoundEffects, pickAudioCodec (+6 more)
 
 ### Community 7 - "State Persistence Layer"
 Cohesion: 0.44
 Nodes (12): DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel(), upsertBleepData() (+4 more)
 
 ### Community 8 - "Transcription UI"
-Cohesion: 0.24
+Cohesion: 0.22
 Nodes (7): EffectBadge, EffectModal, EffectModalProps, findClosestSegment(), parseStage(), TranscribeProgressBar(), TranscriptionResults
 
 ### Community 9 - "App Initialization"
-Cohesion: 0.57
-Nodes (8): cleanup function, initMediaPlayer, pause function, play function, runAudioIterator, seekToTime, startVideoIterator, useMediaPlayer()
+Cohesion: 0.35
+Nodes (11): App component, MediaPlayerProvider(), cleanup function, initMediaPlayer, pause function, play function, runAudioIterator, seekToTime (+3 more)
 
 ### Community 10 - "Audio Utilities"
 Cohesion: 0.53
@@ -123,8 +118,12 @@ Cohesion: 0.80
 Nodes (5): Volume Zero - Speaker Icon (No Sound Waves), Volume Muted - Speaker with X Overlay, Volume Low - Speaker with Single Arc, Volume High - Speaker with Double Arc, Volume Muted - Speaker with Arcs and Diagonal Slash
 
 ### Community 12 - "Documentation & Transcripts"
-Cohesion: 0.38
-Nodes (6): bun run build, bun x serve ./dist/, Install, obrez-ts, Censored Russian profanity transcript, Raw Russian profanity transcript (AAC)
+Cohesion: 0.60
+Nodes (5): bun run build, bun x serve ./dist/, obrez-ts, Censored Russian profanity transcript, Raw Russian profanity transcript (AAC)
+
+### Community 13 - "Configuration Files"
+Cohesion: 0.50
+Nodes (4): obrez-ts, PlaywrightConfig, TailwindConfig, TypeScriptConfig
 
 ### Community 14 - "Transcription Server"
 Cohesion: 0.67
@@ -139,23 +138,23 @@ Nodes (3): index.css, main.tsx, root div
   src/store/playerStore.ts · relation: references
 
 ## Knowledge Gaps
-- **69 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+64 more)
+- **67 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+62 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **5 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **What is the exact relationship between `playerActions` and `uid()`?**
   _Edge tagged AMBIGUOUS (relation: references) - confidence is low._
-- **Why does `usePlayerStore` connect `Audio Processing` to `Main UI Components`, `Bleep Sound Manager`, `Text Scanning Engine`, `Video Export Pipeline`, `State Persistence Layer`, `Transcription UI`, `App Initialization`, `Audio Utilities`?**
-  _High betweenness centrality (0.107) - this node is a cross-community bridge._
+- **Why does `usePlayerStore` connect `Main UI Components` to `Bleep Sound Manager`, `Text Scanning Engine`, `Video Export Pipeline`, `Audio Processing`, `State Persistence Layer`, `Transcription UI`, `App Initialization`, `Audio Utilities`?**
+  _High betweenness centrality (0.111) - this node is a cross-community bridge._
 - **Why does `useMediaPlayer()` connect `App Initialization` to `Main UI Components`, `Audio Utilities`, `Audio Processing`, `State Persistence Layer`?**
-  _High betweenness centrality (0.048) - this node is a cross-community bridge._
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Why does `playerActions` connect `State Persistence Layer` to `Main UI Components`, `Text Scanning Engine`, `Video Export Pipeline`, `Audio Processing`, `App Initialization`, `Audio Utilities`?**
-  _High betweenness centrality (0.027) - this node is a cross-community bridge._
+  _High betweenness centrality (0.028) - this node is a cross-community bridge._
 - **What connects `name`, `version`, `private` to the rest of the system?**
-  _69 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _67 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Package Metadata` be split into smaller, more focused modules?**
   _Cohesion score 0.05555555555555555 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sound Manager` be split into smaller, more focused modules?**
