@@ -69,6 +69,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   // Export state
   exporting: false,
   exportStage: null,
+
+  // Transcribe format
+  transcribeFormat: 'original',
 }));
 
 /**
@@ -104,6 +107,8 @@ export const playerActions = {
     usePlayerStore.setState({ transcribing }),
   setTranscribeStage: (stage: string | null) =>
     usePlayerStore.setState({ transcribeStage: stage }),
+  setTranscribeFormat: (format: 'wav' | 'original') =>
+    usePlayerStore.setState({ transcribeFormat: format }),
   /**
    * Set transcription results + transcribing=false + clear stage in one setState.
    */

@@ -5,8 +5,14 @@ import {
   AudioBufferSink,
   BlobSource,
   CanvasSink,
+  EncodedAudioPacketSource,
+  EncodedPacket,
+  EncodedPacketSink,
   Input,
   InputAudioTrack,
+  Mp4OutputFormat,
+  Output,
+  BufferTarget,
   UrlSource,
   WrappedAudioBuffer,
   WrappedCanvas,
@@ -26,6 +32,7 @@ export function useMediaPlayer() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const inputRef = useRef<Input | null>(null);
+  const resourceRef = useRef<File | string | null>(null);
   const videoTrackRef = useRef<InputAudioTrack | null>(null);
   const audioTrackRef = useRef<InputAudioTrack | null>(null);
   const videoSinkRef = useRef<CanvasSink | null>(null);
@@ -252,6 +259,8 @@ export function useMediaPlayer() {
   });
 
   // === pause ===
+  const playRef = useRef<(() => Promise<void>) | null>(null);
+
   const pauseRef = useRef(() => {
     const currentTime = utilsRef.current.getPlaybackTime();
     playbackTimeAtStartRef.current = currentTime;
@@ -467,6 +476,9 @@ export function useMediaPlayer() {
     }
   }, [audioSinkRef, runAudioIterator]);
 
+  // Keep a stable ref so the transcribe function can resume playback later
+  playRef.current = play;
+
   const togglePlay = useCallback(() => {
     const isPlaying = usePlayerStore.getState().isPlaying;
     if (isPlaying) {
@@ -554,6 +566,7 @@ export function useMediaPlayer() {
         resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
       const input = new Input({ source, formats: ALL_FORMATS });
       inputRef.current = input;
+      resourceRef.current = resource;
 
       playbackTimeAtStartRef.current = 0;
       const totalDuration = await input.computeDuration();
@@ -644,7 +657,7 @@ export function useMediaPlayer() {
   }, [pause, play]);
 
   const transcribe = useCallback(async () => {
-    if (!audioSinkRef.current || !audioTrackRef.current) {
+    if (!audioTrackRef.current) {
       playerActions.setError('No audio track available for transcription');
       return;
     }
@@ -653,22 +666,150 @@ export function useMediaPlayer() {
       playerActions.setTranscribing(true);
       playerActions.setTranscribeStage('Collecting audio data…');
 
-      const chunks: AudioBuffer[] = [];
-      for await (const { buffer } of audioSinkRef.current.buffers(0)) {
-        chunks.push(buffer);
-        playerActions.setTranscribeStage(`Collecting audio data… (${chunks.length} chunks)`);
-      }
-
-      playerActions.setTranscribeStage(`Encoding WAV — ${chunks.length} chunks to process`);
+      const format = usePlayerStore.getState().transcribeFormat;
       const fileName = usePlayerStore.getState().fileName;
-      const audioBlob = await audioBuffersToWav(chunks, audioTrackRef.current.sampleRate, (stage, done, total) => {
-        const pct = Math.round((done / total) * 100);
-        playerActions.setTranscribeStage(`${stage} — ${done.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`);
-      });
+
+      let audioBlob: Blob;
+      let audioFileName: string;
+
+      if (format === 'original') {
+        // Create a separate Input for transcription so we don't compete
+        // with the playback Input for audio track packets — no pause needed.
+        const resource = resourceRef.current;
+        if (!resource) throw new Error('No media resource available');
+
+        const transcribeSource =
+          resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
+        const transcribeInput = new Input({ source: transcribeSource, formats: ALL_FORMATS });
+        const transcribeAudioTrack = await transcribeInput.getPrimaryAudioTrack();
+        if (!transcribeAudioTrack) throw new Error('No audio track found for transcription');
+
+        const codec = await transcribeAudioTrack.getCodec();
+        if (!codec) throw new Error('Audio track codec could not be determined');
+
+        const codecParamString = await transcribeAudioTrack.getCodecParameterString();
+        const decoderConfig = await transcribeAudioTrack.getDecoderConfig();
+
+        // Collect raw audio packets from the independent track
+        const encodedSink = new EncodedPacketSink(transcribeAudioTrack);
+        const packets = [];
+        const YIELD_EVERY = 10;
+
+        // Quick count of total packets (metadata-only scan)
+        let totalPackets = 0;
+        for await (const _ of encodedSink.packets(undefined, undefined, { metadataOnly: true })) {
+          totalPackets++;
+        }
+
+        for await (const packet of encodedSink.packets()) {
+          packets.push(packet);
+          playerActions.setTranscribeStage(
+            `Collecting audio packets… ${packets.length} / ${totalPackets}`
+          );
+
+          // Yield to event loop every N packets so the UI stays responsive
+          if (packets.length % YIELD_EVERY === 0) {
+            await new Promise((r) => setTimeout(r, 0));
+          }
+        }
+
+        // Find the minimum timestamp — some AAC packets start negative.
+        // Shift all timestamps so they start at 0.
+        let minTs = Infinity;
+        for (const p of packets) {
+          if (p.timestamp < minTs) minTs = p.timestamp;
+        }
+        const tsShift = minTs < 0 ? -minTs : 0;
+
+        // Build chunk metadata for the first add() call — required by the muxer.
+        // For AAC: provide description (AudioSpecificConfig) so the muxer doesn't
+        // try to parse ADTS headers from raw packets.
+        const chunkMeta = {
+          decoderConfig: {
+            codec: codecParamString ?? codec,
+            sampleRate: decoderConfig?.sampleRate ?? transcribeAudioTrack.sampleRate,
+            numberOfChannels:
+              decoderConfig?.numberOfChannels ?? transcribeAudioTrack.numberOfChannels,
+            description: decoderConfig?.description ?? undefined,
+          },
+        };
+
+        playerActions.setTranscribeStage(
+          `Remuxing audio — ${packets.length} total packets`
+        );
+
+        const outputFormat = new Mp4OutputFormat();
+        const bufferTarget = new BufferTarget();
+        const output = new Output({ format: outputFormat, target: bufferTarget });
+
+        const encodedSource = new EncodedAudioPacketSource(codec);
+        const outputTrack = await output.addAudioTrack(encodedSource);
+        await output.start();
+
+        // Add packets in batches, yielding after each batch so the progress UI
+        // has a chance to repaint.
+        const REMUX_BATCH = 10;
+        for (let i = 0; i < packets.length; i += REMUX_BATCH) {
+          const end = Math.min(i + REMUX_BATCH, packets.length);
+          for (let j = i; j < end; j++) {
+            const pkt = packets[j];
+            // Shift timestamp to be non-negative
+            const shiftedPkt = tsShift > 0
+              ? new EncodedPacket(
+                  pkt.data,
+                  pkt.type,
+                  pkt.timestamp + tsShift,
+                  pkt.duration,
+                )
+              : pkt;
+            // Pass chunk metadata on the very first packet; await for backpressure
+            await encodedSource.add(shiftedPkt, i === 0 && j === 0 ? chunkMeta : undefined);
+          }
+          const pct = Math.round((end / packets.length) * 100);
+          playerActions.setTranscribeStage(
+            `Remuxing audio — ${end} / ${packets.length} (${pct}%)`
+          );
+          // Yield so React can render the progress update
+          await new Promise((r) => setTimeout(r, 0));
+        }
+
+        await output.finalize();
+
+        const result = bufferTarget.buffer;
+        if (!result) {
+          throw new Error('Remux completed but no output buffer was produced');
+        }
+
+        audioBlob = new Blob([result], { type: 'video/mp4' });
+        audioFileName = `${fileName}.mp4`;
+
+        // Cleanup: dispose the transcription Input to free resources
+        // and clear the packets array so GC can reclaim memory.
+        transcribeInput.dispose();
+        packets.length = 0;
+      } else {
+        // WAV path: collect decoded buffers, encode as PCM WAV
+        if (!audioSinkRef.current) {
+          throw new Error('Audio sink not available for WAV encoding');
+        }
+
+        const chunks: AudioBuffer[] = [];
+        for await (const { buffer } of audioSinkRef.current.buffers(0)) {
+          chunks.push(buffer);
+          playerActions.setTranscribeStage(`Collecting audio data… (${chunks.length} chunks)`);
+        }
+
+        playerActions.setTranscribeStage(`Encoding WAV — ${chunks.length} chunks to process`);
+        audioBlob = await audioBuffersToWav(chunks, audioTrackRef.current.sampleRate, (stage, done, total) => {
+          const pct = Math.round((done / total) * 100);
+          playerActions.setTranscribeStage(`${stage} — ${done.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`);
+        });
+        audioFileName = `${fileName}.wav`;
+      }
 
       playerActions.setTranscribeStage('Sending to server…');
       const formData = new FormData();
-      formData.append('file', audioBlob, `${fileName}.wav`);
+      formData.append('file', audioBlob, audioFileName);
 
       const response = await fetch('http://localhost:8686/transcribe', {
         method: 'POST',
