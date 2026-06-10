@@ -7,6 +7,10 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const server = serve({
   hostname: '0.0.0.0',
   port: 3000,
+  tls: {
+    cert: Bun.file(process.env.HOME + '/localhost+2.pem'),
+    key: Bun.file(process.env.HOME + '/localhost+2-key.pem'),
+  },
   fetch(req) {
     const url = new URL(req.url);
 
