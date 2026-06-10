@@ -70,10 +70,29 @@ function TranscribeProgressBar({ stage }: { stage: string }) {
   );
 }
 
+/**
+ * Standalone progress bar during transcription.
+ * Subscribes only to transcribeStage — the main TranscriptionResults
+ * component doesn't re-render on every stage update, avoiding expensive
+ * re-renders of the transcription list while video is playing.
+ */
+function TranscribeProgress() {
+  const transcribeStage = usePlayerStore((state) => state.transcribeStage);
+
+  return (
+    <div className="text-xs py-2">
+      {transcribeStage ? (
+        <TranscribeProgressBar stage={transcribeStage} />
+      ) : (
+        <div className="text-zinc-500">Transcribing...</div>
+      )}
+    </div>
+  );
+}
+
 const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const transcribing = usePlayerStore((state) => state.transcribing);
-  const transcribeStage = usePlayerStore((state) => state.transcribeStage);
   const transcribeFormat = usePlayerStore((state) => state.transcribeFormat);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
@@ -390,13 +409,7 @@ const TranscriptionResultsInner = () => {
       )}
 
       {transcribing ? (
-        <div className="text-xs py-2">
-          {transcribeStage ? (
-            <TranscribeProgressBar stage={transcribeStage} />
-          ) : (
-            <div className="text-zinc-500">Transcribing...</div>
-          )}
-        </div>
+        <TranscribeProgress />
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
