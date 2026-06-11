@@ -1,13 +1,18 @@
-# Graph Report - .  (2026-06-11)
+# Graph Report - obrez-ts  (2026-06-11)
 
 ## Corpus Check
-- 46 files · ~75,091 words
+- 34 files · ~75,091 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 244 nodes · 425 edges · 22 communities (18 shown, 4 thin omitted)
+- 238 nodes · 416 edges · 23 communities (19 shown, 4 thin omitted)
 - Extraction: 94% EXTRACTED · 6% INFERRED · 0% AMBIGUOUS · INFERRED: 25 edges (avg confidence: 0.86)
-- Token cost: 39,374 input · 0 output
+- Token cost: 0 input · 0 output
+
+## Graph Freshness
+- Built from commit: `1f370b20`
+- Run `git rev-parse HEAD` and compare to check if the graph is stale.
+- Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
 - [[_COMMUNITY_Package Metadata|Package Metadata]]
@@ -28,30 +33,31 @@
 - [[_COMMUNITY_Pause Icon|Pause Icon]]
 - [[_COMMUNITY_Play Icon|Play Icon]]
 - [[_COMMUNITY_Play Icon|Play Icon]]
+- [[_COMMUNITY_Community 22|Community 22]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `usePlayerStore` - 23 edges
 2. `useMediaPlayerContext()` - 13 edges
 3. `compilerOptions` - 13 edges
-4. `FastAhoScanner` - 10 edges
-5. `BleepSoundManagerInner()` - 10 edges
-6. `usePlayerActions()` - 10 edges
-7. `SoundCensoringEffect` - 9 edges
-8. `exportCensoredVideo` - 9 edges
+4. `usePlayerActions()` - 10 edges
+5. `FastAhoScanner` - 10 edges
+6. `SoundCensoringEffect` - 9 edges
+7. `exportCensoredVideo` - 9 edges
+8. `BleepSoundManagerInner()` - 8 edges
 9. `DbRecord` - 8 edges
 10. `scripts` - 7 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `ru-profanity.mp4 (audio-only AAC LC test fixture)` --references--> `DEFAULT_DICTIONARIES (ru-profanity, ru-stopwords)`  [INFERRED]
+  e2e/ru-profanity.mp4 → src/features/dictionary/DictionaryManager.tsx
 - `renderCensoredAudio` --semantically_similar_to--> `triggerSoundEffect (bleep + dampening)`  [INFERRED] [semantically similar]
-  /home/irsent/gh/obrez-ts/src/export.ts → /home/irsent/gh/obrez-ts/src/hooks/useMediaPlayer.ts
-- `DictionaryManager` --shares_data_with--> `DEFAULT_DICTIONARIES (ru-profanity, ru-stopwords)`  [INFERRED]
-  src/features/dictionary/DictionaryManager.tsx → /home/irsent/gh/obrez-ts/src/features/dictionary/DictionaryManager.tsx
+  src/export.ts → src/hooks/useMediaPlayer.ts
 - `ExportProgressBar()` --semantically_similar_to--> `TranscribeProgressBar()`  [INFERRED] [semantically similar]
   src/features/export/ExportModal.tsx → src/features/transcription/TranscriptionResults.tsx
 - `VideoPlayback E2E Tests` --references--> `FileLoader()`  [INFERRED]
-  /home/irsent/gh/obrez-ts/e2e/playback.spec.ts → src/features/file-loader/FileLoader.tsx
+  e2e/playback.spec.ts → src/features/file-loader/FileLoader.tsx
 - `VideoPlayback E2E Tests` --references--> `PlayerDisplay`  [INFERRED]
-  /home/irsent/gh/obrez-ts/e2e/playback.spec.ts → src/features/player/PlayerDisplay.tsx
+  e2e/playback.spec.ts → src/features/player/PlayerDisplay.tsx
 
 ## Import Cycles
 - None detected.
@@ -68,27 +74,27 @@
 - **Bleep sound decode-and-play flow – decode on mount, play on demand** — bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner, bleep_sounds_bleep_audio_decodeaudio, store_player_store_playeractions, store_player_store_useplayerstore [INFERRED 0.95]
 - **Bleep sound add flow – modal → uid → playerActions → IndexedDB + in-memory** — bleep_sounds_bleepsoundmanager_addmodal, utils_uid_uid, store_player_store_playeractions, store_player_store_useplayerstore [INFERRED 0.95]
 
-## Communities (22 total, 4 thin omitted)
+## Communities (23 total, 4 thin omitted)
 
 ### Community 0 - "Package Metadata"
 Cohesion: 0.06
 Nodes (35): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabunny, react, react-dom (+27 more)
 
 ### Community 1 - "Bleep Sound System"
-Cohesion: 0.11
-Nodes (28): BleepSound – shared type for a bleep sound with id, label, url, dataUrl, and audioBuffer fields, decodeAudio(), isRemoteUrl(), CloseIcon(), DownloadIcon(), FileIcon(), LinkIcon(), LoadingIcon() (+20 more)
+Cohesion: 0.14
+Nodes (23): BleepSound – shared type for a bleep sound with id, label, url, dataUrl, and audioBuffer fields, decodeAudio(), isRemoteUrl(), CloseIcon(), DownloadIcon(), FileIcon(), LinkIcon(), LoadingIcon() (+15 more)
 
 ### Community 2 - "Bleep Sound System"
-Cohesion: 0.15
-Nodes (20): FastAhoScanner class, Worker message handler, FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb() (+12 more)
+Cohesion: 0.20
+Nodes (9): FastAhoScanner class, Worker message handler, FastAhoScanner, BasicCensoringEffect, CensoringEffect, Dictionary, PlayerState, TranscriptionResultTuple (+1 more)
 
 ### Community 3 - "Audio Export Pipeline"
-Cohesion: 0.11
-Nodes (20): audioBuffersToWav, WavProgress type, writeString utility, yieldToEventLoop utility, ensureBleepDecoded, exportCensoredVideo, getSoundEffects, pickAudioCodec (+12 more)
+Cohesion: 0.12
+Nodes (19): audioBuffersToWav, WavProgress type, writeString utility, yieldToEventLoop utility, ensureBleepDecoded, exportCensoredVideo, getSoundEffects, pickAudioCodec (+11 more)
 
 ### Community 4 - "Backend Integration"
 Cohesion: 0.15
-Nodes (19): App component, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), VideoPlayback E2E Tests, FileLoader(), useMediaPlayer(), React root entry (+11 more)
+Nodes (20): App component, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), VideoPlayback E2E Tests, FileLoader(), useMediaPlayer(), React root entry (+12 more)
 
 ### Community 5 - "Backend Integration"
 Cohesion: 0.13
@@ -99,12 +105,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, esModuleInterop, forceConsistentCasingInFileNames, jsx, lib, module, moduleResolution, outDir (+8 more)
 
 ### Community 7 - "Audio Export Pipeline"
-Cohesion: 0.21
-Nodes (12): ExportButton, ExportButtonInner(), ExportModal, ExportModalProps, ExportProgressBar(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects() (+4 more)
+Cohesion: 0.23
+Nodes (11): ExportButton, ExportButtonInner(), ExportModal, ExportModalProps, ExportProgressBar(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects() (+3 more)
 
 ### Community 8 - "Backend Integration"
-Cohesion: 0.26
-Nodes (8): DEFAULT_DICTIONARIES, DictionaryManagerInner(), audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop(), backendPath(), backendWsPath()
+Cohesion: 0.24
+Nodes (9): DEFAULT_DICTIONARIES, DictionaryManagerInner(), audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop(), backendPath(), backendWsPath() (+1 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -126,25 +132,29 @@ Nodes (3): parseStage, TranscribeProgress, TranscribeProgressBar
 Cohesion: 1.00
 Nodes (3): bun run build, bun x serve ./dist/, obrez-ts
 
+### Community 22 - "Community 22"
+Cohesion: 0.47
+Nodes (10): DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel(), upsertBleepData() (+2 more)
+
 ## Knowledge Gaps
-- **77 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+72 more)
+- **76 isolated node(s):** `AddModalProps`, `SoundRowProps`, `name`, `version`, `private` (+71 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **4 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `usePlayerStore` connect `Audio Export Pipeline` to `Bleep Sound System`, `Bleep Sound System`, `Backend Integration`, `Audio Export Pipeline`, `Backend Integration`?**
-  _High betweenness centrality (0.112) - this node is a cross-community bridge._
+- **Why does `usePlayerStore` connect `Audio Export Pipeline` to `Bleep Sound System`, `Backend Integration`, `Audio Export Pipeline`, `Backend Integration`, `Community 22`?**
+  _High betweenness centrality (0.102) - this node is a cross-community bridge._
 - **Why does `renderCensoredAudio` connect `Audio Export Pipeline` to `Media Hooks`?**
   _High betweenness centrality (0.049) - this node is a cross-community bridge._
-- **Why does `BleepSoundManagerInner()` connect `Bleep Sound System` to `Audio Export Pipeline`?**
-  _High betweenness centrality (0.036) - this node is a cross-community bridge._
-- **What connects `name`, `version`, `private` to the rest of the system?**
-  _78 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `DictionaryManager` connect `Backend Integration` to `Backend Integration`, `Backend Integration`?**
+  _High betweenness centrality (0.033) - this node is a cross-community bridge._
+- **What connects `AddModalProps`, `SoundRowProps`, `name` to the rest of the system?**
+  _76 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Package Metadata` be split into smaller, more focused modules?**
   _Cohesion score 0.05555555555555555 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sound System` be split into smaller, more focused modules?**
-  _Cohesion score 0.11491935483870967 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14285714285714285 - nodes in this community are weakly interconnected._
 - **Should `Audio Export Pipeline` be split into smaller, more focused modules?**
-  _Cohesion score 0.11375661375661375 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1168091168091168 - nodes in this community are weakly interconnected._
