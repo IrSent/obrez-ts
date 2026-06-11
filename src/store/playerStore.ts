@@ -323,9 +323,3 @@ export function usePlayerActions() {
   return playerActions;
 }
 
-/**
- * Generate a short unique id.
- */
-function uid(): string {
-  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
-}
