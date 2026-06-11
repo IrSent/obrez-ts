@@ -152,4 +152,7 @@ export type PlayerState = {
 
   /** Current export stage for progress display */
   exportStage: string | null;
+
+  /** Audio format to send for transcription: 'wav' (PCM uncompressed) or 'original' (raw compressed packets, no re-encoding) */
+  transcribeFormat: 'wav' | 'original';
 };

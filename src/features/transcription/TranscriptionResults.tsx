@@ -5,6 +5,15 @@ import { EffectModal, EffectBadge } from './EffectModal';
 import type { SoundCensoringEffect } from '../../types';
 
 /**
+ * Icons: chevron up/down for dropdown
+ */
+const ChevronDownIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
+
+/**
  * Binary-search the segment containing *time* (segments are sorted by start).
  */
 function findClosestSegment(
@@ -61,10 +70,30 @@ function TranscribeProgressBar({ stage }: { stage: string }) {
   );
 }
 
+/**
+ * Standalone progress bar during transcription.
+ * Subscribes only to transcribeStage — the main TranscriptionResults
+ * component doesn't re-render on every stage update, avoiding expensive
+ * re-renders of the transcription list while video is playing.
+ */
+function TranscribeProgress() {
+  const transcribeStage = usePlayerStore((state) => state.transcribeStage);
+
+  return (
+    <div className="text-xs py-2">
+      {transcribeStage ? (
+        <TranscribeProgressBar stage={transcribeStage} />
+      ) : (
+        <div className="text-zinc-500">Transcribing...</div>
+      )}
+    </div>
+  );
+}
+
 const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const transcribing = usePlayerStore((state) => state.transcribing);
-  const transcribeStage = usePlayerStore((state) => state.transcribeStage);
+  const transcribeFormat = usePlayerStore((state) => state.transcribeFormat);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
@@ -85,6 +114,68 @@ const TranscriptionResultsInner = () => {
 
   const handleRemoveEffect = (id: string) => {
     actions.removeSoundEffect(id);
+  };
+
+  // JSON export / import
+  const importJsonRef = useRef<HTMLInputElement>(null);
+
+  const handleExportJson = () => {
+    if (!transcriptionResults) return;
+
+    const payload = {
+      version: 1,
+      transcription: transcriptionResults.map(([start, end, text]) => ({
+        start,
+        end,
+        text,
+      })),
+      effects: (censoringEffects ?? []).filter(
+        (e): e is SoundCensoringEffect => e.effectType === 'sound',
+      ),
+    };
+
+    const fileName = usePlayerStore.getState().fileName || 'transcription';
+    const baseName = fileName.replace(/\.[^.]+$/, '');
+    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${baseName}_transcription.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
+  const handleImportJson = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    try {
+      const text = await file.text();
+      const data = JSON.parse(text);
+
+      if (!data.version || !Array.isArray(data.transcription)) {
+        throw new Error('Invalid transcription JSON format');
+      }
+
+      const results = data.transcription.map(
+        (seg: { start: number; end: number; text: string }) =>
+          [seg.start, seg.end, seg.text] as [number, number, string],
+      );
+
+      const effects: SoundCensoringEffect[] = (data.effects ?? []).filter(
+        (ef: unknown) => ef && typeof ef === 'object' && (ef as any).effectType === 'sound',
+      );
+
+      actions.setTranscriptionResults(results);
+      actions.setCensoringEffects(effects);
+      setError(null);
+    } catch (err) {
+      setError('Import failed: ' + (err instanceof Error ? err.message : String(err)));
+    } finally {
+      if (importJsonRef.current) importJsonRef.current.value = '';
+    }
   };
 
   // Build a quick lookup: segmentStart → SoundCensoringEffect[]
@@ -254,6 +345,21 @@ const TranscriptionResultsInner = () => {
           >
             Matches only
           </button>
+          {/* Transcribe format dropdown */}
+          <div className="relative shrink-0">
+            <select
+              value={transcribeFormat}
+              onChange={(e) => actions.setTranscribeFormat(e.target.value as 'wav' | 'original')}
+              className="appearance-none text-xs bg-zinc-700 text-zinc-200 border border-zinc-600 rounded px-2 py-1 pr-5 focus:outline-none focus:border-purple-500 cursor-pointer"
+              aria-label="Transcribe format"
+            >
+              <option value="original">Original</option>
+              <option value="wav">WAV</option>
+            </select>
+            <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-zinc-400">
+              <ChevronDownIcon />
+            </span>
+          </div>
           <button
             onClick={handleTranscribe}
             disabled={isLoading}
@@ -261,6 +367,38 @@ const TranscriptionResultsInner = () => {
           >
             {transcribing ? 'Transcribing...' : isLoading ? 'Loading...' : 'Transcribe'}
           </button>
+          {/* Import JSON */}
+          <button
+            onClick={() => importJsonRef.current?.click()}
+            className="p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-300 transition-colors shrink-0"
+            title="Import transcription + effects from JSON"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+          </button>
+          {/* Export JSON */}
+          <button
+            onClick={handleExportJson}
+            disabled={!transcriptionResults}
+            className="p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-300 transition-colors shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
+            title="Export transcription + effects to JSON"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+          </button>
+          <input
+            ref={importJsonRef}
+            type="file"
+            accept=".json"
+            onChange={handleImportJson}
+            className="hidden"
+          />
         </div>
       </div>
 
@@ -271,13 +409,7 @@ const TranscriptionResultsInner = () => {
       )}
 
       {transcribing ? (
-        <div className="text-xs py-2">
-          {transcribeStage ? (
-            <TranscribeProgressBar stage={transcribeStage} />
-          ) : (
-            <div className="text-zinc-500">Transcribing...</div>
-          )}
-        </div>
+        <TranscribeProgress />
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
