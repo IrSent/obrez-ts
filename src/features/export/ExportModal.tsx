@@ -66,91 +66,28 @@ function codecLabel(raw: string | null | undefined): string {
   return CODEC_LABELS[raw ?? ''] ?? (raw ?? '?');
 }
 
-interface ExportModalProps {
-  onClose: () => void;
-}
-
 type ExportFormat = 'same' | 'mp4' | 'webm';
 
-const ExportModal = memo(({ onClose }: ExportModalProps) => {
-  const actions = usePlayerActions();
-  const { getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
+/**
+ * Modal for choosing export format.
+ * Does NOT hold export state — that lives in ExportButtonInner so closing
+ * the modal does not cancel the export.
+ */
+interface ExportModalProps {
+  format: ExportFormat;
+  onFormatChange: (f: ExportFormat) => void;
+  onExport: () => void;
+  onClose: () => void;
+  videoCodec: string | null;
+  audioCodec: string | null;
+  originalFormat: 'mp4' | 'webm';
+}
 
-  const fileName = usePlayerStore((state) => state.fileName);
-
-  // Detect original format from file extension
-  const originalExt = (fileName?.match(/\.[^.]+$/) ?? [])[0]?.toLowerCase() ?? '';
-  const originalFormat: 'mp4' | 'webm' =
-    ['mp4', 'mov', 'm4v'].includes(originalExt) ? 'mp4' :
-    ['webm', 'mkv', 'ogg'].includes(originalExt) ? 'webm' :
-    'mp4';
-
-  const [format, setFormat] = useState<ExportFormat>('same');
-  const [exporting, setExporting] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  const videoTrack = getVideoTrack();
-  const audioTrack = getAudioTrack();
-
-  const handleExport = useCallback(async () => {
-    setExporting(true);
-    setError(null);
-    actions.setExporting(true);
-
-    try {
-      const input = getInput();
-      const audioTrack = getAudioTrack();
-      const videoTrack = getVideoTrack();
-      const audioSink = getAudioSink();
-
-      if (!input) throw new Error('No media loaded');
-      if (!audioTrack) throw new Error('No audio track found');
-      if (!audioSink) throw new Error('Audio sink not available');
-
-      // Determine target container and whether to prefer original codecs
-      const targetFormat: 'mp4' | 'webm' = format === 'same' ? originalFormat : format;
-      const preferOriginal = format === 'same';
-
-      const buffer = await exportCensoredVideo(
-        input, audioTrack, audioSink, targetFormat,
-        preferOriginal ? (videoTrack?.codec ?? null) : null,
-        preferOriginal ? (audioTrack.codec ?? null) : null,
-      );
-
-      // Create download link
-      const mimeType = targetFormat === 'mp4' ? 'video/mp4' : 'video/webm';
-      const extension = targetFormat === 'mp4' ? 'mp4' : 'webm';
-      const baseName = (fileName || 'video').replace(/\.[^.]+$/, '');
-
-      const blob = new Blob([buffer], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${baseName}_censored.${extension}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
-
-      onClose();
-    } catch (err) {
-      const message = err instanceof Error ? err.message : 'Export failed';
-      setError(message);
-      console.error('Export error:', err);
-    } finally {
-      setExporting(false);
-      actions.setExportDone();
-    }
-  }, [format, fileName, getInput, getAudioTrack, getAudioSink, getVideoTrack, actions, onClose, originalFormat]);
-
-  const exportStage = usePlayerStore((state) => state.exportStage);
-
-  // Build the "same as input" label
-  const sameLabel = videoTrack?.codec && audioTrack?.codec
-    ? `Same as input (${codecLabel(videoTrack.codec)} + ${codecLabel(audioTrack.codec)})`
+const ExportModal = memo(({ format, onFormatChange, onExport, onClose, videoCodec, audioCodec, originalFormat }: ExportModalProps) => {
+  const sameLabel = videoCodec && audioCodec
+    ? `Same as input (${codecLabel(videoCodec)} + ${codecLabel(audioCodec)})`
     : 'Same as input';
 
-  // For the alternate format button, show the likely codecs
   const altFormat: 'mp4' | 'webm' = originalFormat === 'mp4' ? 'webm' : 'mp4';
   const altVidCodec = altFormat === 'mp4' ? 'avc' : 'vp9';
   const altAudCodec = altFormat === 'mp4' ? 'aac' : 'opus';
@@ -175,7 +112,7 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
             {/* Same as input */}
             <button
               type="button"
-              onClick={() => setFormat('same')}
+              onClick={() => onFormatChange('same')}
               className={`flex-1 text-xs py-2 px-2 rounded font-semibold transition-colors flex flex-col items-center gap-0.5 ${
                 format === 'same'
                   ? 'bg-green-600 text-white'
@@ -188,7 +125,7 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
             {/* Alternate format */}
             <button
               type="button"
-              onClick={() => setFormat(altFormat)}
+              onClick={() => onFormatChange(altFormat)}
               className={`flex-1 text-xs py-2 px-2 rounded font-semibold transition-colors flex flex-col items-center gap-0.5 ${
                 format === altFormat
                   ? 'bg-green-600 text-white'
@@ -201,26 +138,13 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
           </div>
         </div>
 
-        {/* Error message */}
-        {error && (
-          <div className="text-xs text-red-400 p-2 bg-red-900/20 rounded">
-            {error}
-          </div>
-        )}
-
-        {/* Progress */}
-        {exporting && exportStage && (
-          <ExportProgressBar stage={exportStage} />
-        )}
-
-        {/* Export button */}
+        {/* Export button inside modal */}
         <button
-          onClick={handleExport}
-          disabled={exporting}
-          className="w-full bg-green-600 hover:bg-green-500 text-white text-xs font-semibold py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2"
+          onClick={() => { onExport(); onClose(); }}
+          className="w-full bg-green-600 hover:bg-green-500 text-white text-xs font-semibold py-2 rounded transition-colors flex items-center justify-center gap-2"
         >
           <DownloadIcon />
-          {exporting ? 'Exporting...' : 'Export'}
+          Export
         </button>
 
         {/* Note */}
@@ -235,20 +159,81 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
 
 /**
  * Export button shown in the sidebar.
+ * Holds all export state — closing the modal does not cancel the export.
+ * Progress bar is visible in this sidebar block even after modal is dismissed.
  */
 const ExportButtonInner = () => {
   const fileName = usePlayerStore((state) => state.fileName);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
+  const actions = usePlayerActions();
+  const { getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
+
   const [showModal, setShowModal] = useState(false);
+  const [format, setFormat] = useState<ExportFormat>('same');
+  const [error, setError] = useState<string | null>(null);
 
-  // Only show when there's a file and censoring effects
   const canExport = fileName && censoringEffects.length > 0;
-
   if (!canExport) return null;
+
+  // Detect original format from file extension
+  const originalExt = (fileName?.match(/\.[^.]+$/) ?? [])[0]?.toLowerCase() ?? '';
+  const originalFormat: 'mp4' | 'webm' =
+    ['mp4', 'mov', 'm4v'].includes(originalExt) ? 'mp4' :
+    ['webm', 'mkv', 'ogg'].includes(originalExt) ? 'webm' :
+    'mp4';
+
+  const videoTrack = getVideoTrack();
+  const audioTrack = getAudioTrack();
+  const exportStage = usePlayerStore((state) => state.exportStage);
+  const exporting = usePlayerStore((state) => state.exporting);
+
+  const handleExport = useCallback(async () => {
+    setError(null);
+    actions.setExporting(true);
+
+    try {
+      const input = getInput();
+      const audioTrack = getAudioTrack();
+      const videoTrack = getVideoTrack();
+      const audioSink = getAudioSink();
+
+      if (!input) throw new Error('No media loaded');
+      if (!audioTrack) throw new Error('No audio track found');
+      if (!audioSink) throw new Error('Audio sink not available');
+
+      const targetFormat: 'mp4' | 'webm' = format === 'same' ? originalFormat : format;
+      const preferOriginal = format === 'same';
+
+      const buffer = await exportCensoredVideo(
+        input, audioTrack, audioSink, targetFormat,
+        preferOriginal ? (videoTrack?.codec ?? null) : null,
+        preferOriginal ? (audioTrack.codec ?? null) : null,
+      );
+
+      const mimeType = targetFormat === 'mp4' ? 'video/mp4' : 'video/webm';
+      const extension = targetFormat === 'mp4' ? 'mp4' : 'webm';
+      const baseName = (fileName || 'video').replace(/\.[^.]+$/, '');
+
+      const blob = new Blob([buffer], { type: mimeType });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = `${baseName}_censored.${extension}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : 'Export failed');
+      console.error('Export error:', err);
+    } finally {
+      actions.setExportDone();
+    }
+  }, [format, fileName, getInput, getAudioTrack, getAudioSink, getVideoTrack, actions, originalFormat]);
 
   return (
     <>
-      <div className="bg-zinc-800 rounded-lg p-4">
+      <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
         <button
           onClick={() => setShowModal(true)}
           className="w-full flex items-center justify-center gap-2 text-xs font-semibold bg-green-700 hover:bg-green-600 text-white px-3 py-2 rounded transition-colors"
@@ -256,8 +241,31 @@ const ExportButtonInner = () => {
           <DownloadIcon />
           Export Censored Video
         </button>
+
+        {/* Error */}
+        {error && (
+          <div className="text-xs text-red-400 p-2 bg-red-900/20 rounded">
+            {error}
+          </div>
+        )}
+
+        {/* Progress bar visible even when modal is closed */}
+        {exporting && exportStage && (
+          <ExportProgressBar stage={exportStage} />
+        )}
       </div>
-      {showModal && <ExportModal onClose={() => setShowModal(false)} />}
+
+      {showModal && (
+        <ExportModal
+          format={format}
+          onFormatChange={setFormat}
+          onExport={handleExport}
+          onClose={() => setShowModal(false)}
+          originalFormat={originalFormat}
+          videoCodec={videoTrack?.codec ?? null}
+          audioCodec={audioTrack?.codec ?? null}
+        />
+      )}
     </>
   );
 };
