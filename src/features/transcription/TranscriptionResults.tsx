@@ -1,7 +1,8 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import React, { memo, useEffect, useRef, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { EffectModal, EffectBadge } from './EffectModal';
+import { UserDefinedWordModal } from './UserDefinedWordModal';
 import type { SoundCensoringEffect } from '../../types';
 
 /**
@@ -108,6 +109,9 @@ const TranscriptionResultsInner = () => {
   // Effect modal
   const [modalSegment, setModalSegment] = useState<number | null>(null);
 
+  // User-defined word modal — triggered by + button between rows
+  const [userWordPrevEnd, setUserWordPrevEnd] = useState<number | null>(null);
+
   const handleAddEffect = (effect: SoundCensoringEffect) => {
     actions.addSoundEffect(effect);
   };
@@ -129,7 +133,7 @@ const TranscriptionResultsInner = () => {
         end,
         text,
       })),
-      effects: (censoringEffects ?? []).filter(
+      effects: censoringEffects.filter(
         (e): e is SoundCensoringEffect => e.effectType === 'sound',
       ),
     };
@@ -414,70 +418,104 @@ const TranscriptionResultsInner = () => {
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
         <div ref={listRef} className="space-y-1 max-h-[400px] overflow-y-auto pr-1">
-          {transcriptionResults.map(([start, end, text]) => {
-            const triggered = dictMatches?.get(start) ?? [];
-
-            if (showMatchesOnly && triggered.length === 0) {
-              return null;
+          {(() => {
+            const visibleRows: Array<[number, number, string]> = [];
+            for (const [s, e, t] of transcriptionResults) {
+              const triggered = dictMatches?.get(s) ?? [];
+              if (showMatchesOnly && triggered.length === 0) continue;
+              if (searchQuery && !t.toLowerCase().includes(searchQuery.toLowerCase())) continue;
+              visibleRows.push([s, e, t]);
             }
 
-            if (searchQuery && !text.toLowerCase().includes(searchQuery.toLowerCase())) {
-              return null;
-            }
-
-            const highlightedText = highlightSearch(text);
-            const hasMatches = triggered.length > 0;
-            const rowEffects = segmentEffects.get(start) ?? [];
-            const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
-
-            return (
-              <div key={start} className={rowClass} data-segment={start} id={`seg-${start}`}>
-                <span className="timestamp text-zinc-400 w-16">
-                  {formatTime(start)}
-                </span>
-                <span className="text text-zinc-200 flex-1">
-                  {highlightedText.map((part) =>
-                    part.highlighted ? (
-                      <mark key={part.key} className="bg-yellow-900/60 text-yellow-200 rounded px-0.5">
-                        {part.content}
-                      </mark>
-                    ) : (
-                      <span key={part.key}>{part.content}</span>
-                    )
-                  )}
-                </span>
-                <div className="flex items-center gap-1">
-                  {triggered.map(({ slug, count }) => (
-                    <span key={slug} className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded">
-                      {slug} ×{count}
-                    </span>
-                  ))}
-                  {rowEffects.map((effect) => (
-                    <EffectBadge
-                      key={effect.id}
-                      effect={effect}
-                      onRemove={handleRemoveEffect}
-                    />
-                  ))}
-                  <button
-                    onClick={() => handleJumpToTime(start)}
-                    className="text-xs text-purple-400 hover:text-purple-300 px-1 py-0.5 hover:bg-purple-900/30 rounded"
-                  >
-                    Jump
-                  </button>
-                  <button
-                    onClick={() => setModalSegment(start)}
-                    className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded"
-                    title="Add effect"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
+            const addWordBtn = (prevEnd: number) => (
+              <button
+                key={`addword-${prevEnd}`}
+                onClick={() => setUserWordPrevEnd(prevEnd)}
+                className="w-full text-[10px] text-green-400 hover:text-green-300 hover:bg-green-900/30 rounded px-1 py-0.5 transition-colors flex items-center gap-1"
+                title="Add a word starting at this time"
+              >
+                <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+                  <line x1="12" y1="5" x2="12" y2="19" />
+                  <line x1="5" y1="12" x2="19" y2="12" />
+                </svg>
+                Add word at {formatTime(prevEnd)}
+              </button>
             );
-          })}
+
+            return visibleRows.map(([start, end, text], i) => {
+              const triggered = dictMatches?.get(start) ?? [];
+              const highlightedText = highlightSearch(text);
+              const hasMatches = triggered.length > 0;
+              const rowEffects = segmentEffects.get(start) ?? [];
+              const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
+
+              const row = (
+                <div key={`row-${start}`} className={rowClass} data-segment={start} id={`seg-${start}`}>
+                  <span className="timestamp text-zinc-400 w-16">
+                    {formatTime(start)}
+                  </span>
+                  <span className="text text-zinc-200 flex-1">
+                    {highlightedText.map((part) =>
+                      part.highlighted ? (
+                        <mark key={part.key} className="bg-yellow-900/60 text-yellow-200 rounded px-0.5">
+                          {part.content}
+                        </mark>
+                      ) : (
+                        <span key={part.key}>{part.content}</span>
+                      )
+                    )}
+                  </span>
+                  <div className="flex items-center gap-1">
+                    {triggered.map(({ slug, count }) => (
+                      <span key={slug} className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded">
+                        {slug} ×{count}
+                      </span>
+                    ))}
+                    {rowEffects.map((effect) => (
+                      <EffectBadge
+                        key={effect.id}
+                        effect={effect}
+                        onRemove={handleRemoveEffect}
+                      />
+                    ))}
+                    <button
+                      onClick={() => handleJumpToTime(start)}
+                      className="text-xs text-purple-400 hover:text-purple-300 px-1 py-0.5 hover:bg-purple-900/30 rounded"
+                    >
+                      Jump
+                    </button>
+                    <button
+                      onClick={() => setModalSegment(start)}
+                      className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded"
+                      title="Add effect"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+                        <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
+                      </svg>
+                    </button>
+                  </div>
+                </div>
+              );
+
+              // Before the first row: add a button to insert a word at time 0
+              if (i === 0) {
+                return (
+                  <React.Fragment key={`frag-${start}`}>
+                    {addWordBtn(0)}
+                    {row}
+                    {addWordBtn(end)}
+                  </React.Fragment>
+                );
+              }
+
+              return (
+                <React.Fragment key={`frag-${start}`}>
+                  {row}
+                  {addWordBtn(end)}
+                </React.Fragment>
+              );
+            });
+          })()}
         </div>
       ) : (
         <div className="text-xs text-zinc-500 py-2">No transcription data</div>
@@ -489,6 +527,14 @@ const TranscriptionResultsInner = () => {
           segmentStart={modalSegment}
           onClose={() => setModalSegment(null)}
           onAdd={handleAddEffect}
+        />
+      )}
+
+      {/* User-defined word modal */}
+      {userWordPrevEnd != null && (
+        <UserDefinedWordModal
+          prevEnd={userWordPrevEnd}
+          onClose={() => setUserWordPrevEnd(null)}
         />
       )}
     </div>

@@ -121,17 +121,30 @@ export const playerActions = {
   setCensoringEffects: (effects: CensoringEffect[]) =>
     usePlayerStore.setState({ censoringEffects: effects }),
 
+  /**
+   * Insert a transcription row in sorted order (by start time).
+   */
+  addTranscriptionRow: (row: [number, number, string]) => {
+    usePlayerStore.setState((state) => {
+      if (!state.transcriptionResults) return { transcriptionResults: [row] };
+      const sorted = [...state.transcriptionResults, row].sort(
+        (a, b) => a[0] - b[0],
+      );
+      return { transcriptionResults: sorted };
+    });
+  },
+
   // Sound effect actions
 
   addSoundEffect: (effect: SoundCensoringEffect) => {
     usePlayerStore.setState((state) => ({
-      censoringEffects: [...(state.censoringEffects ?? []), effect],
+      censoringEffects: [...state.censoringEffects, effect],
     }));
   },
 
   removeSoundEffect: (id: string) => {
     usePlayerStore.setState((state) => ({
-      censoringEffects: (state.censoringEffects ?? []).filter(
+      censoringEffects: state.censoringEffects.filter(
         (e) => e.effectType !== 'sound' || e.id !== id,
       ),
     }));
@@ -139,7 +152,7 @@ export const playerActions = {
 
   updateSoundEffect: (id: string, updates: Partial<SoundCensoringEffect>) => {
     usePlayerStore.setState((state) => ({
-      censoringEffects: (state.censoringEffects ?? []).map((e) => {
+      censoringEffects: state.censoringEffects.map((e) => {
         if (e.effectType === 'sound' && e.id === id) {
           return { ...e, ...updates };
         }

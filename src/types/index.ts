@@ -133,7 +133,7 @@ export type PlayerState = {
   transcribeStage: string | null;
 
   /** Censoring effects if available */
-  censoringEffects: Array<CensoringEffect> | null;
+  censoringEffects: Array<CensoringEffect>;
 
   /** Loaded dictionaries by slug */
   loadedDictionaries: Record<string, Dictionary>;

@@ -197,7 +197,7 @@ export function useMediaPlayer() {
    */
   function checkSoundEffects(playbackTime: number): void {
     const { censoringEffects, transcriptionResults, censoringMode } = usePlayerStore.getState();
-    if (!censoringMode || !censoringEffects || !transcriptionResults) return;
+    if (!censoringMode || censoringEffects.length === 0 || !transcriptionResults) return;
 
     for (const e of censoringEffects) {
       if (e.effectType !== 'sound') continue;
