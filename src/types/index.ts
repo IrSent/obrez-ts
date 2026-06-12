@@ -155,4 +155,12 @@ export type PlayerState = {
 
   /** Audio format to send for transcription: 'wav' (PCM uncompressed) or 'original' (raw compressed packets, no re-encoding) */
   transcribeFormat: 'wav' | 'original';
+
+  /** Playback speed multiplier (1 = normal, 1.5 = 1.5x, etc.) */
+  playbackSpeed: number;
 };
+
+/**
+ * Available playback speed options.
+ */
+export type PlaybackSpeed = 0.5 | 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2 | 2.5 | 3;

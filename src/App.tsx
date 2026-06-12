@@ -5,6 +5,7 @@ import { DictionaryManager } from './features/dictionary/DictionaryManager';
 import { BleepSoundManager } from './features/bleep-sounds/BleepSoundManager';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ExportButton } from './features/export/ExportModal';
+import { APP_VERSION } from './version';
 
 export const App = () => {
   return (
@@ -17,7 +18,7 @@ export const App = () => {
                 alt="Obrez Logo"
                 className="w-8 h-8"
               />
-              <h1 className="text-xl font-semibold text-purple-500">Obrez</h1>
+              <h1 className="text-xl font-semibold text-purple-500">Obrez <span className="text-xs font-normal text-zinc-500">{APP_VERSION}</span></h1>
             </div>
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
