@@ -229,34 +229,35 @@ export async function exportCensoredVideo(
     }
   }
 
-  // Per-channel concatenated Float32Array — we'll grow them incrementally
+  // Pre-allocate exact size — we know the duration from the store
+  const totalFrames = usePlayerStore.getState().duration * sampleRate;
+
+  // Per-channel pre-allocated Float32Array
   const channelData: Float32Array[] = [];
   for (let ch = 0; ch < numChannels; ch++) {
-    channelData.push(new Float32Array(0)); // placeholder, will resize
+    channelData.push(new Float32Array(totalFrames));
   }
 
-  let totalFrames = 0;
+  let framesWritten = 0;
   let firstChunkFrames = 0;
   let estimatedTotalChunks = 1;
+  let chunkCount = 0;
 
   for await (const { buffer } of audioSink.buffers(0)) {
     const chunkFrames = buffer.length;
+    chunkCount++;
 
     if (firstChunkFrames === 0) {
       firstChunkFrames = chunkFrames;
-      const totalDuration = audioTrack.duration;
-      estimatedTotalChunks = Math.max(1, Math.ceil(totalDuration * sampleRate / chunkFrames));
+      estimatedTotalChunks = Math.max(1, Math.ceil(totalFrames / chunkFrames));
     }
 
-    // Append per-channel data to the running arrays
+    // Write directly into pre-allocated buffer — no reallocation
     for (let ch = 0; ch < numChannels; ch++) {
       const src = buffer.getChannelData(ch);
-      const dst = new Float32Array(totalFrames + chunkFrames);
-      dst.set(channelData[ch]);
-      dst.set(src, totalFrames);
-      channelData[ch] = dst;
+      channelData[ch].set(src, framesWritten);
     }
-    totalFrames += chunkFrames;
+    framesWritten += chunkFrames;
 
     // Incremental RMS from channel 0
     const ch0 = buffer.getChannelData(0);
@@ -264,8 +265,8 @@ export async function exportCensoredVideo(
       for (const [start, end] of transcriptionResults) {
         const segStartFrame = Math.floor(start * sampleRate);
         const segEndFrame = Math.floor(end * sampleRate);
-        const chunkStartFrame = totalFrames - chunkFrames;
-        const chunkEndFrame = totalFrames;
+        const chunkStartFrame = framesWritten - chunkFrames;
+        const chunkEndFrame = framesWritten;
 
         // Overlap of [segStart, segEnd) and [chunkStart, chunkEnd)
         const overlapStart = Math.max(segStartFrame, chunkStartFrame);
@@ -282,9 +283,9 @@ export async function exportCensoredVideo(
       }
     }
 
-    const progressPct = Math.round((totalFrames / (estimatedTotalChunks * firstChunkFrames)) * 100);
+    const progressPct = Math.round((framesWritten / totalFrames) * 100);
     playerActions.setExportStage(
-      `Collecting audio... (${Math.ceil(totalFrames / firstChunkFrames)}/${estimatedTotalChunks} chunks, ${Math.min(progressPct, 100)}%)`,
+      `Collecting audio... (${chunkCount}/${estimatedTotalChunks} chunks, ${Math.min(progressPct, 100)}%)`,
     );
   }
 

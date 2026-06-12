@@ -16,6 +16,9 @@ async function build() {
     console.log('Copying public assets...');
     await $`cp -r public/* dist/`;
 
+    // Get git build number (commit count from HEAD)
+    const buildNum = (await $`git rev-list HEAD --count`.text()).trim();
+
     // Build with Bun and Tailwind
     console.log('Building with Bun and Tailwind...');
     await Bun.build({
@@ -26,6 +29,9 @@ async function build() {
       sourcemap: 'external',
       minify: false,
       splitting: false,
+      define: {
+        '__BUILD_NUM__': JSON.stringify(buildNum),
+      },
     });
 
     console.log('Build completed successfully!');

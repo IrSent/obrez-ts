@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { PlayerState, Dictionary, BleepSound, CensoringEffect, SoundCensoringEffect } from '../types';
+import type { PlayerState, Dictionary, BleepSound, CensoringEffect, SoundCensoringEffect, PlaybackSpeed } from '../types';
 import { FastAhoScanner } from '../aho-corasick';
 import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData, dbUpdateUrl } from './bleepDb';
 
@@ -72,6 +72,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   // Transcribe format
   transcribeFormat: 'original',
+
+  // Playback speed
+  playbackSpeed: 1,
 }));
 
 /**
@@ -109,6 +112,8 @@ export const playerActions = {
     usePlayerStore.setState({ transcribeStage: stage }),
   setTranscribeFormat: (format: 'wav' | 'original') =>
     usePlayerStore.setState({ transcribeFormat: format }),
+  setPlaybackSpeed: (speed: PlaybackSpeed) =>
+    usePlayerStore.setState({ playbackSpeed: speed }),
   /**
    * Set transcription results + transcribing=false + clear stage in one setState.
    */

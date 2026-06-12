@@ -69,10 +69,11 @@ export function useMediaPlayer() {
   // === Утилиты через ref — стабильные, не зависят от React ===
   const utilsRef = useRef({
     getPlaybackTime: (): number => {
+      const speed = usePlayerStore.getState().playbackSpeed;
       if (playingRef.current && audioContextRef.current && audioContextStartTimeRef.current != null) {
         return (
-          audioContextRef.current.currentTime -
-          audioContextStartTimeRef.current +
+          (audioContextRef.current.currentTime -
+          audioContextStartTimeRef.current) * speed +
           playbackTimeAtStartRef.current
         );
       }
