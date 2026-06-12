@@ -165,6 +165,8 @@ const ExportModal = memo(({ format, onFormatChange, onExport, onClose, videoCode
 const ExportButtonInner = () => {
   const fileName = usePlayerStore((state) => state.fileName);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
+  const exportStage = usePlayerStore((state) => state.exportStage);
+  const exporting = usePlayerStore((state) => state.exporting);
   const actions = usePlayerActions();
   const { getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
 
@@ -173,7 +175,6 @@ const ExportButtonInner = () => {
   const [error, setError] = useState<string | null>(null);
 
   const canExport = fileName && censoringEffects.length > 0;
-  if (!canExport) return null;
 
   // Detect original format from file extension
   const originalExt = (fileName?.match(/\.[^.]+$/) ?? [])[0]?.toLowerCase() ?? '';
@@ -184,8 +185,6 @@ const ExportButtonInner = () => {
 
   const videoTrack = getVideoTrack();
   const audioTrack = getAudioTrack();
-  const exportStage = usePlayerStore((state) => state.exportStage);
-  const exporting = usePlayerStore((state) => state.exporting);
 
   const handleExport = useCallback(async () => {
     setError(null);
@@ -231,7 +230,7 @@ const ExportButtonInner = () => {
     }
   }, [format, fileName, getInput, getAudioTrack, getAudioSink, getVideoTrack, actions, originalFormat]);
 
-  return (
+  return canExport ? (
     <>
       <div className="bg-zinc-800 rounded-lg p-4 space-y-3">
         <button
@@ -267,7 +266,7 @@ const ExportButtonInner = () => {
         />
       )}
     </>
-  );
+  ) : null;
 };
 
 export const ExportButton = memo(ExportButtonInner);
