@@ -49,7 +49,7 @@ async function ensureBleepDecoded(
 }
 
 function getSoundEffects(): SoundCensoringEffect[] {
-  const raw = usePlayerStore.getState().censoringEffects ?? [];
+  const raw = usePlayerStore.getState().censoringEffects;
   return raw
     .filter((e: typeof raw[number]): e is SoundCensoringEffect => e.effectType === 'sound')
     .sort((a, b) => a.segmentStart - b.segmentStart);
@@ -68,6 +68,14 @@ async function renderCensoredAudio(
 ): Promise<AudioBuffer> {
   const totalFrames = audioChunks.reduce((sum, buf) => sum + buf.length, 0);
   const ctx = new OfflineAudioContext(numChannels, totalFrames, sampleRate);
+
+  // Progress reporting for the export UI
+  const totalDuration = totalFrames / sampleRate;
+  ctx.onrenderprogress = () => {
+    const done = ctx.currentTime;
+    const pct = Math.round((done / totalDuration) * 100);
+    playerActions.setExportStage(`Rendering censored audio... ${Math.round(done)}s / ${Math.round(totalDuration)}s (${pct}%)`);
+  };
 
   // Gain node for dampening
   const gainNode = ctx.createGain();
@@ -136,13 +144,22 @@ async function renderCensoredAudio(
     bleepSource.start(effect.segmentStart);
   }
 
-  return ctx.startRendering();
+  const result = ctx.startRendering();
+  ctx.onrenderprogress = null; // done — prevent leaks
+  return result;
 }
 
 /**
  * Pick best video codec for the output format.
+ * If originalCodec is provided and encodable, it's used first.
  */
-async function pickVideoCodec(format: 'mp4' | 'webm'): Promise<VideoCodec> {
+async function pickVideoCodec(format: 'mp4' | 'webm', originalCodec?: string | null): Promise<VideoCodec> {
+  // Try the original codec first if provided
+  if (originalCodec) {
+    const encodable = await getEncodableVideoCodecs([originalCodec as VideoCodec]);
+    if (encodable.length > 0) return encodable[0] as VideoCodec;
+  }
+
   const preferred: VideoCodec[] = format === 'mp4' ? ['avc', 'hevc'] : ['vp9', 'vp8'];
   const encodable = await getEncodableVideoCodecs(preferred);
   if (encodable.length > 0) return encodable[0];
@@ -156,8 +173,14 @@ async function pickVideoCodec(format: 'mp4' | 'webm'): Promise<VideoCodec> {
 
 /**
  * Pick best audio codec for the output format.
+ * If originalCodec is provided and encodable, it's used first.
  */
-async function pickAudioCodec(format: 'mp4' | 'webm'): Promise<AudioCodec> {
+async function pickAudioCodec(format: 'mp4' | 'webm', originalCodec?: string | null): Promise<AudioCodec> {
+  // Try the original codec first if provided
+  if (originalCodec) {
+    if (await canEncodeAudio(originalCodec as AudioCodec)) return originalCodec as AudioCodec;
+  }
+
   if (format === 'mp4') {
     if (await canEncodeAudio('aac')) return 'aac';
     if (await canEncodeAudio('mp3')) return 'mp3';
@@ -180,6 +203,8 @@ export async function exportCensoredVideo(
   audioTrack: InputAudioTrack,
   audioSink: AudioBufferSink,
   outputFormat: 'mp4' | 'webm',
+  originalVideoCodec?: string | null,
+  originalAudioCodec?: string | null,
 ): Promise<ArrayBuffer> {
   const numChannels = audioTrack.numberOfChannels;
   const sampleRate = audioTrack.sampleRate;
@@ -253,8 +278,8 @@ export async function exportCensoredVideo(
 
   // --- Phase 4: Choose codecs ---
   playerActions.setExportStage('Choosing codecs...');
-  const vidCodec = await pickVideoCodec(outputFormat);
-  const audCodec = await pickAudioCodec(outputFormat);
+  const vidCodec = await pickVideoCodec(outputFormat, originalVideoCodec);
+  const audCodec = await pickAudioCodec(outputFormat, originalAudioCodec);
 
   // --- Phase 5: Convert with mediabunny ---
   playerActions.setExportStage('Encoding video...');
