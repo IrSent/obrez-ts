@@ -53,9 +53,18 @@ interface ExportModalProps {
 
 const ExportModal = memo(({ onClose }: ExportModalProps) => {
   const actions = usePlayerActions();
-  const { getInput, getAudioTrack, getAudioSink } = useMediaPlayerContext();
+  const { getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
 
-  const [format, setFormat] = useState<'mp4' | 'webm'>('mp4');
+  const fileName = usePlayerStore((state) => state.fileName);
+
+  // Detect original format from file extension
+  const originalExt = (fileName?.match(/\.[^.]+$/) ?? [])[0]?.toLowerCase() ?? '';
+  const originalFormat: 'mp4' | 'webm' =
+    ['mp4', 'mov', 'm4v'].includes(originalExt) ? 'mp4' :
+    ['webm', 'mkv', 'ogg'].includes(originalExt) ? 'webm' :
+    'mp4';
+
+  const [format, setFormat] = useState<'mp4' | 'webm'>(originalFormat);
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -67,19 +76,23 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
     try {
       const input = getInput();
       const audioTrack = getAudioTrack();
+      const videoTrack = getVideoTrack();
       const audioSink = getAudioSink();
 
       if (!input) throw new Error('No media loaded');
       if (!audioTrack) throw new Error('No audio track found');
       if (!audioSink) throw new Error('Audio sink not available');
 
-      const buffer = await exportCensoredVideo(input, audioTrack, audioSink, format);
+      const buffer = await exportCensoredVideo(
+        input, audioTrack, audioSink, format,
+        videoTrack?.codec ?? null,
+        audioTrack.codec ?? null,
+      );
 
       // Create download link
       const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm';
       const extension = format === 'mp4' ? 'mp4' : 'webm';
-      const fileName = usePlayerStore.getState().fileName || 'video';
-      const baseName = fileName.replace(/\.[^.]+$/, '');
+      const baseName = (fileName || 'video').replace(/\.[^.]+$/, '');
 
       const blob = new Blob([buffer], { type: mimeType });
       const url = URL.createObjectURL(blob);
@@ -100,7 +113,7 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
       setExporting(false);
       actions.setExportDone();
     }
-  }, [format, getInput, getAudioTrack, getAudioSink, actions, onClose]);
+  }, [format, fileName, getInput, getAudioTrack, getAudioSink, getVideoTrack, actions, onClose]);
 
   const exportStage = usePlayerStore((state) => state.exportStage);
 
@@ -136,6 +149,20 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
               </button>
             ))}
           </div>
+
+          {/* Original format hint */}
+          {(() => {
+            const videoTrack = getVideoTrack();
+            const audioTrack = getAudioTrack();
+            const vidLabel = videoTrack?.codec ?? 'N/A';
+            const audLabel = audioTrack?.codec ?? 'N/A';
+            const extLabel = originalExt.toUpperCase();
+            return (
+              <p className="text-[10px] text-zinc-500 mt-1.5">
+                Original: {vidLabel} / {audLabel} ({extLabel})
+              </p>
+            );
+          })()}
         </div>
 
         {/* Error message */}
