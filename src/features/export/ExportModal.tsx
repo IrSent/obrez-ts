@@ -1,4 +1,4 @@
-import { memo, useState, useCallback, useEffect } from 'react';
+import { memo, useState, useCallback } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { exportCensoredVideo } from '../../export';
@@ -47,9 +47,30 @@ function ExportProgressBar({ stage }: { stage: string }) {
   );
 }
 
+/**
+ * Human-readable codec labels.
+ */
+const CODEC_LABELS: Record<string, string> = {
+  avc: 'H.264',
+  hevc: 'H.265',
+  vp8: 'VP8',
+  vp9: 'VP9',
+  av1: 'AV1',
+  aac: 'AAC',
+  opus: 'Opus',
+  vorbis: 'Vorbis',
+  mp3: 'MP3',
+};
+
+function codecLabel(raw: string | null | undefined): string {
+  return CODEC_LABELS[raw ?? ''] ?? (raw ?? '?');
+}
+
 interface ExportModalProps {
   onClose: () => void;
 }
+
+type ExportFormat = 'same' | 'mp4' | 'webm';
 
 const ExportModal = memo(({ onClose }: ExportModalProps) => {
   const actions = usePlayerActions();
@@ -64,9 +85,12 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
     ['webm', 'mkv', 'ogg'].includes(originalExt) ? 'webm' :
     'mp4';
 
-  const [format, setFormat] = useState<'mp4' | 'webm'>(originalFormat);
+  const [format, setFormat] = useState<ExportFormat>('same');
   const [exporting, setExporting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const videoTrack = getVideoTrack();
+  const audioTrack = getAudioTrack();
 
   const handleExport = useCallback(async () => {
     setExporting(true);
@@ -83,15 +107,19 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
       if (!audioTrack) throw new Error('No audio track found');
       if (!audioSink) throw new Error('Audio sink not available');
 
+      // Determine target container and whether to prefer original codecs
+      const targetFormat: 'mp4' | 'webm' = format === 'same' ? originalFormat : format;
+      const preferOriginal = format === 'same';
+
       const buffer = await exportCensoredVideo(
-        input, audioTrack, audioSink, format,
-        videoTrack?.codec ?? null,
-        audioTrack.codec ?? null,
+        input, audioTrack, audioSink, targetFormat,
+        preferOriginal ? (videoTrack?.codec ?? null) : null,
+        preferOriginal ? (audioTrack.codec ?? null) : null,
       );
 
       // Create download link
-      const mimeType = format === 'mp4' ? 'video/mp4' : 'video/webm';
-      const extension = format === 'mp4' ? 'mp4' : 'webm';
+      const mimeType = targetFormat === 'mp4' ? 'video/mp4' : 'video/webm';
+      const extension = targetFormat === 'mp4' ? 'mp4' : 'webm';
       const baseName = (fileName || 'video').replace(/\.[^.]+$/, '');
 
       const blob = new Blob([buffer], { type: mimeType });
@@ -113,9 +141,19 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
       setExporting(false);
       actions.setExportDone();
     }
-  }, [format, fileName, getInput, getAudioTrack, getAudioSink, getVideoTrack, actions, onClose]);
+  }, [format, fileName, getInput, getAudioTrack, getAudioSink, getVideoTrack, actions, onClose, originalFormat]);
 
   const exportStage = usePlayerStore((state) => state.exportStage);
+
+  // Build the "same as input" label
+  const sameLabel = videoTrack?.codec && audioTrack?.codec
+    ? `Same as input (${codecLabel(videoTrack.codec)} + ${codecLabel(audioTrack.codec)})`
+    : 'Same as input';
+
+  // For the alternate format button, show the likely codecs
+  const altFormat: 'mp4' | 'webm' = originalFormat === 'mp4' ? 'webm' : 'mp4';
+  const altVidCodec = altFormat === 'mp4' ? 'avc' : 'vp9';
+  const altAudCodec = altFormat === 'mp4' ? 'aac' : 'opus';
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
@@ -134,35 +172,33 @@ const ExportModal = memo(({ onClose }: ExportModalProps) => {
         <div>
           <label className="block text-xs text-zinc-400 mb-1.5">Format</label>
           <div className="flex gap-2">
-            {(['mp4', 'webm'] as const).map((f) => (
-              <button
-                key={f}
-                type="button"
-                onClick={() => setFormat(f)}
-                className={`flex-1 text-xs py-2 rounded font-semibold uppercase transition-colors ${
-                  format === f
-                    ? 'bg-green-600 text-white'
-                    : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-                }`}
-              >
-                .{f}
-              </button>
-            ))}
-          </div>
+            {/* Same as input */}
+            <button
+              type="button"
+              onClick={() => setFormat('same')}
+              className={`flex-1 text-xs py-2 px-2 rounded font-semibold transition-colors flex flex-col items-center gap-0.5 ${
+                format === 'same'
+                  ? 'bg-green-600 text-white'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+              }`}
+            >
+              <span>{sameLabel}</span>
+            </button>
 
-          {/* Original format hint */}
-          {(() => {
-            const videoTrack = getVideoTrack();
-            const audioTrack = getAudioTrack();
-            const vidLabel = videoTrack?.codec ?? 'N/A';
-            const audLabel = audioTrack?.codec ?? 'N/A';
-            const extLabel = originalExt.toUpperCase();
-            return (
-              <p className="text-[10px] text-zinc-500 mt-1.5">
-                Original: {vidLabel} / {audLabel} ({extLabel})
-              </p>
-            );
-          })()}
+            {/* Alternate format */}
+            <button
+              type="button"
+              onClick={() => setFormat(altFormat)}
+              className={`flex-1 text-xs py-2 px-2 rounded font-semibold transition-colors flex flex-col items-center gap-0.5 ${
+                format === altFormat
+                  ? 'bg-green-600 text-white'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+              }`}
+            >
+              <span>.{altFormat.toUpperCase()}</span>
+              <span className="text-[9px] opacity-70">{codecLabel(altVidCodec)} + {codecLabel(altAudCodec)}</span>
+            </button>
+          </div>
         </div>
 
         {/* Error message */}
