@@ -57,20 +57,23 @@ function getSoundEffects(): SoundCensoringEffect[] {
 
 /**
  * Render censored audio using OfflineAudioContext.
- * Each chunk is played sequentially through the gain node.
+ * Concatenates all chunks into one buffer, applies dampening via gainNode,
+ * then schedules bleep sounds — only 2 BufferSource nodes total.
+ *
  * rmsMap maps segmentStart → RMS of that segment (for auto-volume mode).
  */
 async function renderCensoredAudio(
-  audioChunks: AudioBuffer[],
   sampleRate: number,
   numChannels: number,
+  totalFrames: number,
+  channelData: Float32Array[],   // per-channel concatenated data (owned by caller)
   rmsMap: Map<number, number>,
 ): Promise<AudioBuffer> {
-  const totalFrames = audioChunks.reduce((sum, buf) => sum + buf.length, 0);
+  const totalDuration = totalFrames / sampleRate;
+
   const ctx = new OfflineAudioContext(numChannels, totalFrames, sampleRate);
 
-  // Progress reporting for the export UI
-  const totalDuration = totalFrames / sampleRate;
+  // Progress reporting
   ctx.onrenderprogress = () => {
     const done = ctx.currentTime;
     const pct = Math.round((done / totalDuration) * 100);
@@ -108,15 +111,16 @@ async function renderCensoredAudio(
     }
   }
 
-  // Play each chunk sequentially through the gain node
-  let cumulativeTime = 0;
-  for (const chunk of audioChunks) {
-    const source = ctx.createBufferSource();
-    source.buffer = chunk;
-    source.connect(gainNode);
-    source.start(cumulativeTime);
-    cumulativeTime += chunk.length / sampleRate;
+  // Play the whole audio through the gain node — one BufferSource
+  const source = ctx.createBufferSource();
+  source.buffer = ctx.createBuffer(numChannels, totalFrames, sampleRate);
+
+  for (let ch = 0; ch < numChannels; ch++) {
+    source.buffer.copyToChannel(channelData[ch], ch);
   }
+
+  source.connect(gainNode);
+  source.start(0);
 
   // Schedule bleep sounds
   for (const effect of soundEffects) {
@@ -168,7 +172,7 @@ async function pickVideoCodec(format: 'mp4' | 'webm', originalCodec?: string | n
   if (format === 'mp4') {
     return (allEncodable.find((c) => c === 'avc' || c === 'hevc') ?? allEncodable[0]) as VideoCodec;
   }
-  return (allEncodable.find((c) => c === 'vp9' || c === 'vp8') as VideoCodec) ?? (allEncodable[0] as VideoCodec);
+  return (allEncodable.find((c) => c === 'vp9' || c === 'vp8' as VideoCodec) ?? allEncodable[0]) as VideoCodec;
 }
 
 /**
@@ -209,20 +213,92 @@ export async function exportCensoredVideo(
   const numChannels = audioTrack.numberOfChannels;
   const sampleRate = audioTrack.sampleRate;
 
-  // --- Phase 1: Collect original audio buffers ---
-  const audioBuffers: AudioBuffer[] = [];
-  for await (const { buffer } of audioSink.buffers(0)) {
-    audioBuffers.push(buffer);
-    playerActions.setExportStage(`Collecting audio... (${audioBuffers.length} chunks)`);
+  // --- Phase 1: Collect original audio + compute RMS incrementally ---
+  const transcriptionResults = usePlayerStore.getState().transcriptionResults;
+  const soundEffects = getSoundEffects();
+
+  // For incremental RMS: accumulate per-segment sum-of-squares and count.
+  // Keyed by segment start time.
+  const rmsSumSq = new Map<number, number>();
+  const rmsCount = new Map<number, number>();
+
+  if (transcriptionResults) {
+    for (const [start] of transcriptionResults) {
+      rmsSumSq.set(start, 0);
+      rmsCount.set(start, 0);
+    }
   }
 
-  const totalFrames = audioBuffers.reduce((sum, buf) => sum + buf.length, 0);
+  // Per-channel concatenated Float32Array — we'll grow them incrementally
+  const channelData: Float32Array[] = [];
+  for (let ch = 0; ch < numChannels; ch++) {
+    channelData.push(new Float32Array(0)); // placeholder, will resize
+  }
+
+  let totalFrames = 0;
+  let firstChunkFrames = 0;
+  let estimatedTotalChunks = 1;
+
+  for await (const { buffer } of audioSink.buffers(0)) {
+    const chunkFrames = buffer.length;
+
+    if (firstChunkFrames === 0) {
+      firstChunkFrames = chunkFrames;
+      const totalDuration = audioTrack.duration;
+      estimatedTotalChunks = Math.max(1, Math.ceil(totalDuration * sampleRate / chunkFrames));
+    }
+
+    // Append per-channel data to the running arrays
+    for (let ch = 0; ch < numChannels; ch++) {
+      const src = buffer.getChannelData(ch);
+      const dst = new Float32Array(totalFrames + chunkFrames);
+      dst.set(channelData[ch]);
+      dst.set(src, totalFrames);
+      channelData[ch] = dst;
+    }
+    totalFrames += chunkFrames;
+
+    // Incremental RMS from channel 0
+    const ch0 = buffer.getChannelData(0);
+    if (transcriptionResults) {
+      for (const [start, end] of transcriptionResults) {
+        const segStartFrame = Math.floor(start * sampleRate);
+        const segEndFrame = Math.floor(end * sampleRate);
+        const chunkStartFrame = totalFrames - chunkFrames;
+        const chunkEndFrame = totalFrames;
+
+        // Overlap of [segStart, segEnd) and [chunkStart, chunkEnd)
+        const overlapStart = Math.max(segStartFrame, chunkStartFrame);
+        const overlapEnd = Math.min(segEndFrame, chunkEndFrame);
+
+        if (overlapEnd > overlapStart) {
+          let sum = 0;
+          for (let i = overlapStart - chunkStartFrame; i < overlapEnd - chunkStartFrame; i++) {
+            sum += ch0[i] * ch0[i];
+          }
+          rmsSumSq.set(start, (rmsSumSq.get(start) ?? 0) + sum);
+          rmsCount.set(start, (rmsCount.get(start) ?? 0) + (overlapEnd - overlapStart));
+        }
+      }
+    }
+
+    const progressPct = Math.round((totalFrames / (estimatedTotalChunks * firstChunkFrames)) * 100);
+    playerActions.setExportStage(
+      `Collecting audio... (${Math.ceil(totalFrames / firstChunkFrames)}/${estimatedTotalChunks} chunks, ${Math.min(progressPct, 100)}%)`,
+    );
+  }
+
+  // Finalize RMS map
+  const rmsMap = new Map<number, number>();
+  for (const [start] of rmsSumSq.keys()) {
+    const cnt = rmsCount.get(start) ?? 0;
+    rmsMap.set(start, cnt > 0 ? Math.sqrt((rmsSumSq.get(start) ?? 0) / cnt) : 0);
+  }
 
   // --- Phase 2: Decode bleep sounds ---
   playerActions.setExportStage('Preparing bleep sounds...');
 
   const decodeCtx = new OfflineAudioContext(1, 1, sampleRate);
-  const soundEffects = getSoundEffects();
 
   for (const effect of soundEffects) {
     const buf = await ensureBleepDecoded(effect.soundId, decodeCtx);
@@ -232,49 +308,14 @@ export async function exportCensoredVideo(
   }
   await decodeCtx.startRendering();
 
-  // --- Phase 3: Compute segment RMS for auto-volume ---
-  playerActions.setExportStage('Computing segment RMS...');
-
-  const transcriptionResults = usePlayerStore.getState().transcriptionResults;
-  const rmsMap = new Map<number, number>();
-
-  if (transcriptionResults) {
-    // Build interleaved per-frame data from chunks for RMS computation
-    // We need to compute RMS per segment. Each chunk has numChannels interleaved.
-    const frames: Float32Array = new Float32Array(totalFrames);
-    let off = 0;
-    for (const chunk of audioBuffers) {
-      // Use channel 0 for RMS (mono is sufficient)
-      const ch0 = chunk.getChannelData(0);
-      frames.set(ch0, off);
-      off += ch0.length;
-    }
-
-    for (const [start, end] of transcriptionResults) {
-      const startFrame = Math.floor(start * sampleRate);
-      const endFrame = Math.floor(end * sampleRate);
-      let sum = 0;
-      let count = 0;
-      for (let f = startFrame; f < endFrame && f < totalFrames; f++) {
-        sum += frames[f] * frames[f];
-        count++;
-      }
-      rmsMap.set(start, count > 0 ? Math.sqrt(sum / count) : 0);
-    }
-  }
-
-  // --- Phase 3b: Render censored audio ---
-  playerActions.setExportStage('Rendering censored audio...');
-
+  // --- Phase 3b: Render censored audio (RMS already done — no separate Phase 3) ---
   const censoredBuffer = await renderCensoredAudio(
-    audioBuffers,
     sampleRate,
     numChannels,
+    totalFrames,
+    channelData,
     rmsMap,
   );
-
-  // Free original audio buffers
-  audioBuffers.length = 0;
 
   // --- Phase 4: Choose codecs ---
   playerActions.setExportStage('Choosing codecs...');
@@ -290,10 +331,10 @@ export async function exportCensoredVideo(
   const bufferTarget = new BufferTarget();
   const output = new Output({ format, target: bufferTarget });
 
- // Consume censored audio as a stream of frames.
- // The original and censored audio have the same total frames, but may be
- // split into different chunk sizes by mediabunny. We pull frames from the
- // censored buffer on demand to match each original sample's frame count.
+  // Consume censored audio as a stream of frames.
+  // The original and censored audio have the same total frames, but may be
+  // split into different chunk sizes by mediabunny. We pull frames from the
+  // censored buffer on demand to match each original sample's frame count.
   const censoredChannelData: Float32Array[] = [];
   for (let ch = 0; ch < censoredBuffer.numberOfChannels; ch++) {
     censoredChannelData.push(censoredBuffer.getChannelData(ch));
@@ -357,8 +398,6 @@ export async function exportCensoredVideo(
     };
 
     await conversion.execute();
-
-    // No cleanup needed — we stream directly from censoredBuffer
 
     const result = bufferTarget.buffer;
     if (!result) {
