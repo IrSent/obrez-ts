@@ -478,7 +478,7 @@ const TranscriptionResultsInner = () => {
             const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
 
             return (
-              <div key={start} className={rowClass} data-segment={start} id={`seg-${start}`}>
+              <div key={`${start}-${end}-${text}`} className={rowClass} data-segment={start} id={`seg-${start}`}>
                 <span className="timestamp text-zinc-400 w-16">
                   {formatTime(start)}
                 </span>
