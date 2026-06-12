@@ -2,6 +2,7 @@ import { memo, useEffect, useRef, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { EffectModal, EffectBadge } from './EffectModal';
+import { AddWordModal } from './AddWordModal';
 import type { SoundCensoringEffect } from '../../types';
 
 /**
@@ -10,6 +11,16 @@ import type { SoundCensoringEffect } from '../../types';
 const ChevronDownIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="6 9 12 15 18 9" />
+  </svg>
+);
+
+/**
+ * Icon: plus
+ */
+const PlusIcon = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+    <line x1="12" y1="5" x2="12" y2="19" />
+    <line x1="5" y1="12" x2="19" y2="12" />
   </svg>
 );
 
@@ -93,6 +104,7 @@ const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const transcribing = usePlayerStore((state) => state.transcribing);
   const transcribeFormat = usePlayerStore((state) => state.transcribeFormat);
+  const duration = usePlayerStore((state) => state.duration);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
@@ -107,8 +119,19 @@ const TranscriptionResultsInner = () => {
   // Effect modal
   const [modalSegment, setModalSegment] = useState<number | null>(null);
 
+  // Add Word modal
+  const [showAddWord, setShowAddWord] = useState(false);
+
   const handleAddEffect = (effect: SoundCensoringEffect) => {
     actions.addSoundEffect(effect);
+  };
+
+  const handleAddWord = (start: number, end: number, text: string) => {
+    const current = transcriptionResults ?? [];
+    const newResults = [...current, [start, end, text]];
+    // Sort by start time
+    newResults.sort((a, b) => a[0] - b[0]);
+    actions.setTranscriptionResults(newResults.length ? newResults : null);
   };
 
   const handleRemoveEffect = (id: string) => {
@@ -411,6 +434,14 @@ const TranscriptionResultsInner = () => {
           >
             {transcribing ? 'Transcribing...' : isLoading ? 'Loading...' : 'Transcribe'}
           </button>
+          {/* Add Word */}
+          <button
+            onClick={() => setShowAddWord(true)}
+            className="text-xs font-semibold px-3 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 flex items-center gap-1"
+            title="Manually add a word with start, end, and text"
+          >
+            <PlusIcon /> Add Word
+          </button>
           {/* Import JSON */}
           <button
             onClick={() => importJsonRef.current?.click()}
@@ -479,8 +510,22 @@ const TranscriptionResultsInner = () => {
 
             return (
               <div key={`${start}-${end}-${text}`} className={rowClass} data-segment={start} id={`seg-${start}`}>
-                <span className="timestamp text-zinc-400 w-16">
-                  {formatTime(start)}
+                <span className="timestamp text-zinc-400 whitespace-nowrap">
+                  <span
+                    className="cursor-pointer hover:text-purple-300"
+                    title={start.toFixed(2) + 's'}
+                    onClick={() => navigator.clipboard.writeText(start.toFixed(2))}
+                  >
+                    {formatTime(start)}
+                  </span>
+                  <span className="text-zinc-500"> — </span>
+                  <span
+                    className="cursor-pointer hover:text-purple-300"
+                    title={end.toFixed(2) + 's'}
+                    onClick={() => navigator.clipboard.writeText(end.toFixed(2))}
+                  >
+                    {formatTime(end)}
+                  </span>
                 </span>
                 <span className="text text-zinc-200 flex-1">
                   {highlightedText.map((part) =>
@@ -536,6 +581,15 @@ const TranscriptionResultsInner = () => {
           segmentStart={modalSegment}
           onClose={() => setModalSegment(null)}
           onAdd={handleAddEffect}
+        />
+      )}
+
+      {/* Add Word modal */}
+      {showAddWord && (
+        <AddWordModal
+          onClose={() => setShowAddWord(false)}
+          onAdd={handleAddWord}
+          duration={duration}
         />
       )}
     </div>
