@@ -6,9 +6,11 @@
       "name": "obrez-ts",
       "dependencies": {
         "@fontsource-variable/rubik": "^5.2.8",
+        "@soundtouchjs/audio-worklet": "^2.0.4",
         "mediabunny": "^1.46.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
+        "soundtouchjs": "^0.3.0",
         "sql.js": "^1.14.1",
         "zustand": "^5.0.14",
       },
@@ -52,6 +54,14 @@
 
     "@playwright/test": ["@playwright/test@1.60.0", "", { "dependencies": { "playwright": "1.60.0" }, "bin": { "playwright": "cli.js" } }, "sha512-O71yZIbAh/PxDMNGns37GHBIfrVkEVyn+AXyIa5dOTfb4/xNvRWV+Vv/NMbNCtODB/pO7vLlF2OTmMVLhmr7Ag=="],
 
+    "@soundtouchjs/audio-worklet": ["@soundtouchjs/audio-worklet@2.0.4", "", { "dependencies": { "@soundtouchjs/core": "2.0.4", "@soundtouchjs/interpolation-strategy-lanczos": "2.0.4", "@soundtouchjs/worklet-base": "2.0.4" } }, "sha512-Qfj0wjo3sG5vLsgEeepvs0xo9KjhpicYB1JOMEqnLyy79/DPleNE3x2qwVTdb7ATl0NVFtSyGJggLmY1M40viA=="],
+
+    "@soundtouchjs/core": ["@soundtouchjs/core@2.0.4", "", { "dependencies": { "@soundtouchjs/interpolation-strategy-lanczos": "2.0.4" } }, "sha512-QVCEtyyVPPFGA4WW9NAXKZb/ujLpUGZeMexkuqJYwh0lVZ5fV+iWQHfI86xLpBSo676E0M+5cskBd6gecV8pUA=="],
+
+    "@soundtouchjs/interpolation-strategy-lanczos": ["@soundtouchjs/interpolation-strategy-lanczos@2.0.4", "", {}, "sha512-yjmKTFqxcfZbR34gVybaMjrYJETvYk6gKzgRpZ1NQsIdQdLJnbFnvn88H2HH7NUUZgcUTtC+y9fsQWFurw755w=="],
+
+    "@soundtouchjs/worklet-base": ["@soundtouchjs/worklet-base@2.0.4", "", { "dependencies": { "@soundtouchjs/core": "2.0.4" } }, "sha512-2gj49iFxrsvxuecFYIfeJFcgnMp6y5lSHCa5kykBPFOsnmSIfTVJYJCNrFNn4m6hWhobBQbdS/TfHptKehaBLg=="],
+
     "@types/dom-mediacapture-transform": ["@types/dom-mediacapture-transform@0.1.11", "", { "dependencies": { "@types/dom-webcodecs": "*" } }, "sha512-Y2p+nGf1bF2XMttBnsVPHUWzRRZzqUoJAKmiP10b5umnO6DDrWI0BrGDJy1pOHoOULVmGSfFNkQrAlC5dcj6nQ=="],
 
     "@types/dom-webcodecs": ["@types/dom-webcodecs@0.1.13", "", {}, "sha512-O5hkiFIcjjszPIYyUSyvScyvrBoV3NOEEZx/pMlsu44TKzWNkLVBBxnxJz42in5n3QIolYOcBYFCPZZ0h8SkwQ=="],
@@ -81,6 +91,8 @@
     "react-dom": ["react-dom@19.2.7", "", { "dependencies": { "scheduler": "^0.27.0" }, "peerDependencies": { "react": "^19.2.7" } }, "sha512-t0BRVXvbiE/o20Hfw669rLbMCDWtYZLvmJigy2f0MxsXF+71pxhR3xOkspmsO8h3ZlNzyibAmtCa3l4lYKk6gQ=="],
 
     "scheduler": ["scheduler@0.27.0", "", {}, "sha512-eNv+WrVbKu1f3vbYJT/xtiF5syA5HPIMtf9IgY/nKg0sWqzAUEvqY/xm7OcZc/qafLx/iO9FgOmeSAp4v5ti/Q=="],
+
+    "soundtouchjs": ["soundtouchjs@0.3.0", "", {}, "sha512-P/+SwnIE4BLrMbYK8aB8+GfXRfLv3+BV8HFMrEqOuF0F9BsI3sKEN1T+kY/JqiVURcCQgr50BC8D/uVzE/GozQ=="],
 
     "sql.js": ["sql.js@1.14.1", "", {}, "sha512-gcj8zBWU5cFsi9WUP+4bFNXAyF1iRpA3LLyS/DP5xlrNzGmPIizUeBggKa8DbDwdqaKwUcTEnChtd2grWo/x/A=="],
 

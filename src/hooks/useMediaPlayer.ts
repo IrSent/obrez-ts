@@ -17,6 +17,7 @@ import {
   WrappedAudioBuffer,
   WrappedCanvas,
 } from 'mediabunny';
+import { SoundTouchNode } from '@soundtouchjs/audio-worklet';
 import { audioBuffersToWav } from '../audio';
 import { backendPath, backendWsPath } from '../config';
 
@@ -31,6 +32,7 @@ export function useMediaPlayer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
+  const stNodeRef = useRef<SoundTouchNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const inputRef = useRef<Input | null>(null);
   const resourceRef = useRef<File | string | null>(null);
@@ -433,82 +435,43 @@ export function useMediaPlayer() {
   }, []);
 
   /**
-   * Granular time-stretch audio player.
+   * Audio playback iterator — uses SoundTouchNode for pitch-preserving time-stretch.
    *
-   * Each decoded buffer is chopped into Hann-windowed grains that always
-   * overlap by ≥ 75%. Every grain plays at 1× (normal pitch).
-   * Wall-clock spacing = grainDuration / speed → effective speed-up
-   * without pitch shift.
-   *
-   * For M-fold overlap with Hann window: sum(Hann) = M/2 at every point,
-   * so grainGain = 2/M normalizes to unity gain.
+   * source.playbackRate = speed → faster audio stream
+   * stNode.playbackRate = speed → SoundTouch compensates pitch
+   * Net effect: speed-up without chipmunk.
    */
   const runAudioIterator = useCallback(async () => {
-    if (!audioBufferIteratorRef.current || !audioContextRef.current || !gainNodeRef.current) return;
+    if (!audioBufferIteratorRef.current || !audioContextRef.current || !stNodeRef.current) return;
 
     const ctx = audioContextRef.current;
-    const gainNode = gainNodeRef.current;
+    const stNode = stNodeRef.current;
     const contextStart = audioContextStartTimeRef.current!;
     const playbackOffset = playbackTimeAtStartRef.current;
+    const speed = usePlayerStore.getState().playbackSpeed;
 
-    const grainDuration = 0.04; // 40 ms
-    const overlapRatio = 0.75; // 75% overlap → base hop = 10 ms
-    const baseHop = grainDuration * (1 - overlapRatio); // 0.01 s
+    stNode.playbackRate.value = speed;
 
     try {
       for await (const wrapped of audioBufferIteratorRef.current) {
-        const speed = usePlayerStore.getState().playbackSpeed;
-        const buffer = wrapped.buffer;
+        const source = ctx.createBufferSource();
+        source.buffer = wrapped.buffer;
+        source.playbackRate.value = speed;
+        source.connect(stNode);
+
         const bufferStart = wrapped.timestamp;
-        const sr = ctx.sampleRate;
+        let startTimestamp = contextStart + (bufferStart - playbackOffset) / speed;
+        startTimestamp = Math.round(ctx.sampleRate * startTimestamp) / ctx.sampleRate;
 
-        const grainSamples = Math.floor(grainDuration * sr);
-        const hopSamples = Math.max(1, Math.floor(baseHop * sr / speed));
-        const overlapCount = grainSamples / hopSamples; // M-fold overlap
-        const grainGain = 2 / overlapCount; // Hann OLA normalization: 2/M
-
-        // Hann window
-        const hann = new Float32Array(grainSamples);
-        for (let i = 0; i < grainSamples; i++) {
-          hann[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (grainSamples - 1));
+        if (startTimestamp >= ctx.currentTime) {
+          source.start(startTimestamp);
+        } else {
+          const offset = (ctx.currentTime - startTimestamp) * speed;
+          source.start(ctx.currentTime, offset);
         }
 
-        // Walk the buffer grain by grain
-        for (let pos = 0; pos < buffer.length; pos += hopSamples) {
-          const actualLen = Math.min(grainSamples, buffer.length - pos);
-          if (actualLen < 4) break;
-
-          const grain = ctx.createBuffer(buffer.numberOfChannels, actualLen, sr);
-          for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
-            const src = buffer.getChannelData(ch);
-            const dst = grain.getChannelData(ch);
-            for (let j = 0; j < actualLen; j++) {
-              dst[j] = src[pos + j] * hann[j] * grainGain;
-            }
-          }
-
-          const source = ctx.createBufferSource();
-          source.buffer = grain;
-          source.connect(gainNode);
-
-          const grainMediaStart = bufferStart + pos / sr;
-          let startTimestamp = contextStart + (grainMediaStart - playbackOffset) / speed;
-          startTimestamp = Math.round(sr * startTimestamp) / sr;
-
-          if (startTimestamp >= ctx.currentTime) {
-            source.start(startTimestamp);
-          } else {
-            source.start(ctx.currentTime);
-          }
-
-          queuedAudioNodesRef.current.add(source);
-          source.onended = () => queuedAudioNodesRef.current.delete(source);
-
-          // Yield every ~30 grains to keep the UI responsive
-          if ((pos % (hopSamples * 30)) === 0 && pos > 0) {
-            await new Promise((r) => setTimeout(r, 0));
-          }
-        }
+        queuedAudioNodesRef.current.add(source);
+        source.onended = () => queuedAudioNodesRef.current.delete(source);
 
         // Slow down if we're more than a second ahead
         if (bufferStart - utilsRef.current.getPlaybackTime() >= 1) {
@@ -634,8 +597,10 @@ export function useMediaPlayer() {
 
       // Close old audio context if any (sampleRate may differ for new file)
       if (audioContextRef.current) {
+        stNodeRef.current?.disconnect();
         await audioContextRef.current.close();
         audioContextRef.current = null;
+        stNodeRef.current = null;
         gainNodeRef.current = null;
       }
 
@@ -699,7 +664,13 @@ export function useMediaPlayer() {
       if (audioTrack) {
         const sampleRate = audioTrack.sampleRate;
         audioContextRef.current = new AudioContextClass({ sampleRate });
+
+        // Register and create SoundTouchNode for pitch-preserving time-stretch
+        await SoundTouchNode.register(audioContextRef.current, '/soundtouch-processor.js');
+        stNodeRef.current = new SoundTouchNode({ context: audioContextRef.current });
+
         gainNodeRef.current = audioContextRef.current.createGain();
+        stNodeRef.current.connect(gainNodeRef.current);
         gainNodeRef.current.connect(audioContextRef.current.destination);
         gainNodeRef.current.gain.value = 0.5 ** 2;
         playerActions.setVolume(0.5);
@@ -959,7 +930,7 @@ export function useMediaPlayer() {
     }
   }, [audioSinkRef, audioTrackRef]);
 
-  const cleanup = useCallback(() => {
+  const cleanup = useCallback(async () => {
     playerActions.setTranscribing(false);
     playerActions.setIsEnded(false);
     stopRenderLoop();
@@ -982,7 +953,9 @@ export function useMediaPlayer() {
     }
 
     if (audioContextRef.current) {
-      audioContextRef.current.close();
+      stNodeRef.current?.disconnect();
+      stNodeRef.current = null;
+      await audioContextRef.current.close();
       audioContextRef.current = null;
     }
   }, [stopRenderLoop, stopTranscribeFocus]);
