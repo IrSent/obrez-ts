@@ -168,7 +168,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "package_scripts",
-      "community": 1,
+      "community": 26,
       "norm_label": "scripts"
     },
     {
@@ -178,7 +178,7 @@
       "source_location": "L7",
       "_origin": "ast",
       "id": "package_scripts_dev",
-      "community": 1,
+      "community": 26,
       "norm_label": "dev"
     },
     {
@@ -188,7 +188,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "package_scripts_build",
-      "community": 1,
+      "community": 26,
       "norm_label": "build"
     },
     {
@@ -198,7 +198,7 @@
       "source_location": "L9",
       "_origin": "ast",
       "id": "package_scripts_serve",
-      "community": 1,
+      "community": 26,
       "norm_label": "serve"
     },
     {
@@ -208,7 +208,7 @@
       "source_location": "L10",
       "_origin": "ast",
       "id": "package_scripts_test",
-      "community": 1,
+      "community": 26,
       "norm_label": "test"
     },
     {
@@ -218,7 +218,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "package_scripts_test_e2e",
-      "community": 1,
+      "community": 26,
       "norm_label": "test:e2e"
     },
     {
@@ -228,7 +228,7 @@
       "source_location": "L12",
       "_origin": "ast",
       "id": "package_scripts_typecheck",
-      "community": 1,
+      "community": 26,
       "norm_label": "typecheck"
     },
     {
@@ -342,10 +342,20 @@
       "norm_label": "@fontsource-variable/rubik"
     },
     {
-      "label": "mediabunny",
+      "label": "@soundtouchjs/audio-worklet",
       "file_type": "code",
       "source_file": "package.json",
       "source_location": "L27",
+      "_origin": "ast",
+      "id": "package_dependencies_soundtouchjs_audio_worklet",
+      "community": 1,
+      "norm_label": "@soundtouchjs/audio-worklet"
+    },
+    {
+      "label": "mediabunny",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L28",
       "_origin": "ast",
       "id": "package_dependencies_mediabunny",
       "community": 1,
@@ -355,7 +365,7 @@
       "label": "react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L28",
+      "source_location": "L29",
       "_origin": "ast",
       "id": "package_dependencies_react",
       "community": 1,
@@ -365,17 +375,27 @@
       "label": "react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "package_dependencies_react_dom",
       "community": 1,
       "norm_label": "react-dom"
     },
     {
+      "label": "soundtouchjs",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": "L31",
+      "_origin": "ast",
+      "id": "package_dependencies_soundtouchjs",
+      "community": 1,
+      "norm_label": "soundtouchjs"
+    },
+    {
       "label": "sql.js",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L30",
+      "source_location": "L32",
       "_origin": "ast",
       "id": "package_dependencies_sql_js",
       "community": 1,
@@ -385,7 +405,7 @@
       "label": "zustand",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L31",
+      "source_location": "L33",
       "_origin": "ast",
       "id": "package_dependencies_zustand",
       "community": 1,
@@ -395,7 +415,7 @@
       "label": "devDependencies",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L33",
+      "source_location": "L35",
       "_origin": "ast",
       "id": "package_devdependencies",
       "community": 1,
@@ -405,7 +425,7 @@
       "label": "@playwright/test",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L34",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "package_devdependencies_playwright_test",
       "community": 1,
@@ -415,7 +435,7 @@
       "label": "@types/node",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L35",
+      "source_location": "L37",
       "_origin": "ast",
       "id": "package_devdependencies_types_node",
       "community": 1,
@@ -425,7 +445,7 @@
       "label": "@types/react",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L36",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "package_devdependencies_types_react",
       "community": 1,
@@ -435,7 +455,7 @@
       "label": "@types/react-dom",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L37",
+      "source_location": "L39",
       "_origin": "ast",
       "id": "package_devdependencies_types_react_dom",
       "community": 1,
@@ -445,7 +465,7 @@
       "label": "bun-plugin-tailwind",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L38",
+      "source_location": "L40",
       "_origin": "ast",
       "id": "package_devdependencies_bun_plugin_tailwind",
       "community": 1,
@@ -455,7 +475,7 @@
       "label": "tailwindcss",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L39",
+      "source_location": "L41",
       "_origin": "ast",
       "id": "package_devdependencies_tailwindcss",
       "community": 1,
@@ -465,7 +485,7 @@
       "label": "typescript",
       "file_type": "code",
       "source_file": "package.json",
-      "source_location": "L40",
+      "source_location": "L42",
       "_origin": "ast",
       "id": "package_devdependencies_typescript",
       "community": 1,
@@ -548,7 +568,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_aho_corasick",
-      "community": 2,
+      "community": 7,
       "norm_label": "aho-corasick.ts"
     },
     {
@@ -558,7 +578,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_aho_corasick_fastahoscanner",
-      "community": 2,
+      "community": 7,
       "norm_label": "fastahoscanner"
     },
     {
@@ -568,7 +588,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "src_aho_corasick_fastahoscanner_constructor",
-      "community": 2,
+      "community": 7,
       "norm_label": ".constructor()"
     },
     {
@@ -578,7 +598,7 @@
       "source_location": "L19",
       "_origin": "ast",
       "id": "src_aho_corasick_fastahoscanner_getfailid",
-      "community": 2,
+      "community": 7,
       "norm_label": ".getfailid()"
     },
     {
@@ -588,7 +608,7 @@
       "source_location": "L23",
       "_origin": "ast",
       "id": "src_aho_corasick_fastahoscanner_isterminal",
-      "community": 2,
+      "community": 7,
       "norm_label": ".isterminal()"
     },
     {
@@ -598,7 +618,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "src_aho_corasick_fastahoscanner_findmatches",
-      "community": 2,
+      "community": 7,
       "norm_label": ".findmatches()"
     },
     {
@@ -868,7 +888,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "bleep_sounds_bleep_audio",
-      "community": 2,
+      "community": 3,
       "norm_label": "bleep-audio.ts"
     },
     {
@@ -1038,7 +1058,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "dictionary_dictionarymanager",
-      "community": 0,
+      "community": 7,
       "norm_label": "dictionarymanager.tsx"
     },
     {
@@ -1048,7 +1068,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "dictionary_dictionarymanager_default_dictionaries",
-      "community": 0,
+      "community": 7,
       "norm_label": "default_dictionaries"
     },
     {
@@ -1208,7 +1228,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "player_playerdisplay",
-      "community": 2,
+      "community": 0,
       "norm_label": "playerdisplay.tsx"
     },
     {
@@ -1218,7 +1238,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "player_playerdisplay_speeds",
-      "community": 2,
+      "community": 0,
       "norm_label": "speeds"
     },
     {
@@ -1228,7 +1248,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "player_playerdisplay_chevrondownicon",
-      "community": 2,
+      "community": 0,
       "norm_label": "chevrondownicon()"
     },
     {
@@ -1258,7 +1278,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "player_progressbar",
-      "community": 2,
+      "community": 0,
       "norm_label": "progressbar.tsx"
     },
     {
@@ -1278,7 +1298,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "player_progressbar_progressbar",
-      "community": 2,
+      "community": 0,
       "norm_label": "progressbar"
     },
     {
@@ -1508,7 +1528,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_transcribeprogress",
-      "community": 0,
+      "community": 4,
       "norm_label": "transcribeprogress()"
     },
     {
@@ -1545,7 +1565,7 @@
       "label": "useMediaPlayer()",
       "file_type": "code",
       "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L29",
+      "source_location": "L30",
       "_origin": "ast",
       "id": "hooks_usemediaplayer_usemediaplayer",
       "community": 0,
@@ -1568,7 +1588,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "src_search_worker",
-      "community": 2,
+      "community": 7,
       "norm_label": "search.worker.ts"
     },
     {
@@ -1708,7 +1728,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "store_playerstore_playeractions",
-      "community": 2,
+      "community": 7,
       "norm_label": "playeractions"
     },
     {
@@ -2096,7 +2116,7 @@
       "file_type": "code",
       "source_file": "e2e/playback.spec.ts",
       "source_location": 3,
-      "community": 11,
+      "community": 0,
       "norm_label": "videoplayback e2e tests",
       "id": "e2e_playback_spec_videoplayback"
     },
@@ -2768,6 +2788,26 @@
       "confidence_score": 1.0,
       "source": "package_dependencies",
       "target": "package_dependencies_react_dom"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L31",
+      "weight": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_soundtouchjs",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "package.json",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "package_dependencies",
+      "target": "package_dependencies_soundtouchjs_audio_worklet",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -6262,9 +6302,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude",
-      "target": "claude_graphify",
-      "confidence_score": 1.0
+      "target": "claude_graphify"
     },
     {
       "relation": "contains",
@@ -6272,9 +6312,9 @@
       "source_file": "README.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme",
-      "target": "readme_obrez_ts",
-      "confidence_score": 1.0
+      "target": "readme_obrez_ts"
     },
     {
       "relation": "references",
@@ -6302,9 +6342,9 @@
       "source_file": "README.md",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "readme_obrez_ts",
-      "target": "readme_install",
-      "confidence_score": 1.0
+      "target": "readme_install"
     },
     {
       "relation": "references",
@@ -6644,5 +6684,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "a23dcd6da210545487f23f54a489215aa09231fb"
+  "built_at_commit": "ab31dd401c07c04dfa2f355c37f564b71ac5e4f2"
 }

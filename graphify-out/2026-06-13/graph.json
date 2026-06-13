@@ -15,7 +15,7 @@
         "relation": "participate_in",
         "confidence": "INFERRED",
         "confidence_score": 0.95,
-        "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx"
+        "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx"
       },
       {
         "id": "bleep_sound_add_flow",
@@ -29,7 +29,7 @@
         "relation": "participate_in",
         "confidence": "INFERRED",
         "confidence_score": 0.95,
-        "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx"
+        "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx"
       },
       {
         "id": "bleep_sound_persistence",
@@ -49,7 +49,7 @@
         "relation": "form",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts"
+        "source_file": "src/store/bleepDb.ts"
       },
       {
         "id": "volume_icon_set",
@@ -64,7 +64,7 @@
         "relation": "form",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-0-icon.svg"
+        "source_file": "public/assets/volume-0-icon.svg"
       },
       {
         "id": "e2e_test_fixtures",
@@ -76,7 +76,7 @@
         "relation": "participate_in",
         "confidence": "EXTRACTED",
         "confidence_score": 1.0,
-        "source_file": "/home/irsent/gh/obrez-ts/e2e/ru-profanity.mp4"
+        "source_file": "e2e/ru-profanity.mp4"
       }
     ]
   },
@@ -755,7 +755,7 @@
       "label": "renderCensoredAudio()",
       "file_type": "code",
       "source_file": "src/export.ts",
-      "source_location": "L63",
+      "source_location": "L62",
       "_origin": "ast",
       "id": "src_export_rendercensoredaudio",
       "community": 8,
@@ -765,7 +765,7 @@
       "label": "pickVideoCodec()",
       "file_type": "code",
       "source_file": "src/export.ts",
-      "source_location": "L155",
+      "source_location": "L158",
       "_origin": "ast",
       "id": "src_export_pickvideocodec",
       "community": 8,
@@ -775,7 +775,7 @@
       "label": "pickAudioCodec()",
       "file_type": "code",
       "source_file": "src/export.ts",
-      "source_location": "L176",
+      "source_location": "L179",
       "_origin": "ast",
       "id": "src_export_pickaudiocodec",
       "community": 8,
@@ -785,7 +785,7 @@
       "label": "exportCensoredVideo()",
       "file_type": "code",
       "source_file": "src/export.ts",
-      "source_location": "L194",
+      "source_location": "L197",
       "_origin": "ast",
       "id": "src_export_exportcensoredvideo",
       "community": 8,
@@ -868,7 +868,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "bleep_sounds_bleep_audio",
-      "community": 3,
+      "community": 2,
       "norm_label": "bleep-audio.ts"
     },
     {
@@ -1038,7 +1038,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "dictionary_dictionarymanager",
-      "community": 2,
+      "community": 0,
       "norm_label": "dictionarymanager.tsx"
     },
     {
@@ -1048,7 +1048,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "dictionary_dictionarymanager_default_dictionaries",
-      "community": 2,
+      "community": 0,
       "norm_label": "default_dictionaries"
     },
     {
@@ -1208,7 +1208,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "player_playerdisplay",
-      "community": 0,
+      "community": 2,
       "norm_label": "playerdisplay.tsx"
     },
     {
@@ -1218,7 +1218,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "player_playerdisplay_speeds",
-      "community": 0,
+      "community": 2,
       "norm_label": "speeds"
     },
     {
@@ -1228,7 +1228,7 @@
       "source_location": "L13",
       "_origin": "ast",
       "id": "player_playerdisplay_chevrondownicon",
-      "community": 0,
+      "community": 2,
       "norm_label": "chevrondownicon()"
     },
     {
@@ -1258,7 +1258,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "player_progressbar",
-      "community": 0,
+      "community": 2,
       "norm_label": "progressbar.tsx"
     },
     {
@@ -1278,7 +1278,7 @@
       "source_location": "L121",
       "_origin": "ast",
       "id": "player_progressbar_progressbar",
-      "community": 0,
+      "community": 2,
       "norm_label": "progressbar"
     },
     {
@@ -1708,7 +1708,7 @@
       "source_location": "L97",
       "_origin": "ast",
       "id": "store_playerstore_playeractions",
-      "community": 7,
+      "community": 2,
       "norm_label": "playeractions"
     },
     {
@@ -1818,7 +1818,7 @@
       "source_location": "L166",
       "_origin": "ast",
       "id": "types_index_playbackspeed",
-      "community": 0,
+      "community": 2,
       "norm_label": "playbackspeed"
     },
     {
@@ -2032,423 +2032,470 @@
       "norm_label": "exclude"
     },
     {
-      "label": "VideoPlayback E2E Tests",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/playback.spec.ts",
-      "source_location": 3,
-      "id": "e2e_playback_spec_videoplayback",
-      "community": 0,
-      "norm_label": "videoplayback e2e tests"
+      "label": "CLAUDE.md",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude",
+      "community": 24,
+      "norm_label": "claude.md"
     },
     {
-      "label": "obrez-ts",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/package.json",
-      "source_location": 1,
-      "id": "package_obrez_ts",
-      "community": 11,
-      "norm_label": "obrez-ts"
+      "label": "graphify",
+      "file_type": "document",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "claude_graphify",
+      "community": 24,
+      "norm_label": "graphify"
     },
     {
-      "label": "PlaywrightConfig",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/playwright.config.ts",
-      "source_location": 1,
-      "id": "playwright_config_playwrightconfig",
-      "community": 11,
-      "norm_label": "playwrightconfig"
-    },
-    {
-      "label": "Bun TLS Server (port 3000)",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/server.ts",
-      "source_location": null,
-      "id": "server_serve",
-      "community": 6,
-      "norm_label": "bun tls server (port 3000)"
-    },
-    {
-      "label": "FastAhoScanner class",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/aho-corasick.ts",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "aho_corasick_fastahoscanner",
-      "community": 14,
-      "norm_label": "fastahoscanner class"
-    },
-    {
-      "label": "writeString utility",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/audio.ts",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "audio_writestring",
-      "community": 10,
-      "norm_label": "writestring utility"
-    },
-    {
-      "label": "yieldToEventLoop utility",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/audio.ts",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "audio_yieldtoeventloop",
-      "community": 10,
-      "norm_label": "yieldtoeventloop utility"
-    },
-    {
-      "label": "WavProgress type",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/audio.ts",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "audio_wavprogress",
-      "community": 10,
-      "norm_label": "wavprogress type"
-    },
-    {
-      "label": "audioBuffersToWav",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/audio.ts",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "audio_audiobufferstowav",
-      "community": 10,
-      "norm_label": "audiobufferstowav"
-    },
-    {
-      "label": "BACKEND_URL",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/config.ts",
-      "source_location": null,
-      "id": "config_backendurl",
-      "community": 6,
-      "norm_label": "backend_url"
-    },
-    {
-      "label": "backendPath",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/config.ts",
-      "source_location": null,
-      "id": "config_backendpath",
-      "community": 6,
-      "norm_label": "backendpath"
-    },
-    {
-      "label": "backendWsPath",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/config.ts",
-      "source_location": null,
-      "id": "config_backendwspath",
-      "community": 6,
-      "norm_label": "backendwspath"
-    },
-    {
-      "label": "DEFAULT_DICTIONARIES (ru-profanity, ru-stopwords)",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/dictionary/DictionaryManager.tsx",
-      "source_location": null,
-      "id": "features_dictionary_defaultdictionaries",
-      "community": 6,
-      "norm_label": "default_dictionaries (ru-profanity, ru-stopwords)"
-    },
-    {
-      "label": "React root entry",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/main.tsx",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "main_main",
-      "community": 21,
-      "norm_label": "react root entry"
-    },
-    {
-      "label": "Worker message handler",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/search.worker.ts",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
-      "id": "search_worker_onmessage",
-      "community": 14,
-      "norm_label": "worker message handler"
-    },
-    {
-      "label": "TailwindConfig",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/tailwind.config.js",
-      "source_location": 1,
-      "id": "tailwind_config_tailwindconfig",
-      "community": 11,
-      "norm_label": "tailwindconfig"
-    },
-    {
-      "label": "TypeScriptConfig",
-      "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/tsconfig.json",
-      "source_location": 1,
-      "id": "tsconfig_typescriptconfig",
-      "community": 11,
-      "norm_label": "typescriptconfig"
+      "label": "README.md",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "readme",
+      "community": 13,
+      "norm_label": "readme.md"
     },
     {
       "label": "obrez-ts",
       "file_type": "document",
-      "source_file": "/home/irsent/gh/obrez-ts/README.md",
-      "source_location": null,
-      "source_url": null,
-      "captured_at": null,
-      "author": null,
-      "contributor": null,
+      "source_file": "README.md",
+      "source_location": "L1",
+      "_origin": "ast",
       "id": "readme_obrez_ts",
       "community": 13,
       "norm_label": "obrez-ts"
     },
     {
-      "label": "bun run build",
-      "file_type": "concept",
-      "source_file": "/home/irsent/gh/obrez-ts/README.md",
+      "label": "Install",
+      "file_type": "document",
+      "source_file": "README.md",
+      "source_location": "L3",
+      "_origin": "ast",
+      "id": "readme_install",
+      "community": 13,
+      "norm_label": "install"
+    },
+    {
+      "label": "prompt.md",
+      "file_type": "document",
+      "source_file": "prompt.md",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "prompt",
+      "community": 25,
+      "norm_label": "prompt.md"
+    },
+    {
+      "label": "VideoPlayback E2E Tests",
+      "file_type": "code",
+      "source_file": "e2e/playback.spec.ts",
+      "source_location": 3,
+      "community": 11,
+      "norm_label": "videoplayback e2e tests",
+      "id": "e2e_playback_spec_videoplayback"
+    },
+    {
+      "label": "obrez-ts",
+      "file_type": "code",
+      "source_file": "package.json",
+      "source_location": 1,
+      "community": 11,
+      "norm_label": "obrez-ts",
+      "id": "package_obrez_ts"
+    },
+    {
+      "label": "PlaywrightConfig",
+      "file_type": "code",
+      "source_file": "playwright.config.ts",
+      "source_location": 1,
+      "community": 11,
+      "norm_label": "playwrightconfig",
+      "id": "playwright_config_playwrightconfig"
+    },
+    {
+      "label": "Bun TLS Server (port 3000)",
+      "file_type": "code",
+      "source_file": "server.ts",
+      "source_location": null,
+      "community": 6,
+      "norm_label": "bun tls server (port 3000)",
+      "id": "server_serve"
+    },
+    {
+      "label": "FastAhoScanner class",
+      "file_type": "code",
+      "source_file": "src/aho-corasick.ts",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "readme_bun_build",
+      "community": 14,
+      "norm_label": "fastahoscanner class",
+      "id": "aho_corasick_fastahoscanner"
+    },
+    {
+      "label": "writeString utility",
+      "file_type": "code",
+      "source_file": "src/audio.ts",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 10,
+      "norm_label": "writestring utility",
+      "id": "audio_writestring"
+    },
+    {
+      "label": "yieldToEventLoop utility",
+      "file_type": "code",
+      "source_file": "src/audio.ts",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 10,
+      "norm_label": "yieldtoeventloop utility",
+      "id": "audio_yieldtoeventloop"
+    },
+    {
+      "label": "WavProgress type",
+      "file_type": "code",
+      "source_file": "src/audio.ts",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 10,
+      "norm_label": "wavprogress type",
+      "id": "audio_wavprogress"
+    },
+    {
+      "label": "audioBuffersToWav",
+      "file_type": "code",
+      "source_file": "src/audio.ts",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 10,
+      "norm_label": "audiobufferstowav",
+      "id": "audio_audiobufferstowav"
+    },
+    {
+      "label": "BACKEND_URL",
+      "file_type": "code",
+      "source_file": "src/config.ts",
+      "source_location": null,
+      "community": 6,
+      "norm_label": "backend_url",
+      "id": "config_backendurl"
+    },
+    {
+      "label": "backendPath",
+      "file_type": "code",
+      "source_file": "src/config.ts",
+      "source_location": null,
+      "community": 6,
+      "norm_label": "backendpath",
+      "id": "config_backendpath"
+    },
+    {
+      "label": "backendWsPath",
+      "file_type": "code",
+      "source_file": "src/config.ts",
+      "source_location": null,
+      "community": 6,
+      "norm_label": "backendwspath",
+      "id": "config_backendwspath"
+    },
+    {
+      "label": "DEFAULT_DICTIONARIES (ru-profanity, ru-stopwords)",
+      "file_type": "code",
+      "source_file": "src/features/dictionary/DictionaryManager.tsx",
+      "source_location": null,
+      "community": 6,
+      "norm_label": "default_dictionaries (ru-profanity, ru-stopwords)",
+      "id": "features_dictionary_defaultdictionaries"
+    },
+    {
+      "label": "React root entry",
+      "file_type": "code",
+      "source_file": "src/main.tsx",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 21,
+      "norm_label": "react root entry",
+      "id": "main_main"
+    },
+    {
+      "label": "Worker message handler",
+      "file_type": "code",
+      "source_file": "src/search.worker.ts",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
+      "community": 14,
+      "norm_label": "worker message handler",
+      "id": "search_worker_onmessage"
+    },
+    {
+      "label": "TailwindConfig",
+      "file_type": "code",
+      "source_file": "tailwind.config.js",
+      "source_location": 1,
+      "community": 11,
+      "norm_label": "tailwindconfig",
+      "id": "tailwind_config_tailwindconfig"
+    },
+    {
+      "label": "TypeScriptConfig",
+      "file_type": "code",
+      "source_file": "tsconfig.json",
+      "source_location": 1,
+      "community": 11,
+      "norm_label": "typescriptconfig",
+      "id": "tsconfig_typescriptconfig"
+    },
+    {
+      "label": "bun run build",
+      "file_type": "concept",
+      "source_file": "README.md",
+      "source_location": null,
+      "source_url": null,
+      "captured_at": null,
+      "author": null,
+      "contributor": null,
       "community": 13,
-      "norm_label": "bun run build"
+      "norm_label": "bun run build",
+      "id": "readme_bun_build"
     },
     {
       "label": "bun x serve ./dist/",
       "file_type": "concept",
-      "source_file": "/home/irsent/gh/obrez-ts/README.md",
+      "source_file": "README.md",
       "source_location": null,
       "source_url": null,
       "author": null,
       "contributor": null,
-      "id": "readme_bun_serve_dist",
       "community": 13,
-      "norm_label": "bun x serve ./dist/"
+      "norm_label": "bun x serve ./dist/",
+      "id": "readme_bun_serve_dist"
     },
     {
       "label": "index.html",
       "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/index.html",
+      "source_file": "src/index.html",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "src_index_html",
       "community": 12,
-      "norm_label": "index.html"
+      "norm_label": "index.html",
+      "id": "src_index_html"
     },
     {
       "label": "index.css",
       "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/index.html",
+      "source_file": "src/index.html",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "src_index_index_css",
       "community": 12,
-      "norm_label": "index.css"
+      "norm_label": "index.css",
+      "id": "src_index_index_css"
     },
     {
       "label": "main.tsx",
       "file_type": "code",
-      "source_file": "/home/irsent/gh/obrez-ts/src/index.html",
+      "source_file": "src/index.html",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "src_index_main_tsx",
       "community": 12,
-      "norm_label": "main.tsx"
+      "norm_label": "main.tsx",
+      "id": "src_index_main_tsx"
     },
     {
       "label": "root div",
       "file_type": "concept",
-      "source_file": "/home/irsent/gh/obrez-ts/src/index.html",
+      "source_file": "src/index.html",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "src_index_root_div",
       "community": 12,
-      "norm_label": "root div"
+      "norm_label": "root div",
+      "id": "src_index_root_div"
     },
     {
       "label": "OBR\u039eZ Brand Logo",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/obrez-logo.png",
+      "source_file": "public/assets/obrez-logo.png",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_obrez_logo",
       "community": 15,
-      "norm_label": "obr\u03bez brand logo"
+      "norm_label": "obr\u03bez brand logo",
+      "id": "assets_obrez_logo"
     },
     {
       "label": "OBR\u039eZ Brand Identity",
       "file_type": "concept",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/obrez-logo.png",
+      "source_file": "public/assets/obrez-logo.png",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "concept_obrez_brand_identity",
       "community": 15,
-      "norm_label": "obr\u03bez brand identity"
+      "norm_label": "obr\u03bez brand identity",
+      "id": "concept_obrez_brand_identity"
     },
     {
       "label": "Pause Icon SVG",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/pause-icon.svg",
+      "source_file": "public/assets/pause-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_pause_icon",
       "community": 17,
-      "norm_label": "pause icon svg"
+      "norm_label": "pause icon svg",
+      "id": "assets_pause_icon"
     },
     {
       "label": "Play Icon SVG",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/play-icon.svg",
+      "source_file": "public/assets/play-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_play_icon",
       "community": 18,
-      "norm_label": "play icon svg"
+      "norm_label": "play icon svg",
+      "id": "assets_play_icon"
     },
     {
       "label": "Replay Icon SVG",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/replay-icon.svg",
+      "source_file": "public/assets/replay-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_replay_icon_svg",
       "community": 19,
-      "norm_label": "replay icon svg"
+      "norm_label": "replay icon svg",
+      "id": "assets_replay_icon_svg"
     },
     {
       "label": "Volume Zero - Speaker Icon (No Sound Waves)",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-0-icon.svg",
+      "source_file": "public/assets/volume-0-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_volume_0_icon_speaker_only",
       "community": 9,
-      "norm_label": "volume zero - speaker icon (no sound waves)"
+      "norm_label": "volume zero - speaker icon (no sound waves)",
+      "id": "assets_volume_0_icon_speaker_only"
     },
     {
       "label": "Volume Muted - Speaker with X Overlay",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-1-icon.svg",
+      "source_file": "public/assets/volume-1-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_volume_1_icon_muted_cross",
       "community": 9,
-      "norm_label": "volume muted - speaker with x overlay"
+      "norm_label": "volume muted - speaker with x overlay",
+      "id": "assets_volume_1_icon_muted_cross"
     },
     {
       "label": "Volume Low - Speaker with Single Arc",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-2-icon.svg",
+      "source_file": "public/assets/volume-2-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_volume_2_icon_low_volume",
       "community": 9,
-      "norm_label": "volume low - speaker with single arc"
+      "norm_label": "volume low - speaker with single arc",
+      "id": "assets_volume_2_icon_low_volume"
     },
     {
       "label": "Volume High - Speaker with Double Arc",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-off-icon.svg",
+      "source_file": "public/assets/volume-off-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_volume_off_icon_high_volume",
       "community": 9,
-      "norm_label": "volume high - speaker with double arc"
+      "norm_label": "volume high - speaker with double arc",
+      "id": "assets_volume_off_icon_high_volume"
     },
     {
       "label": "Volume Muted - Speaker with Arcs and Diagonal Slash",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-x-icon.svg",
+      "source_file": "public/assets/volume-x-icon.svg",
       "source_location": null,
       "source_url": null,
       "captured_at": null,
       "author": null,
       "contributor": null,
-      "id": "assets_volume_x_icon_muted_full",
       "community": 9,
-      "norm_label": "volume muted - speaker with arcs and diagonal slash"
+      "norm_label": "volume muted - speaker with arcs and diagonal slash",
+      "id": "assets_volume_x_icon_muted_full"
     },
     {
       "label": "ru-profanity.mp4 (audio-only AAC LC test fixture)",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/ru-profanity.mp4",
+      "source_file": "e2e/ru-profanity.mp4",
       "source_location": null,
-      "id": "e2e_ru_profanity",
       "community": 6,
-      "norm_label": "ru-profanity.mp4 (audio-only aac lc test fixture)"
+      "norm_label": "ru-profanity.mp4 (audio-only aac lc test fixture)",
+      "id": "e2e_ru_profanity"
     },
     {
       "label": "valid-with-aac.mp4 (H.264+AAC test fixture)",
       "file_type": "image",
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/valid-with-aac.mp4",
+      "source_file": "e2e/valid-with-aac.mp4",
       "source_location": null,
-      "id": "e2e_valid_with_aac",
       "community": 6,
-      "norm_label": "valid-with-aac.mp4 (h.264+aac test fixture)"
+      "norm_label": "valid-with-aac.mp4 (h.264+aac test fixture)",
+      "id": "e2e_valid_with_aac"
     }
   ],
   "links": [
@@ -2458,9 +2505,9 @@
       "source_file": "build.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "build",
-      "target": "build_build",
-      "confidence_score": 1.0
+      "target": "build_build"
     },
     {
       "relation": "contains",
@@ -2468,9 +2515,9 @@
       "source_file": "package.json",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_author",
-      "confidence_score": 1.0
+      "target": "package_author"
     },
     {
       "relation": "contains",
@@ -2478,9 +2525,9 @@
       "source_file": "package.json",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_bugs",
-      "confidence_score": 1.0
+      "target": "package_bugs"
     },
     {
       "relation": "contains",
@@ -2488,9 +2535,9 @@
       "source_file": "package.json",
       "source_location": "L25",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_dependencies",
-      "confidence_score": 1.0
+      "target": "package_dependencies"
     },
     {
       "relation": "contains",
@@ -2498,9 +2545,9 @@
       "source_file": "package.json",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_devdependencies",
-      "confidence_score": 1.0
+      "target": "package_devdependencies"
     },
     {
       "relation": "contains",
@@ -2508,9 +2555,9 @@
       "source_file": "package.json",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_homepage",
-      "confidence_score": 1.0
+      "target": "package_homepage"
     },
     {
       "relation": "contains",
@@ -2518,9 +2565,9 @@
       "source_file": "package.json",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_keywords",
-      "confidence_score": 1.0
+      "target": "package_keywords"
     },
     {
       "relation": "contains",
@@ -2528,9 +2575,9 @@
       "source_file": "package.json",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_license",
-      "confidence_score": 1.0
+      "target": "package_license"
     },
     {
       "relation": "contains",
@@ -2538,9 +2585,9 @@
       "source_file": "package.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_name",
-      "confidence_score": 1.0
+      "target": "package_name"
     },
     {
       "relation": "contains",
@@ -2548,9 +2595,9 @@
       "source_file": "package.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_private",
-      "confidence_score": 1.0
+      "target": "package_private"
     },
     {
       "relation": "contains",
@@ -2558,9 +2605,9 @@
       "source_file": "package.json",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_repository",
-      "confidence_score": 1.0
+      "target": "package_repository"
     },
     {
       "relation": "contains",
@@ -2568,9 +2615,9 @@
       "source_file": "package.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_scripts",
-      "confidence_score": 1.0
+      "target": "package_scripts"
     },
     {
       "relation": "contains",
@@ -2578,9 +2625,9 @@
       "source_file": "package.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_type",
-      "confidence_score": 1.0
+      "target": "package_type"
     },
     {
       "relation": "contains",
@@ -2588,9 +2635,9 @@
       "source_file": "package.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package",
-      "target": "package_version",
-      "confidence_score": 1.0
+      "target": "package_version"
     },
     {
       "relation": "contains",
@@ -2598,9 +2645,9 @@
       "source_file": "package.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_build",
-      "confidence_score": 1.0
+      "target": "package_scripts_build"
     },
     {
       "relation": "contains",
@@ -2608,9 +2655,9 @@
       "source_file": "package.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_dev",
-      "confidence_score": 1.0
+      "target": "package_scripts_dev"
     },
     {
       "relation": "contains",
@@ -2618,9 +2665,9 @@
       "source_file": "package.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_serve",
-      "confidence_score": 1.0
+      "target": "package_scripts_serve"
     },
     {
       "relation": "contains",
@@ -2628,9 +2675,9 @@
       "source_file": "package.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test",
-      "confidence_score": 1.0
+      "target": "package_scripts_test"
     },
     {
       "relation": "contains",
@@ -2638,9 +2685,9 @@
       "source_file": "package.json",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_test_e2e",
-      "confidence_score": 1.0
+      "target": "package_scripts_test_e2e"
     },
     {
       "relation": "contains",
@@ -2648,9 +2695,9 @@
       "source_file": "package.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_scripts",
-      "target": "package_scripts_typecheck",
-      "confidence_score": 1.0
+      "target": "package_scripts_typecheck"
     },
     {
       "relation": "contains",
@@ -2658,9 +2705,9 @@
       "source_file": "package.json",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_repository",
-      "target": "package_repository_type",
-      "confidence_score": 1.0
+      "target": "package_repository_type"
     },
     {
       "relation": "contains",
@@ -2668,9 +2715,9 @@
       "source_file": "package.json",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_repository",
-      "target": "package_repository_url",
-      "confidence_score": 1.0
+      "target": "package_repository_url"
     },
     {
       "relation": "contains",
@@ -2678,9 +2725,9 @@
       "source_file": "package.json",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_bugs",
-      "target": "package_bugs_url",
-      "confidence_score": 1.0
+      "target": "package_bugs_url"
     },
     {
       "relation": "contains",
@@ -2688,9 +2735,9 @@
       "source_file": "package.json",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_fontsource_variable_rubik",
-      "confidence_score": 1.0
+      "target": "package_dependencies_fontsource_variable_rubik"
     },
     {
       "relation": "contains",
@@ -2698,9 +2745,9 @@
       "source_file": "package.json",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_mediabunny",
-      "confidence_score": 1.0
+      "target": "package_dependencies_mediabunny"
     },
     {
       "relation": "contains",
@@ -2708,9 +2755,9 @@
       "source_file": "package.json",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_react",
-      "confidence_score": 1.0
+      "target": "package_dependencies_react"
     },
     {
       "relation": "contains",
@@ -2718,9 +2765,9 @@
       "source_file": "package.json",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_react_dom",
-      "confidence_score": 1.0
+      "target": "package_dependencies_react_dom"
     },
     {
       "relation": "contains",
@@ -2728,9 +2775,9 @@
       "source_file": "package.json",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_sql_js",
-      "confidence_score": 1.0
+      "target": "package_dependencies_sql_js"
     },
     {
       "relation": "contains",
@@ -2738,9 +2785,9 @@
       "source_file": "package.json",
       "source_location": "L31",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_zustand",
-      "confidence_score": 1.0
+      "target": "package_dependencies_zustand"
     },
     {
       "relation": "contains",
@@ -2748,9 +2795,9 @@
       "source_file": "package.json",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_bun_plugin_tailwind",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_bun_plugin_tailwind"
     },
     {
       "relation": "contains",
@@ -2758,9 +2805,9 @@
       "source_file": "package.json",
       "source_location": "L34",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_playwright_test",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_playwright_test"
     },
     {
       "relation": "contains",
@@ -2768,9 +2815,9 @@
       "source_file": "package.json",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_tailwindcss",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_tailwindcss"
     },
     {
       "relation": "contains",
@@ -2778,9 +2825,9 @@
       "source_file": "package.json",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_node",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_types_node"
     },
     {
       "relation": "contains",
@@ -2788,9 +2835,9 @@
       "source_file": "package.json",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_react",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_types_react"
     },
     {
       "relation": "contains",
@@ -2798,9 +2845,9 @@
       "source_file": "package.json",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_types_react_dom",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_types_react_dom"
     },
     {
       "relation": "contains",
@@ -2808,9 +2855,9 @@
       "source_file": "package.json",
       "source_location": "L40",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "package_devdependencies",
-      "target": "package_devdependencies_typescript",
-      "confidence_score": 1.0
+      "target": "package_devdependencies_typescript"
     },
     {
       "relation": "contains",
@@ -2818,9 +2865,9 @@
       "source_file": "server.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "server",
-      "target": "server_dirname",
-      "confidence_score": 1.0
+      "target": "server_dirname"
     },
     {
       "relation": "contains",
@@ -2828,9 +2875,9 @@
       "source_file": "server.ts",
       "source_location": "L74",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "server",
-      "target": "server_handletranscriptionrequest",
-      "confidence_score": 1.0
+      "target": "server_handletranscriptionrequest"
     },
     {
       "relation": "contains",
@@ -2838,15 +2885,15 @@
       "source_file": "server.ts",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "server",
-      "target": "server_server",
-      "confidence_score": 1.0
+      "target": "server_server"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/server.ts",
+      "source_file": "server.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "server_handletranscriptionrequest",
@@ -2859,9 +2906,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "bleep_sounds_bleepsoundmanager",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager"
     },
     {
       "relation": "imports",
@@ -2870,9 +2917,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "bleep_sounds_bleepsoundmanager_bleepsoundmanager",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager_bleepsoundmanager"
     },
     {
       "relation": "imports_from",
@@ -2881,9 +2928,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "context_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext"
     },
     {
       "relation": "imports",
@@ -2892,9 +2939,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "context_mediaplayercontext_mediaplayerprovider",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_mediaplayerprovider"
     },
     {
       "relation": "imports_from",
@@ -2903,9 +2950,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "dictionary_dictionarymanager",
-      "confidence_score": 1.0
+      "target": "dictionary_dictionarymanager"
     },
     {
       "relation": "imports",
@@ -2914,9 +2961,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "dictionary_dictionarymanager_dictionarymanager",
-      "confidence_score": 1.0
+      "target": "dictionary_dictionarymanager_dictionarymanager"
     },
     {
       "relation": "imports_from",
@@ -2925,9 +2972,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "export_exportmodal",
-      "confidence_score": 1.0
+      "target": "export_exportmodal"
     },
     {
       "relation": "imports",
@@ -2936,9 +2983,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "export_exportmodal_exportbutton",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_exportbutton"
     },
     {
       "relation": "imports_from",
@@ -2947,9 +2994,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "file_loader_fileloader",
-      "confidence_score": 1.0
+      "target": "file_loader_fileloader"
     },
     {
       "relation": "imports",
@@ -2958,9 +3005,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "file_loader_fileloader_fileloader",
-      "confidence_score": 1.0
+      "target": "file_loader_fileloader_fileloader"
     },
     {
       "relation": "imports_from",
@@ -2969,9 +3016,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "player_playerdisplay",
-      "confidence_score": 1.0
+      "target": "player_playerdisplay"
     },
     {
       "relation": "imports",
@@ -2980,9 +3027,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "player_playerdisplay_playerdisplay",
-      "confidence_score": 1.0
+      "target": "player_playerdisplay_playerdisplay"
     },
     {
       "relation": "contains",
@@ -2990,9 +3037,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_app_app",
-      "confidence_score": 1.0
+      "target": "src_app_app"
     },
     {
       "relation": "imports_from",
@@ -3001,9 +3048,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "src_version",
-      "confidence_score": 1.0
+      "target": "src_version"
     },
     {
       "relation": "imports_from",
@@ -3012,9 +3059,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "transcription_transcriptionresults",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults"
     },
     {
       "relation": "imports",
@@ -3023,9 +3070,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_app",
-      "target": "transcription_transcriptionresults_transcriptionresults",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_transcriptionresults"
     },
     {
       "relation": "imports_from",
@@ -3034,9 +3081,9 @@
       "source_file": "src/main.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main",
-      "target": "src_app",
-      "confidence_score": 1.0
+      "target": "src_app"
     },
     {
       "relation": "imports",
@@ -3045,9 +3092,9 @@
       "source_file": "src/main.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_main",
-      "target": "src_app_app",
-      "confidence_score": 1.0
+      "target": "src_app_app"
     },
     {
       "relation": "imports_from",
@@ -3056,9 +3103,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "src_aho_corasick",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick"
     },
     {
       "relation": "contains",
@@ -3066,9 +3113,9 @@
       "source_file": "src/aho-corasick.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_aho_corasick",
-      "target": "src_aho_corasick_fastahoscanner",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner"
     },
     {
       "relation": "imports_from",
@@ -3077,9 +3124,9 @@
       "source_file": "src/search.worker.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_search_worker",
-      "target": "src_aho_corasick",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick"
     },
     {
       "relation": "imports_from",
@@ -3088,9 +3135,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "src_aho_corasick",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick"
     },
     {
       "relation": "imports_from",
@@ -3099,9 +3146,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "src_aho_corasick",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick"
     },
     {
       "relation": "imports",
@@ -3110,9 +3157,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "src_aho_corasick_fastahoscanner",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner"
     },
     {
       "relation": "method",
@@ -3120,9 +3167,9 @@
       "source_file": "src/aho-corasick.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_aho_corasick_fastahoscanner",
-      "target": "src_aho_corasick_fastahoscanner_constructor",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner_constructor"
     },
     {
       "relation": "method",
@@ -3130,9 +3177,9 @@
       "source_file": "src/aho-corasick.ts",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_aho_corasick_fastahoscanner",
-      "target": "src_aho_corasick_fastahoscanner_findmatches",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner_findmatches"
     },
     {
       "relation": "method",
@@ -3140,9 +3187,9 @@
       "source_file": "src/aho-corasick.ts",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_aho_corasick_fastahoscanner",
-      "target": "src_aho_corasick_fastahoscanner_getfailid",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner_getfailid"
     },
     {
       "relation": "method",
@@ -3150,9 +3197,9 @@
       "source_file": "src/aho-corasick.ts",
       "source_location": "L23",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_aho_corasick_fastahoscanner",
-      "target": "src_aho_corasick_fastahoscanner_isterminal",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner_isterminal"
     },
     {
       "relation": "imports",
@@ -3161,9 +3208,9 @@
       "source_file": "src/search.worker.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_search_worker",
-      "target": "src_aho_corasick_fastahoscanner",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner"
     },
     {
       "relation": "imports",
@@ -3172,9 +3219,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "src_aho_corasick_fastahoscanner",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner"
     },
     {
       "relation": "imports",
@@ -3183,9 +3230,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "src_aho_corasick_fastahoscanner",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner"
     },
     {
       "relation": "references",
@@ -3194,9 +3241,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L37",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index_dictionary",
-      "target": "src_aho_corasick_fastahoscanner",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner"
     },
     {
       "relation": "calls",
@@ -3205,9 +3252,9 @@
       "source_file": "src/aho-corasick.ts",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_aho_corasick_fastahoscanner_findmatches",
-      "target": "src_aho_corasick_fastahoscanner_getfailid",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner_getfailid"
     },
     {
       "relation": "calls",
@@ -3216,9 +3263,9 @@
       "source_file": "src/aho-corasick.ts",
       "source_location": "L41",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_aho_corasick_fastahoscanner_findmatches",
-      "target": "src_aho_corasick_fastahoscanner_isterminal",
-      "confidence_score": 1.0
+      "target": "src_aho_corasick_fastahoscanner_isterminal"
     },
     {
       "relation": "imports_from",
@@ -3227,9 +3274,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "src_audio",
-      "confidence_score": 1.0
+      "target": "src_audio"
     },
     {
       "relation": "contains",
@@ -3237,9 +3284,9 @@
       "source_file": "src/audio.ts",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_audio",
-      "target": "src_audio_audiobufferstowav",
-      "confidence_score": 1.0
+      "target": "src_audio_audiobufferstowav"
     },
     {
       "relation": "contains",
@@ -3247,9 +3294,9 @@
       "source_file": "src/audio.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_audio",
-      "target": "src_audio_wavprogress",
-      "confidence_score": 1.0
+      "target": "src_audio_wavprogress"
     },
     {
       "relation": "contains",
@@ -3257,9 +3304,9 @@
       "source_file": "src/audio.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_audio",
-      "target": "src_audio_writestring",
-      "confidence_score": 1.0
+      "target": "src_audio_writestring"
     },
     {
       "relation": "contains",
@@ -3267,9 +3314,9 @@
       "source_file": "src/audio.ts",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_audio",
-      "target": "src_audio_yieldtoeventloop",
-      "confidence_score": 1.0
+      "target": "src_audio_yieldtoeventloop"
     },
     {
       "relation": "calls",
@@ -3278,9 +3325,9 @@
       "source_file": "src/audio.ts",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_audio_audiobufferstowav",
-      "target": "src_audio_writestring",
-      "confidence_score": 1.0
+      "target": "src_audio_writestring"
     },
     {
       "relation": "calls",
@@ -3289,9 +3336,9 @@
       "source_file": "src/audio.ts",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_audio_audiobufferstowav",
-      "target": "src_audio_yieldtoeventloop",
-      "confidence_score": 1.0
+      "target": "src_audio_yieldtoeventloop"
     },
     {
       "relation": "imports",
@@ -3300,9 +3347,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "src_audio_audiobufferstowav",
-      "confidence_score": 1.0
+      "target": "src_audio_audiobufferstowav"
     },
     {
       "relation": "imports_from",
@@ -3311,9 +3358,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "src_config",
-      "confidence_score": 1.0
+      "target": "src_config"
     },
     {
       "relation": "imports_from",
@@ -3322,9 +3369,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "src_config",
-      "confidence_score": 1.0
+      "target": "src_config"
     },
     {
       "relation": "contains",
@@ -3332,9 +3379,9 @@
       "source_file": "src/config.ts",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_config",
-      "target": "src_config_backendpath",
-      "confidence_score": 1.0
+      "target": "src_config_backendpath"
     },
     {
       "relation": "contains",
@@ -3342,9 +3389,9 @@
       "source_file": "src/config.ts",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_config",
-      "target": "src_config_backendwspath",
-      "confidence_score": 1.0
+      "target": "src_config_backendwspath"
     },
     {
       "relation": "imports",
@@ -3353,9 +3400,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "src_config_backendpath",
-      "confidence_score": 1.0
+      "target": "src_config_backendpath"
     },
     {
       "relation": "imports",
@@ -3364,9 +3411,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "src_config_backendpath",
-      "confidence_score": 1.0
+      "target": "src_config_backendpath"
     },
     {
       "relation": "imports",
@@ -3375,9 +3422,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L21",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "src_config_backendwspath",
-      "confidence_score": 1.0
+      "target": "src_config_backendwspath"
     },
     {
       "relation": "contains",
@@ -3385,9 +3432,9 @@
       "source_file": "src/context/MediaPlayerContext.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "context_mediaplayercontext",
-      "target": "context_mediaplayercontext_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_mediaplayercontext"
     },
     {
       "relation": "contains",
@@ -3395,9 +3442,9 @@
       "source_file": "src/context/MediaPlayerContext.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "context_mediaplayercontext",
-      "target": "context_mediaplayercontext_mediaplayerprovider",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_mediaplayerprovider"
     },
     {
       "relation": "contains",
@@ -3405,9 +3452,9 @@
       "source_file": "src/context/MediaPlayerContext.tsx",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "context_mediaplayercontext",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "imports_from",
@@ -3416,9 +3463,9 @@
       "source_file": "src/context/MediaPlayerContext.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "context_mediaplayercontext",
-      "target": "hooks_usemediaplayer",
-      "confidence_score": 1.0
+      "target": "hooks_usemediaplayer"
     },
     {
       "relation": "imports",
@@ -3427,9 +3474,9 @@
       "source_file": "src/context/MediaPlayerContext.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "context_mediaplayercontext",
-      "target": "hooks_usemediaplayer_usemediaplayer",
-      "confidence_score": 1.0
+      "target": "hooks_usemediaplayer_usemediaplayer"
     },
     {
       "relation": "imports_from",
@@ -3438,9 +3485,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "context_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext"
     },
     {
       "relation": "imports_from",
@@ -3449,9 +3496,9 @@
       "source_file": "src/features/file-loader/FileLoader.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "file_loader_fileloader",
-      "target": "context_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext"
     },
     {
       "relation": "imports_from",
@@ -3460,9 +3507,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "context_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext"
     },
     {
       "relation": "imports_from",
@@ -3471,9 +3518,9 @@
       "source_file": "src/features/player/ProgressBar.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_progressbar",
-      "target": "context_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext"
     },
     {
       "relation": "imports_from",
@@ -3482,9 +3529,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols",
-      "target": "context_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext"
     },
     {
       "relation": "imports_from",
@@ -3493,15 +3540,15 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "context_mediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext"
     },
     {
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/context/MediaPlayerContext.tsx",
+      "source_file": "src/context/MediaPlayerContext.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "context_mediaplayercontext_usemediaplayercontext",
@@ -3512,7 +3559,7 @@
       "context": "call",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/context/MediaPlayerContext.tsx",
+      "source_file": "src/context/MediaPlayerContext.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "context_mediaplayercontext_mediaplayerprovider",
@@ -3525,9 +3572,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "calls",
@@ -3547,9 +3594,9 @@
       "source_file": "src/features/file-loader/FileLoader.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "file_loader_fileloader",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "calls",
@@ -3569,9 +3616,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "calls",
@@ -3591,9 +3638,9 @@
       "source_file": "src/features/player/ProgressBar.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_progressbar",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "calls",
@@ -3613,9 +3660,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "calls",
@@ -3624,9 +3671,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols_volumecontrolsinner",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "imports",
@@ -3635,9 +3682,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "context_mediaplayercontext_usemediaplayercontext",
-      "confidence_score": 1.0
+      "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
       "relation": "calls",
@@ -3657,9 +3704,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "src_export",
-      "confidence_score": 1.0
+      "target": "src_export"
     },
     {
       "relation": "contains",
@@ -3667,9 +3714,9 @@
       "source_file": "src/export.ts",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "src_export_ensurebleepdecoded",
-      "confidence_score": 1.0
+      "target": "src_export_ensurebleepdecoded"
     },
     {
       "relation": "contains",
@@ -3677,9 +3724,9 @@
       "source_file": "src/export.ts",
       "source_location": "L194",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "src_export_exportcensoredvideo",
-      "confidence_score": 1.0
+      "target": "src_export_exportcensoredvideo"
     },
     {
       "relation": "contains",
@@ -3687,9 +3734,9 @@
       "source_file": "src/export.ts",
       "source_location": "L51",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "src_export_getsoundeffects",
-      "confidence_score": 1.0
+      "target": "src_export_getsoundeffects"
     },
     {
       "relation": "contains",
@@ -3697,9 +3744,9 @@
       "source_file": "src/export.ts",
       "source_location": "L176",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "src_export_pickaudiocodec",
-      "confidence_score": 1.0
+      "target": "src_export_pickaudiocodec"
     },
     {
       "relation": "contains",
@@ -3707,9 +3754,9 @@
       "source_file": "src/export.ts",
       "source_location": "L155",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "src_export_pickvideocodec",
-      "confidence_score": 1.0
+      "target": "src_export_pickvideocodec"
     },
     {
       "relation": "contains",
@@ -3717,9 +3764,9 @@
       "source_file": "src/export.ts",
       "source_location": "L63",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "src_export_rendercensoredaudio",
-      "confidence_score": 1.0
+      "target": "src_export_rendercensoredaudio"
     },
     {
       "relation": "imports_from",
@@ -3728,9 +3775,9 @@
       "source_file": "src/export.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -3739,9 +3786,9 @@
       "source_file": "src/export.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "store_playerstore_playeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_playeractions"
     },
     {
       "relation": "imports",
@@ -3750,9 +3797,9 @@
       "source_file": "src/export.ts",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "imports_from",
@@ -3761,9 +3808,9 @@
       "source_file": "src/export.ts",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -3772,9 +3819,9 @@
       "source_file": "src/export.ts",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export",
-      "target": "types_index_soundcensoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_soundcensoringeffect"
     },
     {
       "relation": "calls",
@@ -3783,9 +3830,9 @@
       "source_file": "src/export.ts",
       "source_location": "L234",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export_exportcensoredvideo",
-      "target": "src_export_ensurebleepdecoded",
-      "confidence_score": 1.0
+      "target": "src_export_ensurebleepdecoded"
     },
     {
       "relation": "calls",
@@ -3794,9 +3841,9 @@
       "source_file": "src/export.ts",
       "source_location": "L129",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export_rendercensoredaudio",
-      "target": "src_export_ensurebleepdecoded",
-      "confidence_score": 1.0
+      "target": "src_export_ensurebleepdecoded"
     },
     {
       "relation": "calls",
@@ -3805,9 +3852,9 @@
       "source_file": "src/export.ts",
       "source_location": "L231",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export_exportcensoredvideo",
-      "target": "src_export_getsoundeffects",
-      "confidence_score": 1.0
+      "target": "src_export_getsoundeffects"
     },
     {
       "relation": "calls",
@@ -3816,9 +3863,9 @@
       "source_file": "src/export.ts",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export_rendercensoredaudio",
-      "target": "src_export_getsoundeffects",
-      "confidence_score": 1.0
+      "target": "src_export_getsoundeffects"
     },
     {
       "relation": "calls",
@@ -3827,9 +3874,9 @@
       "source_file": "src/export.ts",
       "source_location": "L273",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export_exportcensoredvideo",
-      "target": "src_export_rendercensoredaudio",
-      "confidence_score": 1.0
+      "target": "src_export_rendercensoredaudio"
     },
     {
       "relation": "calls",
@@ -3838,9 +3885,9 @@
       "source_file": "src/export.ts",
       "source_location": "L285",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export_exportcensoredvideo",
-      "target": "src_export_pickvideocodec",
-      "confidence_score": 1.0
+      "target": "src_export_pickvideocodec"
     },
     {
       "relation": "calls",
@@ -3849,9 +3896,9 @@
       "source_file": "src/export.ts",
       "source_location": "L286",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "src_export_exportcensoredvideo",
-      "target": "src_export_pickaudiocodec",
-      "confidence_score": 1.0
+      "target": "src_export_pickaudiocodec"
     },
     {
       "relation": "imports",
@@ -3860,9 +3907,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "src_export_exportcensoredvideo",
-      "confidence_score": 1.0
+      "target": "src_export_exportcensoredvideo"
     },
     {
       "relation": "imports_from",
@@ -3871,9 +3918,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_audio",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_audio"
     },
     {
       "relation": "imports",
@@ -3882,9 +3929,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_audio_decodeaudio",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_audio_decodeaudio"
     },
     {
       "relation": "imports",
@@ -3893,9 +3940,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_audio_isremoteurl",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_audio_isremoteurl"
     },
     {
       "relation": "imports_from",
@@ -3904,9 +3951,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons"
     },
     {
       "relation": "imports",
@@ -3915,9 +3962,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_closeicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_closeicon"
     },
     {
       "relation": "imports",
@@ -3926,9 +3973,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_downloadicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_downloadicon"
     },
     {
       "relation": "imports",
@@ -3937,9 +3984,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_fileicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_fileicon"
     },
     {
       "relation": "imports",
@@ -3948,9 +3995,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_linkicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_linkicon"
     },
     {
       "relation": "imports",
@@ -3959,9 +4006,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_loadingicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_loadingicon"
     },
     {
       "relation": "imports",
@@ -3970,9 +4017,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_playicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_playicon"
     },
     {
       "relation": "imports",
@@ -3981,9 +4028,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_plusicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_plusicon"
     },
     {
       "relation": "imports",
@@ -3992,9 +4039,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_savedicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_savedicon"
     },
     {
       "relation": "imports",
@@ -4003,9 +4050,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_saveicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_saveicon"
     },
     {
       "relation": "imports",
@@ -4014,9 +4061,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_icons_uploadicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_uploadicon"
     },
     {
       "relation": "imports_from",
@@ -4025,9 +4072,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_sqlite",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_sqlite"
     },
     {
       "relation": "imports",
@@ -4036,9 +4083,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_sqlite_exportbleepsounds",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_sqlite_exportbleepsounds"
     },
     {
       "relation": "imports",
@@ -4047,9 +4094,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleep_sqlite_importbleepsounds",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_sqlite_importbleepsounds"
     },
     {
       "relation": "contains",
@@ -4057,9 +4104,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleepsoundmanager_addmodal",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager_addmodal"
     },
     {
       "relation": "contains",
@@ -4067,9 +4114,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleepsoundmanager_addmodalprops",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager_addmodalprops"
     },
     {
       "relation": "contains",
@@ -4077,9 +4124,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L549",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleepsoundmanager_bleepsoundmanager",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager_bleepsoundmanager"
     },
     {
       "relation": "contains",
@@ -4087,9 +4134,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L356",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner"
     },
     {
       "relation": "contains",
@@ -4097,9 +4144,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L183",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleepsoundmanager_soundrow",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager_soundrow"
     },
     {
       "relation": "contains",
@@ -4107,9 +4154,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L171",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "bleep_sounds_bleepsoundmanager_soundrowprops",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleepsoundmanager_soundrowprops"
     },
     {
       "relation": "imports_from",
@@ -4118,9 +4165,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -4129,9 +4176,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "store_playerstore_hydratebleepsounds",
-      "confidence_score": 1.0
+      "target": "store_playerstore_hydratebleepsounds"
     },
     {
       "relation": "imports",
@@ -4140,9 +4187,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "store_playerstore_useplayeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayeractions"
     },
     {
       "relation": "imports",
@@ -4151,9 +4198,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "imports_from",
@@ -4162,9 +4209,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -4173,9 +4220,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "types_index_bleepsound",
-      "confidence_score": 1.0
+      "target": "types_index_bleepsound"
     },
     {
       "relation": "imports_from",
@@ -4184,9 +4231,9 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "utils_uid",
-      "confidence_score": 1.0
+      "target": "utils_uid"
     },
     {
       "relation": "imports",
@@ -4195,15 +4242,15 @@
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
-      "target": "utils_uid_uid",
-      "confidence_score": 1.0
+      "target": "utils_uid_uid"
     },
     {
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "bleep_sounds_bleepsoundmanager_addmodal",
@@ -4213,7 +4260,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "bleep_sounds_bleepsoundmanager_soundrow",
@@ -4223,7 +4270,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "bleep_sounds_bleepsoundmanager_bleepsoundmanager",
@@ -4233,7 +4280,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner",
@@ -4243,7 +4290,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner",
@@ -4253,7 +4300,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner",
@@ -4287,9 +4334,9 @@
       "source_file": "src/features/bleep-sounds/bleep-audio.ts",
       "source_location": "L14",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_audio",
-      "target": "bleep_sounds_bleep_audio_decodeaudio",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_audio_decodeaudio"
     },
     {
       "relation": "contains",
@@ -4297,9 +4344,9 @@
       "source_file": "src/features/bleep-sounds/bleep-audio.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_audio",
-      "target": "bleep_sounds_bleep_audio_isremoteurl",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_audio_isremoteurl"
     },
     {
       "relation": "imports_from",
@@ -4308,9 +4355,9 @@
       "source_file": "src/features/bleep-sounds/bleep-audio.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_audio",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -4319,9 +4366,9 @@
       "source_file": "src/features/bleep-sounds/bleep-audio.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_audio",
-      "target": "types_index_bleepsound",
-      "confidence_score": 1.0
+      "target": "types_index_bleepsound"
     },
     {
       "relation": "contains",
@@ -4329,9 +4376,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_closeicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_closeicon"
     },
     {
       "relation": "contains",
@@ -4339,9 +4386,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_downloadicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_downloadicon"
     },
     {
       "relation": "contains",
@@ -4349,9 +4396,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L35",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_fileicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_fileicon"
     },
     {
       "relation": "contains",
@@ -4359,9 +4406,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L42",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_linkicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_linkicon"
     },
     {
       "relation": "contains",
@@ -4369,9 +4416,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L49",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_loadingicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_loadingicon"
     },
     {
       "relation": "contains",
@@ -4379,9 +4426,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_playicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_playicon"
     },
     {
       "relation": "contains",
@@ -4389,9 +4436,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_plusicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_plusicon"
     },
     {
       "relation": "contains",
@@ -4399,9 +4446,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L64",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_savedicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_savedicon"
     },
     {
       "relation": "contains",
@@ -4409,9 +4456,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L56",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_saveicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_saveicon"
     },
     {
       "relation": "contains",
@@ -4419,9 +4466,9 @@
       "source_file": "src/features/bleep-sounds/bleep-icons.tsx",
       "source_location": "L27",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_icons",
-      "target": "bleep_sounds_bleep_icons_uploadicon",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_icons_uploadicon"
     },
     {
       "relation": "contains",
@@ -4429,9 +4476,9 @@
       "source_file": "src/features/bleep-sounds/bleep-sqlite.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_sqlite",
-      "target": "bleep_sounds_bleep_sqlite_exportbleepsounds",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_sqlite_exportbleepsounds"
     },
     {
       "relation": "contains",
@@ -4439,9 +4486,9 @@
       "source_file": "src/features/bleep-sounds/bleep-sqlite.ts",
       "source_location": "L52",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_sqlite",
-      "target": "bleep_sounds_bleep_sqlite_importbleepsounds",
-      "confidence_score": 1.0
+      "target": "bleep_sounds_bleep_sqlite_importbleepsounds"
     },
     {
       "relation": "imports_from",
@@ -4450,9 +4497,9 @@
       "source_file": "src/features/bleep-sounds/bleep-sqlite.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_sqlite",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -4461,9 +4508,9 @@
       "source_file": "src/features/bleep-sounds/bleep-sqlite.ts",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "bleep_sounds_bleep_sqlite",
-      "target": "types_index_bleepsound",
-      "confidence_score": 1.0
+      "target": "types_index_bleepsound"
     },
     {
       "relation": "contains",
@@ -4471,9 +4518,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "dictionary_dictionarymanager_default_dictionaries",
-      "confidence_score": 1.0
+      "target": "dictionary_dictionarymanager_default_dictionaries"
     },
     {
       "relation": "contains",
@@ -4481,9 +4528,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L127",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "dictionary_dictionarymanager_dictionarymanager",
-      "confidence_score": 1.0
+      "target": "dictionary_dictionarymanager_dictionarymanager"
     },
     {
       "relation": "contains",
@@ -4491,9 +4538,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "dictionary_dictionarymanager_dictionarymanagerinner",
-      "confidence_score": 1.0
+      "target": "dictionary_dictionarymanager_dictionarymanagerinner"
     },
     {
       "relation": "imports_from",
@@ -4502,9 +4549,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -4513,9 +4560,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "store_playerstore_useplayeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayeractions"
     },
     {
       "relation": "imports",
@@ -4524,9 +4571,9 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "calls",
@@ -4554,7 +4601,7 @@
       "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/dictionary/DictionaryManager.tsx",
+      "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "dictionary_dictionarymanager_dictionarymanager",
@@ -4564,7 +4611,7 @@
       "relation": "shares_data_with",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/dictionary/DictionaryManager.tsx",
+      "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": null,
       "weight": 1.0,
       "source": "dictionary_dictionarymanager_dictionarymanager",
@@ -4576,9 +4623,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_closeicon",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_closeicon"
     },
     {
       "relation": "contains",
@@ -4586,9 +4633,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_codec_labels",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_codec_labels"
     },
     {
       "relation": "contains",
@@ -4596,9 +4643,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_codeclabel",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_codeclabel"
     },
     {
       "relation": "contains",
@@ -4606,9 +4653,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_downloadicon",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_downloadicon"
     },
     {
       "relation": "contains",
@@ -4616,9 +4663,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L272",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_exportbutton",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_exportbutton"
     },
     {
       "relation": "contains",
@@ -4626,9 +4673,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L165",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_exportbuttoninner",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_exportbuttoninner"
     },
     {
       "relation": "contains",
@@ -4636,9 +4683,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L69",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_exportformat",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_exportformat"
     },
     {
       "relation": "contains",
@@ -4646,9 +4693,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_exportmodal",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_exportmodal"
     },
     {
       "relation": "contains",
@@ -4656,9 +4703,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L76",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_exportmodalprops",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_exportmodalprops"
     },
     {
       "relation": "contains",
@@ -4666,9 +4713,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "export_exportmodal_exportprogressbar",
-      "confidence_score": 1.0
+      "target": "export_exportmodal_exportprogressbar"
     },
     {
       "relation": "imports_from",
@@ -4677,9 +4724,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -4688,9 +4735,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "store_playerstore_useplayeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayeractions"
     },
     {
       "relation": "imports",
@@ -4699,9 +4746,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "export_exportmodal",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "calls",
@@ -4731,9 +4778,9 @@
       "source_file": "src/features/file-loader/FileLoader.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "file_loader_fileloader",
-      "target": "file_loader_fileloader_fileloader",
-      "confidence_score": 1.0
+      "target": "file_loader_fileloader_fileloader"
     },
     {
       "relation": "imports_from",
@@ -4742,9 +4789,9 @@
       "source_file": "src/features/file-loader/FileLoader.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "file_loader_fileloader",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -4753,15 +4800,15 @@
       "source_file": "src/features/file-loader/FileLoader.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "file_loader_fileloader",
-      "target": "store_playerstore_useplayeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayeractions"
     },
     {
       "relation": "references",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/playback.spec.ts",
+      "source_file": "e2e/playback.spec.ts",
       "source_location": 9,
       "weight": 0.85,
       "source": "e2e_playback_spec_videoplayback",
@@ -4784,9 +4831,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_playerdisplay_chevrondownicon",
-      "confidence_score": 1.0
+      "target": "player_playerdisplay_chevrondownicon"
     },
     {
       "relation": "contains",
@@ -4794,9 +4841,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L157",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_playerdisplay_playerdisplay",
-      "confidence_score": 1.0
+      "target": "player_playerdisplay_playerdisplay"
     },
     {
       "relation": "contains",
@@ -4804,9 +4851,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_playerdisplay_playerdisplayinner",
-      "confidence_score": 1.0
+      "target": "player_playerdisplay_playerdisplayinner"
     },
     {
       "relation": "contains",
@@ -4814,9 +4861,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_playerdisplay_speeds",
-      "confidence_score": 1.0
+      "target": "player_playerdisplay_speeds"
     },
     {
       "relation": "imports_from",
@@ -4825,9 +4872,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_progressbar",
-      "confidence_score": 1.0
+      "target": "player_progressbar"
     },
     {
       "relation": "imports",
@@ -4836,9 +4883,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_progressbar_progressbar",
-      "confidence_score": 1.0
+      "target": "player_progressbar_progressbar"
     },
     {
       "relation": "imports_from",
@@ -4847,9 +4894,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_volumecontrols",
-      "confidence_score": 1.0
+      "target": "player_volumecontrols"
     },
     {
       "relation": "imports",
@@ -4858,9 +4905,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "player_volumecontrols_volumecontrols",
-      "confidence_score": 1.0
+      "target": "player_volumecontrols_volumecontrols"
     },
     {
       "relation": "imports_from",
@@ -4869,9 +4916,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -4880,9 +4927,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "store_playerstore_playeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_playeractions"
     },
     {
       "relation": "imports",
@@ -4891,9 +4938,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "imports_from",
@@ -4902,9 +4949,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -4913,9 +4960,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_playerdisplay",
-      "target": "types_index_playbackspeed",
-      "confidence_score": 1.0
+      "target": "types_index_playbackspeed"
     },
     {
       "relation": "calls",
@@ -4932,7 +4979,7 @@
       "relation": "references",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/playback.spec.ts",
+      "source_file": "e2e/playback.spec.ts",
       "source_location": 25,
       "weight": 0.85,
       "source": "e2e_playback_spec_videoplayback",
@@ -4944,9 +4991,9 @@
       "source_file": "src/features/player/ProgressBar.tsx",
       "source_location": "L121",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_progressbar",
-      "target": "player_progressbar_progressbar",
-      "confidence_score": 1.0
+      "target": "player_progressbar_progressbar"
     },
     {
       "relation": "contains",
@@ -4954,9 +5001,9 @@
       "source_file": "src/features/player/ProgressBar.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_progressbar",
-      "target": "player_progressbar_progressbarinner",
-      "confidence_score": 1.0
+      "target": "player_progressbar_progressbarinner"
     },
     {
       "relation": "imports_from",
@@ -4965,9 +5012,9 @@
       "source_file": "src/features/player/ProgressBar.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_progressbar",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -4976,9 +5023,9 @@
       "source_file": "src/features/player/ProgressBar.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_progressbar",
-      "target": "store_playerstore_playeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_playeractions"
     },
     {
       "relation": "imports",
@@ -4987,9 +5034,9 @@
       "source_file": "src/features/player/ProgressBar.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_progressbar",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "calls",
@@ -5006,7 +5053,7 @@
       "relation": "references",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/playback.spec.ts",
+      "source_file": "e2e/playback.spec.ts",
       "source_location": 16,
       "weight": 0.85,
       "source": "e2e_playback_spec_videoplayback",
@@ -5018,9 +5065,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L48",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols",
-      "target": "player_volumecontrols_volumecontrols",
-      "confidence_score": 1.0
+      "target": "player_volumecontrols_volumecontrols"
     },
     {
       "relation": "contains",
@@ -5028,9 +5075,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols",
-      "target": "player_volumecontrols_volumecontrolsinner",
-      "confidence_score": 1.0
+      "target": "player_volumecontrols_volumecontrolsinner"
     },
     {
       "relation": "imports_from",
@@ -5039,9 +5086,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -5050,9 +5097,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "calls",
@@ -5061,9 +5108,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "player_volumecontrols_volumecontrolsinner",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "contains",
@@ -5071,9 +5118,9 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L28",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_addwordmodal",
-      "target": "transcription_addwordmodal_addwordmodal",
-      "confidence_score": 1.0
+      "target": "transcription_addwordmodal_addwordmodal"
     },
     {
       "relation": "contains",
@@ -5081,9 +5128,9 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_addwordmodal",
-      "target": "transcription_addwordmodal_addwordmodalprops",
-      "confidence_score": 1.0
+      "target": "transcription_addwordmodal_addwordmodalprops"
     },
     {
       "relation": "contains",
@@ -5091,9 +5138,9 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_addwordmodal",
-      "target": "transcription_addwordmodal_closeicon",
-      "confidence_score": 1.0
+      "target": "transcription_addwordmodal_closeicon"
     },
     {
       "relation": "contains",
@@ -5101,9 +5148,9 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_addwordmodal",
-      "target": "transcription_addwordmodal_plusicon",
-      "confidence_score": 1.0
+      "target": "transcription_addwordmodal_plusicon"
     },
     {
       "relation": "imports_from",
@@ -5112,9 +5159,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_addwordmodal",
-      "confidence_score": 1.0
+      "target": "transcription_addwordmodal"
     },
     {
       "relation": "imports",
@@ -5123,9 +5170,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_addwordmodal_addwordmodal",
-      "confidence_score": 1.0
+      "target": "transcription_addwordmodal_addwordmodal"
     },
     {
       "relation": "imports_from",
@@ -5134,9 +5181,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -5145,9 +5192,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "contains",
@@ -5155,9 +5202,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "transcription_effectmodal_bolticon",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_bolticon"
     },
     {
       "relation": "contains",
@@ -5165,9 +5212,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "transcription_effectmodal_closeicon",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_closeicon"
     },
     {
       "relation": "contains",
@@ -5175,9 +5222,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L264",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "transcription_effectmodal_effectbadge",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_effectbadge"
     },
     {
       "relation": "contains",
@@ -5185,9 +5232,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L43",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "transcription_effectmodal_effectmodal",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_effectmodal"
     },
     {
       "relation": "contains",
@@ -5195,9 +5242,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L33",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "transcription_effectmodal_effectmodalprops",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_effectmodalprops"
     },
     {
       "relation": "contains",
@@ -5205,9 +5252,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "transcription_effectmodal_trashicon",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_trashicon"
     },
     {
       "relation": "contains",
@@ -5215,9 +5262,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "transcription_effectmodal_uid",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_uid"
     },
     {
       "relation": "imports_from",
@@ -5226,9 +5273,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -5237,9 +5284,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal",
-      "target": "types_index_soundcensoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_soundcensoringeffect"
     },
     {
       "relation": "imports_from",
@@ -5248,9 +5295,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_effectmodal",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal"
     },
     {
       "relation": "references",
@@ -5259,9 +5306,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L36",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_effectmodal_effectmodalprops",
-      "target": "types_index_soundcensoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_soundcensoringeffect"
     },
     {
       "relation": "imports",
@@ -5270,9 +5317,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_effectmodal_effectmodal",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_effectmodal"
     },
     {
       "relation": "imports",
@@ -5281,9 +5328,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_effectmodal_effectbadge",
-      "confidence_score": 1.0
+      "target": "transcription_effectmodal_effectbadge"
     },
     {
       "relation": "imports_from",
@@ -5292,9 +5339,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -5303,9 +5350,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "store_playerstore_useplayeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayeractions"
     },
     {
       "relation": "imports",
@@ -5314,9 +5361,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "contains",
@@ -5324,9 +5371,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_chevrondownicon",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_chevrondownicon"
     },
     {
       "relation": "contains",
@@ -5334,9 +5381,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_findclosestsegment",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_findclosestsegment"
     },
     {
       "relation": "contains",
@@ -5344,9 +5391,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L53",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_parsestage",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_parsestage"
     },
     {
       "relation": "contains",
@@ -5354,9 +5401,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L20",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_plusicon",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_plusicon"
     },
     {
       "relation": "contains",
@@ -5364,9 +5411,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L90",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcribeprogress",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_transcribeprogress"
     },
     {
       "relation": "contains",
@@ -5374,9 +5421,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L65",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcribeprogressbar",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_transcribeprogressbar"
     },
     {
       "relation": "contains",
@@ -5384,9 +5431,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L552",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcriptionresults",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_transcriptionresults"
     },
     {
       "relation": "contains",
@@ -5394,9 +5441,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L104",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcriptionresultsinner",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_transcriptionresultsinner"
     },
     {
       "relation": "imports_from",
@@ -5405,9 +5452,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -5416,9 +5463,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
-      "target": "types_index_soundcensoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_soundcensoringeffect"
     },
     {
       "relation": "calls",
@@ -5427,9 +5474,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L66",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "transcription_transcriptionresults_transcribeprogressbar",
-      "target": "transcription_transcriptionresults_parsestage",
-      "confidence_score": 1.0
+      "target": "transcription_transcriptionresults_parsestage"
     },
     {
       "relation": "calls",
@@ -5470,9 +5517,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L29",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "hooks_usemediaplayer_usemediaplayer",
-      "confidence_score": 1.0
+      "target": "hooks_usemediaplayer_usemediaplayer"
     },
     {
       "relation": "imports_from",
@@ -5481,9 +5528,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "store_playerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore"
     },
     {
       "relation": "imports",
@@ -5492,9 +5539,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "store_playerstore_playeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_playeractions"
     },
     {
       "relation": "imports",
@@ -5503,9 +5550,9 @@
       "source_file": "src/hooks/useMediaPlayer.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "hooks_usemediaplayer",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "contains",
@@ -5513,9 +5560,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L17",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_dbrecord",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_dbrecord"
     },
     {
       "relation": "contains",
@@ -5523,9 +5570,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L95",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_dbupdateurl",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_dbupdateurl"
     },
     {
       "relation": "contains",
@@ -5533,9 +5580,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L61",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_deletebleeprecord",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_deletebleeprecord"
     },
     {
       "relation": "contains",
@@ -5543,9 +5590,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L38",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_getallbleeprecords",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_getallbleeprecords"
     },
     {
       "relation": "contains",
@@ -5553,9 +5600,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L24",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_opendb",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_opendb"
     },
     {
       "relation": "contains",
@@ -5563,9 +5610,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L50",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_putbleeprecord",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_putbleeprecord"
     },
     {
       "relation": "contains",
@@ -5573,9 +5620,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L72",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_updatebleeplabel",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_updatebleeplabel"
     },
     {
       "relation": "contains",
@@ -5583,9 +5630,9 @@
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L119",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_bleepdb",
-      "target": "store_bleepdb_upsertbleepdata",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_upsertbleepdata"
     },
     {
       "relation": "imports_from",
@@ -5594,15 +5641,15 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_bleepdb",
-      "confidence_score": 1.0
+      "target": "store_bleepdb"
     },
     {
       "relation": "shares_data_with",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "store_bleepdb_dbrecord",
@@ -5612,7 +5659,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "store_bleepdb_dbupdateurl",
@@ -5622,7 +5669,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "store_bleepdb_deletebleeprecord",
@@ -5632,7 +5679,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "store_bleepdb_getallbleeprecords",
@@ -5642,7 +5689,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "store_bleepdb_putbleeprecord",
@@ -5652,7 +5699,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "store_bleepdb_updatebleeplabel",
@@ -5662,7 +5709,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "source": "store_bleepdb_upsertbleepdata",
@@ -5672,7 +5719,7 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5683,7 +5730,7 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5694,7 +5741,7 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5705,7 +5752,7 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5716,7 +5763,7 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5727,7 +5774,7 @@
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts",
+      "source_file": "src/store/bleepDb.ts",
       "source_location": null,
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5741,9 +5788,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_bleepdb_getallbleeprecords",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_getallbleeprecords"
     },
     {
       "relation": "calls",
@@ -5763,9 +5810,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_bleepdb_putbleeprecord",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_putbleeprecord"
     },
     {
       "relation": "imports",
@@ -5774,9 +5821,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_bleepdb_deletebleeprecord",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_deletebleeprecord"
     },
     {
       "relation": "imports",
@@ -5785,9 +5832,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_bleepdb_updatebleeplabel",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_updatebleeplabel"
     },
     {
       "relation": "imports",
@@ -5796,9 +5843,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_bleepdb_dbupdateurl",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_dbupdateurl"
     },
     {
       "relation": "imports",
@@ -5807,9 +5854,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_bleepdb_upsertbleepdata",
-      "confidence_score": 1.0
+      "target": "store_bleepdb_upsertbleepdata"
     },
     {
       "relation": "contains",
@@ -5817,9 +5864,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L83",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_playerstore_hydratebleepsounds",
-      "confidence_score": 1.0
+      "target": "store_playerstore_hydratebleepsounds"
     },
     {
       "relation": "contains",
@@ -5827,9 +5874,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L97",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_playerstore_playeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_playeractions"
     },
     {
       "relation": "contains",
@@ -5837,9 +5884,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_playerstore_recordstosounds",
-      "confidence_score": 1.0
+      "target": "store_playerstore_recordstosounds"
     },
     {
       "relation": "contains",
@@ -5847,9 +5894,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L327",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_playerstore_useplayeractions",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayeractions"
     },
     {
       "relation": "contains",
@@ -5857,9 +5904,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L39",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "store_playerstore_useplayerstore",
-      "confidence_score": 1.0
+      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "imports_from",
@@ -5868,9 +5915,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "types_index",
-      "confidence_score": 1.0
+      "target": "types_index"
     },
     {
       "relation": "imports",
@@ -5879,9 +5926,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "types_index_bleepsound",
-      "confidence_score": 1.0
+      "target": "types_index_bleepsound"
     },
     {
       "relation": "imports",
@@ -5890,9 +5937,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "types_index_censoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_censoringeffect"
     },
     {
       "relation": "imports",
@@ -5901,9 +5948,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "types_index_dictionary",
-      "confidence_score": 1.0
+      "target": "types_index_dictionary"
     },
     {
       "relation": "imports",
@@ -5912,9 +5959,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "types_index_playbackspeed",
-      "confidence_score": 1.0
+      "target": "types_index_playbackspeed"
     },
     {
       "relation": "imports",
@@ -5923,9 +5970,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "types_index_playerstate",
-      "confidence_score": 1.0
+      "target": "types_index_playerstate"
     },
     {
       "relation": "imports",
@@ -5934,9 +5981,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore",
-      "target": "types_index_soundcensoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_soundcensoringeffect"
     },
     {
       "relation": "calls",
@@ -5945,9 +5992,9 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L86",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_playerstore_hydratebleepsounds",
-      "target": "store_playerstore_recordstosounds",
-      "confidence_score": 1.0
+      "target": "store_playerstore_recordstosounds"
     },
     {
       "relation": "contains",
@@ -5955,9 +6002,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L44",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_basiccensoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_basiccensoringeffect"
     },
     {
       "relation": "contains",
@@ -5965,9 +6012,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L78",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_bleepsound",
-      "confidence_score": 1.0
+      "target": "types_index_bleepsound"
     },
     {
       "relation": "contains",
@@ -5975,9 +6022,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L68",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_censoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_censoringeffect"
     },
     {
       "relation": "contains",
@@ -5985,9 +6032,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L26",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_dictionary",
-      "confidence_score": 1.0
+      "target": "types_index_dictionary"
     },
     {
       "relation": "contains",
@@ -5995,9 +6042,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L166",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_playbackspeed",
-      "confidence_score": 1.0
+      "target": "types_index_playbackspeed"
     },
     {
       "relation": "contains",
@@ -6005,9 +6052,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L98",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_playerstate",
-      "confidence_score": 1.0
+      "target": "types_index_playerstate"
     },
     {
       "relation": "contains",
@@ -6015,9 +6062,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L55",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_soundcensoringeffect",
-      "confidence_score": 1.0
+      "target": "types_index_soundcensoringeffect"
     },
     {
       "relation": "contains",
@@ -6025,9 +6072,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L73",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_transcriptionresulttuple",
-      "confidence_score": 1.0
+      "target": "types_index_transcriptionresulttuple"
     },
     {
       "relation": "contains",
@@ -6035,9 +6082,9 @@
       "source_file": "src/types/index.ts",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "types_index",
-      "target": "types_index_transcriptionword",
-      "confidence_score": 1.0
+      "target": "types_index_transcriptionword"
     },
     {
       "relation": "contains",
@@ -6045,9 +6092,9 @@
       "source_file": "src/utils/uid.ts",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_uid",
-      "target": "utils_uid_uid",
-      "confidence_score": 1.0
+      "target": "utils_uid_uid"
     },
     {
       "relation": "contains",
@@ -6055,9 +6102,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig",
-      "target": "tsconfig_compileroptions",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions"
     },
     {
       "relation": "contains",
@@ -6065,9 +6112,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L19",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig",
-      "target": "tsconfig_exclude",
-      "confidence_score": 1.0
+      "target": "tsconfig_exclude"
     },
     {
       "relation": "contains",
@@ -6075,9 +6122,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L18",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig",
-      "target": "tsconfig_include",
-      "confidence_score": 1.0
+      "target": "tsconfig_include"
     },
     {
       "relation": "contains",
@@ -6085,9 +6132,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L9",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_esmoduleinterop",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_esmoduleinterop"
     },
     {
       "relation": "contains",
@@ -6095,9 +6142,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_forceconsistentcasinginfilenames",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_forceconsistentcasinginfilenames"
     },
     {
       "relation": "contains",
@@ -6105,9 +6152,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_jsx",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_jsx"
     },
     {
       "relation": "contains",
@@ -6115,9 +6162,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L6",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_lib",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_lib"
     },
     {
       "relation": "contains",
@@ -6125,9 +6172,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L4",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_module",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_module"
     },
     {
       "relation": "contains",
@@ -6135,9 +6182,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L5",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_moduleresolution",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_moduleresolution"
     },
     {
       "relation": "contains",
@@ -6145,9 +6192,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L15",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_outdir",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_outdir"
     },
     {
       "relation": "contains",
@@ -6155,9 +6202,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L12",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_paths",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_paths"
     },
     {
       "relation": "contains",
@@ -6165,9 +6212,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L16",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_rootdir",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_rootdir"
     },
     {
       "relation": "contains",
@@ -6175,9 +6222,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L10",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_skiplibcheck",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_skiplibcheck"
     },
     {
       "relation": "contains",
@@ -6185,9 +6232,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L7",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_strict",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_strict"
     },
     {
       "relation": "contains",
@@ -6195,9 +6242,9 @@
       "source_file": "tsconfig.json",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions",
-      "target": "tsconfig_compileroptions_target",
-      "confidence_score": 1.0
+      "target": "tsconfig_compileroptions_target"
     },
     {
       "relation": "contains",
@@ -6205,135 +6252,35 @@
       "source_file": "tsconfig.json",
       "source_location": "L13",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "tsconfig_compileroptions_paths",
-      "target": "tsconfig_paths",
+      "target": "tsconfig_paths"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "CLAUDE.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "claude",
+      "target": "claude_graphify",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "readme",
+      "target": "readme_obrez_ts",
       "confidence_score": 1.0
     },
     {
       "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/playback.spec.ts",
-      "source_location": 1,
-      "weight": 0.85,
-      "source": "e2e_playback_spec_videoplayback",
-      "target": "playwright_config_playwrightconfig"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/package.json",
-      "source_location": 1,
-      "weight": 0.85,
-      "source": "package_obrez_ts",
-      "target": "playwright_config_playwrightconfig"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/package.json",
-      "source_location": 1,
-      "weight": 0.85,
-      "source": "package_obrez_ts",
-      "target": "tailwind_config_tailwindconfig"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/package.json",
-      "source_location": 1,
-      "weight": 0.85,
-      "source": "package_obrez_ts",
-      "target": "tsconfig_typescriptconfig"
-    },
-    {
-      "relation": "shares_data_with",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/server.ts",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "server_serve",
-      "target": "config_backendurl"
-    },
-    {
-      "relation": "calls",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/search.worker.ts",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "search_worker_onmessage",
-      "target": "aho_corasick_fastahoscanner"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/audio.ts",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "audio_audiobufferstowav",
-      "target": "audio_writestring"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/audio.ts",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "audio_audiobufferstowav",
-      "target": "audio_yieldtoeventloop"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/audio.ts",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "audio_audiobufferstowav",
-      "target": "audio_wavprogress"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/config.ts",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "config_backendpath",
-      "target": "config_backendurl"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/config.ts",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "config_backendwspath",
-      "target": "config_backendurl"
-    },
-    {
-      "relation": "references",
-      "confidence": "INFERRED",
-      "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/ru-profanity.mp4",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "e2e_ru_profanity",
-      "target": "features_dictionary_defaultdictionaries"
-    },
-    {
-      "relation": "references",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/README.md",
+      "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
       "source": "readme_obrez_ts",
@@ -6343,17 +6290,147 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/README.md",
+      "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
       "source": "readme_obrez_ts",
       "target": "readme_bun_serve_dist"
     },
     {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "README.md",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "readme_obrez_ts",
+      "target": "readme_install",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "e2e/playback.spec.ts",
+      "source_location": 1,
+      "weight": 0.85,
+      "source": "e2e_playback_spec_videoplayback",
+      "target": "playwright_config_playwrightconfig"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "package.json",
+      "source_location": 1,
+      "weight": 0.85,
+      "source": "package_obrez_ts",
+      "target": "playwright_config_playwrightconfig"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "package.json",
+      "source_location": 1,
+      "weight": 0.85,
+      "source": "package_obrez_ts",
+      "target": "tailwind_config_tailwindconfig"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "package.json",
+      "source_location": 1,
+      "weight": 0.85,
+      "source": "package_obrez_ts",
+      "target": "tsconfig_typescriptconfig"
+    },
+    {
+      "relation": "shares_data_with",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "server.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "server_serve",
+      "target": "config_backendurl"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/search.worker.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "search_worker_onmessage",
+      "target": "aho_corasick_fastahoscanner"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/audio.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "audio_audiobufferstowav",
+      "target": "audio_writestring"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/audio.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "audio_audiobufferstowav",
+      "target": "audio_yieldtoeventloop"
+    },
+    {
+      "relation": "references",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/audio.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "audio_audiobufferstowav",
+      "target": "audio_wavprogress"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/config.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "config_backendpath",
+      "target": "config_backendurl"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/config.ts",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "config_backendwspath",
+      "target": "config_backendurl"
+    },
+    {
+      "relation": "references",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "source_file": "e2e/ru-profanity.mp4",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "e2e_ru_profanity",
+      "target": "features_dictionary_defaultdictionaries"
+    },
+    {
       "relation": "conceptually_related_to",
       "confidence": "INFERRED",
       "confidence_score": 0.95,
-      "source_file": "/home/irsent/gh/obrez-ts/README.md",
+      "source_file": "README.md",
       "source_location": null,
       "weight": 1.0,
       "source": "readme_bun_build",
@@ -6363,7 +6440,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/index.html",
+      "source_file": "src/index.html",
       "source_location": null,
       "weight": 1.0,
       "source": "src_index_html",
@@ -6373,7 +6450,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/index.html",
+      "source_file": "src/index.html",
       "source_location": null,
       "weight": 1.0,
       "source": "src_index_html",
@@ -6383,7 +6460,7 @@
       "relation": "references",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/index.html",
+      "source_file": "src/index.html",
       "source_location": null,
       "weight": 1.0,
       "source": "src_index_html",
@@ -6393,7 +6470,7 @@
       "relation": "implements",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/obrez-logo.png",
+      "source_file": "public/assets/obrez-logo.png",
       "source_location": null,
       "weight": 1.0,
       "source": "assets_obrez_logo",
@@ -6403,7 +6480,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-0-icon.svg",
+      "source_file": "public/assets/volume-0-icon.svg",
       "source_location": null,
       "weight": 0.85,
       "source": "assets_volume_0_icon_speaker_only",
@@ -6413,7 +6490,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-0-icon.svg",
+      "source_file": "public/assets/volume-0-icon.svg",
       "source_location": null,
       "weight": 0.9,
       "source": "assets_volume_0_icon_speaker_only",
@@ -6423,7 +6500,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-0-icon.svg",
+      "source_file": "public/assets/volume-0-icon.svg",
       "source_location": null,
       "weight": 0.9,
       "source": "assets_volume_0_icon_speaker_only",
@@ -6433,7 +6510,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-0-icon.svg",
+      "source_file": "public/assets/volume-0-icon.svg",
       "source_location": null,
       "weight": 0.9,
       "source": "assets_volume_0_icon_speaker_only",
@@ -6443,7 +6520,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-1-icon.svg",
+      "source_file": "public/assets/volume-1-icon.svg",
       "source_location": null,
       "weight": 0.85,
       "source": "assets_volume_1_icon_muted_cross",
@@ -6453,7 +6530,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-2-icon.svg",
+      "source_file": "public/assets/volume-2-icon.svg",
       "source_location": null,
       "weight": 0.9,
       "source": "assets_volume_2_icon_low_volume",
@@ -6463,7 +6540,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-2-icon.svg",
+      "source_file": "public/assets/volume-2-icon.svg",
       "source_location": null,
       "weight": 0.9,
       "source": "assets_volume_2_icon_low_volume",
@@ -6473,7 +6550,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.9,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-off-icon.svg",
+      "source_file": "public/assets/volume-off-icon.svg",
       "source_location": null,
       "weight": 0.9,
       "source": "assets_volume_off_icon_high_volume",
@@ -6483,7 +6560,7 @@
       "relation": "semantically_similar_to",
       "confidence": "INFERRED",
       "confidence_score": 0.85,
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/ru-profanity.mp4",
+      "source_file": "e2e/ru-profanity.mp4",
       "source_location": null,
       "weight": 1.0,
       "source": "e2e_ru_profanity",
@@ -6503,7 +6580,7 @@
       "relation": "participate_in",
       "confidence": "INFERRED",
       "confidence_score": 0.95,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx"
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx"
     },
     {
       "id": "bleep_sound_add_flow",
@@ -6517,7 +6594,7 @@
       "relation": "participate_in",
       "confidence": "INFERRED",
       "confidence_score": 0.95,
-      "source_file": "/home/irsent/gh/obrez-ts/src/features/bleep-sounds/BleepSoundManager.tsx"
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx"
     },
     {
       "id": "bleep_sound_persistence",
@@ -6537,7 +6614,7 @@
       "relation": "form",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/src/store/bleepDb.ts"
+      "source_file": "src/store/bleepDb.ts"
     },
     {
       "id": "volume_icon_set",
@@ -6552,7 +6629,7 @@
       "relation": "form",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/public/assets/volume-0-icon.svg"
+      "source_file": "public/assets/volume-0-icon.svg"
     },
     {
       "id": "e2e_test_fixtures",
@@ -6564,7 +6641,7 @@
       "relation": "participate_in",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
-      "source_file": "/home/irsent/gh/obrez-ts/e2e/ru-profanity.mp4"
+      "source_file": "e2e/ru-profanity.mp4"
     }
   ],
   "built_at_commit": "a23dcd6da210545487f23f54a489215aa09231fb"
