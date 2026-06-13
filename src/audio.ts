@@ -17,7 +17,6 @@ export async function audioBuffersToWav(
 ): Promise<Blob> {
   const totalLength = chunks.reduce((acc, chunk) => acc + chunk.length, 0);
   const numberOfChannels = chunks[0]?.numberOfChannels;
-  console.log('numberOfChannels:', numberOfChannels);
   if (!numberOfChannels) {
     console.error("could not get numberOfChannels from the first chunk");
   }

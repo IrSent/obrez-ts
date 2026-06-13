@@ -27,9 +27,9 @@ const DownloadIcon = () => (
  * Progress bar component reused from TranscriptionResults styling.
  */
 function ExportProgressBar({ stage }: { stage: string }) {
-  const pctMatch = stage.match(/\((\d+)%\)/) || stage.match(/(\d+)%$/);
+  const pctMatch = stage.match(/\b(\d+)%\b/);
   const pct = pctMatch ? parseInt(pctMatch[1], 10) : null;
-  const label = pct != null ? stage.replace(/\s*\(?\d+%?\)?\s*$/, '').trim() : stage;
+  const label = pct != null ? stage.replace(/\s*·?\s*\d+%\s*/g, '').trim() : stage;
 
   return (
     <div className="space-y-1">

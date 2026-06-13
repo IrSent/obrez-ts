@@ -140,6 +140,40 @@ export function useMediaPlayer() {
 
   // === Sound effect engine ===
 
+  // Subscribe to playbackSpeed changes: restart audio so buffers are
+  // scheduled at the new rate.
+  const speedUnsub = usePlayerStore.subscribe(
+    (state) => state.playbackSpeed,
+    (speed, prevSpeed) => {
+      if (speed !== prevSpeed && usePlayerStore.getState().fileName) {
+        const wasPlaying = usePlayerStore.getState().isPlaying;
+        const t = utilsRef.current.getPlaybackTime();
+        if (wasPlaying) {
+          pauseRef.current();
+        }
+        // Recalculate audioContextStartTime so getPlaybackTime() is consistent
+        // with the new speed: t = (ctx.currentTime - ctxStart) * speed + t
+        // => ctxStart = ctx.currentTime (since offset is 0 after reset)
+        if (audioContextRef.current) {
+          audioContextStartTimeRef.current = audioContextRef.current.currentTime;
+        }
+        playbackTimeAtStartRef.current = t;
+        playerActions.setCurrentTime(t);
+        playerActions.setIsEnded(false);
+        triggeredEffectsRef.current.clear();
+        void startVideoIteratorRef.current();
+        if (wasPlaying) {
+          playingRef.current = true;
+          playerActions.setIsPlaying(true);
+          if (audioSinkRef.current) {
+            audioBufferIteratorRef.current = audioSinkRef.current.buffers(t);
+            void runAudioIterator();
+          }
+        }
+      }
+    },
+  );
+
   /**
    * Trigger a sound effect: play the bleep sound and optionally dampen
    * the original audio for the duration of the segment.
@@ -175,7 +209,9 @@ export function useMediaPlayer() {
     if (effect.dampenOriginal) {
       const currentGain = gainNode.gain.value;
       const dampenedGain = currentGain * (1 - effect.dampenAmount);
-      const segmentDuration = segmentEnd - effect.segmentStart;
+      // Convert media-time segment duration to wall-clock duration
+      const speed = usePlayerStore.getState().playbackSpeed;
+      const segmentDuration = (segmentEnd - effect.segmentStart) / speed;
 
       if (effect.dampenType === 'sharp') {
         // Immediate drop, hold, immediate restore at segment end
@@ -396,6 +432,17 @@ export function useMediaPlayer() {
     // rAF работает всегда, так что это no-op
   }, []);
 
+  /**
+   * Granular time-stretch audio player.
+   *
+   * Each decoded buffer is chopped into Hann-windowed grains that always
+   * overlap by ≥ 75%. Every grain plays at 1× (normal pitch).
+   * Wall-clock spacing = grainDuration / speed → effective speed-up
+   * without pitch shift.
+   *
+   * For M-fold overlap with Hann window: sum(Hann) = M/2 at every point,
+   * so grainGain = 2/M normalizes to unity gain.
+   */
   const runAudioIterator = useCallback(async () => {
     if (!audioBufferIteratorRef.current || !audioContextRef.current || !gainNodeRef.current) return;
 
@@ -404,27 +451,64 @@ export function useMediaPlayer() {
     const contextStart = audioContextStartTimeRef.current!;
     const playbackOffset = playbackTimeAtStartRef.current;
 
+    const grainDuration = 0.04; // 40 ms
+    const overlapRatio = 0.75; // 75% overlap → base hop = 10 ms
+    const baseHop = grainDuration * (1 - overlapRatio); // 0.01 s
+
     try {
       for await (const wrapped of audioBufferIteratorRef.current) {
-        const source = ctx.createBufferSource();
-        source.buffer = wrapped.buffer;
-        source.connect(gainNode);
-
+        const speed = usePlayerStore.getState().playbackSpeed;
+        const buffer = wrapped.buffer;
         const bufferStart = wrapped.timestamp;
-        let startTimestamp = contextStart + (bufferStart - playbackOffset);
+        const sr = ctx.sampleRate;
 
-        // Round to sample boundaries to prevent subsample audio glitches
-        startTimestamp = Math.round(ctx.sampleRate * startTimestamp) / ctx.sampleRate;
+        const grainSamples = Math.floor(grainDuration * sr);
+        const hopSamples = Math.max(1, Math.floor(baseHop * sr / speed));
+        const overlapCount = grainSamples / hopSamples; // M-fold overlap
+        const grainGain = 2 / overlapCount; // Hann OLA normalization: 2/M
 
-        // Two cases: audio starts in the future or in the past
-        if (startTimestamp >= ctx.currentTime) {
-          source.start(startTimestamp);
-        } else {
-          source.start(ctx.currentTime, ctx.currentTime - startTimestamp);
+        // Hann window
+        const hann = new Float32Array(grainSamples);
+        for (let i = 0; i < grainSamples; i++) {
+          hann[i] = 0.5 - 0.5 * Math.cos((2 * Math.PI * i) / (grainSamples - 1));
         }
 
-        queuedAudioNodesRef.current.add(source);
-        source.onended = () => queuedAudioNodesRef.current.delete(source);
+        // Walk the buffer grain by grain
+        for (let pos = 0; pos < buffer.length; pos += hopSamples) {
+          const actualLen = Math.min(grainSamples, buffer.length - pos);
+          if (actualLen < 4) break;
+
+          const grain = ctx.createBuffer(buffer.numberOfChannels, actualLen, sr);
+          for (let ch = 0; ch < buffer.numberOfChannels; ch++) {
+            const src = buffer.getChannelData(ch);
+            const dst = grain.getChannelData(ch);
+            for (let j = 0; j < actualLen; j++) {
+              dst[j] = src[pos + j] * hann[j] * grainGain;
+            }
+          }
+
+          const source = ctx.createBufferSource();
+          source.buffer = grain;
+          source.connect(gainNode);
+
+          const grainMediaStart = bufferStart + pos / sr;
+          let startTimestamp = contextStart + (grainMediaStart - playbackOffset) / speed;
+          startTimestamp = Math.round(sr * startTimestamp) / sr;
+
+          if (startTimestamp >= ctx.currentTime) {
+            source.start(startTimestamp);
+          } else {
+            source.start(ctx.currentTime);
+          }
+
+          queuedAudioNodesRef.current.add(source);
+          source.onended = () => queuedAudioNodesRef.current.delete(source);
+
+          // Yield every ~30 grains to keep the UI responsive
+          if ((pos % (hopSamples * 30)) === 0 && pos > 0) {
+            await new Promise((r) => setTimeout(r, 0));
+          }
+        }
 
         // Slow down if we're more than a second ahead
         if (bufferStart - utilsRef.current.getPlaybackTime() >= 1) {
@@ -880,6 +964,7 @@ export function useMediaPlayer() {
     playerActions.setIsEnded(false);
     stopRenderLoop();
     stopTranscribeFocus();
+    speedUnsub();
     void audioBufferIteratorRef.current?.return();
     audioBufferIteratorRef.current = null;
 
