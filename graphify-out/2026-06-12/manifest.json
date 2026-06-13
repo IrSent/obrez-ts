@@ -1,8 +1,8 @@
 {
   "build.ts": {
-    "mtime": 1781277806.3458056,
-    "ast_hash": "dfac000a8f2df9072de3104f6fe10ebe",
-    "semantic_hash": "dfac000a8f2df9072de3104f6fe10ebe"
+    "mtime": 1780697926.9115934,
+    "ast_hash": "e0eba144e67d298975eef71ce7ed99a1",
+    "semantic_hash": "e0eba144e67d298975eef71ce7ed99a1"
   },
   "e2e/playback.spec.ts": {
     "mtime": 1780697926.9155567,
@@ -25,9 +25,9 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1781277707.5590816,
-    "ast_hash": "f8ca27bbd717bcbe982b4d10838d5edc",
-    "semantic_hash": "f8ca27bbd717bcbe982b4d10838d5edc"
+    "mtime": 1781114280.6048582,
+    "ast_hash": "61fe24c8c0d4f5423d9821f7adca7d15",
+    "semantic_hash": "61fe24c8c0d4f5423d9821f7adca7d15"
   },
   "src/aho-corasick.ts": {
     "mtime": 1780374557.183065,
@@ -35,9 +35,9 @@
     "semantic_hash": "095c74be9352693edccbc36802b0c001"
   },
   "src/audio.ts": {
-    "mtime": 1781294401.932259,
-    "ast_hash": "bd257195f99dcc4c74749940f0ea5a3e",
-    "semantic_hash": ""
+    "mtime": 1780833643.9610116,
+    "ast_hash": "509d1da6b858499d12c3e452e91eab6d",
+    "semantic_hash": "509d1da6b858499d12c3e452e91eab6d"
   },
   "src/context/MediaPlayerContext.tsx": {
     "mtime": 1780697927.0067153,
@@ -45,8 +45,8 @@
     "semantic_hash": "4964d3c923fc881f8fe3edff8d345ecc"
   },
   "src/export.ts": {
-    "mtime": 1781304065.07206,
-    "ast_hash": "1c2c14c4245c05acb46a091f86283963",
+    "mtime": 1781271016.887766,
+    "ast_hash": "8d6f4b8386303ac58b2ebd51cc6c1079",
     "semantic_hash": ""
   },
   "src/features/bleep-sounds/BleepSoundManager.tsx": {
@@ -60,19 +60,19 @@
     "semantic_hash": "34cdb2d1fa907fa59e936ba13ecab721"
   },
   "src/features/export/ExportModal.tsx": {
-    "mtime": 1781296492.8182428,
-    "ast_hash": "3403617da557e6e9681d43ba6d1d9058",
+    "mtime": 1781256263.5210357,
+    "ast_hash": "18a31c9b2aa9e8be5506261529dc5604",
     "semantic_hash": ""
   },
   "src/features/file-loader/FileLoader.tsx": {
     "mtime": 1781246588.1889372,
     "ast_hash": "4beb706cd217ed7c207bc985e8b48d0b",
-    "semantic_hash": "4beb706cd217ed7c207bc985e8b48d0b"
+    "semantic_hash": ""
   },
   "src/features/player/PlayerDisplay.tsx": {
-    "mtime": 1781275777.6699288,
-    "ast_hash": "fcf079ccc427b21fbf389b48ef163662",
-    "semantic_hash": "fcf079ccc427b21fbf389b48ef163662"
+    "mtime": 1781246588.1889372,
+    "ast_hash": "7d241a29de6f2d69347ae52c6796f4db",
+    "semantic_hash": "7d241a29de6f2d69347ae52c6796f4db"
   },
   "src/features/player/ProgressBar.tsx": {
     "mtime": 1781114280.6128583,
@@ -92,12 +92,12 @@
   "src/features/transcription/TranscriptionResults.tsx": {
     "mtime": 1781273853.4156098,
     "ast_hash": "8db701132e0a9a870a7749da7d0aefcf",
-    "semantic_hash": "8db701132e0a9a870a7749da7d0aefcf"
+    "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
-    "mtime": 1781339199.3748894,
-    "ast_hash": "e42c627ea8cc928a3c884dbe5758adb2",
-    "semantic_hash": ""
+    "mtime": 1781246588.1929371,
+    "ast_hash": "cc083f169c2489c209e63eb83d7611f3",
+    "semantic_hash": "cc083f169c2489c209e63eb83d7611f3"
   },
   "src/main.tsx": {
     "mtime": 1780697927.0186253,
@@ -115,14 +115,14 @@
     "semantic_hash": "e6912c3dd4c2607e82cf0427398f9fc0"
   },
   "src/store/playerStore.ts": {
-    "mtime": 1781275216.4277432,
-    "ast_hash": "9c713df989f9c343911ac3b1f2e37e64",
-    "semantic_hash": "9c713df989f9c343911ac3b1f2e37e64"
+    "mtime": 1781246588.1929371,
+    "ast_hash": "cf3c6a69cfb44e7c92e58d296b999375",
+    "semantic_hash": "cf3c6a69cfb44e7c92e58d296b999375"
   },
   "src/types/index.ts": {
-    "mtime": 1781274936.0148048,
-    "ast_hash": "a4c3f079a0217020fcad15f27b17a507",
-    "semantic_hash": "a4c3f079a0217020fcad15f27b17a507"
+    "mtime": 1781246588.196937,
+    "ast_hash": "ba9aa666116e12e67791a7b3cfec15c3",
+    "semantic_hash": "ba9aa666116e12e67791a7b3cfec15c3"
   },
   "tailwind.config.js": {
     "mtime": 1780374557.183065,
@@ -232,16 +232,6 @@
   "src/features/transcription/AddWordModal.tsx": {
     "mtime": 1781267364.0045884,
     "ast_hash": "f856e7f0575de67009fb01af12f1502e",
-    "semantic_hash": "f856e7f0575de67009fb01af12f1502e"
-  },
-  "src/version.ts": {
-    "mtime": 1781277855.4483333,
-    "ast_hash": "26f4ec68a3a7f170223bc926a66567b0",
-    "semantic_hash": "26f4ec68a3a7f170223bc926a66567b0"
-  },
-  "prompt.md": {
-    "mtime": 1781293327.4149134,
-    "ast_hash": "6ed98e4bed076d679c20551fd59ca620",
     "semantic_hash": ""
   }
 }
