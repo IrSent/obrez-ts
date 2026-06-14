@@ -33,7 +33,9 @@ export function useMediaPlayer() {
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
   const stNodeRef = useRef<SoundTouchNode | null>(null);
+  const compressorRef = useRef<DynamicsCompressorNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
+  const analyserRef = useRef<AnalyserNode | null>(null);
   const inputRef = useRef<Input | null>(null);
   const resourceRef = useRef<File | string | null>(null);
   const videoTrackRef = useRef<InputAudioTrack | null>(null);
@@ -43,6 +45,7 @@ export function useMediaPlayer() {
 
   const audioContextStartTimeRef = useRef<number | null>(null);
   const playbackTimeAtStartRef = useRef<number>(0);
+  const playbackSpeedRef = useRef<number>(1); // mirrors store, used in hot loops
   const videoFrameIteratorRef = useRef<AsyncGenerator<WrappedCanvas, void, unknown> | null>(null);
   const audioBufferIteratorRef = useRef<AsyncGenerator<WrappedAudioBuffer, void, unknown> | null>(null);
   const nextFrameRef = useRef<WrappedCanvas | null>(null);
@@ -71,13 +74,9 @@ export function useMediaPlayer() {
   // === Утилиты через ref — стабильные, не зависят от React ===
   const utilsRef = useRef({
     getPlaybackTime: (): number => {
-      const speed = usePlayerStore.getState().playbackSpeed;
+      const speed = playbackSpeedRef.current;
       if (playingRef.current && audioContextRef.current && audioContextStartTimeRef.current != null) {
-        return (
-          (audioContextRef.current.currentTime -
-          audioContextStartTimeRef.current) * speed +
-          playbackTimeAtStartRef.current
-        );
+        return (audioContextRef.current.currentTime - audioContextStartTimeRef.current) * speed + playbackTimeAtStartRef.current;
       }
       return playbackTimeAtStartRef.current;
     },
@@ -142,36 +141,66 @@ export function useMediaPlayer() {
 
   // === Sound effect engine ===
 
-  // Subscribe to playbackSpeed changes: restart audio so buffers are
-  // scheduled at the new rate.
+  // Subscribe to playbackSpeed changes: update SoundTouchNode in real-time.
+  // stNode.playbackRate is an AudioParam — it takes effect immediately.
+  // Also update all running source nodes to the new speed.
+  //
+  // CRITICAL: We must also restart audio so buffers are scheduled at the new speed.
+  // Without this, old buffers play on the old timeline → clicks + overlap.
   const speedUnsub = usePlayerStore.subscribe(
-    (state) => state.playbackSpeed,
-    (speed, prevSpeed) => {
-      if (speed !== prevSpeed && usePlayerStore.getState().fileName) {
-        const wasPlaying = usePlayerStore.getState().isPlaying;
-        const t = utilsRef.current.getPlaybackTime();
-        if (wasPlaying) {
-          pauseRef.current();
+    (state, prevState) => {
+      const speed = state.playbackSpeed;
+      const prevSpeed = prevState.playbackSpeed;
+      if (speed !== prevSpeed && playingRef.current && audioContextRef.current) {
+        const ctx = audioContextRef.current;
+        const gain = gainNodeRef.current;
+        const savedGain = gain ? gain.gain.value : 0;
+
+        // 1) Fade out quickly to avoid clicks
+        if (gain) {
+          gain.gain.cancelScheduledValues(ctx.currentTime);
+          gain.gain.setValueAtTime(savedGain, ctx.currentTime);
+          gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.03);
         }
-        // Recalculate audioContextStartTime so getPlaybackTime() is consistent
-        // with the new speed: t = (ctx.currentTime - ctxStart) * speed + t
-        // => ctxStart = ctx.currentTime (since offset is 0 after reset)
-        if (audioContextRef.current) {
-          audioContextStartTimeRef.current = audioContextRef.current.currentTime;
+
+        // 2) Stop all running source nodes
+        for (const node of queuedAudioNodesRef.current) {
+          try { node.stop(); } catch {}
         }
-        playbackTimeAtStartRef.current = t;
-        playerActions.setCurrentTime(t);
-        playerActions.setIsEnded(false);
-        triggeredEffectsRef.current.clear();
-        void startVideoIteratorRef.current();
-        if (wasPlaying) {
-          playingRef.current = true;
-          playerActions.setIsPlaying(true);
-          if (audioSinkRef.current) {
-            audioBufferIteratorRef.current = audioSinkRef.current.buffers(t);
-            void runAudioIterator();
+        queuedAudioNodesRef.current.clear();
+
+        // 3) Cancel current audio iterator
+        void audioBufferIteratorRef.current?.return();
+        audioBufferIteratorRef.current = null;
+
+        // 4) After fade-out, restart audio at the new speed
+        setTimeout(() => {
+          // Reset timing refs so getPlaybackTime() is correct
+          const currentMediaT = utilsRef.current.getPlaybackTime();
+          audioContextStartTimeRef.current = ctx.currentTime;
+          playbackTimeAtStartRef.current = currentMediaT;
+          playbackSpeedRef.current = speed;
+
+          // Restore gain
+          if (gain) {
+            gain.gain.cancelScheduledValues(ctx.currentTime);
+            gain.gain.setValueAtTime(savedGain, ctx.currentTime);
           }
-        }
+
+          // Update SoundTouchNode
+          if (stNodeRef.current) {
+            stNodeRef.current.playbackRate.value = speed;
+          }
+
+          // Restart audio iterator
+          if (audioSinkRef.current) {
+            audioBufferIteratorRef.current = audioSinkRef.current.buffers(currentMediaT);
+            void runAudioIteratorRef.current?.();
+          }
+        }, 50);
+
+        // 5) Restart video iterator
+        void startVideoIteratorRef.current();
       }
     },
   );
@@ -441,26 +470,31 @@ export function useMediaPlayer() {
    * stNode.playbackRate = speed → SoundTouch compensates pitch
    * Net effect: speed-up without chipmunk.
    */
-  const runAudioIterator = useCallback(async () => {
+  const runAudioIteratorRef = useRef<(() => Promise<void>) | null>(null);
+  runAudioIteratorRef.current = async () => {
     if (!audioBufferIteratorRef.current || !audioContextRef.current || !stNodeRef.current) return;
 
     const ctx = audioContextRef.current;
     const stNode = stNodeRef.current;
-    const contextStart = audioContextStartTimeRef.current!;
-    const playbackOffset = playbackTimeAtStartRef.current;
-    const speed = usePlayerStore.getState().playbackSpeed;
-
-    stNode.playbackRate.value = speed;
 
     try {
       for await (const wrapped of audioBufferIteratorRef.current) {
+        // Read current speed from ref — updated by speed subscription in real-time
+        const speed = playbackSpeedRef.current;
+        const currentMediaT = utilsRef.current.getPlaybackTime();
+
+        stNode.playbackRate.value = speed;
+
         const source = ctx.createBufferSource();
         source.buffer = wrapped.buffer;
         source.playbackRate.value = speed;
         source.connect(stNode);
 
+        // Schedule relative to NOW — avoids clicks when speed changes
+        // because we no longer depend on the stale contextStart/playbackOffset.
         const bufferStart = wrapped.timestamp;
-        let startTimestamp = contextStart + (bufferStart - playbackOffset) / speed;
+        const timeUntilBuffer = (bufferStart - currentMediaT) / speed;
+        let startTimestamp = ctx.currentTime + timeUntilBuffer;
         startTimestamp = Math.round(ctx.sampleRate * startTimestamp) / ctx.sampleRate;
 
         if (startTimestamp >= ctx.currentTime) {
@@ -488,7 +522,7 @@ export function useMediaPlayer() {
     } catch {
       // Итератор остановлен (pause) — нормально
     }
-  }, []);
+  };
 
   const play = useCallback(async () => {
     try {
@@ -514,7 +548,7 @@ export function useMediaPlayer() {
 
       if (audioSinkRef.current) {
         audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
-        void runAudioIterator();
+        void runAudioIteratorRef.current?.();
       }
 
       // startTranscribeFocus removed — closestSegmentStart in TranscriptionResults
@@ -523,7 +557,7 @@ export function useMediaPlayer() {
       console.error('Playback error:', error);
       playerActions.setError(error instanceof Error ? error.message : 'Playback failed');
     }
-  }, [audioSinkRef, runAudioIterator]);
+  }, [audioSinkRef]);
 
   // Keep a stable ref so the transcribe function can resume playback later
   playRef.current = play;
@@ -662,18 +696,63 @@ export function useMediaPlayer() {
       // Create AudioContext with matching sampleRate — КРИТИЧНО для правильного звука!
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       if (audioTrack) {
-        const sampleRate = audioTrack.sampleRate;
+        const sampleRate = await audioTrack.getSampleRate();
         audioContextRef.current = new AudioContextClass({ sampleRate });
 
         // Register and create SoundTouchNode for pitch-preserving time-stretch
         await SoundTouchNode.register(audioContextRef.current, '/soundtouch-processor.js');
-        stNodeRef.current = new SoundTouchNode({ context: audioContextRef.current });
+        await SoundTouchNode.registerStrategyModule(audioContextRef.current, '/linear-strategy.js');
+        stNodeRef.current = new SoundTouchNode({
+          context: audioContextRef.current,
+          interpolationStrategy: 'linear',
+        });
+        stNodeRef.current.setStretchParameters({
+          sequenceMs: 40,      // Короткий шаг для быстрой речи
+          seekWindowMs: 15,    // Стандартное окно поиска
+          overlapMs: 4,        // МИНИМАЛЬНЫЙ НАХЛЕСТ (Срезаем до 4-6мс)
+          quickSeek: false,
+        });
+
+        // Analyser for clipping diagnostics (before compressor)
+        analyserRef.current = audioContextRef.current.createAnalyser();
+        analyserRef.current.fftSize = 256;
+
+        // Compressor to prevent clipping at higher speeds
+        compressorRef.current = audioContextRef.current.createDynamicsCompressor();
+        compressorRef.current.threshold.value = -24;
+        compressorRef.current.knee.value = 30;
+        compressorRef.current.ratio.value = 12;
+        compressorRef.current.attack.value = 0.003;
+        compressorRef.current.release.value = 0.25;
 
         gainNodeRef.current = audioContextRef.current.createGain();
-        stNodeRef.current.connect(gainNodeRef.current);
+
+        // Chain: source → stNode → analyser → compressor → gain → destination
+        stNodeRef.current.connect(analyserRef.current);
+        analyserRef.current.connect(compressorRef.current);
+        compressorRef.current.connect(gainNodeRef.current);
         gainNodeRef.current.connect(audioContextRef.current.destination);
         gainNodeRef.current.gain.value = 0.5 ** 2;
         playerActions.setVolume(0.5);
+
+        // Monitor for clipping via the analyser (every 100 ms)
+        const dataArray = new Float32Array(analyserRef.current.frequencyBinCount);
+        const clipInterval = setInterval(() => {
+          if (!analyserRef.current) {
+            clearInterval(clipInterval);
+            return;
+          }
+          analyserRef.current.getFloatTimeDomainData(dataArray);
+          const peak = Math.max(...dataArray);
+          if (peak >= 0.99) {
+            console.warn(
+              `[clipping] peak=${peak.toFixed(3)} speed=${usePlayerStore.getState().playbackSpeed}x`
+            );
+          }
+        }, 100);
+
+        // Store interval id on the analyser for cleanup later
+        (analyserRef.current as any)._clipInterval = clipInterval;
       } else {
         // No audio — create context for timing only
         audioContextRef.current = new AudioContextClass();
@@ -953,8 +1032,17 @@ export function useMediaPlayer() {
     }
 
     if (audioContextRef.current) {
+      // Stop clipping monitor
+      const a = analyserRef.current;
+      if (a && (a as any)._clipInterval) {
+        clearInterval((a as any)._clipInterval);
+      }
       stNodeRef.current?.disconnect();
       stNodeRef.current = null;
+      compressorRef.current?.disconnect();
+      compressorRef.current = null;
+      analyserRef.current?.disconnect();
+      analyserRef.current = null;
       await audioContextRef.current.close();
       audioContextRef.current = null;
     }
@@ -992,3 +1080,4 @@ export function useMediaPlayer() {
     getInput: () => inputRef.current,
   };
 }
+// test
