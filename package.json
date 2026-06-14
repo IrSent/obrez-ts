@@ -4,7 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun run build && bun run server.ts",
+    "dev": "NODE_ENV=development bun dev.ts",
     "build": "bun run build.ts",
     "serve": "bun run server.ts",
     "test": "bun test",

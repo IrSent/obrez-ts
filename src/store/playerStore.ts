@@ -112,8 +112,10 @@ export const playerActions = {
     usePlayerStore.setState({ transcribeStage: stage }),
   setTranscribeFormat: (format: 'wav' | 'original') =>
     usePlayerStore.setState({ transcribeFormat: format }),
-  setPlaybackSpeed: (speed: PlaybackSpeed) =>
-    usePlayerStore.setState({ playbackSpeed: speed }),
+  setPlaybackSpeed: (speed: PlaybackSpeed) => {
+    console.log(`[playerStore] setPlaybackSpeed: ${speed}`);
+    usePlayerStore.setState({ playbackSpeed: speed });
+  },
   /**
    * Set transcription results + transcribing=false + clear stage in one setState.
    */
