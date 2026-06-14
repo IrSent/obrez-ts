@@ -141,66 +141,43 @@ export function useMediaPlayer() {
 
   // === Sound effect engine ===
 
-  // Subscribe to playbackSpeed changes: update SoundTouchNode in real-time.
-  // stNode.playbackRate is an AudioParam — it takes effect immediately.
-  // Also update all running source nodes to the new speed.
+ // Subscribe to playbackSpeed changes: update SoundTouchNode and source nodes
+  // in real-time. Both playbackRate values are AudioParams — they take effect
+  // immediately without clicks. No need to restart the audio iterator.
   //
-  // CRITICAL: We must also restart audio so buffers are scheduled at the new speed.
-  // Without this, old buffers play on the old timeline → clicks + overlap.
+  // SoundTouchNode is a pitch compensator, not an accelerator:
+  //   source.playbackRate = speed → accelerates audio (chipmunk)
+  //   stNode.playbackRate = speed → compensates pitch back to normal
+  // Net effect: speed-up without chipmunk.
+  //
+  // Derivation (no jump at change point):
+  //   old: media_t = elapsed * prevSpeed + m0_old
+  //   new: media_t = elapsed * speed  + m0_new
+  //   m0_new = m0_old + elapsed * (prevSpeed - speed)
+  //   elapsed = (currentMediaT - m0_old) / prevSpeed
   const speedUnsub = usePlayerStore.subscribe(
     (state, prevState) => {
       const speed = state.playbackSpeed;
       const prevSpeed = prevState.playbackSpeed;
-      if (speed !== prevSpeed && playingRef.current && audioContextRef.current) {
-        const ctx = audioContextRef.current;
-        const gain = gainNodeRef.current;
-        const savedGain = gain ? gain.gain.value : 0;
+      if (speed !== prevSpeed) {
+        // ── Step 1: compute current media time BEFORE changing refs ──
+        const currentMediaT = utilsRef.current.getPlaybackTime();
 
-        // 1) Fade out quickly to avoid clicks
-        if (gain) {
-          gain.gain.cancelScheduledValues(ctx.currentTime);
-          gain.gain.setValueAtTime(savedGain, ctx.currentTime);
-          gain.gain.linearRampToValueAtTime(0.0001, ctx.currentTime + 0.03);
+        // ── Step 2: adjust playbackTimeAtStartRef ──
+        if (prevSpeed > 0 && audioContextStartTimeRef.current != null) {
+          const elapsed = (currentMediaT - playbackTimeAtStartRef.current) / prevSpeed;
+          playbackTimeAtStartRef.current += elapsed * (prevSpeed - speed);
         }
 
-        // 2) Stop all running source nodes
+        // ── Step 3: update speed ref and audio nodes ──
+        playbackSpeedRef.current = speed;
+
+        if (stNodeRef.current) {
+          stNodeRef.current.playbackRate.value = speed;
+        }
         for (const node of queuedAudioNodesRef.current) {
-          try { node.stop(); } catch {}
+          node.playbackRate.value = speed;
         }
-        queuedAudioNodesRef.current.clear();
-
-        // 3) Cancel current audio iterator
-        void audioBufferIteratorRef.current?.return();
-        audioBufferIteratorRef.current = null;
-
-        // 4) After fade-out, restart audio at the new speed
-        setTimeout(() => {
-          // Reset timing refs so getPlaybackTime() is correct
-          const currentMediaT = utilsRef.current.getPlaybackTime();
-          audioContextStartTimeRef.current = ctx.currentTime;
-          playbackTimeAtStartRef.current = currentMediaT;
-          playbackSpeedRef.current = speed;
-
-          // Restore gain
-          if (gain) {
-            gain.gain.cancelScheduledValues(ctx.currentTime);
-            gain.gain.setValueAtTime(savedGain, ctx.currentTime);
-          }
-
-          // Update SoundTouchNode
-          if (stNodeRef.current) {
-            stNodeRef.current.playbackRate.value = speed;
-          }
-
-          // Restart audio iterator
-          if (audioSinkRef.current) {
-            audioBufferIteratorRef.current = audioSinkRef.current.buffers(currentMediaT);
-            void runAudioIteratorRef.current?.();
-          }
-        }, 50);
-
-        // 5) Restart video iterator
-        void startVideoIteratorRef.current();
       }
     },
   );
@@ -466,9 +443,12 @@ export function useMediaPlayer() {
   /**
    * Audio playback iterator — uses SoundTouchNode for pitch-preserving time-stretch.
    *
-   * source.playbackRate = speed → faster audio stream
-   * stNode.playbackRate = speed → SoundTouch compensates pitch
+   * source.playbackRate = speed → faster audio stream (chipmunk)
+   * stNode.playbackRate = speed → SoundTouch compensates pitch back to normal
    * Net effect: speed-up without chipmunk.
+   *
+   * Overlap set to 12ms (up from 4ms) to give SoundTouch's overlap-add
+   * algorithm enough sample data, reducing "sand" artifacts at high speeds.
    */
   const runAudioIteratorRef = useRef<(() => Promise<void>) | null>(null);
   runAudioIteratorRef.current = async () => {
@@ -702,6 +682,7 @@ export function useMediaPlayer() {
         // Register and create SoundTouchNode for pitch-preserving time-stretch
         await SoundTouchNode.register(audioContextRef.current, '/soundtouch-processor.js');
         await SoundTouchNode.registerStrategyModule(audioContextRef.current, '/linear-strategy.js');
+
         stNodeRef.current = new SoundTouchNode({
           context: audioContextRef.current,
           interpolationStrategy: 'linear',
@@ -709,7 +690,7 @@ export function useMediaPlayer() {
         stNodeRef.current.setStretchParameters({
           sequenceMs: 40,      // Короткий шаг для быстрой речи
           seekWindowMs: 15,    // Стандартное окно поиска
-          overlapMs: 4,        // МИНИМАЛЬНЫЙ НАХЛЕСТ (Срезаем до 4-6мс)
+          overlapMs: 12,       // Увеличен для снижения артефактов при ускорении
           quickSeek: false,
         });
 
@@ -727,7 +708,7 @@ export function useMediaPlayer() {
 
         gainNodeRef.current = audioContextRef.current.createGain();
 
-        // Chain: source → stNode → analyser → compressor → gain → destination
+        // Chain: source(speed) → stNode(speed=pitch-compensate) → analyser → compressor → gain → destination
         stNodeRef.current.connect(analyserRef.current);
         analyserRef.current.connect(compressorRef.current);
         compressorRef.current.connect(gainNodeRef.current);
