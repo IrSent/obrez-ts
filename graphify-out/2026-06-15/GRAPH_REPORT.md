@@ -1,16 +1,16 @@
-# Graph Report - obrez-ts  (2026-06-13)
+# Graph Report - obrez-ts  (2026-06-15)
 
 ## Corpus Check
-- 37 files · ~76,904 words
+- 41 files · ~86,683 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 238 nodes · 391 edges · 27 communities (20 shown, 7 thin omitted)
-- Extraction: 95% EXTRACTED · 5% INFERRED · 0% AMBIGUOUS · INFERRED: 20 edges (avg confidence: 0.87)
+- 358 nodes · 623 edges · 36 communities (27 shown, 9 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 17 edges (avg confidence: 0.87)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ab31dd40`
+- Built from commit: `64c78c86`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -37,30 +37,38 @@
 - [[_COMMUNITY_Main Entry|Main Entry]]
 - [[_COMMUNITY_Community 24|Community 24]]
 - [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
+- [[_COMMUNITY_Community 28|Community 28]]
+- [[_COMMUNITY_Community 29|Community 29]]
+- [[_COMMUNITY_Community 30|Community 30]]
+- [[_COMMUNITY_Community 31|Community 31]]
+- [[_COMMUNITY_Community 32|Community 32]]
+- [[_COMMUNITY_Community 33|Community 33]]
+- [[_COMMUNITY_Community 34|Community 34]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `usePlayerStore` - 19 edges
 2. `useMediaPlayerContext()` - 14 edges
 3. `compilerOptions` - 13 edges
-4. `usePlayerActions()` - 11 edges
-5. `FastAhoScanner` - 10 edges
-6. `DbRecord` - 8 edges
-7. `scripts` - 7 edges
-8. `exportCensoredVideo()` - 7 edges
-9. `BleepSoundManagerInner()` - 7 edges
-10. `openDb()` - 7 edges
+4. `process()` - 12 edges
+5. `usePlayerActions()` - 11 edges
+6. `FastAhoScanner` - 10 edges
+7. `putSamples()` - 9 edges
+8. `receive()` - 9 edges
+9. `getBoundBuffer()` - 9 edges
+10. `extract()` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `ru-profanity.mp4 (audio-only AAC LC test fixture)` --references--> `DEFAULT_DICTIONARIES (ru-profanity, ru-stopwords)`  [INFERRED]
   e2e/ru-profanity.mp4 → src/features/dictionary/DictionaryManager.tsx
-- `VideoPlayback E2E Tests` --references--> `PlaywrightConfig`  [INFERRED]
-  e2e/playback.spec.ts → playwright.config.ts
 - `VideoPlayback E2E Tests` --references--> `FileLoader()`  [INFERRED]
   e2e/playback.spec.ts → src/features/file-loader/FileLoader.tsx
 - `VideoPlayback E2E Tests` --references--> `PlayerDisplay`  [INFERRED]
   e2e/playback.spec.ts → src/features/player/PlayerDisplay.tsx
 - `VideoPlayback E2E Tests` --references--> `ProgressBar`  [INFERRED]
   e2e/playback.spec.ts → src/features/player/ProgressBar.tsx
+- `VideoPlayback E2E Tests` --references--> `PlaywrightConfig`  [INFERRED]
+  e2e/playback.spec.ts → playwright.config.ts
 
 ## Import Cycles
 - None detected.
@@ -72,27 +80,27 @@
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 - **E2E Test Fixtures (audio-only profanity test + full video AAC test)** — e2e_ru_profanity, e2e_valid_with_aac [EXTRACTED 1.00]
 
-## Communities (27 total, 7 thin omitted)
+## Communities (36 total, 9 thin omitted)
 
 ### Community 0 - "Export Modal + Context"
-Cohesion: 0.10
-Nodes (25): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), VideoPlayback E2E Tests, CODEC_LABELS, ExportButton, ExportButtonInner() (+17 more)
+Cohesion: 0.09
+Nodes (31): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManagerInner(), VideoPlayback E2E Tests, CODEC_LABELS, ExportButton (+23 more)
 
 ### Community 1 - "Package Dependencies"
-Cohesion: 0.06
-Nodes (30): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabunny, react, react-dom (+22 more)
+Cohesion: 0.05
+Nodes (41): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabunny, react, react-dom (+33 more)
 
 ### Community 2 - "Dictionary + Aho-Corasick"
-Cohesion: 0.22
-Nodes (18): DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel(), upsertBleepData() (+10 more)
+Cohesion: 0.16
+Nodes (18): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+10 more)
 
 ### Community 3 - "Bleep Sounds + Icons"
 Cohesion: 0.14
 Nodes (21): decodeAudio(), isRemoteUrl(), CloseIcon(), DownloadIcon(), FileIcon(), LinkIcon(), LoadingIcon(), PlayIcon() (+13 more)
 
 ### Community 4 - "Transcription Modals"
-Cohesion: 0.12
-Nodes (9): AddWordModal, AddWordModalProps, EffectBadge, EffectModal, EffectModalProps, parseStage(), TranscribeProgress(), TranscribeProgressBar() (+1 more)
+Cohesion: 0.08
+Nodes (6): getKernelStateRecord(), getOutputBufferAdapter(), lanczosWeight(), normalizedSinc(), setOutputBuffer(), transposePluginKernel()
 
 ### Community 5 - "TypeScript Config"
 Cohesion: 0.12
@@ -103,8 +111,8 @@ Cohesion: 0.17
 Nodes (11): backendPath, BACKEND_URL, backendWsPath, DictionaryManager, ru-profanity.mp4 (audio-only AAC LC test fixture), valid-with-aac.mp4 (H.264+AAC test fixture), DEFAULT_DICTIONARIES (ru-profanity, ru-stopwords), __dirname (+3 more)
 
 ### Community 7 - "Media Player + Audio"
-Cohesion: 0.16
-Nodes (9): DEFAULT_DICTIONARIES, FastAhoScanner, audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop(), backendPath(), backendWsPath() (+1 more)
+Cohesion: 0.60
+Nodes (4): audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop()
 
 ### Community 8 - "Video Export Pipeline"
 Cohesion: 0.62
@@ -118,10 +126,6 @@ Nodes (5): Volume Zero - Speaker Icon (No Sound Waves), Volume Muted - Speaker w
 Cohesion: 0.50
 Nodes (4): audioBuffersToWav, WavProgress type, writeString utility, yieldToEventLoop utility
 
-### Community 11 - "Build Config"
-Cohesion: 0.50
-Nodes (4): obrez-ts, PlaywrightConfig, TailwindConfig, TypeScriptConfig
-
 ### Community 12 - "App Entry"
 Cohesion: 0.50
 Nodes (3): index.css, main.tsx, root div
@@ -131,28 +135,56 @@ Cohesion: 0.50
 Nodes (4): bun run build, bun x serve ./dist/, Install, obrez-ts
 
 ### Community 26 - "Community 26"
-Cohesion: 0.29
-Nodes (7): scripts, build, dev, serve, test, test:e2e, typecheck
+Cohesion: 0.25
+Nodes (5): clients, DIST_DIR, PUBLIC_DIR, server, SRC_DIR
+
+### Community 28 - "Community 28"
+Cohesion: 0.17
+Nodes (21): beforePipeProcess(), bootstrapMidBuffer(), dropFrames(), ensureAdditionalCapacity(), ensureCapacity(), ensureScratchCapacity(), extract(), extractSamples() (+13 more)
+
+### Community 29 - "Community 29"
+Cohesion: 0.14
+Nodes (17): calculateEffectiveRateAndTempo(), clear(), clearMidBuffer(), constructor(), isFloatDifferent(), normalizeParams(), pitch(), pitchOctaves() (+9 more)
+
+### Community 30 - "Community 30"
+Cohesion: 0.25
+Nodes (11): advanceInputByNominalSkip(), appendSamples(), captureOverlapHistory(), frameCount(), getBoundBuffer(), overlapStereo(), processOneWindow(), putFrom() (+3 more)
+
+### Community 31 - "Community 31"
+Cohesion: 0.12
+Nodes (9): AddWordModal, AddWordModalProps, EffectBadge, EffectModal, EffectModalProps, parseStage(), TranscribeProgress(), TranscribeProgressBar() (+1 more)
+
+### Community 32 - "Community 32"
+Cohesion: 0.24
+Nodes (12): applyPendingRuntimeUpdates(), calculateOverlapLength(), calculateSequenceParameters(), checkLimits(), clone(), normalizeWindowInvariants(), overlapMs(), setInterpolationStrategyParams() (+4 more)
+
+### Community 33 - "Community 33"
+Cohesion: 0.27
+Nodes (7): besselI0(), KAISER_DEFAULT_PARAMS, kaiserKernel(), kaiserStrategy, kaiserWindow(), normalizedSinc(), readFrameSample()
+
+### Community 34 - "Community 34"
+Cohesion: 0.36
+Nodes (8): calculateCrossCorrelationStereo(), generateFractionalScanOffsets(), generateSymmetricScanOffsets(), getQuickScanOffsets(), preCalculateCorrelationReferenceStereo(), seekBestOverlapPosition(), seekBestOverlapPositionStereo(), seekBestOverlapPositionStereoQuick()
 
 ## Knowledge Gaps
-- **81 isolated node(s):** `name`, `version`, `private`, `type`, `dev` (+76 more)
+- **93 isolated node(s):** `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR`, `clients`, `server` (+88 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **7 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **9 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `DictionaryManager` connect `Backend Config + Server` to `Export Modal + Context`, `Media Player + Audio`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
-- **Why does `usePlayerStore` connect `Export Modal + Context` to `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Transcription Modals`, `Media Player + Audio`, `Video Export Pipeline`?**
-  _High betweenness centrality (0.050) - this node is a cross-community bridge._
-- **What connects `name`, `version`, `private` to the rest of the system?**
-  _81 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Why does `DictionaryManager` connect `Backend Config + Server` to `Export Modal + Context`?**
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
+- **Why does `usePlayerStore` connect `Export Modal + Context` to `Video Export Pipeline`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 31`?**
+  _High betweenness centrality (0.022) - this node is a cross-community bridge._
+- **What connects `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR` to the rest of the system?**
+  _93 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
-  _Cohesion score 0.1039136302294197 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.08599290780141844 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.06451612903225806 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.047619047619047616 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**
-  _Cohesion score 0.14153846153846153 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14333333333333334 - nodes in this community are weakly interconnected._
 - **Should `Transcription Modals` be split into smaller, more focused modules?**
-  _Cohesion score 0.12380952380952381 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07936507936507936 - nodes in this community are weakly interconnected._

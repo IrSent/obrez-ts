@@ -174,7 +174,7 @@ const ExportButtonInner = () => {
   const [format, setFormat] = useState<ExportFormat>('same');
   const [error, setError] = useState<string | null>(null);
 
-  const canExport = fileName && censoringEffects.length > 0;
+  const canExport = fileName && (censoringEffects?.length ?? 0) > 0;
 
   // Detect original format from file extension
   const originalExt = (fileName?.match(/\.[^.]+$/) ?? [])[0]?.toLowerCase() ?? '';
