@@ -408,7 +408,7 @@
       "source_location": "L25",
       "_origin": "ast",
       "id": "package_dependencies",
-      "community": 1,
+      "community": 31,
       "norm_label": "dependencies"
     },
     {
@@ -418,7 +418,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "package_dependencies_fontsource_variable_rubik",
-      "community": 1,
+      "community": 31,
       "norm_label": "@fontsource-variable/rubik"
     },
     {
@@ -428,7 +428,7 @@
       "source_location": "L27",
       "_origin": "ast",
       "id": "package_dependencies_soundtouchjs_audio_worklet",
-      "community": 1,
+      "community": 31,
       "norm_label": "@soundtouchjs/audio-worklet"
     },
     {
@@ -438,7 +438,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "package_dependencies_soundtouchjs_interpolation_strategy_blackman",
-      "community": 1,
+      "community": 31,
       "norm_label": "@soundtouchjs/interpolation-strategy-blackman"
     },
     {
@@ -448,7 +448,7 @@
       "source_location": "L29",
       "_origin": "ast",
       "id": "package_dependencies_soundtouchjs_interpolation_strategy_hann",
-      "community": 1,
+      "community": 31,
       "norm_label": "@soundtouchjs/interpolation-strategy-hann"
     },
     {
@@ -458,7 +458,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "package_dependencies_soundtouchjs_interpolation_strategy_kaiser",
-      "community": 1,
+      "community": 31,
       "norm_label": "@soundtouchjs/interpolation-strategy-kaiser"
     },
     {
@@ -468,7 +468,7 @@
       "source_location": "L31",
       "_origin": "ast",
       "id": "package_dependencies_soundtouchjs_interpolation_strategy_linear",
-      "community": 1,
+      "community": 31,
       "norm_label": "@soundtouchjs/interpolation-strategy-linear"
     },
     {
@@ -478,7 +478,7 @@
       "source_location": "L32",
       "_origin": "ast",
       "id": "package_dependencies_mediabunny",
-      "community": 1,
+      "community": 31,
       "norm_label": "mediabunny"
     },
     {
@@ -488,7 +488,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "package_dependencies_react",
-      "community": 1,
+      "community": 31,
       "norm_label": "react"
     },
     {
@@ -498,7 +498,7 @@
       "source_location": "L34",
       "_origin": "ast",
       "id": "package_dependencies_react_dom",
-      "community": 1,
+      "community": 31,
       "norm_label": "react-dom"
     },
     {
@@ -508,7 +508,7 @@
       "source_location": "L35",
       "_origin": "ast",
       "id": "package_dependencies_soundtouchjs",
-      "community": 1,
+      "community": 31,
       "norm_label": "soundtouchjs"
     },
     {
@@ -518,7 +518,7 @@
       "source_location": "L36",
       "_origin": "ast",
       "id": "package_dependencies_sql_js",
-      "community": 1,
+      "community": 31,
       "norm_label": "sql.js"
     },
     {
@@ -528,7 +528,7 @@
       "source_location": "L37",
       "_origin": "ast",
       "id": "package_dependencies_zustand",
-      "community": 1,
+      "community": 31,
       "norm_label": "zustand"
     },
     {
@@ -622,6 +622,86 @@
       "norm_label": "playwright.config.ts"
     },
     {
+      "label": "blackman-strategy.js",
+      "file_type": "code",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "public_blackman_strategy",
+      "community": 34,
+      "norm_label": "blackman-strategy.js"
+    },
+    {
+      "label": "normalizeBlackmanParams()",
+      "file_type": "code",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "public_blackman_strategy_normalizeblackmanparams",
+      "community": 34,
+      "norm_label": "normalizeblackmanparams()"
+    },
+    {
+      "label": "blackmanWeight()",
+      "file_type": "code",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "public_blackman_strategy_blackmanweight",
+      "community": 34,
+      "norm_label": "blackmanweight()"
+    },
+    {
+      "label": "blackmanKernel()",
+      "file_type": "code",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "public_blackman_strategy_blackmankernel",
+      "community": 34,
+      "norm_label": "blackmankernel()"
+    },
+    {
+      "label": "hann-strategy.js",
+      "file_type": "code",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "public_hann_strategy",
+      "community": 35,
+      "norm_label": "hann-strategy.js"
+    },
+    {
+      "label": "normalizeHannParams()",
+      "file_type": "code",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "public_hann_strategy_normalizehannparams",
+      "community": 35,
+      "norm_label": "normalizehannparams()"
+    },
+    {
+      "label": "hannWeight()",
+      "file_type": "code",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "public_hann_strategy_hannweight",
+      "community": 35,
+      "norm_label": "hannweight()"
+    },
+    {
+      "label": "hannKernel()",
+      "file_type": "code",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L14",
+      "_origin": "ast",
+      "id": "public_hann_strategy_hannkernel",
+      "community": 35,
+      "norm_label": "hannkernel()"
+    },
+    {
       "label": "kaiser-strategy.js",
       "file_type": "code",
       "source_file": "public/kaiser-strategy.js",
@@ -632,20 +712,20 @@
       "norm_label": "kaiser-strategy.js"
     },
     {
-      "label": "KAISER_DEFAULT_PARAMS",
+      "label": "i0()",
       "file_type": "code",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L1",
+      "source_location": "L5",
       "_origin": "ast",
-      "id": "public_kaiser_strategy_kaiser_default_params",
+      "id": "public_kaiser_strategy_i0",
       "community": 33,
-      "norm_label": "kaiser_default_params"
+      "norm_label": "i0()"
     },
     {
       "label": "normalizeKaiserParams()",
       "file_type": "code",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L7",
+      "source_location": "L16",
       "_origin": "ast",
       "id": "public_kaiser_strategy_normalizekaiserparams",
       "community": 33,
@@ -655,91 +735,31 @@
       "label": "applyKaiserParams()",
       "file_type": "code",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L18",
+      "source_location": "L22",
       "_origin": "ast",
       "id": "public_kaiser_strategy_applykaiserparams",
       "community": 33,
       "norm_label": "applykaiserparams()"
     },
     {
-      "label": "readFrameSample()",
+      "label": "kaiserWeight()",
       "file_type": "code",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L30",
+      "source_location": "L28",
       "_origin": "ast",
-      "id": "public_kaiser_strategy_readframesample",
+      "id": "public_kaiser_strategy_kaiserweight",
       "community": 33,
-      "norm_label": "readframesample()"
-    },
-    {
-      "label": "normalizedSinc()",
-      "file_type": "code",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L40",
-      "_origin": "ast",
-      "id": "public_kaiser_strategy_normalizedsinc",
-      "community": 33,
-      "norm_label": "normalizedsinc()"
-    },
-    {
-      "label": "besselI0()",
-      "file_type": "code",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L47",
-      "_origin": "ast",
-      "id": "public_kaiser_strategy_besseli0",
-      "community": 33,
-      "norm_label": "besseli0()"
-    },
-    {
-      "label": "kaiserWindow()",
-      "file_type": "code",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L60",
-      "_origin": "ast",
-      "id": "public_kaiser_strategy_kaiserwindow",
-      "community": 33,
-      "norm_label": "kaiserwindow()"
+      "norm_label": "kaiserweight()"
     },
     {
       "label": "kaiserKernel()",
       "file_type": "code",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L73",
+      "source_location": "L34",
       "_origin": "ast",
       "id": "public_kaiser_strategy_kaiserkernel",
       "community": 33,
       "norm_label": "kaiserkernel()"
-    },
-    {
-      "label": "kaiserStrategy",
-      "file_type": "code",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L102",
-      "_origin": "ast",
-      "id": "public_kaiser_strategy_kaiserstrategy",
-      "community": 33,
-      "norm_label": "kaiserstrategy"
-    },
-    {
-      "label": "registerKaiserStrategy()",
-      "file_type": "code",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L110",
-      "_origin": "ast",
-      "id": "public_kaiser_strategy_registerkaiserstrategy",
-      "community": 33,
-      "norm_label": "registerkaiserstrategy()"
-    },
-    {
-      "label": "linear-strategy.js",
-      "file_type": "code",
-      "source_file": "public/linear-strategy.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "public_linear_strategy",
-      "community": 36,
-      "norm_label": "linear-strategy.js"
     },
     {
       "label": "soundtouch-processor.js",
@@ -1035,7 +1055,7 @@
       "label": "readStrategySelection()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L622",
+      "source_location": "L619",
       "_origin": "ast",
       "id": "public_soundtouch_processor_readstrategyselection",
       "community": 29,
@@ -1045,7 +1065,7 @@
       "label": "readStrategyId()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L627",
+      "source_location": "L624",
       "_origin": "ast",
       "id": "public_soundtouch_processor_readstrategyid",
       "community": 29,
@@ -1055,7 +1075,7 @@
       "label": "requireRegisteredStrategy()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L630",
+      "source_location": "L627",
       "_origin": "ast",
       "id": "public_soundtouch_processor_requireregisteredstrategy",
       "community": 29,
@@ -1065,7 +1085,7 @@
       "label": "registerBuiltInInterpolationStrategy()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L635",
+      "source_location": "L632",
       "_origin": "ast",
       "id": "public_soundtouch_processor_registerbuiltininterpolationstrategy",
       "community": 4,
@@ -1075,7 +1095,7 @@
       "label": "resolveKernelRegistration()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L647",
+      "source_location": "L644",
       "_origin": "ast",
       "id": "public_soundtouch_processor_resolvekernelregistration",
       "community": 29,
@@ -1085,7 +1105,7 @@
       "label": "normalizeParams()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L653",
+      "source_location": "L650",
       "_origin": "ast",
       "id": "public_soundtouch_processor_normalizeparams",
       "community": 29,
@@ -1095,7 +1115,7 @@
       "label": "resolveInterpolationStrategy()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L667",
+      "source_location": "L664",
       "_origin": "ast",
       "id": "public_soundtouch_processor_resolveinterpolationstrategy",
       "community": 29,
@@ -1105,17 +1125,27 @@
       "label": "resolveInterpolationStrategyRuntime()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L675",
+      "source_location": "L672",
       "_origin": "ast",
       "id": "public_soundtouch_processor_resolveinterpolationstrategyruntime",
       "community": 29,
       "norm_label": "resolveinterpolationstrategyruntime()"
     },
     {
+      "label": "linearKernel()",
+      "file_type": "code",
+      "source_file": "public/soundtouch-processor.js",
+      "source_location": "L687",
+      "_origin": "ast",
+      "id": "public_soundtouch_processor_linearkernel",
+      "community": 4,
+      "norm_label": "linearkernel()"
+    },
+    {
       "label": "rate()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L771",
+      "source_location": "L786",
       "_origin": "ast",
       "id": "public_soundtouch_processor_rate",
       "community": 4,
@@ -1125,7 +1155,7 @@
       "label": "strategy()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L778",
+      "source_location": "L793",
       "_origin": "ast",
       "id": "public_soundtouch_processor_strategy",
       "community": 4,
@@ -1135,7 +1165,7 @@
       "label": "strategyParams()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L785",
+      "source_location": "L800",
       "_origin": "ast",
       "id": "public_soundtouch_processor_strategyparams",
       "community": 4,
@@ -1145,7 +1175,7 @@
       "label": "setInterpolationStrategy()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L792",
+      "source_location": "L807",
       "_origin": "ast",
       "id": "public_soundtouch_processor_setinterpolationstrategy",
       "community": 29,
@@ -1155,7 +1185,7 @@
       "label": "setInterpolationStrategyParams()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L807",
+      "source_location": "L822",
       "_origin": "ast",
       "id": "public_soundtouch_processor_setinterpolationstrategyparams",
       "community": 32,
@@ -1165,7 +1195,7 @@
       "label": "reset()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L818",
+      "source_location": "L833",
       "_origin": "ast",
       "id": "public_soundtouch_processor_reset",
       "community": 29,
@@ -1175,7 +1205,7 @@
       "label": "clone()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L837",
+      "source_location": "L852",
       "_origin": "ast",
       "id": "public_soundtouch_processor_clone",
       "community": 32,
@@ -1185,7 +1215,7 @@
       "label": "process()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L855",
+      "source_location": "L870",
       "_origin": "ast",
       "id": "public_soundtouch_processor_process",
       "community": 28,
@@ -1195,7 +1225,7 @@
       "label": "ensureScratchCapacity()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L871",
+      "source_location": "L886",
       "_origin": "ast",
       "id": "public_soundtouch_processor_ensurescratchcapacity",
       "community": 28,
@@ -1205,7 +1235,7 @@
       "label": "transpose()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L885",
+      "source_location": "L900",
       "_origin": "ast",
       "id": "public_soundtouch_processor_transpose",
       "community": 28,
@@ -1215,7 +1245,7 @@
       "label": "transposePluginKernel()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L903",
+      "source_location": "L918",
       "_origin": "ast",
       "id": "public_soundtouch_processor_transposepluginkernel",
       "community": 4,
@@ -1225,7 +1255,7 @@
       "label": "getKernelStateRecord()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L938",
+      "source_location": "L953",
       "_origin": "ast",
       "id": "public_soundtouch_processor_getkernelstaterecord",
       "community": 4,
@@ -1235,7 +1265,7 @@
       "label": "setBuffer()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L963",
+      "source_location": "L978",
       "_origin": "ast",
       "id": "public_soundtouch_processor_setbuffer",
       "community": 28,
@@ -1245,7 +1275,7 @@
       "label": "getBoundBuffer()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L983",
+      "source_location": "L998",
       "_origin": "ast",
       "id": "public_soundtouch_processor_getboundbuffer",
       "community": 30,
@@ -1255,7 +1285,7 @@
       "label": "readSubarray()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1000",
+      "source_location": "L1015",
       "_origin": "ast",
       "id": "public_soundtouch_processor_readsubarray",
       "community": 30,
@@ -1265,7 +1295,7 @@
       "label": "setOutputBuffer()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1015",
+      "source_location": "L1030",
       "_origin": "ast",
       "id": "public_soundtouch_processor_setoutputbuffer",
       "community": 4,
@@ -1275,7 +1305,7 @@
       "label": "appendSamples()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1026",
+      "source_location": "L1041",
       "_origin": "ast",
       "id": "public_soundtouch_processor_appendsamples",
       "community": 30,
@@ -1285,7 +1315,7 @@
       "label": "putFrom()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1029",
+      "source_location": "L1044",
       "_origin": "ast",
       "id": "public_soundtouch_processor_putfrom",
       "community": 30,
@@ -1295,7 +1325,7 @@
       "label": "clearMidBuffer()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1180",
+      "source_location": "L1195",
       "_origin": "ast",
       "id": "public_soundtouch_processor_clearmidbuffer",
       "community": 29,
@@ -1305,7 +1335,7 @@
       "label": "setParameters()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1186",
+      "source_location": "L1201",
       "_origin": "ast",
       "id": "public_soundtouch_processor_setparameters",
       "community": 32,
@@ -1315,7 +1345,7 @@
       "label": "tempo()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1201",
+      "source_location": "L1216",
       "_origin": "ast",
       "id": "public_soundtouch_processor_tempo",
       "community": 32,
@@ -1325,7 +1355,7 @@
       "label": "inputChunkSize()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1208",
+      "source_location": "L1223",
       "_origin": "ast",
       "id": "public_soundtouch_processor_inputchunksize",
       "community": 4,
@@ -1335,7 +1365,7 @@
       "label": "outputChunkSize()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1211",
+      "source_location": "L1226",
       "_origin": "ast",
       "id": "public_soundtouch_processor_outputchunksize",
       "community": 4,
@@ -1345,7 +1375,7 @@
       "label": "calculateOverlapLength()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1214",
+      "source_location": "L1229",
       "_origin": "ast",
       "id": "public_soundtouch_processor_calculateoverlaplength",
       "community": 32,
@@ -1355,7 +1385,7 @@
       "label": "checkLimits()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1224",
+      "source_location": "L1239",
       "_origin": "ast",
       "id": "public_soundtouch_processor_checklimits",
       "community": 32,
@@ -1365,7 +1395,7 @@
       "label": "calculateSequenceParameters()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1227",
+      "source_location": "L1242",
       "_origin": "ast",
       "id": "public_soundtouch_processor_calculatesequenceparameters",
       "community": 32,
@@ -1375,7 +1405,7 @@
       "label": "normalizeWindowInvariants()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1242",
+      "source_location": "L1257",
       "_origin": "ast",
       "id": "public_soundtouch_processor_normalizewindowinvariants",
       "community": 32,
@@ -1385,7 +1415,7 @@
       "label": "updateTempoDerivedState()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1246",
+      "source_location": "L1261",
       "_origin": "ast",
       "id": "public_soundtouch_processor_updatetempoderivedstate",
       "community": 32,
@@ -1395,7 +1425,7 @@
       "label": "quickSeek()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1257",
+      "source_location": "L1272",
       "_origin": "ast",
       "id": "public_soundtouch_processor_quickseek",
       "community": 4,
@@ -1405,7 +1435,7 @@
       "label": "overlapMs()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1267",
+      "source_location": "L1282",
       "_origin": "ast",
       "id": "public_soundtouch_processor_overlapms",
       "community": 32,
@@ -1415,7 +1445,7 @@
       "label": "setStretchParameters()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1294",
+      "source_location": "L1309",
       "_origin": "ast",
       "id": "public_soundtouch_processor_setstretchparameters",
       "community": 32,
@@ -1425,87 +1455,87 @@
       "label": "seekBestOverlapPosition()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1331",
+      "source_location": "L1346",
       "_origin": "ast",
       "id": "public_soundtouch_processor_seekbestoverlapposition",
-      "community": 34,
+      "community": 30,
       "norm_label": "seekbestoverlapposition()"
     },
     {
       "label": "seekBestOverlapPositionStereo()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1336",
+      "source_location": "L1351",
       "_origin": "ast",
       "id": "public_soundtouch_processor_seekbestoverlappositionstereo",
-      "community": 34,
+      "community": 30,
       "norm_label": "seekbestoverlappositionstereo()"
     },
     {
       "label": "seekBestOverlapPositionStereoQuick()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1352",
+      "source_location": "L1367",
       "_origin": "ast",
       "id": "public_soundtouch_processor_seekbestoverlappositionstereoquick",
-      "community": 34,
+      "community": 30,
       "norm_label": "seekbestoverlappositionstereoquick()"
     },
     {
       "label": "getQuickScanOffsets()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1385",
+      "source_location": "L1400",
       "_origin": "ast",
       "id": "public_soundtouch_processor_getquickscanoffsets",
-      "community": 34,
+      "community": 4,
       "norm_label": "getquickscanoffsets()"
     },
     {
       "label": "generateFractionalScanOffsets()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1392",
+      "source_location": "L1407",
       "_origin": "ast",
       "id": "public_soundtouch_processor_generatefractionalscanoffsets",
-      "community": 34,
+      "community": 4,
       "norm_label": "generatefractionalscanoffsets()"
     },
     {
       "label": "generateSymmetricScanOffsets()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1406",
+      "source_location": "L1421",
       "_origin": "ast",
       "id": "public_soundtouch_processor_generatesymmetricscanoffsets",
-      "community": 34,
+      "community": 4,
       "norm_label": "generatesymmetricscanoffsets()"
     },
     {
       "label": "preCalculateCorrelationReferenceStereo()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1432",
+      "source_location": "L1447",
       "_origin": "ast",
       "id": "public_soundtouch_processor_precalculatecorrelationreferencestereo",
-      "community": 34,
+      "community": 30,
       "norm_label": "precalculatecorrelationreferencestereo()"
     },
     {
       "label": "calculateCrossCorrelationStereo()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1445",
+      "source_location": "L1460",
       "_origin": "ast",
       "id": "public_soundtouch_processor_calculatecrosscorrelationstereo",
-      "community": 34,
+      "community": 30,
       "norm_label": "calculatecrosscorrelationstereo()"
     },
     {
       "label": "overlapStereo()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1462",
+      "source_location": "L1477",
       "_origin": "ast",
       "id": "public_soundtouch_processor_overlapstereo",
       "community": 30,
@@ -1515,7 +1545,7 @@
       "label": "bootstrapMidBuffer()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1486",
+      "source_location": "L1501",
       "_origin": "ast",
       "id": "public_soundtouch_processor_bootstrapmidbuffer",
       "community": 28,
@@ -1525,7 +1555,7 @@
       "label": "processOneWindow()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1495",
+      "source_location": "L1510",
       "_origin": "ast",
       "id": "public_soundtouch_processor_processonewindow",
       "community": 30,
@@ -1535,7 +1565,7 @@
       "label": "captureOverlapHistory()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1503",
+      "source_location": "L1518",
       "_origin": "ast",
       "id": "public_soundtouch_processor_captureoverlaphistory",
       "community": 30,
@@ -1545,17 +1575,17 @@
       "label": "advanceInputByNominalSkip()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1507",
+      "source_location": "L1522",
       "_origin": "ast",
       "id": "public_soundtouch_processor_advanceinputbynominalskip",
-      "community": 30,
+      "community": 28,
       "norm_label": "advanceinputbynominalskip()"
     },
     {
       "label": "getInputBufferAdapter()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1513",
+      "source_location": "L1528",
       "_origin": "ast",
       "id": "public_soundtouch_processor_getinputbufferadapter",
       "community": 28,
@@ -1565,7 +1595,7 @@
       "label": "getOutputBufferAdapter()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1518",
+      "source_location": "L1533",
       "_origin": "ast",
       "id": "public_soundtouch_processor_getoutputbufferadapter",
       "community": 4,
@@ -1575,7 +1605,7 @@
       "label": "isFloatDifferent()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1535",
+      "source_location": "L1550",
       "_origin": "ast",
       "id": "public_soundtouch_processor_isfloatdifferent",
       "community": 29,
@@ -1585,7 +1615,7 @@
       "label": "interpolationStrategy()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1625",
+      "source_location": "L1640",
       "_origin": "ast",
       "id": "public_soundtouch_processor_interpolationstrategy",
       "community": 4,
@@ -1595,7 +1625,7 @@
       "label": "interpolationStrategyParams()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1632",
+      "source_location": "L1647",
       "_origin": "ast",
       "id": "public_soundtouch_processor_interpolationstrategyparams",
       "community": 4,
@@ -1605,7 +1635,7 @@
       "label": "pitch()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1673",
+      "source_location": "L1688",
       "_origin": "ast",
       "id": "public_soundtouch_processor_pitch",
       "community": 29,
@@ -1615,7 +1645,7 @@
       "label": "pitchOctaves()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1680",
+      "source_location": "L1695",
       "_origin": "ast",
       "id": "public_soundtouch_processor_pitchoctaves",
       "community": 29,
@@ -1625,7 +1655,7 @@
       "label": "pitchSemitones()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1687",
+      "source_location": "L1702",
       "_origin": "ast",
       "id": "public_soundtouch_processor_pitchsemitones",
       "community": 4,
@@ -1635,7 +1665,7 @@
       "label": "calculateEffectiveRateAndTempo()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1711",
+      "source_location": "L1726",
       "_origin": "ast",
       "id": "public_soundtouch_processor_calculateeffectiverateandtempo",
       "community": 29,
@@ -1645,7 +1675,7 @@
       "label": "resolveStrategy()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1790",
+      "source_location": "L1805",
       "_origin": "ast",
       "id": "public_soundtouch_processor_resolvestrategy",
       "community": 29,
@@ -1655,7 +1685,7 @@
       "label": "applyPendingRuntimeUpdates()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1831",
+      "source_location": "L1846",
       "_origin": "ast",
       "id": "public_soundtouch_processor_applypendingruntimeupdates",
       "community": 32,
@@ -1665,7 +1695,7 @@
       "label": "beforePipeProcess()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1870",
+      "source_location": "L1885",
       "_origin": "ast",
       "id": "public_soundtouch_processor_beforepipeprocess",
       "community": 28,
@@ -1675,7 +1705,7 @@
       "label": "extractSamples()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1887",
+      "source_location": "L1902",
       "_origin": "ast",
       "id": "public_soundtouch_processor_extractsamples",
       "community": 28,
@@ -1685,7 +1715,7 @@
       "label": "processCore()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L1930",
+      "source_location": "L1945",
       "_origin": "ast",
       "id": "public_soundtouch_processor_processcore",
       "community": 28,
@@ -1695,7 +1725,7 @@
       "label": "parameterDescriptors()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L2033",
+      "source_location": "L2048",
       "_origin": "ast",
       "id": "public_soundtouch_processor_parameterdescriptors",
       "community": 4,
@@ -1705,7 +1735,7 @@
       "label": "onProcessComplete()",
       "file_type": "code",
       "source_file": "public/soundtouch-processor.js",
-      "source_location": "L2050",
+      "source_location": "L2065",
       "_origin": "ast",
       "id": "public_soundtouch_processor_onprocesscomplete",
       "community": 28,
@@ -2548,7 +2578,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "transcription_addwordmodal",
-      "community": 31,
+      "community": 0,
       "norm_label": "addwordmodal.tsx"
     },
     {
@@ -2558,7 +2588,7 @@
       "source_location": "L6",
       "_origin": "ast",
       "id": "transcription_addwordmodal_closeicon",
-      "community": 31,
+      "community": 0,
       "norm_label": "closeicon()"
     },
     {
@@ -2568,7 +2598,7 @@
       "source_location": "L15",
       "_origin": "ast",
       "id": "transcription_addwordmodal_plusicon",
-      "community": 31,
+      "community": 0,
       "norm_label": "plusicon()"
     },
     {
@@ -2578,7 +2608,7 @@
       "source_location": "L22",
       "_origin": "ast",
       "id": "transcription_addwordmodal_addwordmodalprops",
-      "community": 31,
+      "community": 0,
       "norm_label": "addwordmodalprops"
     },
     {
@@ -2588,7 +2618,7 @@
       "source_location": "L28",
       "_origin": "ast",
       "id": "transcription_addwordmodal_addwordmodal",
-      "community": 31,
+      "community": 0,
       "norm_label": "addwordmodal"
     },
     {
@@ -2598,7 +2628,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "transcription_effectmodal",
-      "community": 31,
+      "community": 2,
       "norm_label": "effectmodal.tsx"
     },
     {
@@ -2608,7 +2638,7 @@
       "source_location": "L8",
       "_origin": "ast",
       "id": "transcription_effectmodal_closeicon",
-      "community": 31,
+      "community": 2,
       "norm_label": "closeicon()"
     },
     {
@@ -2618,7 +2648,7 @@
       "source_location": "L17",
       "_origin": "ast",
       "id": "transcription_effectmodal_bolticon",
-      "community": 31,
+      "community": 2,
       "norm_label": "bolticon()"
     },
     {
@@ -2628,7 +2658,7 @@
       "source_location": "L26",
       "_origin": "ast",
       "id": "transcription_effectmodal_trashicon",
-      "community": 31,
+      "community": 2,
       "norm_label": "trashicon()"
     },
     {
@@ -2638,7 +2668,7 @@
       "source_location": "L33",
       "_origin": "ast",
       "id": "transcription_effectmodal_effectmodalprops",
-      "community": 31,
+      "community": 2,
       "norm_label": "effectmodalprops"
     },
     {
@@ -2648,7 +2678,7 @@
       "source_location": "L39",
       "_origin": "ast",
       "id": "transcription_effectmodal_uid",
-      "community": 31,
+      "community": 2,
       "norm_label": "uid()"
     },
     {
@@ -2658,7 +2688,7 @@
       "source_location": "L43",
       "_origin": "ast",
       "id": "transcription_effectmodal_effectmodal",
-      "community": 31,
+      "community": 2,
       "norm_label": "effectmodal"
     },
     {
@@ -2668,7 +2698,7 @@
       "source_location": "L264",
       "_origin": "ast",
       "id": "transcription_effectmodal_effectbadge",
-      "community": 31,
+      "community": 2,
       "norm_label": "effectbadge"
     },
     {
@@ -2678,7 +2708,7 @@
       "source_location": "L1",
       "_origin": "ast",
       "id": "transcription_transcriptionresults",
-      "community": 31,
+      "community": 0,
       "norm_label": "transcriptionresults.tsx"
     },
     {
@@ -2688,7 +2718,7 @@
       "source_location": "L11",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_chevrondownicon",
-      "community": 31,
+      "community": 0,
       "norm_label": "chevrondownicon()"
     },
     {
@@ -2698,7 +2728,7 @@
       "source_location": "L20",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_plusicon",
-      "community": 31,
+      "community": 0,
       "norm_label": "plusicon()"
     },
     {
@@ -2708,7 +2738,7 @@
       "source_location": "L30",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_findclosestsegment",
-      "community": 31,
+      "community": 0,
       "norm_label": "findclosestsegment()"
     },
     {
@@ -2718,7 +2748,7 @@
       "source_location": "L53",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_parsestage",
-      "community": 31,
+      "community": 0,
       "norm_label": "parsestage()"
     },
     {
@@ -2728,7 +2758,7 @@
       "source_location": "L65",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_transcribeprogressbar",
-      "community": 31,
+      "community": 0,
       "norm_label": "transcribeprogressbar()"
     },
     {
@@ -2738,7 +2768,7 @@
       "source_location": "L90",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_transcribeprogress",
-      "community": 31,
+      "community": 0,
       "norm_label": "transcribeprogress()"
     },
     {
@@ -2998,7 +3028,7 @@
       "source_location": "L55",
       "_origin": "ast",
       "id": "types_index_soundcensoringeffect",
-      "community": 31,
+      "community": 2,
       "norm_label": "soundcensoringeffect"
     },
     {
@@ -4086,9 +4116,9 @@
       "source_file": "package.json",
       "source_location": "L28",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_soundtouchjs_interpolation_strategy_blackman"
+      "target": "package_dependencies_soundtouchjs_interpolation_strategy_blackman",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4096,9 +4126,9 @@
       "source_file": "package.json",
       "source_location": "L29",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_soundtouchjs_interpolation_strategy_hann"
+      "target": "package_dependencies_soundtouchjs_interpolation_strategy_hann",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4106,9 +4136,9 @@
       "source_file": "package.json",
       "source_location": "L30",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_soundtouchjs_interpolation_strategy_kaiser"
+      "target": "package_dependencies_soundtouchjs_interpolation_strategy_kaiser",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4116,9 +4146,9 @@
       "source_file": "package.json",
       "source_location": "L31",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "package_dependencies",
-      "target": "package_dependencies_soundtouchjs_interpolation_strategy_linear"
+      "target": "package_dependencies_soundtouchjs_interpolation_strategy_linear",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4213,32 +4243,104 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "public_blackman_strategy",
+      "target": "public_blackman_strategy_blackmankernel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "public_blackman_strategy",
+      "target": "public_blackman_strategy_blackmanweight",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "public_blackman_strategy",
+      "target": "public_blackman_strategy_normalizeblackmanparams",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "public/blackman-strategy.js",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "public_blackman_strategy_blackmankernel",
+      "target": "public_blackman_strategy_blackmanweight",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "public_hann_strategy",
+      "target": "public_hann_strategy_hannkernel",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "public_hann_strategy",
+      "target": "public_hann_strategy_hannweight",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "public_hann_strategy",
+      "target": "public_hann_strategy_normalizehannparams",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "public/hann-strategy.js",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "public_hann_strategy_hannkernel",
+      "target": "public_hann_strategy_hannweight",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "public/kaiser-strategy.js",
       "source_location": "L22",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_applykaiserparams"
+      "target": "public_kaiser_strategy_applykaiserparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L47",
+      "source_location": "L5",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_besseli0"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_kaiser_default_params"
+      "target": "public_kaiser_strategy_i0",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4246,39 +4348,19 @@
       "source_file": "public/kaiser-strategy.js",
       "source_location": "L34",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_kaiserkernel"
+      "target": "public_kaiser_strategy_kaiserkernel",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L102",
+      "source_location": "L28",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_kaiserstrategy"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L60",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_kaiserwindow"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L40",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_normalizedsinc"
+      "target": "public_kaiser_strategy_kaiserweight",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4286,84 +4368,31 @@
       "source_file": "public/kaiser-strategy.js",
       "source_location": "L16",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_normalizekaiserparams"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_readframesample"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L110",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy",
-      "target": "public_kaiser_strategy_registerkaiserstrategy"
+      "target": "public_kaiser_strategy_normalizekaiserparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
       "source_file": "public/kaiser-strategy.js",
-      "source_location": "L89",
+      "source_location": "L31",
       "weight": 1.0,
-      "confidence_score": 1.0,
+      "source": "public_kaiser_strategy_kaiserweight",
+      "target": "public_kaiser_strategy_i0",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "public/kaiser-strategy.js",
+      "source_location": "L43",
+      "weight": 1.0,
       "source": "public_kaiser_strategy_kaiserkernel",
-      "target": "public_kaiser_strategy_readframesample"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L87",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy_kaiserkernel",
-      "target": "public_kaiser_strategy_normalizedsinc"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L77",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy_kaiserkernel",
-      "target": "public_kaiser_strategy_besseli0"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L70",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy_kaiserwindow",
-      "target": "public_kaiser_strategy_besseli0"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "public/kaiser-strategy.js",
-      "source_location": "L86",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_kaiser_strategy_kaiserkernel",
-      "target": "public_kaiser_strategy_kaiserwindow"
+      "target": "public_kaiser_strategy_kaiserweight",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4371,9 +4400,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1522",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_advanceinputbynominalskip"
+      "target": "public_soundtouch_processor_advanceinputbynominalskip",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4381,9 +4410,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1041",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_appendsamples"
+      "target": "public_soundtouch_processor_appendsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4391,9 +4420,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L562",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_applylanczosparams"
+      "target": "public_soundtouch_processor_applylanczosparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4401,9 +4430,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1846",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_applypendingruntimeupdates"
+      "target": "public_soundtouch_processor_applypendingruntimeupdates",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4411,9 +4440,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1885",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_beforepipeprocess"
+      "target": "public_soundtouch_processor_beforepipeprocess",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4421,9 +4450,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1501",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_bootstrapmidbuffer"
+      "target": "public_soundtouch_processor_bootstrapmidbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4431,9 +4460,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1460",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_calculatecrosscorrelationstereo"
+      "target": "public_soundtouch_processor_calculatecrosscorrelationstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4441,9 +4470,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1726",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_calculateeffectiverateandtempo"
+      "target": "public_soundtouch_processor_calculateeffectiverateandtempo",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4451,9 +4480,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1229",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_calculateoverlaplength"
+      "target": "public_soundtouch_processor_calculateoverlaplength",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4461,9 +4490,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1242",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_calculatesequenceparameters"
+      "target": "public_soundtouch_processor_calculatesequenceparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4471,9 +4500,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L109",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_capacityframes"
+      "target": "public_soundtouch_processor_capacityframes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4481,9 +4510,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1518",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_captureoverlaphistory"
+      "target": "public_soundtouch_processor_captureoverlaphistory",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4491,9 +4520,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1239",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_checklimits"
+      "target": "public_soundtouch_processor_checklimits",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4501,9 +4530,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1616",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_clear"
+      "target": "public_soundtouch_processor_clear",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4511,9 +4540,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1195",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_clearmidbuffer"
+      "target": "public_soundtouch_processor_clearmidbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4521,9 +4550,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1623",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_clone"
+      "target": "public_soundtouch_processor_clone",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4531,9 +4560,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2058",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_constructor"
+      "target": "public_soundtouch_processor_constructor",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4541,9 +4570,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L239",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_dropframes"
+      "target": "public_soundtouch_processor_dropframes",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4551,9 +4580,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L348",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_endindex"
+      "target": "public_soundtouch_processor_endindex",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4561,9 +4590,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L459",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_ensureadditionalcapacity"
+      "target": "public_soundtouch_processor_ensureadditionalcapacity",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4571,9 +4600,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L436",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_ensurecapacity"
+      "target": "public_soundtouch_processor_ensurecapacity",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4581,9 +4610,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L886",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_ensurescratchcapacity"
+      "target": "public_soundtouch_processor_ensurescratchcapacity",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4591,9 +4620,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L532",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_extract"
+      "target": "public_soundtouch_processor_extract",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4601,9 +4630,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1902",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_extractsamples"
+      "target": "public_soundtouch_processor_extractsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4611,9 +4640,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1082",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_framecount"
+      "target": "public_soundtouch_processor_framecount",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4621,9 +4650,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1407",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_generatefractionalscanoffsets"
+      "target": "public_soundtouch_processor_generatefractionalscanoffsets",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4631,9 +4660,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1421",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_generatesymmetricscanoffsets"
+      "target": "public_soundtouch_processor_generatesymmetricscanoffsets",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4641,9 +4670,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1037",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4651,9 +4680,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1528",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_getinputbufferadapter"
+      "target": "public_soundtouch_processor_getinputbufferadapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4661,9 +4690,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L953",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_getkernelstaterecord"
+      "target": "public_soundtouch_processor_getkernelstaterecord",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4671,9 +4700,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1533",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_getoutputbufferadapter"
+      "target": "public_soundtouch_processor_getoutputbufferadapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4681,9 +4710,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1400",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_getquickscanoffsets"
+      "target": "public_soundtouch_processor_getquickscanoffsets",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4691,9 +4720,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1709",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_inputbuffer"
+      "target": "public_soundtouch_processor_inputbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4701,9 +4730,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1223",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_inputchunksize"
+      "target": "public_soundtouch_processor_inputchunksize",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4711,9 +4740,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1640",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_interpolationstrategy"
+      "target": "public_soundtouch_processor_interpolationstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4721,9 +4750,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1647",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_interpolationstrategyparams"
+      "target": "public_soundtouch_processor_interpolationstrategyparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4731,9 +4760,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1550",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_isfloatdifferent"
+      "target": "public_soundtouch_processor_isfloatdifferent",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4741,9 +4770,19 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L580",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_lanczosweight"
+      "target": "public_soundtouch_processor_lanczosweight",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/soundtouch-processor.js",
+      "source_location": "L687",
+      "weight": 1.0,
+      "source": "public_soundtouch_processor",
+      "target": "public_soundtouch_processor_linearkernel",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4751,9 +4790,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L575",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_normalizedsinc"
+      "target": "public_soundtouch_processor_normalizedsinc",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4761,9 +4800,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L552",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_normalizelanczosparams"
+      "target": "public_soundtouch_processor_normalizelanczosparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4771,9 +4810,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L650",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_normalizeparams"
+      "target": "public_soundtouch_processor_normalizeparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4781,9 +4820,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1257",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_normalizewindowinvariants"
+      "target": "public_soundtouch_processor_normalizewindowinvariants",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4791,9 +4830,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2065",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_onprocesscomplete"
+      "target": "public_soundtouch_processor_onprocesscomplete",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4801,9 +4840,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1716",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_outputbuffer"
+      "target": "public_soundtouch_processor_outputbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4811,9 +4850,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1226",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_outputchunksize"
+      "target": "public_soundtouch_processor_outputchunksize",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4821,9 +4860,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1289",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_overlapms"
+      "target": "public_soundtouch_processor_overlapms",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4831,9 +4870,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1477",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_overlapstereo"
+      "target": "public_soundtouch_processor_overlapstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4841,9 +4880,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2048",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_parameterdescriptors"
+      "target": "public_soundtouch_processor_parameterdescriptors",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4851,9 +4890,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1688",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_pitch"
+      "target": "public_soundtouch_processor_pitch",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4861,9 +4900,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1695",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_pitchoctaves"
+      "target": "public_soundtouch_processor_pitchoctaves",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4871,9 +4910,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1702",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_pitchsemitones"
+      "target": "public_soundtouch_processor_pitchsemitones",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4881,9 +4920,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L327",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_position"
+      "target": "public_soundtouch_processor_position",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4891,9 +4930,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1447",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_precalculatecorrelationreferencestereo"
+      "target": "public_soundtouch_processor_precalculatecorrelationreferencestereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4901,9 +4940,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2000",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_process"
+      "target": "public_soundtouch_processor_process",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4911,9 +4950,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1945",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_processcore"
+      "target": "public_soundtouch_processor_processcore",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4921,9 +4960,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1510",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_processonewindow"
+      "target": "public_soundtouch_processor_processonewindow",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4931,9 +4970,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L160",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_pushsamples"
+      "target": "public_soundtouch_processor_pushsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4941,9 +4980,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L365",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_put"
+      "target": "public_soundtouch_processor_put",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4951,9 +4990,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L391",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_putbuffer"
+      "target": "public_soundtouch_processor_putbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4961,9 +5000,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1044",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_putfrom"
+      "target": "public_soundtouch_processor_putfrom",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4971,9 +5010,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L376",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_putsamples"
+      "target": "public_soundtouch_processor_putsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4981,9 +5020,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1275",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_quickseek"
+      "target": "public_soundtouch_processor_quickseek",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -4991,9 +5030,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L786",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_rate"
+      "target": "public_soundtouch_processor_rate",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5001,9 +5040,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L570",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_readframesample"
+      "target": "public_soundtouch_processor_readframesample",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5011,9 +5050,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1088",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_readsample"
+      "target": "public_soundtouch_processor_readsample",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5021,9 +5060,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L624",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_readstrategyid"
+      "target": "public_soundtouch_processor_readstrategyid",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5031,9 +5070,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L619",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_readstrategyselection"
+      "target": "public_soundtouch_processor_readstrategyselection",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5041,9 +5080,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1095",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_readsubarray"
+      "target": "public_soundtouch_processor_readsubarray",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5051,9 +5090,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1107",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_receive"
+      "target": "public_soundtouch_processor_receive",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5061,9 +5100,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1110",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_receivesamples"
+      "target": "public_soundtouch_processor_receivesamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5071,9 +5110,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L632",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_registerbuiltininterpolationstrategy"
+      "target": "public_soundtouch_processor_registerbuiltininterpolationstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5081,9 +5120,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L627",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_requireregisteredstrategy"
+      "target": "public_soundtouch_processor_requireregisteredstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5091,9 +5130,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L833",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_reset"
+      "target": "public_soundtouch_processor_reset",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5101,9 +5140,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L664",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_resolveinterpolationstrategy"
+      "target": "public_soundtouch_processor_resolveinterpolationstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5111,9 +5150,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L672",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_resolveinterpolationstrategyruntime"
+      "target": "public_soundtouch_processor_resolveinterpolationstrategyruntime",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5121,9 +5160,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L644",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_resolvekernelregistration"
+      "target": "public_soundtouch_processor_resolvekernelregistration",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5131,9 +5170,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1805",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_resolvestrategy"
+      "target": "public_soundtouch_processor_resolvestrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5141,9 +5180,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L467",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_rewind"
+      "target": "public_soundtouch_processor_rewind",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5151,9 +5190,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1346",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_seekbestoverlapposition"
+      "target": "public_soundtouch_processor_seekbestoverlapposition",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5161,9 +5200,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1351",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_seekbestoverlappositionstereo"
+      "target": "public_soundtouch_processor_seekbestoverlappositionstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5171,9 +5210,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1367",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_seekbestoverlappositionstereoquick"
+      "target": "public_soundtouch_processor_seekbestoverlappositionstereoquick",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5181,9 +5220,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1064",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_setbuffer"
+      "target": "public_soundtouch_processor_setbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5191,9 +5230,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1654",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_setinterpolationstrategy"
+      "target": "public_soundtouch_processor_setinterpolationstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5201,9 +5240,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1662",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_setinterpolationstrategyparams"
+      "target": "public_soundtouch_processor_setinterpolationstrategyparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5211,9 +5250,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1030",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_setoutputbuffer"
+      "target": "public_soundtouch_processor_setoutputbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5221,9 +5260,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1201",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_setparameters"
+      "target": "public_soundtouch_processor_setparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5231,9 +5270,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1678",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_setstretchparameters"
+      "target": "public_soundtouch_processor_setstretchparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5241,9 +5280,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1085",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_startindex"
+      "target": "public_soundtouch_processor_startindex",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5251,9 +5290,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L793",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_strategy"
+      "target": "public_soundtouch_processor_strategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5261,9 +5300,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L800",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_strategyparams"
+      "target": "public_soundtouch_processor_strategyparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5271,9 +5310,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L516",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_syncfrominputbuffer"
+      "target": "public_soundtouch_processor_syncfrominputbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5281,9 +5320,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1220",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_tempo"
+      "target": "public_soundtouch_processor_tempo",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5291,9 +5330,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L900",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_transpose"
+      "target": "public_soundtouch_processor_transpose",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5301,9 +5340,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L918",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_transposepluginkernel"
+      "target": "public_soundtouch_processor_transposepluginkernel",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5311,9 +5350,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1261",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_updatetempoderivedstate"
+      "target": "public_soundtouch_processor_updatetempoderivedstate",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -5321,9 +5360,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L320",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor",
-      "target": "public_soundtouch_processor_vector"
+      "target": "public_soundtouch_processor_vector",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5332,9 +5371,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1609",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_constructor",
-      "target": "public_soundtouch_processor_calculateeffectiverateandtempo"
+      "target": "public_soundtouch_processor_calculateeffectiverateandtempo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5343,9 +5382,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2062",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_constructor",
-      "target": "public_soundtouch_processor_resolvestrategy"
+      "target": "public_soundtouch_processor_resolvestrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5354,9 +5393,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L780",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_constructor",
-      "target": "public_soundtouch_processor_setinterpolationstrategy"
+      "target": "public_soundtouch_processor_setinterpolationstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5365,9 +5404,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1189",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_constructor",
-      "target": "public_soundtouch_processor_setparameters"
+      "target": "public_soundtouch_processor_setparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5376,9 +5415,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1193",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_clear",
-      "target": "public_soundtouch_processor_clearmidbuffer"
+      "target": "public_soundtouch_processor_clearmidbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5387,9 +5426,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L846",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_clear",
-      "target": "public_soundtouch_processor_reset"
+      "target": "public_soundtouch_processor_reset",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5398,9 +5437,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L988",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setbuffer",
-      "target": "public_soundtouch_processor_clear"
+      "target": "public_soundtouch_processor_clear",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5409,9 +5448,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1003",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_framecount",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5420,9 +5459,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L460",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_ensureadditionalcapacity",
-      "target": "public_soundtouch_processor_ensurecapacity"
+      "target": "public_soundtouch_processor_ensurecapacity",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5431,9 +5470,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L441",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_ensurecapacity",
-      "target": "public_soundtouch_processor_rewind"
+      "target": "public_soundtouch_processor_rewind",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5442,9 +5481,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L166",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_pushsamples",
-      "target": "public_soundtouch_processor_ensurecapacity"
+      "target": "public_soundtouch_processor_ensurecapacity",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5453,9 +5492,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L380",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_putsamples",
-      "target": "public_soundtouch_processor_ensurecapacity"
+      "target": "public_soundtouch_processor_ensurecapacity",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5464,9 +5503,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L184",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_putsamples",
-      "target": "public_soundtouch_processor_pushsamples"
+      "target": "public_soundtouch_processor_pushsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5475,9 +5514,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1068",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setbuffer",
-      "target": "public_soundtouch_processor_pushsamples"
+      "target": "public_soundtouch_processor_pushsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5486,9 +5525,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L520",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_syncfrominputbuffer",
-      "target": "public_soundtouch_processor_pushsamples"
+      "target": "public_soundtouch_processor_pushsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5497,9 +5536,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1042",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_appendsamples",
-      "target": "public_soundtouch_processor_putsamples"
+      "target": "public_soundtouch_processor_putsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5508,9 +5547,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L877",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_putsamples"
+      "target": "public_soundtouch_processor_putsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5519,9 +5558,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1968",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processcore",
-      "target": "public_soundtouch_processor_putsamples"
+      "target": "public_soundtouch_processor_putsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5530,9 +5569,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L393",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_putbuffer",
-      "target": "public_soundtouch_processor_putsamples"
+      "target": "public_soundtouch_processor_putsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5541,9 +5580,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1048",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_putfrom",
-      "target": "public_soundtouch_processor_putsamples"
+      "target": "public_soundtouch_processor_putsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5552,9 +5591,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L989",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setbuffer",
-      "target": "public_soundtouch_processor_putsamples"
+      "target": "public_soundtouch_processor_putsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5563,9 +5602,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L211",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_extract",
-      "target": "public_soundtouch_processor_dropframes"
+      "target": "public_soundtouch_processor_dropframes",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5574,9 +5613,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1907",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_extractsamples",
-      "target": "public_soundtouch_processor_extract"
+      "target": "public_soundtouch_processor_extract",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5585,9 +5624,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1103",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_readsubarray",
-      "target": "public_soundtouch_processor_extract"
+      "target": "public_soundtouch_processor_extract",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5596,9 +5635,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1111",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_receivesamples",
-      "target": "public_soundtouch_processor_extract"
+      "target": "public_soundtouch_processor_extract",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5607,9 +5646,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L987",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setbuffer",
-      "target": "public_soundtouch_processor_extract"
+      "target": "public_soundtouch_processor_extract",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5618,9 +5657,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L528",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_syncfrominputbuffer",
-      "target": "public_soundtouch_processor_extract"
+      "target": "public_soundtouch_processor_extract",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5629,9 +5668,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L908",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_transpose",
-      "target": "public_soundtouch_processor_extract"
+      "target": "public_soundtouch_processor_extract",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5640,9 +5679,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1009",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_readsample",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5651,9 +5690,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L253",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_receive",
-      "target": "public_soundtouch_processor_dropframes"
+      "target": "public_soundtouch_processor_dropframes",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5662,9 +5701,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1526",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_advanceinputbynominalskip",
-      "target": "public_soundtouch_processor_receive"
+      "target": "public_soundtouch_processor_receive",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5673,9 +5712,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1908",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_extractsamples",
-      "target": "public_soundtouch_processor_receive"
+      "target": "public_soundtouch_processor_receive",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5684,9 +5723,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L876",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_receive"
+      "target": "public_soundtouch_processor_receive",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5695,9 +5734,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1019",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_receive",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5706,9 +5745,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L417",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_receivesamples",
-      "target": "public_soundtouch_processor_receive"
+      "target": "public_soundtouch_processor_receive",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5717,9 +5756,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L990",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setbuffer",
-      "target": "public_soundtouch_processor_receive"
+      "target": "public_soundtouch_processor_receive",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5728,9 +5767,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L521",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_syncfrominputbuffer",
-      "target": "public_soundtouch_processor_receive"
+      "target": "public_soundtouch_processor_receive",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5739,9 +5778,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1006",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_startindex",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5750,9 +5789,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1506",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_bootstrapmidbuffer",
-      "target": "public_soundtouch_processor_receivesamples"
+      "target": "public_soundtouch_processor_receivesamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5761,9 +5800,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1022",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_receivesamples",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5772,9 +5811,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L872",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_syncfrominputbuffer"
+      "target": "public_soundtouch_processor_syncfrominputbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5783,9 +5822,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L902",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_transpose",
-      "target": "public_soundtouch_processor_syncfrominputbuffer"
+      "target": "public_soundtouch_processor_syncfrominputbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5794,9 +5833,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L582",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_lanczosweight",
-      "target": "public_soundtouch_processor_normalizedsinc"
+      "target": "public_soundtouch_processor_normalizedsinc",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5805,9 +5844,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L625",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_readstrategyid",
-      "target": "public_soundtouch_processor_readstrategyselection"
+      "target": "public_soundtouch_processor_readstrategyselection",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5816,9 +5855,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L673",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolveinterpolationstrategyruntime",
-      "target": "public_soundtouch_processor_readstrategyselection"
+      "target": "public_soundtouch_processor_readstrategyselection",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5827,9 +5866,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L665",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolveinterpolationstrategy",
-      "target": "public_soundtouch_processor_readstrategyid"
+      "target": "public_soundtouch_processor_readstrategyid",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5838,9 +5877,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L665",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolveinterpolationstrategy",
-      "target": "public_soundtouch_processor_requireregisteredstrategy"
+      "target": "public_soundtouch_processor_requireregisteredstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5849,9 +5888,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L674",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolveinterpolationstrategyruntime",
-      "target": "public_soundtouch_processor_requireregisteredstrategy"
+      "target": "public_soundtouch_processor_requireregisteredstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5860,9 +5899,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L648",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolvekernelregistration",
-      "target": "public_soundtouch_processor_requireregisteredstrategy"
+      "target": "public_soundtouch_processor_requireregisteredstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5871,9 +5910,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L675",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolveinterpolationstrategyruntime",
-      "target": "public_soundtouch_processor_resolvekernelregistration"
+      "target": "public_soundtouch_processor_resolvekernelregistration",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5882,9 +5921,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L678",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolveinterpolationstrategyruntime",
-      "target": "public_soundtouch_processor_normalizeparams"
+      "target": "public_soundtouch_processor_normalizeparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5893,9 +5932,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1807",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_resolvestrategy",
-      "target": "public_soundtouch_processor_resolveinterpolationstrategy"
+      "target": "public_soundtouch_processor_resolveinterpolationstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5904,9 +5943,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L808",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setinterpolationstrategy",
-      "target": "public_soundtouch_processor_resolveinterpolationstrategyruntime"
+      "target": "public_soundtouch_processor_resolveinterpolationstrategyruntime",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5915,9 +5954,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1849",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_applypendingruntimeupdates",
-      "target": "public_soundtouch_processor_setinterpolationstrategy"
+      "target": "public_soundtouch_processor_setinterpolationstrategy",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5926,9 +5965,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L816",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setinterpolationstrategy",
-      "target": "public_soundtouch_processor_reset"
+      "target": "public_soundtouch_processor_reset",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5937,9 +5976,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1857",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_applypendingruntimeupdates",
-      "target": "public_soundtouch_processor_setinterpolationstrategyparams"
+      "target": "public_soundtouch_processor_setinterpolationstrategyparams",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5948,9 +5987,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1343",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_clone",
-      "target": "public_soundtouch_processor_setparameters"
+      "target": "public_soundtouch_processor_setparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5959,9 +5998,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2001",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_applypendingruntimeupdates"
+      "target": "public_soundtouch_processor_applypendingruntimeupdates",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5970,9 +6009,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1498",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_bootstrapmidbuffer"
+      "target": "public_soundtouch_processor_bootstrapmidbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5981,9 +6020,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1496",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_getinputbufferadapter"
+      "target": "public_soundtouch_processor_getinputbufferadapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -5992,9 +6031,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1497",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_getoutputbufferadapter"
+      "target": "public_soundtouch_processor_getoutputbufferadapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6003,9 +6042,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2003",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_onprocesscomplete"
+      "target": "public_soundtouch_processor_onprocesscomplete",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6014,9 +6053,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L2002",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_processcore"
+      "target": "public_soundtouch_processor_processcore",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6025,9 +6064,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1499",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_processonewindow"
+      "target": "public_soundtouch_processor_processonewindow",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6036,9 +6075,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L875",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_process",
-      "target": "public_soundtouch_processor_transpose"
+      "target": "public_soundtouch_processor_transpose",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6047,9 +6086,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L906",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_transpose",
-      "target": "public_soundtouch_processor_ensurescratchcapacity"
+      "target": "public_soundtouch_processor_ensurescratchcapacity",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6058,9 +6097,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L911",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_transpose",
-      "target": "public_soundtouch_processor_transposepluginkernel"
+      "target": "public_soundtouch_processor_transposepluginkernel",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6069,9 +6108,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L925",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_transposepluginkernel",
-      "target": "public_soundtouch_processor_getkernelstaterecord"
+      "target": "public_soundtouch_processor_getkernelstaterecord",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6080,9 +6119,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1530",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_getinputbufferadapter",
-      "target": "public_soundtouch_processor_setbuffer"
+      "target": "public_soundtouch_processor_setbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6091,9 +6130,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1042",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_appendsamples",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6102,9 +6141,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1048",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_putfrom",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6113,9 +6152,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1016",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_readsubarray",
-      "target": "public_soundtouch_processor_getboundbuffer"
+      "target": "public_soundtouch_processor_getboundbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6124,9 +6163,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1465",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_calculatecrosscorrelationstereo",
-      "target": "public_soundtouch_processor_readsubarray"
+      "target": "public_soundtouch_processor_readsubarray",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6135,9 +6174,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1520",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_captureoverlaphistory",
-      "target": "public_soundtouch_processor_readsubarray"
+      "target": "public_soundtouch_processor_readsubarray",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6146,9 +6185,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1482",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_overlapstereo",
-      "target": "public_soundtouch_processor_readsubarray"
+      "target": "public_soundtouch_processor_readsubarray",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6157,9 +6196,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1047",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_putfrom",
-      "target": "public_soundtouch_processor_readsubarray"
+      "target": "public_soundtouch_processor_readsubarray",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6168,9 +6207,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1535",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_getoutputbufferadapter",
-      "target": "public_soundtouch_processor_setoutputbuffer"
+      "target": "public_soundtouch_processor_setoutputbuffer",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6179,9 +6218,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1493",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_overlapstereo",
-      "target": "public_soundtouch_processor_appendsamples"
+      "target": "public_soundtouch_processor_appendsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6190,9 +6229,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1514",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processonewindow",
-      "target": "public_soundtouch_processor_putfrom"
+      "target": "public_soundtouch_processor_putfrom",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6201,9 +6240,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1213",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setparameters",
-      "target": "public_soundtouch_processor_calculateoverlaplength"
+      "target": "public_soundtouch_processor_calculateoverlaplength",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6212,9 +6251,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1212",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setparameters",
-      "target": "public_soundtouch_processor_calculatesequenceparameters"
+      "target": "public_soundtouch_processor_calculatesequenceparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6223,9 +6262,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1214",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setparameters",
-      "target": "public_soundtouch_processor_updatetempoderivedstate"
+      "target": "public_soundtouch_processor_updatetempoderivedstate",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6234,9 +6273,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1218",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_tempo",
-      "target": "public_soundtouch_processor_updatetempoderivedstate"
+      "target": "public_soundtouch_processor_updatetempoderivedstate",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6245,9 +6284,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1292",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_overlapms",
-      "target": "public_soundtouch_processor_calculateoverlaplength"
+      "target": "public_soundtouch_processor_calculateoverlaplength",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6256,9 +6295,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1328",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setstretchparameters",
-      "target": "public_soundtouch_processor_calculateoverlaplength"
+      "target": "public_soundtouch_processor_calculateoverlaplength",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6267,9 +6306,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1245",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_calculatesequenceparameters",
-      "target": "public_soundtouch_processor_checklimits"
+      "target": "public_soundtouch_processor_checklimits",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6278,9 +6317,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1255",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_calculatesequenceparameters",
-      "target": "public_soundtouch_processor_normalizewindowinvariants"
+      "target": "public_soundtouch_processor_normalizewindowinvariants",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6289,9 +6328,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1293",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_overlapms",
-      "target": "public_soundtouch_processor_calculatesequenceparameters"
+      "target": "public_soundtouch_processor_calculatesequenceparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6300,9 +6339,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1332",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setstretchparameters",
-      "target": "public_soundtouch_processor_calculatesequenceparameters"
+      "target": "public_soundtouch_processor_calculatesequenceparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6311,9 +6350,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1262",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_updatetempoderivedstate",
-      "target": "public_soundtouch_processor_calculatesequenceparameters"
+      "target": "public_soundtouch_processor_calculatesequenceparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6322,9 +6361,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1294",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_overlapms",
-      "target": "public_soundtouch_processor_updatetempoderivedstate"
+      "target": "public_soundtouch_processor_updatetempoderivedstate",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6333,9 +6372,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1333",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_setstretchparameters",
-      "target": "public_soundtouch_processor_updatetempoderivedstate"
+      "target": "public_soundtouch_processor_updatetempoderivedstate",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6344,9 +6383,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1865",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_applypendingruntimeupdates",
-      "target": "public_soundtouch_processor_setstretchparameters"
+      "target": "public_soundtouch_processor_setstretchparameters",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6355,9 +6394,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1511",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processonewindow",
-      "target": "public_soundtouch_processor_seekbestoverlapposition"
+      "target": "public_soundtouch_processor_seekbestoverlapposition",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6366,9 +6405,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1347",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlapposition",
-      "target": "public_soundtouch_processor_getinputbufferadapter"
+      "target": "public_soundtouch_processor_getinputbufferadapter",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6377,9 +6416,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1348",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlapposition",
-      "target": "public_soundtouch_processor_seekbestoverlappositionstereo"
+      "target": "public_soundtouch_processor_seekbestoverlappositionstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6388,9 +6427,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1349",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlapposition",
-      "target": "public_soundtouch_processor_seekbestoverlappositionstereoquick"
+      "target": "public_soundtouch_processor_seekbestoverlappositionstereoquick",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6399,9 +6438,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1359",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlappositionstereo",
-      "target": "public_soundtouch_processor_calculatecrosscorrelationstereo"
+      "target": "public_soundtouch_processor_calculatecrosscorrelationstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6410,9 +6449,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1355",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlappositionstereo",
-      "target": "public_soundtouch_processor_precalculatecorrelationreferencestereo"
+      "target": "public_soundtouch_processor_precalculatecorrelationreferencestereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6421,9 +6460,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1397",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlappositionstereoquick",
-      "target": "public_soundtouch_processor_seekbestoverlappositionstereo"
+      "target": "public_soundtouch_processor_seekbestoverlappositionstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6432,9 +6471,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1375",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlappositionstereoquick",
-      "target": "public_soundtouch_processor_calculatecrosscorrelationstereo"
+      "target": "public_soundtouch_processor_calculatecrosscorrelationstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6443,9 +6482,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1381",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlappositionstereoquick",
-      "target": "public_soundtouch_processor_getquickscanoffsets"
+      "target": "public_soundtouch_processor_getquickscanoffsets",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6454,9 +6493,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1374",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_seekbestoverlappositionstereoquick",
-      "target": "public_soundtouch_processor_precalculatecorrelationreferencestereo"
+      "target": "public_soundtouch_processor_precalculatecorrelationreferencestereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6465,9 +6504,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1402",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_getquickscanoffsets",
-      "target": "public_soundtouch_processor_generatefractionalscanoffsets"
+      "target": "public_soundtouch_processor_generatefractionalscanoffsets",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6476,9 +6515,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1403",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_getquickscanoffsets",
-      "target": "public_soundtouch_processor_generatesymmetricscanoffsets"
+      "target": "public_soundtouch_processor_generatesymmetricscanoffsets",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6487,9 +6526,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1512",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processonewindow",
-      "target": "public_soundtouch_processor_overlapstereo"
+      "target": "public_soundtouch_processor_overlapstereo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6498,9 +6537,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1516",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processonewindow",
-      "target": "public_soundtouch_processor_advanceinputbynominalskip"
+      "target": "public_soundtouch_processor_advanceinputbynominalskip",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6509,9 +6548,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1515",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processonewindow",
-      "target": "public_soundtouch_processor_captureoverlaphistory"
+      "target": "public_soundtouch_processor_captureoverlaphistory",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6520,9 +6559,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1731",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_calculateeffectiverateandtempo",
-      "target": "public_soundtouch_processor_isfloatdifferent"
+      "target": "public_soundtouch_processor_isfloatdifferent",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6531,9 +6570,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1690",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_pitch",
-      "target": "public_soundtouch_processor_calculateeffectiverateandtempo"
+      "target": "public_soundtouch_processor_calculateeffectiverateandtempo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6542,9 +6581,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1697",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_pitchoctaves",
-      "target": "public_soundtouch_processor_calculateeffectiverateandtempo"
+      "target": "public_soundtouch_processor_calculateeffectiverateandtempo",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6553,9 +6592,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1958",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processcore",
-      "target": "public_soundtouch_processor_beforepipeprocess"
+      "target": "public_soundtouch_processor_beforepipeprocess",
+      "confidence_score": 1.0
     },
     {
       "relation": "calls",
@@ -6564,9 +6603,9 @@
       "source_file": "public/soundtouch-processor.js",
       "source_location": "L1974",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "public_soundtouch_processor_processcore",
-      "target": "public_soundtouch_processor_extractsamples"
+      "target": "public_soundtouch_processor_extractsamples",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -10323,5 +10362,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "64c78c86ae2a9f4ed86213a406ed45ab93ec2184"
+  "built_at_commit": "69957a5f36f217a46318f003b26cfaf8833c248e"
 }

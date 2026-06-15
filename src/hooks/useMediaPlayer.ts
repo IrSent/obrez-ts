@@ -51,6 +51,7 @@ export function useMediaPlayer() {
   const nextFrameRef = useRef<WrappedCanvas | null>(null);
   const queuedAudioNodesRef = useRef<Set<AudioBufferSourceNode>>(new Set());
   const asyncIdRef = useRef<number>(0);
+  const lastBufferEndRef = useRef<number>(0); // track gap between buffers
 
   // Sound effect engine
   const triggeredEffectsRef = useRef<Set<string>>(new Set());
@@ -447,8 +448,9 @@ export function useMediaPlayer() {
    * stNode.playbackRate = speed → SoundTouch compensates pitch back to normal
    * Net effect: speed-up without chipmunk.
    *
-   * Overlap set to 12ms (up from 4ms) to give SoundTouch's overlap-add
-   * algorithm enough sample data, reducing "sand" artifacts at high speeds.
+   * Kaiser interpolation (beta=5) + generous overlap-add parameters
+   * (sequenceMs=50, seekWindowMs=20, overlapMs=16) eliminate "sand" artifacts
+   * at high playback speeds.
    */
   const runAudioIteratorRef = useRef<(() => Promise<void>) | null>(null);
   runAudioIteratorRef.current = async () => {
@@ -457,41 +459,64 @@ export function useMediaPlayer() {
     const ctx = audioContextRef.current;
     const stNode = stNodeRef.current;
 
+    // Overlap: start each source earlier so SoundTouch pipeline stays full.
+    const LEAD_MS = 10;
+
+    const scheduleBuffer = (
+      wrapped: typeof audioBufferIteratorRef.current extends AsyncGenerator<infer T> ? T : never,
+      speed: number,
+      currentMediaT: number,
+    ) => {
+      stNode.playbackRate.value = speed;
+      const source = ctx.createBufferSource();
+      source.buffer = wrapped.buffer;
+      source.playbackRate.value = speed;
+
+      // Bypass SoundTouch on 1x: it's identity at speed=1 but still consumes
+      // ~384 frames of bootstrap, causing underruns. Route directly to analyser.
+      if (speed > 1) {
+        source.connect(stNode);
+      } else {
+        source.connect(analyserRef.current);
+      }
+
+      const bufferStart = wrapped.timestamp;
+      const timeUntilBuffer = (bufferStart - currentMediaT) / speed - LEAD_MS / 1000;
+      let startTimestamp = ctx.currentTime + timeUntilBuffer;
+      startTimestamp = Math.round(ctx.sampleRate * startTimestamp) / ctx.sampleRate;
+
+      if (startTimestamp >= ctx.currentTime) {
+        source.start(startTimestamp);
+      } else {
+        const offset = (ctx.currentTime - startTimestamp) * speed;
+        source.start(ctx.currentTime, offset);
+      }
+
+      queuedAudioNodesRef.current.add(source);
+      source.onended = () => queuedAudioNodesRef.current.delete(source);
+    };
+
     try {
       for await (const wrapped of audioBufferIteratorRef.current) {
-        // Read current speed from ref — updated by speed subscription in real-time
         const speed = playbackSpeedRef.current;
         const currentMediaT = utilsRef.current.getPlaybackTime();
 
-        stNode.playbackRate.value = speed;
-
-        const source = ctx.createBufferSource();
-        source.buffer = wrapped.buffer;
-        source.playbackRate.value = speed;
-        source.connect(stNode);
-
-        // Schedule relative to NOW — avoids clicks when speed changes
-        // because we no longer depend on the stale contextStart/playbackOffset.
-        const bufferStart = wrapped.timestamp;
-        const timeUntilBuffer = (bufferStart - currentMediaT) / speed;
-        let startTimestamp = ctx.currentTime + timeUntilBuffer;
-        startTimestamp = Math.round(ctx.sampleRate * startTimestamp) / ctx.sampleRate;
-
-        if (startTimestamp >= ctx.currentTime) {
-          source.start(startTimestamp);
-        } else {
-          const offset = (ctx.currentTime - startTimestamp) * speed;
-          source.start(ctx.currentTime, offset);
+        // Diagnostic: log gaps between buffers (gap → underrun → click)
+        const gap = wrapped.timestamp - lastBufferEndRef.current;
+        lastBufferEndRef.current = wrapped.timestamp + wrapped.buffer.duration;
+        if (gap > 0.001 && gap < 5) {
+          console.warn(
+            `[gap] ${gap.toFixed(3)}s between buffers at mediaT=${currentMediaT.toFixed(3)}s`
+          );
         }
 
-        queuedAudioNodesRef.current.add(source);
-        source.onended = () => queuedAudioNodesRef.current.delete(source);
+        scheduleBuffer(wrapped, speed, currentMediaT);
 
         // Slow down if we're more than a second ahead
-        if (bufferStart - utilsRef.current.getPlaybackTime() >= 1) {
+        if (wrapped.timestamp - utilsRef.current.getPlaybackTime() >= 1) {
           await new Promise((resolve) => {
             const id = setInterval(() => {
-              if (bufferStart - utilsRef.current.getPlaybackTime() < 1) {
+              if (wrapped.timestamp - utilsRef.current.getPlaybackTime() < 1) {
                 clearInterval(id);
                 resolve();
               }
@@ -527,6 +552,7 @@ export function useMediaPlayer() {
       playerActions.setIsPlaying(true);
 
       if (audioSinkRef.current) {
+        lastBufferEndRef.current = 0; // reset gap tracking for new playback
         audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
         void runAudioIteratorRef.current?.();
       }
@@ -681,22 +707,40 @@ export function useMediaPlayer() {
 
         // Register and create SoundTouchNode for pitch-preserving time-stretch
         await SoundTouchNode.register(audioContextRef.current, '/soundtouch-processor.js');
-        await SoundTouchNode.registerStrategyModule(audioContextRef.current, '/linear-strategy.js');
+        await SoundTouchNode.registerStrategyModule(audioContextRef.current, '/kaiser-strategy.js');
 
         stNodeRef.current = new SoundTouchNode({
           context: audioContextRef.current,
-          interpolationStrategy: 'linear',
+          interpolationStrategy: 'kaiser',
         });
+        // Kaiser уже зарегистрирован в worklet-регистре (soundtouch-processor.js
+        // экспонирует strategyRegistry как globalThis._strategyRegistry, kaiser-strategy.js
+        // само-регистрируется при addModule). setInterpolationStrategy — safeguard.
+        stNodeRef.current.setInterpolationStrategy('kaiser');
         stNodeRef.current.setStretchParameters({
-          sequenceMs: 40,      // Короткий шаг для быстрой речи
-          seekWindowMs: 15,    // Стандартное окно поиска
-          overlapMs: 12,       // Увеличен для снижения артефактов при ускорении
+          sequenceMs: 50,      // Длиннее → более плавные стыки, меньше «песка»
+          seekWindowMs: 20,    // Шире → лучше поиск оптимальной точки стыка
+          overlapMs: 16,       // Больше перекрытия → мягче crossfade между сегментами
           quickSeek: false,
         });
 
-        // Analyser for clipping diagnostics (before compressor)
+        // Monitor SoundTouchNode for underruns (indicates pipeline can't keep up)
+        let prevUnderruns = 0;
+        stNodeRef.current.addEventListener('metrics', (e: any) => {
+          const m = e.detail;
+          const delta = m.underrunCount - prevUnderruns;
+          prevUnderruns = m.underrunCount;
+          if (delta > 0) {
+            console.warn(
+              `[st-underrun] +${delta} (total=${m.underrunCount}) buffered=${m.framesBuffered} ` +
+              `speed=${usePlayerStore.getState().playbackSpeed}x`
+            );
+          }
+        });
+
+        // Analyser for clipping + sand diagnostics (before compressor)
         analyserRef.current = audioContextRef.current.createAnalyser();
-        analyserRef.current.fftSize = 256;
+        analyserRef.current.fftSize = 512;
 
         // Compressor to prevent clipping at higher speeds
         compressorRef.current = audioContextRef.current.createDynamicsCompressor();
@@ -716,24 +760,69 @@ export function useMediaPlayer() {
         gainNodeRef.current.gain.value = 0.5 ** 2;
         playerActions.setVolume(0.5);
 
-        // Monitor for clipping via the analyser (every 100 ms)
+        // Monitor for clipping + sand (every 100 ms)
         const dataArray = new Float32Array(analyserRef.current.frequencyBinCount);
-        const clipInterval = setInterval(() => {
-          if (!analyserRef.current) {
-            clearInterval(clipInterval);
+        const freqData = new Uint8Array(analyserRef.current.frequencyBinCount);
+
+        // HF energy ratio: bins covering 4-8 kHz (sand lives there)
+        const binWidth = audioContextRef.current.sampleRate / analyserRef.current.fftSize;
+        const hfStart = Math.floor(4000 / binWidth);
+        const hfEnd = Math.floor(8000 / binWidth);
+
+        const monitorInterval = setInterval(() => {
+          const analyser = analyserRef.current;
+          if (!analyser) {
+            clearInterval(monitorInterval);
             return;
           }
-          analyserRef.current.getFloatTimeDomainData(dataArray);
+
+          // ── Clipping (time domain) ──
+          analyser.getFloatTimeDomainData(dataArray);
           const peak = Math.max(...dataArray);
           if (peak >= 0.99) {
             console.warn(
               `[clipping] peak=${peak.toFixed(3)} speed=${usePlayerStore.getState().playbackSpeed}x`
             );
           }
+
+          // ── Sand detection (frequency domain) ──
+          analyser.getByteFrequencyData(freqData);
+
+          // Total energy (skip DC bin 0)
+          let totalEnergy = 0;
+          for (let i = 1; i < freqData.length; i++) {
+            totalEnergy += freqData[i] * freqData[i];
+          }
+          if (totalEnergy < 10000) return; // too quiet, skip
+
+          // HF energy (4-8 kHz)
+          let hfEnergy = 0;
+          for (let i = hfStart; i < hfEnd && i < freqData.length; i++) {
+            hfEnergy += freqData[i] * freqData[i];
+          }
+          const hfRatio = hfEnergy / totalEnergy;
+
+          // Spectral flatness (higher = more noise-like = more sand)
+          let logSum = 0;
+          let linSum = 0;
+          for (let i = 1; i < freqData.length; i++) {
+            const v = freqData[i] + 1; // +1 to avoid log(0)
+            logSum += Math.log(v);
+            linSum += v;
+          }
+          const flatness = Math.exp(logSum / (freqData.length - 1)) / (linSum / (freqData.length - 1));
+
+          // Both indicators trigger → sand likely
+          if (hfRatio > 0.35 && flatness > 0.6) {
+            console.warn(
+              `[sand] hfRatio=${hfRatio.toFixed(2)} flatness=${flatness.toFixed(2)} ` +
+              `speed=${usePlayerStore.getState().playbackSpeed}x`
+            );
+          }
         }, 100);
 
         // Store interval id on the analyser for cleanup later
-        (analyserRef.current as any)._clipInterval = clipInterval;
+        (analyserRef.current as any)._clipInterval = monitorInterval;
       } else {
         // No audio — create context for timing only
         audioContextRef.current = new AudioContextClass();

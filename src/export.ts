@@ -49,7 +49,7 @@ async function ensureBleepDecoded(
 }
 
 function getSoundEffects(): SoundCensoringEffect[] {
-  const raw = usePlayerStore.getState().censoringEffects;
+  const raw = usePlayerStore.getState().censoringEffects ?? [];
   return raw
     .filter((e: typeof raw[number]): e is SoundCensoringEffect => e.effectType === 'sound')
     .sort((a, b) => a.segmentStart - b.segmentStart);

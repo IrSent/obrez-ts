@@ -18,7 +18,7 @@ async function build() {
 
     // Copy SoundTouch processor (AudioWorklet, must be served as separate file)
     console.log('Copying SoundTouch processor...');
-    await $`cp node_modules/@soundtouchjs/audio-worklet/.dist/soundtouch-processor.js dist/`;
+    await $`cp public/soundtouch-processor.js dist/`;
 
     // Get git build number (commit count from HEAD)
     const buildNum = (await $`git rev-list HEAD --count`.text()).trim();

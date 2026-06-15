@@ -17,7 +17,7 @@ export const FileLoader = () => {
     actions.setWarning(null);
     actions.setTranscriptionResults(null);
     actions.setTranscribing(false);
-    actions.setCensoringEffects(null);
+    actions.setCensoringEffects([]);
 
     try {
       await initMediaPlayer(file);
@@ -43,7 +43,7 @@ export const FileLoader = () => {
     actions.setWarning(null);
     actions.setTranscriptionResults(null);
     actions.setTranscribing(false);
-    actions.setCensoringEffects(null);
+    actions.setCensoringEffects([]);
 
     initMediaPlayer(url);
   };

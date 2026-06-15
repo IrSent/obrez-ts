@@ -203,7 +203,7 @@ const TranscriptionResultsInner = () => {
 
   // Build a quick lookup: segmentStart → SoundCensoringEffect[]
   const segmentEffects = new Map<number, SoundCensoringEffect[]>();
-  for (const e of censoringEffects) {
+  for (const e of (censoringEffects ?? [])) {
     if (e.effectType === 'sound') {
       const list = segmentEffects.get(e.segmentStart) ?? [];
       list.push(e as SoundCensoringEffect);

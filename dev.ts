@@ -19,7 +19,6 @@ async function build() {
 
     // Копируем статику
     await $`cp -r ${PUBLIC_DIR}/* ${DIST_DIR}/`.quiet();
-    await $`cp node_modules/@soundtouchjs/audio-worklet/.dist/soundtouch-processor.js ${DIST_DIR}/`.quiet();
 
     const buildNum = (await $`git rev-list HEAD --count`.text()).trim();
 
