@@ -186,6 +186,11 @@ export function useMediaPlayer() {
   // only the final speed (from playbackSpeedRef) is applied.
   const speedTransitionRef = useRef<boolean>(false);
 
+  // Resolved when SoundTouch FIFO has enough samples for quality audio.
+  // Set at the start of startAudio(), resolved by the metrics handler,
+  // and awaited before video/playback state is started.
+  const audioReadyResolveRef = useRef<(() => void) | null>(null);
+
   const speedUnsub = usePlayerStore.subscribe(
     async (state, prevState) => {
       const speed = state.playbackSpeed;
@@ -218,19 +223,23 @@ export function useMediaPlayer() {
               stNode.setStretchParameters(newParams);
             }
             stNode.playbackRate.setValueAtTime(speed, now);
-            bypassGainRef.current?.gain.setValueAtTime(speed === 1 ? 1 : 0, now);
-            stGainRef.current?.gain.setValueAtTime(speed === 1 ? 0 : 1, now);
           }
 
           // 5. Resume from the saved position at the new speed
           if (wasPlaying && audioSinkRef.current) {
             playbackTimeAtStartRef.current = currentMediaT;
-            audioContextStartTimeRef.current = ctx.currentTime;
+
+            // Start audio and wait for SoundTouch FIFO to be ready.
+            // At 1x this returns immediately (SoundTouch is bypassed).
+            await startAudio();
+
+            // Restart video iterator from the saved position.
+            // Time is frozen (state='paused') — no frames are drawn yet.
+            await startVideoIteratorRef.current();
+
+            // Now audio is ready and video is positioned — start playback.
             playbackStateRef.current = 'playing';
             playerActions.setIsPlaying(true);
-            lastBufferEndRef.current = 0;
-            audioBufferIteratorRef.current = audioSinkRef.current.buffers(currentMediaT);
-            void runAudioIteratorRef.current?.();
           } else {
             playbackStateRef.current = 'paused';
           }
@@ -415,26 +424,50 @@ export function useMediaPlayer() {
   // =====================================================================
   //  START-AUDIO — the only place that creates the audio iterator.
   //  Must NOT be called while an iterator is already running.
+  //
+  //  At >1x: starts the audio iterator (bootstrap silence → SoundTouch),
+  //  then waits for SoundTouch FIFO to fill (via metrics event). Video
+  //  and 'playing' state are only started after audio is ready.
+  //  At 1x: returns immediately (SoundTouch is bypassed, no FIFO to fill).
   // =====================================================================
-  const startAudio = () => {
-    if (!audioSinkRef.current || !audioContextRef.current || !stNodeRef.current) return;
+  const startAudio = async () => {
+    if (!audioSinkRef.current || !audioContextRef.current) return;
     if (audioBufferIteratorRef.current) return; // already running
 
     const ctx = audioContextRef.current;
-    audioContextStartTimeRef.current = ctx.currentTime;
-    playbackStateRef.current = 'playing';
-    playerActions.setIsPlaying(true);
+    const speed = playbackSpeedRef.current;
 
     // Ensure gain routing matches current speed.
-    const curSpeed = playbackSpeedRef.current;
     if (bypassGainRef.current && stGainRef.current) {
-      bypassGainRef.current.gain.setValueAtTime(curSpeed === 1 ? 1 : 0, ctx.currentTime);
-      stGainRef.current.gain.setValueAtTime(curSpeed === 1 ? 0 : 1, ctx.currentTime);
+      bypassGainRef.current.gain.setValueAtTime(speed === 1 ? 1 : 0, ctx.currentTime);
+      stGainRef.current.gain.setValueAtTime(speed === 1 ? 0 : 1, ctx.currentTime);
     }
 
+    // Start the audio iterator — it feeds bootstrap silence into SoundTouch.
+    audioContextStartTimeRef.current = ctx.currentTime;
     lastBufferEndRef.current = 0;
     audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
     void runAudioIteratorRef.current?.();
+
+    // Wait for SoundTouch FIFO to be full before returning.
+    // At 1x, SoundTouch is bypassed (stGain=0) — no wait needed.
+    if (stNodeRef.current && speed > 1) {
+      const target = ctx.sampleRate * 2; // 2x sampleReq for safety margin
+      try {
+        await Promise.race([
+          new Promise<void>((resolve) => {
+            audioReadyResolveRef.current = resolve;
+          }),
+          new Promise<void>((resolve) => setTimeout(resolve, 5000)).then(() => {
+            console.warn(`[audio] SoundTouch ready timeout (5s), buffered may be low (target=${target})`);
+            resolve();
+          }),
+        ]);
+      } finally {
+        audioReadyResolveRef.current = null;
+      }
+      console.log(`[audio] SoundTouch ready, proceeding with playback`);
+    }
   };
 
   // =====================================================================
@@ -471,7 +504,11 @@ export function useMediaPlayer() {
       if (audioContextRef.current?.state === 'suspended') {
         await audioContextRef.current.resume();
       }
-      startAudio();
+      // startAudio() waits for SoundTouch FIFO to be ready at >1x.
+      // After it resolves, audio is quality — safe to start video + time.
+      await startAudio();
+      playbackStateRef.current = 'playing';
+      playerActions.setIsPlaying(true);
     } else {
       playbackStateRef.current = 'paused';
     }
@@ -620,10 +657,13 @@ export function useMediaPlayer() {
       // sampleReq = 4416 constant for all speeds >= 1x.
       // Scale with speed: at higher speeds the stretch engine drains the FIFO
       // faster, so we need more silence to keep it warm.
+      // 1000 * speed ensures bootstrap covers the gap between stopAudio() and
+      // the first real MediaBunny buffer — at 2x that's 2000ms of silence samples
+      // played at 2x = 1000ms wall-clock, enough for MediaBunny to decode.
       // At 1x: no bootstrap — bypassGain=1 means audio goes directly to output,
       // and SoundTouch is muted (stGain=0). A bootstrap would eat into the first
       // 50ms of real audio, causing the "jumbled segments" artifact at start.
-      const BOOTSTRAP_MS = speed > 1 ? Math.ceil(300 * speed) : 0;
+      const BOOTSTRAP_MS = speed > 1 ? Math.ceil(1000 * speed) : 0;
 
       if (BOOTSTRAP_MS > 0) {
         const bootstrapSamples = Math.ceil(ctx.sampleRate * BOOTSTRAP_MS / 1000);
@@ -638,6 +678,7 @@ export function useMediaPlayer() {
         silenceSource.start(ctx.currentTime);
         queuedAudioNodesRef.current.add(silenceSource);
         silenceSource.onended = () => queuedAudioNodesRef.current.delete(silenceSource);
+        console.log(`[audio] bootstrap: ${BOOTSTRAP_MS}ms at ${speed}x, wall-clock=${(BOOTSTRAP_MS/speed).toFixed(0)}ms, samples=${bootstrapSamples}`);
       }
 
       // lastEnd: tracks the end-time of the previously scheduled BufferSource.
@@ -935,6 +976,18 @@ export function useMediaPlayer() {
               `speed=${curSpeed}x`
             );
           }
+
+          // Signal audio-ready when FIFO has enough samples.
+          // Target: 2 * sampleRate (2x sampleReq for safety margin).
+          if (audioReadyResolveRef.current && curSpeed > 1) {
+            const target = (audioContextRef.current?.sampleRate ?? 48000) * 2;
+            if (m.framesBuffered >= target) {
+              console.log(`[audio] SoundTouch ready: buffered=${m.framesBuffered} >= ${target}`);
+              const resolve = audioReadyResolveRef.current;
+              audioReadyResolveRef.current = null;
+              resolve();
+            }
+          }
         });
 
         // Analyser for clipping + sand diagnostics (before compressor)
@@ -1069,11 +1122,13 @@ export function useMediaPlayer() {
         canvasCtxRef.current = canvasRef.current.getContext('2d');
       }
 
-      await startVideoIteratorRef.current();
-
-      // Auto-play on init — single transition call, no race possible.
+      // Auto-play on init: wait for audio to be ready (SoundTouch FIFO),
+      // then start video, then set playing.
       if (audioContextRef.current?.state === 'running') {
-        await transitionRef.current('playing');
+        await startAudio();
+        await startVideoIteratorRef.current();
+        playbackStateRef.current = 'playing';
+        playerActions.setIsPlaying(true);
       }
     } catch (error) {
       console.error('Error initializing media player:', error);
