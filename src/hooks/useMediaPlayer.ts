@@ -449,26 +449,13 @@ export function useMediaPlayer() {
     audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
     void runAudioIteratorRef.current?.();
 
-    // Wait for SoundTouch FIFO to be full before returning.
+    // Wait for bootstrap silence to warm up SoundTouch before proceeding.
     // At 1x, SoundTouch is bypassed (stGain=0) — no wait needed.
-    if (stNodeRef.current && speed > 1) {
-      // sampleReq = 4416 for all speeds >= 1x. Target = 2 * sampleReq = 8832.
-      const target = 8832;
-      try {
-        await Promise.race([
-          new Promise<void>((resolve) => {
-            audioReadyResolveRef.current = resolve;
-          }),
-          new Promise<void>((_, reject) => {
-            setTimeout(() => reject(new Error(`SoundTouch ready timeout (5s), target=${target}`)), 5000);
-          }),
-        ]);
-      } catch (err) {
-        console.warn(`[audio] ${err instanceof Error ? err.message : err}`);
-      } finally {
-        audioReadyResolveRef.current = null;
-      }
-      console.log(`[audio] SoundTouch ready, proceeding with playback`);
+    // The wait is BOOTSTRAP_MS / speed (wall-clock duration of silence) + margin.
+    if (speed > 1) {
+      const waitMs = Math.ceil(300 * speed / speed + 200); // bootstrap wall-clock + 200ms margin
+      await new Promise((resolve) => setTimeout(resolve, waitMs));
+      console.log(`[audio] bootstrap wait done (${waitMs}ms), proceeding with playback`);
     }
   };
 
