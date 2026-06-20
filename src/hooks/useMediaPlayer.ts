@@ -452,17 +452,19 @@ export function useMediaPlayer() {
     // Wait for SoundTouch FIFO to be full before returning.
     // At 1x, SoundTouch is bypassed (stGain=0) — no wait needed.
     if (stNodeRef.current && speed > 1) {
-      const target = ctx.sampleRate * 2; // 2x sampleReq for safety margin
+      // sampleReq = 4416 for all speeds >= 1x. Target = 2 * sampleReq = 8832.
+      const target = 8832;
       try {
         await Promise.race([
           new Promise<void>((resolve) => {
             audioReadyResolveRef.current = resolve;
           }),
-          new Promise<void>((resolve) => setTimeout(resolve, 5000)).then(() => {
-            console.warn(`[audio] SoundTouch ready timeout (5s), buffered may be low (target=${target})`);
-            resolve();
+          new Promise<void>((_, reject) => {
+            setTimeout(() => reject(new Error(`SoundTouch ready timeout (5s), target=${target}`)), 5000);
           }),
         ]);
+      } catch (err) {
+        console.warn(`[audio] ${err instanceof Error ? err.message : err}`);
       } finally {
         audioReadyResolveRef.current = null;
       }
@@ -657,13 +659,14 @@ export function useMediaPlayer() {
       // sampleReq = 4416 constant for all speeds >= 1x.
       // Scale with speed: at higher speeds the stretch engine drains the FIFO
       // faster, so we need more silence to keep it warm.
-      // 1000 * speed ensures bootstrap covers the gap between stopAudio() and
-      // the first real MediaBunny buffer — at 2x that's 2000ms of silence samples
-      // played at 2x = 1000ms wall-clock, enough for MediaBunny to decode.
+      // Bootstrap must be large enough to fill SoundTouch FIFO (sampleReq=4416)
+      // but not so large that it delays real audio. At 1.5x: 300*1.5=450ms of
+      // silence samples, played at 1.5x = 300ms wall-clock. At 2x: 600ms samples,
+      // 300ms wall-clock. Enough for FIFO to fill (4416 samples = 92ms at 48kHz).
       // At 1x: no bootstrap — bypassGain=1 means audio goes directly to output,
       // and SoundTouch is muted (stGain=0). A bootstrap would eat into the first
       // 50ms of real audio, causing the "jumbled segments" artifact at start.
-      const BOOTSTRAP_MS = speed > 1 ? Math.ceil(1000 * speed) : 0;
+      const BOOTSTRAP_MS = speed > 1 ? Math.ceil(300 * speed) : 0;
 
       if (BOOTSTRAP_MS > 0) {
         const bootstrapSamples = Math.ceil(ctx.sampleRate * BOOTSTRAP_MS / 1000);
@@ -978,9 +981,9 @@ export function useMediaPlayer() {
           }
 
           // Signal audio-ready when FIFO has enough samples.
-          // Target: 2 * sampleRate (2x sampleReq for safety margin).
+          // Target: 2 * sampleReq = 8832 (sampleReq = 4416 for all speeds >= 1x).
           if (audioReadyResolveRef.current && curSpeed > 1) {
-            const target = (audioContextRef.current?.sampleRate ?? 48000) * 2;
+            const target = 8832;
             if (m.framesBuffered >= target) {
               console.log(`[audio] SoundTouch ready: buffered=${m.framesBuffered} >= ${target}`);
               const resolve = audioReadyResolveRef.current;
