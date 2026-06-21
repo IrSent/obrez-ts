@@ -21,17 +21,14 @@ test.describe('Video Playback', () => {
     const initialTime = await currentTimeBefore.textContent();
     expect(initialTime).not.toBeNull();
 
-    // 5. Click the Play button
-    await page.getByRole('button', { name: /play/i }).click();
-
-    // 6. Wait a few seconds for playback to progress
+    // 5. Video auto-plays after loading — just wait for playback to progress
     await page.waitForTimeout(5000);
 
-    // 7. Check that current time has changed (playback is progressing)
+    // 6. Check that current time has changed (playback is progressing)
     const currentTimeAfter = await page.locator('span.text-xs.opacity-60').first().textContent();
     expect(currentTimeAfter).not.toBe(initialTime);
 
-    // 8. Verify no error is shown
+    // 7. Verify no error is shown
     const errorText = page.locator('text=Playback failed');
     await expect(errorText).not.toBeVisible();
   });
@@ -48,22 +45,22 @@ test.describe('Video Playback', () => {
     const durationText = page.locator('span.text-xs.opacity-60').last();
     await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
 
-    // Play
-    await page.getByRole('button', { name: /play/i }).click();
+    // Video auto-plays — wait a bit then pause
     await page.waitForTimeout(3000);
 
-    const currentTimeWhilePlaying = await page.locator('span.text-xs.opacity-60').first().textContent();
-
-    // Pause
+    // Hover the canvas to reveal controls, then pause
+    await page.locator('canvas[aria-label="Video canvas"]').hover();
+    await page.waitForTimeout(500);
     await page.getByRole('button', { name: /pause/i }).click();
+
+    // Record time immediately after pause
+    const currentTimeAfterPause1 = await page.locator('span.text-xs.opacity-60').first().textContent();
     await page.waitForTimeout(3000);
+    const currentTimeAfterPause2 = await page.locator('span.text-xs.opacity-60').first().textContent();
 
-    const currentTimeAfterPause = await page.locator('span.text-xs.opacity-60').first().textContent();
-
-    // Time should be the same or very close (one extra frame may render before pause takes effect)
     // Compare seconds without milliseconds to allow for small tolerance
-    const secondsWhilePlaying = currentTimeWhilePlaying?.match(/(\d{2}:\d{2})/)?.[1];
-    const secondsAfterPause = currentTimeAfterPause?.match(/(\d{2}:\d{2})/)?.[1];
-    expect(secondsAfterPause).toBe(secondsWhilePlaying);
+    const seconds1 = currentTimeAfterPause1?.match(/(\d{2}:\d{2})/)?.[1];
+    const seconds2 = currentTimeAfterPause2?.match(/(\d{2}:\d{2})/)?.[1];
+    expect(seconds2).toBe(seconds1);
   });
 });

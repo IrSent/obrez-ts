@@ -41,6 +41,7 @@ export function useMediaPlayer() {
   const audioContextRef = useRef<AudioContext | null>(null);
   const stNodeRef = useRef<SoundTouchNode | null>(null);
   const compressorRef = useRef<DynamicsCompressorNode | null>(null);
+  const limiterRef = useRef<DynamicsCompressorNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
   const bypassGainRef = useRef<GainNode | null>(null);
@@ -191,7 +192,13 @@ export function useMediaPlayer() {
   // and awaited before video/playback state is started.
   const audioReadyResolveRef = useRef<(() => void) | null>(null);
 
-  const speedUnsub = usePlayerStore.subscribe(
+  // Prev underrun count ref — shared between metrics handler and speed
+  // transition so we can reset it on speed change and avoid carry-over.
+  const prevUnderrunsRef = useRef<number>(0);
+  // Live underrun count from the latest metrics event.
+  const liveUnderrunCountRef = useRef<number>(0);
+
+ const speedUnsub = usePlayerStore.subscribe(
     async (state, prevState) => {
       const speed = state.playbackSpeed;
       const prevSpeed = prevState.playbackSpeed;
@@ -202,16 +209,13 @@ export function useMediaPlayer() {
           const currentMediaT = utilsRef.current.getPlaybackTime();
           const wasPlaying = playbackStateRef.current === 'playing';
 
-          // 2. Stop all audio — stopAudio guarantees nodes are dead
-          await stopAudio();
-
-          // 3. Set new speed
-          playbackSpeedRef.current = speed;
-
-          // 4. Update SoundTouch params
           const stNode = stNodeRef.current;
           const ctx = audioContextRef.current;
           const now = ctx?.currentTime ?? 0;
+
+          // 2. Set new speed on SoundTouch FIRST — before any nodes stop,
+          // so SoundTouch processes at the new rate from the start.
+          playbackSpeedRef.current = speed;
           if (stNode) {
             const newParams = speedStretchParams(speed);
             const oldParams = speedStretchParams(prevSpeed);
@@ -225,7 +229,29 @@ export function useMediaPlayer() {
             stNode.playbackRate.setValueAtTime(speed, now);
           }
 
-          // 5. Resume from the saved position at the new speed
+          // 3. Bridge silence: start feeding SoundTouch at the new speed
+          // BEFORE stopping old audio. This ensures the FIFO never drains.
+          if (wasPlaying && stNode && ctx && speed > 1) {
+            const bridgeMs = 1000;
+            const bridgeSamples = Math.ceil(ctx.sampleRate * bridgeMs / 1000);
+            const bridgeBuffer = ctx.createBuffer(2, bridgeSamples, ctx.sampleRate);
+            const bridgeSource = ctx.createBufferSource();
+            bridgeSource.buffer = bridgeBuffer;
+            bridgeSource.playbackRate.setValueAtTime(speed, now);
+            bridgeSource.connect(stNode);
+            bridgeSource.start(now);
+            console.log(`[audio] bridge silence: ${bridgeSamples} samples (${bridgeMs}ms at ${speed}x)`);
+          }
+
+        // 4. Stop all audio — bridge keeps SoundTouch fed.
+          await stopAudio();
+
+          // 5. Reset underrun counter so carry-over from 1x (where
+          // underruns accumulate silently with stGain=0) doesn't inflate
+          // the first delta at the new speed.
+          prevUnderrunsRef.current = liveUnderrunCountRef.current;
+
+          // 6. Resume from the saved position at the new speed
           if (wasPlaying && audioSinkRef.current) {
             playbackTimeAtStartRef.current = currentMediaT;
 
@@ -391,9 +417,12 @@ export function useMediaPlayer() {
     playerActions.setCurrentTime(currentTime);
     playerActions.setIsPlaying(false);
 
-    // Abort the audio iterator — await it so no new nodes are created.
+    // Abort the audio iterator — fire-and-forget. Awaiting return() blocks
+    // until the MediaBunny decoder finishes its current cycle, during which
+    // SoundTouch FIFO drains and produces underruns. Returning without await
+    // lets the bridge silence keep SoundTouch fed while the decoder cleans up.
     if (audioBufferIteratorRef.current) {
-      await audioBufferIteratorRef.current.return();
+      void audioBufferIteratorRef.current.return();
       audioBufferIteratorRef.current = null;
     }
 
@@ -451,11 +480,26 @@ export function useMediaPlayer() {
 
     // Wait for bootstrap silence to warm up SoundTouch before proceeding.
     // At 1x, SoundTouch is bypassed (stGain=0) — no wait needed.
-    // The wait is BOOTSTRAP_MS / speed (wall-clock duration of silence) + margin.
+    // We listen for the metrics signal (framesBuffered >= 8832) rather than
+    // relying on a fixed timeout — the FIFO is ready when it's ready.
     if (speed > 1) {
-      const waitMs = Math.ceil(300 * speed / speed + 200); // bootstrap wall-clock + 200ms margin
-      await new Promise((resolve) => setTimeout(resolve, waitMs));
-      console.log(`[audio] bootstrap wait done (${waitMs}ms), proceeding with playback`);
+      const startTime = Date.now();
+      audioReadyResolveRef.current = () => {}; // no-op placeholder
+      // The metrics handler (set up in runAudioIterator) will resolve this
+      // when framesBuffered >= 2 * sampleReq (8832 at 48kHz).
+      await new Promise<void>((resolve) => {
+        audioReadyResolveRef.current = resolve;
+        // Safety fallback: if metrics never fire, proceed after 2s.
+        setTimeout(() => {
+          if (audioReadyResolveRef.current === resolve) {
+            console.warn('[audio] bootstrap timeout — FIFO not full, proceeding anyway');
+            audioReadyResolveRef.current = null;
+            resolve();
+          }
+        }, 2000);
+      });
+      const waited = Date.now() - startTime;
+      console.log(`[audio] bootstrap wait done (${waited}ms), proceeding with playback`);
     }
   };
 
@@ -641,15 +685,15 @@ export function useMediaPlayer() {
       const stNode = stNodeRef.current;
       const speed = playbackSpeedRef.current;
 
-      // Bootstrap: at speeds > 1x, SoundTouch Stretch needs sampleReq=4416 samples
+   // Bootstrap: at speeds > 1x, SoundTouch Stretch needs sampleReq=4416 samples
       // to produce its first output window. Feed silence to prime the pipeline.
       // sampleReq = 4416 constant for all speeds >= 1x.
       // Scale with speed: at higher speeds the stretch engine drains the FIFO
       // faster, so we need more silence to keep it warm.
-      // Bootstrap must be large enough to fill SoundTouch FIFO (sampleReq=4416)
-      // but not so large that it delays real audio. At 1.5x: 300*1.5=450ms of
-      // silence samples, played at 1.5x = 300ms wall-clock. At 2x: 600ms samples,
-      // 300ms wall-clock. Enough for FIFO to fill (4416 samples = 92ms at 48kHz).
+      // The bridge silence (in speed transition) feeds SoundTouch before this,
+      // and the warmup (at init) pre-fills the FIFO. Bootstrap adds final headroom.
+      // At 1.5x: 300*1.5=450ms of silence samples, played at 1.5x = 300ms wall-clock.
+      // At 2x: 600ms samples, 300ms wall-clock.
       // At 1x: no bootstrap — bypassGain=1 means audio goes directly to output,
       // and SoundTouch is muted (stGain=0). A bootstrap would eat into the first
       // 50ms of real audio, causing the "jumbled segments" artifact at start.
@@ -718,7 +762,7 @@ export function useMediaPlayer() {
             const gapSilence = ctx.createBuffer(2, gapSamples, ctx.sampleRate);
             const gapSource = ctx.createBufferSource();
             gapSource.buffer = gapSilence;
-            gapSource.playbackRate.setValueAtTime(1, ctx.currentTime);
+            gapSource.playbackRate.setValueAtTime(currentSpeed, ctx.currentTime);
             gapSource.connect(stNode);
             gapSource.start(lastEnd);
             queuedAudioNodesRef.current.add(gapSource);
@@ -952,11 +996,12 @@ export function useMediaPlayer() {
         stNodeRef.current.setStretchParameters(speedStretchParams(1));
 
         // Monitor SoundTouchNode for underruns (indicates pipeline can't keep up)
-        let prevUnderruns = 0;
+        let stReadyStreak = 0; // consecutive checks above target
         stNodeRef.current.addEventListener('metrics', (e: any) => {
           const m = e.detail;
-          const delta = m.underrunCount - prevUnderruns;
-          prevUnderruns = m.underrunCount;
+          const delta = m.underrunCount - prevUnderrunsRef.current;
+          prevUnderrunsRef.current = m.underrunCount;
+          liveUnderrunCountRef.current = m.underrunCount;
           // At 1x SoundTouch is bypassed (stGain=0) — underruns are harmless
           // noise from a cold FIFO that we don't need to warn about.
           const curSpeed = usePlayerStore.getState().playbackSpeed;
@@ -967,34 +1012,52 @@ export function useMediaPlayer() {
             );
           }
 
-          // Signal audio-ready when FIFO has enough samples.
-          // Target: 2 * sampleReq = 8832 (sampleReq = 4416 for all speeds >= 1x).
+          // Signal audio-ready when FIFO has enough samples for 2 consecutive checks.
+          // Target: 500 frames ≈ 10ms at 48kHz. The warmup + bridge + bootstrap
+          // already fill the FIFO significantly — we just need to confirm it's
+          // not empty. 2 streaks = ~200ms of sustained buffering.
           if (audioReadyResolveRef.current && curSpeed > 1) {
-            const target = 8832;
+            const target = 500;
             if (m.framesBuffered >= target) {
-              console.log(`[audio] SoundTouch ready: buffered=${m.framesBuffered} >= ${target}`);
-              const resolve = audioReadyResolveRef.current;
-              audioReadyResolveRef.current = null;
-              resolve();
+              stReadyStreak++;
+              if (stReadyStreak >= 2) {
+                console.log(`[audio] SoundTouch ready: buffered=${m.framesBuffered} >= ${target} (stable)`);
+                const resolve = audioReadyResolveRef.current;
+                audioReadyResolveRef.current = null;
+                stReadyStreak = 0;
+                resolve();
+              }
+            } else {
+              stReadyStreak = 0; // reset on drop
             }
           }
         });
 
-        // Analyser for clipping + sand diagnostics (before compressor)
+        // Compressor to prevent clipping at higher speeds
+        compressorRef.current = audioContextRef.current.createDynamicsCompressor();
+        compressorRef.current.threshold.value = -12;
+        compressorRef.current.knee.value = 10;
+        compressorRef.current.ratio.value = 20;
+        compressorRef.current.attack.value = 0.001;
+        compressorRef.current.release.value = 0.1;
+
+        // Hard limiter as final safety net — clamps at 0dB, nothing gets through.
+        const limiter = audioContextRef.current.createDynamicsCompressor();
+        limiter.threshold.value = -0.5;
+        limiter.knee.value = 2;
+        limiter.ratio.value = 60;
+        limiter.attack.value = 0.0005;
+        limiter.release.value = 0.05;
+        limiterRef.current = limiter;
+
+        // Analyser for clipping + sand diagnostics — AFTER compressor/limiter
+        // so we measure what actually reaches the speaker.
         analyserRef.current = audioContextRef.current.createAnalyser();
         analyserRef.current.fftSize = 512;
 
-        // Compressor to prevent clipping at higher speeds
-        compressorRef.current = audioContextRef.current.createDynamicsCompressor();
-        compressorRef.current.threshold.value = -24;
-        compressorRef.current.knee.value = 30;
-        compressorRef.current.ratio.value = 12;
-        compressorRef.current.attack.value = 0.003;
-        compressorRef.current.release.value = 0.25;
-
         gainNodeRef.current = audioContextRef.current.createGain();
 
-        // Bypass gain: at 1x, audio goes directly to analyser (0 underruns).
+        // Bypass gain: at 1x, audio goes directly to compressor (0 underruns).
         // stGain: at >1x, audio goes through SoundTouch.
         // SoundTouch always receives audio (FIFO stays warm) for seamless transitions.
         const bypassGain = audioContextRef.current.createGain();
@@ -1005,14 +1068,15 @@ export function useMediaPlayer() {
         stGainRef.current = stGain;
 
         // Chain:
-        //   source → bypassGain → analyser
-        //   source → stNode → stGain → analyser
-        //   analyser → compressor → gain → destination
-        bypassGain.connect(analyserRef.current);
+        //   source → bypassGain → compressor
+        //   source → stNode → stGain → compressor
+        //   compressor → limiter → analyser → gain → destination
+        bypassGain.connect(compressorRef.current);
         stNodeRef.current.connect(stGain);
-        stGain.connect(analyserRef.current);
-        analyserRef.current.connect(compressorRef.current);
-        compressorRef.current.connect(gainNodeRef.current);
+        stGain.connect(compressorRef.current);
+        compressorRef.current.connect(limiter);
+        limiter.connect(analyserRef.current);
+        analyserRef.current.connect(gainNodeRef.current);
         gainNodeRef.current.connect(audioContextRef.current.destination);
         gainNodeRef.current.gain.value = 0.5 ** 2;
         playerActions.setVolume(0.5);
@@ -1020,6 +1084,30 @@ export function useMediaPlayer() {
         // Store refs for speed transition
         bypassGainRef.current = bypassGain;
         stGainRef.current = stGain;
+
+  // Warmup SoundTouch FIFO: feed 3 seconds of silence at 2x
+        // so the FIFO is pre-filled when the first speed change happens.
+        // stGain is 0 at 1x, so the warmup silence is inaudible through SoundTouch.
+        // The real audio will go through bypassGain (which is at 1).
+        {
+          const warmupCtx = audioContextRef.current!;
+          const warmupStNode = stNodeRef.current!;
+          const warmupMs = 3000;
+          const warmupSamples = Math.ceil(warmupCtx.sampleRate * warmupMs / 1000);
+          const warmupBuffer = warmupCtx.createBuffer(2, warmupSamples, warmupCtx.sampleRate);
+          const warmupSource = warmupCtx.createBufferSource();
+          warmupSource.buffer = warmupBuffer;
+          warmupSource.playbackRate.setValueAtTime(2, warmupCtx.currentTime);
+          warmupSource.connect(warmupStNode);
+          warmupSource.start(warmupCtx.currentTime);
+          // Fire-and-forget: don't block playback waiting for the FIFO to fill.
+          // The warmup source plays 3s of silence at 2x (1.5s wall-clock).
+          // It stops on its own via onended. By the time the first speed change
+          // happens, the FIFO will be significantly pre-filled.
+          warmupSource.onended = () => {
+            console.log(`[audio] SoundTouch warmup done: ${warmupSamples} samples at 2x`);
+          };
+        }
 
         // Monitor for clipping + sand (every 100 ms)
         const dataArray = new Float32Array(analyserRef.current.frequencyBinCount);
