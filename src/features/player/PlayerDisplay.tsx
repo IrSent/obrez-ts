@@ -33,11 +33,11 @@ const PlayerDisplayInner = () => {
     void togglePlay();
   }, [togglePlay]);
 
-  const handleReplay = useCallback((e: React.MouseEvent) => {
+  const handleReplay = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
     playerActions.setIsEnded(false);
-    void seekToTime(0);
-    void play();
+    await seekToTime(0);
+    await play();
   }, [seekToTime, play]);
 
   return (
