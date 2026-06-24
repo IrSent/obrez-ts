@@ -101,7 +101,10 @@ export function useMediaPlayer() {
   const utilsRef = useRef({
     getPlaybackTime: (): number => {
       const speed = playbackSpeedRef.current;
-      if (playbackStateRef.current === 'playing' && audioContextRef.current && audioContextStartTimeRef.current != null) {
+      const state = playbackStateRef.current;
+      // During 'transitioning' (e.g., speed change bootstrap wait), time
+      // still advances — the user expects playback to progress smoothly.
+      if ((state === 'playing' || state === 'transitioning') && audioContextRef.current && audioContextStartTimeRef.current != null) {
         return (audioContextRef.current.currentTime - audioContextStartTimeRef.current) * speed + playbackTimeAtStartRef.current;
       }
       return playbackTimeAtStartRef.current;
