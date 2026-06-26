@@ -17,7 +17,7 @@ import {
   WrappedAudioBuffer,
   WrappedCanvas,
 } from 'mediabunny';
-import { SoundTouchNode } from '@soundtouchjs/audio-worklet';
+import { PhaseVocoderNode } from '@soundtouchjs/phase-vocoder-worklet';
 import { audioBuffersToWav } from '../audio';
 import { backendPath, backendWsPath } from '../config';
 
@@ -39,7 +39,7 @@ export function useMediaPlayer() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const playerContainerRef = useRef<HTMLDivElement>(null);
   const audioContextRef = useRef<AudioContext | null>(null);
-  const stNodeRef = useRef<SoundTouchNode | null>(null);
+  const stNodeRef = useRef<PhaseVocoderNode | null>(null);
   const compressorRef = useRef<DynamicsCompressorNode | null>(null);
   const limiterRef = useRef<DynamicsCompressorNode | null>(null);
   const gainNodeRef = useRef<GainNode | null>(null);
@@ -73,6 +73,23 @@ export function useMediaPlayer() {
   // will use the latest state from refs (e.g., playbackSpeedRef).
   const transitioningRef = useRef<boolean>(false);
 
+  // Immediate abort flag — set by stopAudio BEFORE iterator.return().
+  // runAudioIterator checks this at the start of every buffer iteration.
+  // Guarantees no new BufferSources are created after stopAudio is called,
+  // even if the old for-await loop hasn't exited yet.
+  const abortAudioRef = useRef<boolean>(false);
+
+  // Generation counter — defense-in-depth against overlapping audio.
+  // Incremented in stopAudio BEFORE abortAudioRef is set.
+  // The runAudioIterator captures the current generation and checks it on
+  // every loop iteration. If the generation changed (meaning stopAudio was
+  // called), the old iterator exits immediately — even if abortAudioRef
+  // was already reset by a subsequent startAudio call.
+  // This eliminates the race window where:
+  //   stopAudio → abort=true → lock force-cleared → abort=false →
+  //   old iterator resumes → creates nodes → overlap with new iterator.
+  const audioGenerationRef = useRef<number>(0);
+
   // Sound effect engine
   const triggeredEffectsRef = useRef<Set<string>>(new Set());
   const playLoopRef = useRef<number>(0);
@@ -102,9 +119,13 @@ export function useMediaPlayer() {
     getPlaybackTime: (): number => {
       const speed = playbackSpeedRef.current;
       const state = playbackStateRef.current;
-      // During 'transitioning' (e.g., speed change bootstrap wait), time
-      // still advances — the user expects playback to progress smoothly.
-      if ((state === 'playing' || state === 'transitioning') && audioContextRef.current && audioContextStartTimeRef.current != null) {
+      // Time only advances during 'playing'. During 'transitioning', time is
+      // frozen at the value captured by stopAudio. This is correct for:
+      // - Pause: displayed time freezes immediately (no jump during transition).
+      // - Speed change: stopAudio already captured the right time; during
+      //   bootstrap wait the display is frozen briefly — acceptable (quality > speed).
+      // - Seek: playbackTimeAtStartRef is set to the seek target before transitioning.
+      if (state === 'playing' && audioContextRef.current && audioContextStartTimeRef.current != null) {
         return (audioContextRef.current.currentTime - audioContextStartTimeRef.current) * speed + playbackTimeAtStartRef.current;
       }
       return playbackTimeAtStartRef.current;
@@ -172,38 +193,19 @@ export function useMediaPlayer() {
 
  // Subscribe to playbackSpeed changes.
   //
-  // SoundTouchNode is a pitch compensator:
+  // PhaseVocoderNode is a pitch compensator:
   //   source.playbackRate = speed → accelerates audio (chipmunk)
   //   stNode.playbackRate = speed → compensates pitch back to normal
   // Net effect: speed-up without chipmunk.
   //
-// Speed-dependent SoundTouch stretch parameters.
+  // Phase vocoder (FFT-based) — no WSOLA stretch parameters needed.
+  // Timing is controlled by fftSize and overlapFactor set at construction.
   //
-  // CRITICAL: outputPerWindow = seekWindowLength - overlapLength MUST be divisible by 128
-  // (render quantum size). Otherwise each Stretch cycle produces 1 underrun → steady-state
-  // crackle. seq=72, ovl=40 → 3456-1920=1536, 1536/128=12 ✓.
-  //
-  // overlapMs=40 at ALL speeds >= 1x — longer crossfade (less echo at 2x), and
-  // SoundTouch outputs 1536 samples per window (vs 1920 at ovl=32).
-  // Smaller output = FIFO drains slower = fewer underruns.
-  // Initialized with this from the start so 1x→>1x transitions don't trigger
-  // a WSOLA flush. At 1x SoundTouch is bypassed (stGain=0).
-  //
-  // sampleReq = 4416 constant for ALL speeds >= 1x (seq=72, seek=20, ovl=40 at 48kHz):
-  //   overlapLength=1920, intskip = round(1536/speed)
-  //   intskip + 1920 <= 3456 = seekWindowLength (at 1x: 1536+1920=3456)
-  //   → max(seekWindowLength, intskip+overlapLength) = 3456
-  //   → sampleReq = 3456 + 960 = 4416
-  function speedStretchParams(s: number): { sequenceMs: number; seekWindowMs: number; overlapMs: number; quickSeek: boolean } {
-    if (s >= 1.0) return { sequenceMs: 72, seekWindowMs: 20, overlapMs: 40, quickSeek: false };  // same for all >= 1x, no WSOLA flush
-    return { sequenceMs: 50, seekWindowMs: 20, overlapMs: 24, quickSeek: false };                     // below 1x
-  }
-
   // Lock: only one speed transition at a time. If the user clicks fast,
   // only the final speed (from playbackSpeedRef) is applied.
   const speedTransitionRef = useRef<boolean>(false);
 
-  // Resolved when SoundTouch FIFO has enough samples for quality audio.
+  // Resolved when PhaseVocoderNode FIFO has enough samples for quality audio.
   // Set at the start of startAudio(), resolved by the metrics handler,
   // and awaited before video/playback state is started.
   const audioReadyResolveRef = useRef<(() => void) | null>(null);
@@ -225,19 +227,10 @@ export function useMediaPlayer() {
           const ctx = audioContextRef.current;
           const now = ctx?.currentTime ?? 0;
 
-          // 1. Set new speed on SoundTouch FIRST — before any nodes stop,
-          // so SoundTouch processes at the new rate from the start.
+          // 1. Set new speed on PhaseVocoderNode FIRST — before any nodes stop,
+          // so the processor uses the new rate from the start.
           playbackSpeedRef.current = speed;
           if (stNode) {
-            const newParams = speedStretchParams(speed);
-            const oldParams = speedStretchParams(prevSpeed);
-            if (
-              newParams.sequenceMs !== oldParams.sequenceMs ||
-              newParams.seekWindowMs !== oldParams.seekWindowMs ||
-              newParams.overlapMs !== oldParams.overlapMs
-            ) {
-              stNode.setStretchParameters(newParams);
-            }
             stNode.playbackRate.setValueAtTime(speed, now);
           }
 
@@ -251,7 +244,7 @@ export function useMediaPlayer() {
 
           const wasPlaying = playbackStateRef.current === 'playing';
 
-          // 3. Bridge silence: start feeding SoundTouch at the new speed
+          // 3. Bridge silence: start feeding PhaseVocoderNode at the new speed
           // BEFORE stopping old audio. This ensures the FIFO never drains.
           // Warmup (3s of silence at init) pre-fills the FIFO, so bridge only
           // needs to cover the brief stop→start gap — 800ms is enough.
@@ -443,6 +436,15 @@ export function useMediaPlayer() {
       : playbackTimeAtStartRef.current;
 
     playbackTimeAtStartRef.current = currentTime;
+
+    // IMMEDIATE ABORT — set before anything else so runAudioIterator
+    // sees it on the very next iteration check, before creating new nodes.
+    // Increment generation FIRST — this is the defense-in-depth mechanism:
+    // even if abortAudioRef gets reset (e.g., by startAudio in a subsequent
+    // transition), the old iterator will see the generation mismatch and exit.
+    audioGenerationRef.current++;
+    abortAudioRef.current = true;
+
     // Keep 'transitioning' state — don't set 'pausing' anymore.
     // The transitioning guard (set by transitionRef before calling stopAudio)
     // blocks concurrent transitions. If stopAudio is called from initMediaPlayer
@@ -457,7 +459,7 @@ export function useMediaPlayer() {
     // Abort the audio iterator — await return() to ensure it finishes before
     // we start a new one. Without await, the old iterator could spawn BufferSources
     // alongside the new one → multiple streams playing simultaneously.
-    // The bridge silence (started before stopAudio) keeps SoundTouch fed.
+    // The bridge silence (started before stopAudio) keeps PhaseVocoderNode fed.
     // FIX: 500ms timeout on return() — MediaBunny's return() may not propagate
     // to a consumer stuck in backpressure await.
     if (audioBufferIteratorRef.current) {
@@ -470,18 +472,18 @@ export function useMediaPlayer() {
       audioBufferIteratorRef.current = null;
 
       // CRITICAL: wait for runAudioIterator to fully exit its for-await loop
-      // and fire the finally block (which releases the lock). iterator.return()
-      // resolves immediately, but runAudioIterator may still be mid-iteration —
-      // creating a BufferSource AFTER we've stopped+cleared queuedAudioNodesRef.
-      // That BufferSource would play uncontrolled → "multiple segments" artifact.
-      // FIX: reduced to 50 attempts (1s) — backpressure fix ensures fast exit.
+      // and fire the finally block (which releases the lock) BEFORE stopping nodes.
+      // If we stop+clear nodes first, the old iterator could create a BufferSource
+      // AFTER the clear but BEFORE the lock is released → that node plays uncontrolled
+      // alongside the new iterator's nodes → multiple segments simultaneously.
+      // abortAudioRef is already set — runAudioIterator will break on next iteration check.
       let waitAttempts = 0;
-      while (runAudioIteratorLockRef.current && waitAttempts < 50) {
+      while (runAudioIteratorLockRef.current && waitAttempts < 150) {
         await new Promise(r => setTimeout(r, 20));
         waitAttempts++;
       }
       if (runAudioIteratorLockRef.current) {
-        console.warn('[audio] stopAudio: runAudioIterator still locked after 1s, force-clearing');
+        console.warn('[audio] stopAudio: runAudioIterator still locked after 3s, force-clearing');
         runAudioIteratorLockRef.current = false;
       }
     }
@@ -505,6 +507,13 @@ export function useMediaPlayer() {
     // Reset triggered effects so they can fire again on next play.
     triggeredEffectsRef.current.clear();
 
+    // IMPORTANT: do NOT reset abortAudioRef here. It stays true until
+    // startAudio explicitly resets it — after the new iterator is created
+    // and running. This closes the race window where:
+    //   stopAudio → abort=false → old iterator resumes → creates nodes →
+    //   overlap with new iterator's nodes.
+    // The old iterator will see abort=true + generation mismatch and exit.
+
     // Don't set 'paused' here — transitionRef handles the final state.
     // If called from initMediaPlayer/cleanup, they set state after.
     console.log('[audio] stopAudio done');
@@ -514,10 +523,10 @@ export function useMediaPlayer() {
   //  START-AUDIO — the only place that creates the audio iterator.
   //  Must NOT be called while an iterator is already running.
   //
-  //  At >1x: starts the audio iterator (bootstrap silence → SoundTouch),
-  //  then waits for SoundTouch FIFO to fill (via metrics event). Video
+  //  At >1x: starts the audio iterator (bootstrap silence → PhaseVocoderNode),
+  //  then waits for FIFO to fill (via metrics event). Video
   //  and 'playing' state are only started after audio is ready.
-  //  At 1x: returns immediately (SoundTouch is bypassed, no FIFO to fill).
+  //  At 1x: returns immediately (PhaseVocoderNode is bypassed, no FIFO to fill).
   // =====================================================================
   const startAudio = async () => {
     console.log('[audio] startAudio start, state=', playbackStateRef.current, 'speed=', playbackSpeedRef.current);
@@ -550,16 +559,23 @@ export function useMediaPlayer() {
       console.warn('[audio] startAudio: old iterator still running after 3s, force-starting');
     }
 
-    // Start the audio iterator — it feeds bootstrap silence into SoundTouch.
+   // Start the audio iterator — it feeds bootstrap silence into PhaseVocoderNode.
     audioContextStartTimeRef.current = ctx.currentTime;
     // FIX: initialize to current playback time so the first buffer from MediaBunny
     // doesn't trigger a false [gap] warning (the iterator starts at this position).
     lastBufferEndRef.current = utilsRef.current.getPlaybackTime();
+
+    // CRITICAL: reset abort flag ONLY after the old iterator is confirmed dead
+    // (lock released by its finally block). This guarantees the old iterator
+    // cannot see abort=false and create nodes alongside the new iterator.
+    // The generation check is a second line of defense.
+    abortAudioRef.current = false;
+
     audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
     void runAudioIteratorRef.current?.();
 
-    // Wait for bootstrap silence to warm up SoundTouch before proceeding.
-    // At 1x, SoundTouch is bypassed (stGain=0) — no wait needed.
+    // Wait for bootstrap silence to warm up PhaseVocoderNode before proceeding.
+    // At 1x, PhaseVocoderNode is bypassed (stGain=0) — no wait needed.
     // We listen for the metrics signal (framesBuffered >= 800 for 2 streaks) rather than
     // relying on a fixed timeout — the FIFO is ready when it's ready.
     if (speed > 1) {
@@ -649,7 +665,7 @@ export function useMediaPlayer() {
         if (audioContextRef.current?.state === 'suspended') {
           await audioContextRef.current.resume();
         }
-        // startAudio() waits for SoundTouch FIFO to be ready at >1x.
+        // startAudio() waits for PhaseVocoderNode FIFO to be ready at >1x.
         // After it resolves, audio is quality — safe to start video + time.
         await startAudioRef.current();
         playbackStateRef.current = 'playing';
@@ -799,14 +815,14 @@ export function useMediaPlayer() {
   }, []);
 
   /**
-   * Audio playback iterator — uses SoundTouchNode for pitch-preserving time-stretch.
+   * Audio playback iterator — uses PhaseVocoderNode for pitch-preserving time-stretch.
    *
    * source.playbackRate = speed → faster audio stream (chipmunk)
-   * stNode.playbackRate = speed → SoundTouch compensates pitch back to normal
+   * stNode.playbackRate = speed → phase vocoder compensates pitch back to normal
    * Net effect: speed-up without chipmunk.
    *
-   * Kaiser interpolation (beta=8.6) + generous overlap-add parameters
-   * (sequenceMs=72, seekWindowMs=20, overlapMs=24) for audio quality.
+   * Phase vocoder (fftSize=2048, overlapFactor=4) — smoother than WSOLA
+   * at extreme ratios, with inherent fftSize-sample latency.
    */
   const runAudioIteratorRef = useRef<(() => Promise<void>) | null>(null);
   const runAudioIteratorLockRef = useRef<boolean>(false);
@@ -819,21 +835,24 @@ export function useMediaPlayer() {
     try {
       if (!audioBufferIteratorRef.current || !audioContextRef.current || !stNodeRef.current) return;
 
+      // Capture the generation at startup — if it changes, stopAudio was called
+      // and this iterator is stale.
+      const myGeneration = audioGenerationRef.current;
+
       const ctx = audioContextRef.current;
       const stNode = stNodeRef.current;
       const speed = playbackSpeedRef.current;
 
-   // Bootstrap: at speeds > 1x, SoundTouch Stretch needs sampleReq=4416 samples
+   // Bootstrap: at speeds > 1x, PhaseVocoderNode needs fftSize samples of input
       // to produce its first output window. Feed silence to prime the pipeline.
-      // sampleReq = 4416 constant for all speeds >= 1x.
-      // Scale with speed: at higher speeds the stretch engine drains the FIFO
+      // Scale with speed: at higher speeds the processor drains the FIFO
       // faster, so we need more silence to keep it warm.
-      // The bridge silence (in speed transition) feeds SoundTouch before this,
+      // The bridge silence (in speed transition) feeds PhaseVocoderNode before this,
       // and the warmup (at init) pre-fills the FIFO. Bootstrap adds final headroom.
       // At 1.5x: 400*1.5=600ms of silence samples, played at 1.5x = 400ms wall-clock.
       // At 2x: 800ms samples, 400ms wall-clock.
       // At 1x: no bootstrap — bypassGain=1 means audio goes directly to output,
-      // and SoundTouch is muted (stGain=0). A bootstrap would eat into the first
+      // and PhaseVocoderNode is muted (stGain=0). A bootstrap would eat into the first
       // 50ms of real audio, causing the "jumbled segments" artifact at start.
       const BOOTSTRAP_MS = speed > 1 ? Math.ceil(400 * speed) : 0;
 
@@ -865,6 +884,23 @@ export function useMediaPlayer() {
       let actualEndCorrection: number | null = null;
 
       for await (const wrapped of audioBufferIteratorRef.current) {
+        // GENERATION CHECK — primary defense. Must come FIRST because
+        // abortAudioRef may be reset by startAudio while the old iterator
+        // is still alive. The generation counter is monotonically increasing
+        // and never reset, so stale iterators always see a mismatch.
+        if (audioGenerationRef.current !== myGeneration) {
+          console.log('[audio] runAudioIterator: stale generation, exiting (gen=' + myGeneration + ', current=' + audioGenerationRef.current + ')');
+          break;
+        }
+
+        // ABORT CHECK — secondary defense. If stopAudio was called, exit
+        // immediately. iterator.return() may take time to propagate
+        // (for-await machinery), but abortAudioRef is set instantly by stopAudio.
+        if (abortAudioRef.current) {
+          console.log('[audio] runAudioIterator: aborted before node creation');
+          break;
+        }
+
         const currentMediaT = utilsRef.current.getPlaybackTime();
 
         // Diagnostic: log gaps between buffers (gap → underrun → click)
@@ -894,7 +930,7 @@ export function useMediaPlayer() {
         }
 
         // Safety: if lastEnd is in the past (speed change created a gap),
-        // fill the gap with silence so SoundTouch's FIFO doesn't starve.
+        // fill the gap with silence so PhaseVocoderNode FIFO doesn't starve.
         // At 1x: skip the gap filler — silence through bypassGain is audible
         // as a stutter (hard boundary with real audio). Let the hardware
         // produce natural silence instead, then chain the next buffer.
@@ -934,7 +970,7 @@ export function useMediaPlayer() {
         }
 
         // Buffer-boundary gain: at >1x, fade-in from 0.5 smooths DC discontinuities
-        // caused by SoundTouch processing. At 1x, SoundTouch is bypassed (stGain=0) —
+        // caused by PhaseVocoderNode processing. At 1x, PhaseVocoderNode is bypassed (stGain=0) —
         // audio goes directly through bypassGain, so starting at 0.5 creates an
         // audible amplitude dip (previous buffer ends at 1.0, new one starts at 0.5).
         // Use gain=1 at 1x to avoid the dip.
@@ -946,7 +982,7 @@ export function useMediaPlayer() {
           bufGain.gain.setTargetAtTime(1, snappedStart, 0.001);
         }
 
-        // Always feed SoundTouch (FIFO stays warm). Also feed bypassGain for 1x.
+        // Always feed PhaseVocoderNode (FIFO stays warm). Also feed bypassGain for 1x.
         source.connect(stNode);
         source.connect(bufGain);
         bufGain.connect(bypassGainRef.current!);
@@ -1144,34 +1180,24 @@ export function useMediaPlayer() {
         const sampleRate = await audioTrack.getSampleRate();
         audioContextRef.current = new AudioContextClass({ sampleRate });
 
-        // Register and create SoundTouchNode for pitch-preserving time-stretch
-        await SoundTouchNode.register(audioContextRef.current, '/soundtouch-processor.js');
-        await SoundTouchNode.registerStrategyModule(audioContextRef.current, '/kaiser-strategy.js');
+       // Register and create PhaseVocoderNode for pitch-preserving time-stretch
+        await PhaseVocoderNode.register(audioContextRef.current, '/phase-vocoder-processor.js');
 
-        stNodeRef.current = new SoundTouchNode({
+        stNodeRef.current = new PhaseVocoderNode({
           context: audioContextRef.current,
-          interpolationStrategy: 'kaiser',
+          fftSize: 2048,
+          overlapFactor: 4,
           sampleBufferType: 'fifo',
         });
-        // Kaiser уже зарегистрирован в worklet-регистре (soundtouch-processor.js
-        // экспонирует strategyRegistry как globalThis._strategyRegistry, kaiser-strategy.js
-        // само-регистрируется при addModule). setInterpolationStrategy — safeguard.
-        stNodeRef.current.setInterpolationStrategy('kaiser');
-        // Initialize stretch params with overlapMs=40 (same for all speeds >= 1x).
-        // This way, when speed changes from 1x to >1x, NO stretch parameter change
-        // is needed — SoundTouch's WSOLA engine doesn't flush its internal buffer.
-        // At 1x SoundTouch is bypassed (stGain=0), so overlapMs=40 is harmless.
-        // outputPerWindow = 3456-1920 = 1536, 1536/128 = 12 ✓ (divisible).
-        stNodeRef.current.setStretchParameters({ sequenceMs: 72, seekWindowMs: 20, overlapMs: 40, quickSeek: false });
 
-        // Monitor SoundTouchNode for underruns (indicates pipeline can't keep up)
+        // Monitor PhaseVocoderNode for underruns (indicates pipeline can't keep up)
         let stReadyStreak = 0; // consecutive checks above target
         stNodeRef.current.addEventListener('metrics', (e: any) => {
           const m = e.detail;
           const delta = m.underrunCount - prevUnderrunsRef.current;
           prevUnderrunsRef.current = m.underrunCount;
           liveUnderrunCountRef.current = m.underrunCount;
-          // At 1x SoundTouch is bypassed (stGain=0) — underruns are harmless
+          // At 1x PhaseVocoderNode is bypassed (stGain=0) — underruns are harmless
           // noise from a cold FIFO that we don't need to warn about.
           const curSpeed = usePlayerStore.getState().playbackSpeed;
           if (delta > 0 && curSpeed > 1) {
@@ -1189,7 +1215,7 @@ export function useMediaPlayer() {
             if (m.framesBuffered >= target) {
               stReadyStreak++;
               if (stReadyStreak >= 2) {
-                console.log(`[audio] SoundTouch ready: buffered=${m.framesBuffered} >= ${target} (stable)`);
+                console.log(`[audio] PhaseVocoderNode ready: buffered=${m.framesBuffered} >= ${target} (stable)`);
                 const resolve = audioReadyResolveRef.current;
                 audioReadyResolveRef.current = null;
                 stReadyStreak = 0;
@@ -1229,8 +1255,8 @@ export function useMediaPlayer() {
         gainNodeRef.current = audioContextRef.current.createGain();
 
         // Bypass gain: at 1x, audio goes directly to compressor (0 underruns).
-        // stGain: at >1x, audio goes through SoundTouch.
-        // SoundTouch always receives audio (FIFO stays warm) for seamless transitions.
+        // stGain: at >1x, audio goes through PhaseVocoderNode.
+        // PhaseVocoderNode always receives audio (FIFO stays warm) for seamless transitions.
         const bypassGain = audioContextRef.current.createGain();
         bypassGain.gain.value = 1; // default: bypass at 1x
         const stGain = audioContextRef.current.createGain();
@@ -1256,9 +1282,9 @@ export function useMediaPlayer() {
         bypassGainRef.current = bypassGain;
         stGainRef.current = stGain;
 
-  // Warmup SoundTouch FIFO: feed 3 seconds of silence at 2x
+  // Warmup PhaseVocoderNode FIFO: feed 3 seconds of silence at 2x
         // so the FIFO is pre-filled when the first speed change happens.
-        // stGain is 0 at 1x, so the warmup silence is inaudible through SoundTouch.
+        // stGain is 0 at 1x, so the warmup silence is inaudible through PhaseVocoderNode.
         // The real audio will go through bypassGain (which is at 1).
         {
           const warmupCtx = audioContextRef.current!;
@@ -1276,7 +1302,7 @@ export function useMediaPlayer() {
           // It stops on its own via onended. By the time the first speed change
           // happens, the FIFO will be significantly pre-filled.
           warmupSource.onended = () => {
-            console.log(`[audio] SoundTouch warmup done: ${warmupSamples} samples at 2x`);
+            console.log(`[audio] PhaseVocoderNode warmup done: ${warmupSamples} samples at 2x`);
           };
         }
 
@@ -1317,7 +1343,7 @@ export function useMediaPlayer() {
           }
 
           // Click detection: sudden jumps between consecutive samples
-          // (indicates buffer-boundary discontinuities / WSOLA clicks).
+          // (indicates buffer-boundary discontinuities / phase vocoder clicks).
           // Thresholds are high — normal speech plosives (/p/, /t/, /k/)
           // produce deltas > 0.3. Only flag if a significant fraction of
           // the waveform is discontinuous.
@@ -1353,8 +1379,8 @@ export function useMediaPlayer() {
             console.warn(`[output-rip] hfRatio=${hfRatio.toFixed(2)} speed=${speed}x`);
           }
 
-          // Mid-range (1-4kHz): WSOLA boundary artifacts live here.
-          // SoundTouch time-stretching creates periodic ripples at the
+          // Mid-range (1-4kHz): phase vocoder boundary artifacts live here.
+          // Phase vocoder can create periodic ripples at the
           // overlap boundary — detectable as sustained mid-range energy.
           const midStart = Math.floor(1000 / binWidth);
           const midEnd = Math.floor(4000 / binWidth);
@@ -1364,13 +1390,13 @@ export function useMediaPlayer() {
           }
           const midRatio = midEnergy / totalEnergy;
 
-          // Normal speech: midRatio ~0.3-0.4. SoundTouch artifacts push it >0.55.
+          // Normal speech: midRatio ~0.3-0.4. Phase vocoder artifacts push it >0.55.
           if (midRatio > 0.55 && speed > 1) {
             console.warn(`[output-rip-mid] midRatio=${midRatio.toFixed(2)} speed=${speed}x`);
           }
 
           // Rate-of-change: sudden HF energy shifts between consecutive measurements
-          // indicate WSOLA boundary artifacts (ripping). Store previous hfRatio.
+          // indicate phase vocoder boundary artifacts (ripping). Store previous hfRatio.
           if ((analyser as any)._prevHfRatio != null) {
             const hfDelta = Math.abs(hfRatio - (analyser as any)._prevHfRatio);
             if (hfDelta > 0.15 && speed > 1) {
@@ -1438,13 +1464,12 @@ export function useMediaPlayer() {
         canvasCtxRef.current = canvasRef.current.getContext('2d');
       }
 
-      // Auto-play on init: wait for audio to be ready (SoundTouch FIFO),
-      // then start video, then set playing.
+      // Auto-play on init: start video iterator, then use transitionRef
+      // for audio — the single-gate prevents the speed subscriber from
+      // firing its own transition concurrently.
       if (audioContextRef.current?.state === 'running') {
-        await startAudioRef.current();
         await startVideoIteratorRef.current();
-        playbackStateRef.current = 'playing';
-        playerActions.setIsPlaying(true);
+        await transitionRef.current('playing');
       }
     } catch (error) {
       console.error('Error initializing media player:', error);

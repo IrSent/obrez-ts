@@ -10,7 +10,7 @@ import { test, expect } from '@playwright/test';
  * Underrun analysis:
  * - The first underrun event at a new speed often includes accumulated underruns
  *   from the previous speed (e.g., at 1x, underruns aren't logged because
- *   curSpeed <= 1, but they still accumulate in SoundTouch's counter).
+ *   curSpeed <= 1, but they still accumulate in PhaseVocoderNode's counter).
  * - The `total` field in [st-underrun] logs lets us compute the delta from
  *   the previous speed's final total, separating initial carry-over from new.
  */

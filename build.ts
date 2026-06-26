@@ -16,9 +16,9 @@ async function build() {
     console.log('Copying public assets...');
     await $`cp -r public/* dist/`;
 
-    // Copy SoundTouch processor (AudioWorklet, must be served as separate file)
-    console.log('Copying SoundTouch processor...');
-    await $`cp public/soundtouch-processor.js dist/`;
+    // Copy Phase Vocoder processor (AudioWorklet, must be served as separate file)
+    console.log('Copying Phase Vocoder processor...');
+    await $`cp public/phase-vocoder-processor.js dist/`;
 
     // Get git build number (commit count from HEAD)
     const buildNum = (await $`git rev-list HEAD --count`.text()).trim();
@@ -26,7 +26,12 @@ async function build() {
     // Build with Bun and Tailwind
     console.log('Building with Bun and Tailwind...');
     await Bun.build({
-      entrypoints: ['./src/index.html'],
+      entrypoints: [
+        './src/index.html',
+        './src/json-import.worker.ts',
+        './src/json-export.worker.ts',
+        './src/censor-worker.ts',
+      ],
       outdir: './dist',
       target: 'browser',
       plugins: [tailwind],

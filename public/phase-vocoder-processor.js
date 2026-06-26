@@ -615,9 +615,6 @@ var lanczosStrategy = {
 //#endregion
 //#region ../core/src/interpolationStrategyRegistry.ts
 var strategyRegistry = /* @__PURE__ */ new Map();
-// Expose registry on AudioWorkletGlobalScope so strategy modules (kaiser, etc.)
-// can self-register during addModule() evaluation — before the processor is created.
-globalThis._strategyRegistry = strategyRegistry;
 var activeStrategyId = "lanczos";
 function readStrategySelection(strategy) {
 	if (typeof strategy === "string") return { id: strategy };
@@ -2019,16 +2016,411 @@ var STANDARD_PARAMETER_DESCRIPTORS = [
 	}
 ];
 //#endregion
-//#region src/processor.ts
-var PROCESSOR_NAME = "soundtouch-processor";
+//#region ../stretch-phase-vocoder/src/fft.ts
 /**
-* Audio render-thread processor that applies SoundTouch transformations to stereo blocks.
+* In-place radix-2 Cooley-Tukey FFT.
 *
 * @remarks
-* Receives audio from the main thread, applies pitch, tempo, and rate transformations,
-* and outputs processed stereo audio. Handles runtime strategy switching via messages.
+* Transforms `re` and `im` in-place. Both arrays must have the same length,
+* which must be a power of two (512–4096). Inputs outside these constraints
+* produce undefined results.
+*
+* @param re Real part — modified in-place.
+* @param im Imaginary part — modified in-place.
 */
-var SoundTouchProcessor = class extends SoundTouchProcessorBase {
+function fft(re, im) {
+	const N = re.length;
+	let j = 0;
+	for (let i = 1; i < N; i++) {
+		let bit = N >> 1;
+		for (; j & bit; bit >>= 1) j ^= bit;
+		j ^= bit;
+		if (i < j) {
+			let t = re[i];
+			re[i] = re[j];
+			re[j] = t;
+			t = im[i];
+			im[i] = im[j];
+			im[j] = t;
+		}
+	}
+	for (let len = 2; len <= N; len <<= 1) {
+		const halfLen = len >> 1;
+		const ang = -2 * Math.PI / len;
+		const wBaseRe = Math.cos(ang);
+		const wBaseIm = Math.sin(ang);
+		for (let i = 0; i < N; i += len) {
+			let wRe = 1;
+			let wIm = 0;
+			for (let k = 0; k < halfLen; k++) {
+				const uRe = re[i + k];
+				const uIm = im[i + k];
+				const vRe = re[i + k + halfLen] * wRe - im[i + k + halfLen] * wIm;
+				const vIm = re[i + k + halfLen] * wIm + im[i + k + halfLen] * wRe;
+				re[i + k] = uRe + vRe;
+				im[i + k] = uIm + vIm;
+				re[i + k + halfLen] = uRe - vRe;
+				im[i + k + halfLen] = uIm - vIm;
+				const nextWRe = wRe * wBaseRe - wIm * wBaseIm;
+				wIm = wRe * wBaseIm + wIm * wBaseRe;
+				wRe = nextWRe;
+			}
+		}
+	}
+}
+/**
+* In-place inverse FFT via conjugate-forward-conjugate-scale.
+*
+* @remarks
+* Modifies `re` and `im` in-place. Both arrays must be the same power-of-two
+* length. The imaginary part of the output is numerically near-zero for
+* real-valued inputs and can be discarded.
+*
+* @param re Real part — modified in-place.
+* @param im Imaginary part — modified in-place.
+*/
+function ifft(re, im) {
+	const N = re.length;
+	for (let i = 0; i < N; i++) im[i] = -im[i];
+	fft(re, im);
+	const inv = 1 / N;
+	for (let i = 0; i < N; i++) {
+		re[i] *= inv;
+		im[i] = -im[i] * inv;
+	}
+}
+//#endregion
+//#region ../stretch-phase-vocoder/src/windows.ts
+/**
+* Generates a Hann window of the given size.
+*
+* @remarks
+* Uses the symmetric form `0.5 * (1 − cos(2πn / (N−1)))` for N > 1.
+* For `size = 1` the single coefficient is `1.0`.
+* When used with overlap-add, 75 % overlap (factor 4) yields a normalization
+* constant of 2 (sum of four Hann windows = 2).
+*
+* @param size Number of coefficients.
+* @returns Float32Array of length `size`.
+*/
+function makeHannWindow(size) {
+	const w = new Float32Array(size);
+	if (size === 1) {
+		w[0] = 1;
+		return w;
+	}
+	const denom = size - 1;
+	for (let i = 0; i < size; i++) w[i] = .5 * (1 - Math.cos(2 * Math.PI * i / denom));
+	return w;
+}
+//#endregion
+//#region ../stretch-phase-vocoder/src/PhaseVocoder.ts
+/**
+* FFT-based phase vocoder that implements the `StretchPipe` interface.
+*
+* @remarks
+* Provides high-quality time-stretching via phase accumulation and
+* overlap-add reconstruction. Operates on interleaved stereo frames
+* (L, R, L, R, …) matching the SoundTouch pipeline format.
+*
+* Use as a drop-in replacement for the WSOLA `Stretch` stage by passing
+* a {@link createPhaseVocoderFactory} result to `SoundTouchOptions.stretchFactory`.
+*
+* **Algorithm overview:**
+* 1. Accumulate analysis frames into a sliding `fftSize`-sample window.
+* 2. Apply a Hann window and compute the FFT of each channel.
+* 3. Compute instantaneous frequency per bin and accumulate synthesis phase.
+* 4. Reconstruct with IFFT, apply Hann window, and overlap-add into an output buffer.
+* 5. Extract `Hs = round(Ha / tempo)` frames per processing step.
+*
+* The normalization factor is `overlapFactor / 2` (for a Hann window, four
+* 75 %-overlapping windows sum to 2; factor-2 windows sum to 1).
+*
+* @example
+* import { SoundTouch } from '@soundtouchjs/core';
+* import { createPhaseVocoderFactory } from '@soundtouchjs/stretch-phase-vocoder';
+*
+* const st = new SoundTouch({ stretchFactory: createPhaseVocoderFactory() });
+*/
+var PhaseVocoder = class PhaseVocoder {
+	/** @inheritdoc */
+	inputBuffer = null;
+	/** @inheritdoc */
+	outputBuffer = null;
+	_tempo = 1;
+	fftSize;
+	overlapFactor;
+	analysisHop;
+	window;
+	/** Reciprocal of the OLA normalization constant (overlapFactor / 2). */
+	normInv;
+	analysisL;
+	analysisR;
+	reL;
+	imL;
+	reR;
+	imR;
+	prevPhaseL;
+	prevPhaseR;
+	synthPhaseL;
+	synthPhaseR;
+	olaL;
+	olaR;
+	inputScratch;
+	outputScratch;
+	/** Whether the phase accumulators hold valid state from a previous frame. */
+	hasFrame = false;
+	/**
+	* Creates a PhaseVocoder instance.
+	* @param options Configuration options.
+	*/
+	constructor(options = {}) {
+		this.fftSize = options.fftSize ?? 2048;
+		this.overlapFactor = options.overlapFactor ?? 4;
+		this.analysisHop = this.fftSize / this.overlapFactor;
+		this.window = makeHannWindow(this.fftSize);
+		this.normInv = 2 / this.overlapFactor;
+		const N = this.fftSize;
+		const bins = N / 2 + 1;
+		const Ha = this.analysisHop;
+		this.analysisL = new Float32Array(N);
+		this.analysisR = new Float32Array(N);
+		this.reL = new Float32Array(N);
+		this.imL = new Float32Array(N);
+		this.reR = new Float32Array(N);
+		this.imR = new Float32Array(N);
+		this.prevPhaseL = new Float32Array(bins);
+		this.prevPhaseR = new Float32Array(bins);
+		this.synthPhaseL = new Float32Array(bins);
+		this.synthPhaseR = new Float32Array(bins);
+		this.olaL = new Float32Array(N);
+		this.olaR = new Float32Array(N);
+		this.inputScratch = new Float32Array(Ha * 2);
+		this.outputScratch = new Float32Array(N * 2);
+	}
+	/**
+	* Tempo multiplier for time-stretching (1.0 = original speed).
+	*
+	* @remarks
+	* Matches the convention of the WSOLA `Stretch` stage: values greater than 1
+	* speed up playback (shorter output) and values less than 1 slow it down
+	* (longer output). The synthesis hop is derived as `round(Ha / tempo)`.
+	*/
+	get tempo() {
+		return this._tempo;
+	}
+	set tempo(t) {
+		this._tempo = t;
+	}
+	/**
+	* Minimum number of input frames required before `process()` can run.
+	*
+	* @remarks
+	* Equal to the analysis hop size `fftSize / overlapFactor`.
+	*/
+	get sampleReq() {
+		return this.analysisHop;
+	}
+	/**
+	* Resets all internal state including the analysis window and OLA buffer.
+	*/
+	clear() {
+		this.analysisL.fill(0);
+		this.analysisR.fill(0);
+		this.olaL.fill(0);
+		this.olaR.fill(0);
+		this.clearMidBuffer();
+	}
+	/**
+	* Resets only the phase accumulators without touching the sample buffers.
+	*
+	* @remarks
+	* Call this when playback position changes (seeking) so the phase
+	* continuity invariant is re-established on the next frame.
+	*/
+	clearMidBuffer() {
+		this.prevPhaseL.fill(0);
+		this.prevPhaseR.fill(0);
+		this.synthPhaseL.fill(0);
+		this.synthPhaseR.fill(0);
+		this.hasFrame = false;
+	}
+	/**
+	* Configures the processing parameters.
+	*
+	* @remarks
+	* The phase vocoder algorithm is sample-rate independent; `sampleRate` and
+	* WSOLA-specific timing parameters are accepted for interface compatibility
+	* but have no effect on output.
+	*
+	* @param _sampleRate Ignored.
+	* @param _sequenceMs Ignored.
+	* @param _seekWindowMs Ignored.
+	* @param _overlapMs Ignored.
+	*/
+	setParameters(_sampleRate, _sequenceMs, _seekWindowMs, _overlapMs) {}
+	/**
+	* Accepts WSOLA timing parameter updates for interface compatibility.
+	*
+	* @remarks
+	* The phase vocoder does not expose WSOLA-style timing parameters; this
+	* method is a no-op and exists to satisfy the `StretchPipe` interface.
+	*
+	* @param _params Ignored.
+	*/
+	setStretchParameters(_params) {}
+	/**
+	* Creates an independent copy with the same FFT size and overlap factor.
+	*
+	* @remarks
+	* The clone starts with empty buffers and no phase history — equivalent to
+	* constructing a new instance with the same options.
+	*
+	* @returns A new `PhaseVocoder` instance.
+	*/
+	clone() {
+		const c = new PhaseVocoder({
+			fftSize: this.fftSize,
+			overlapFactor: this.overlapFactor
+		});
+		c.tempo = this._tempo;
+		return c;
+	}
+	/**
+	* Processes one analysis hop from `inputBuffer` and writes the synthesis
+	* result to `outputBuffer`.
+	*
+	* @remarks
+	* Reads exactly `sampleReq` frames from `inputBuffer` and produces
+	* `round(sampleReq / tempo)` frames into `outputBuffer`. Does nothing if
+	* either buffer is unset or if `inputBuffer` contains fewer than `sampleReq`
+	* frames.
+	*/
+	process() {
+		if (!this.inputBuffer || !this.outputBuffer) return;
+		const Ha = this.analysisHop;
+		if (this.inputBuffer.frameCount < Ha) return;
+		const N = this.fftSize;
+		const bins = N / 2 + 1;
+		const Hs = Math.max(1, Math.round(Ha / this._tempo));
+		if (this.inputScratch.length < Ha * 2) this.inputScratch = new Float32Array(Ha * 2);
+		if (this.outputScratch.length < Hs * 2) this.outputScratch = new Float32Array(Hs * 2);
+		this.inputBuffer.extract(this.inputScratch, 0, Ha);
+		this.inputBuffer.receive(Ha);
+		this.analysisL.copyWithin(0, Ha);
+		this.analysisR.copyWithin(0, Ha);
+		for (let i = 0; i < Ha; i++) {
+			this.analysisL[N - Ha + i] = this.inputScratch[i * 2];
+			this.analysisR[N - Ha + i] = this.inputScratch[i * 2 + 1];
+		}
+		this._processChannel(this.analysisL, this.reL, this.imL, this.prevPhaseL, this.synthPhaseL, Ha, Hs, bins);
+		this._processChannel(this.analysisR, this.reR, this.imR, this.prevPhaseR, this.synthPhaseR, Ha, Hs, bins);
+		this.hasFrame = true;
+		const norm = this.normInv;
+		for (let i = 0; i < N; i++) {
+			this.olaL[i] += this.reL[i] * this.window[i] * norm;
+			this.olaR[i] += this.reR[i] * this.window[i] * norm;
+		}
+		const toExtract = Math.min(Hs, N);
+		for (let i = 0; i < toExtract; i++) {
+			this.outputScratch[i * 2] = this.olaL[i];
+			this.outputScratch[i * 2 + 1] = this.olaR[i];
+		}
+		this.outputBuffer.putSamples(this.outputScratch, 0, toExtract);
+		this.olaL.copyWithin(0, toExtract);
+		this.olaR.copyWithin(0, toExtract);
+		this.olaL.fill(0, N - toExtract);
+		this.olaR.fill(0, N - toExtract);
+	}
+	/**
+	* Runs one FFT frame through the phase vocoder for a single channel.
+	*
+	* @remarks
+	* Reads from `analysis`, writes synthesized real output back into `re` (the
+	* imaginary output is discarded). Updates `prevPhase` and `synthPhase` in-place.
+	*
+	* @param analysis fftSize-sample sliding analysis window.
+	* @param re FFT real working buffer (modified in-place).
+	* @param im FFT imaginary working buffer (modified in-place).
+	* @param prevPhase Previous-frame phase per bin (modified in-place).
+	* @param synthPhase Accumulated synthesis phase per bin (modified in-place).
+	* @param Ha Analysis hop size.
+	* @param Hs Synthesis hop size.
+	* @param bins Number of positive-frequency bins (fftSize/2 + 1).
+	*/
+	_processChannel(analysis, re, im, prevPhase, synthPhase, Ha, Hs, bins) {
+		const N = this.fftSize;
+		const w = this.window;
+		for (let i = 0; i < N; i++) {
+			re[i] = analysis[i] * w[i];
+			im[i] = 0;
+		}
+		fft(re, im);
+		const twoPiOverN = 2 * Math.PI / N;
+		if (!this.hasFrame) for (let k = 0; k < bins; k++) {
+			const phase = Math.atan2(im[k], re[k]);
+			prevPhase[k] = phase;
+			synthPhase[k] = phase;
+		}
+		else {
+			for (let k = 0; k < bins; k++) {
+				const mag = Math.sqrt(re[k] * re[k] + im[k] * im[k]);
+				const phase = Math.atan2(im[k], re[k]);
+				const expectedAdvance = k * twoPiOverN * Ha;
+				let delta = phase - prevPhase[k] - expectedAdvance;
+				delta -= 2 * Math.PI * Math.round(delta / (2 * Math.PI));
+				const trueFreq = k * twoPiOverN + delta / Ha;
+				synthPhase[k] += trueFreq * Hs;
+				prevPhase[k] = phase;
+				re[k] = mag * Math.cos(synthPhase[k]);
+				im[k] = mag * Math.sin(synthPhase[k]);
+			}
+			for (let k = bins; k < N; k++) {
+				const mirror = N - k;
+				re[k] = re[mirror];
+				im[k] = -im[mirror];
+			}
+		}
+		ifft(re, im);
+	}
+};
+/**
+* Creates a `StretchFactory` that produces `PhaseVocoder` instances.
+*
+* @remarks
+* Pass the returned factory to `SoundTouchOptions.stretchFactory` to use the
+* phase vocoder as the time-stretch stage inside `SoundTouch`.
+*
+* @param fftSize FFT frame size. @defaultValue 2048
+* @param overlapFactor Overlap factor. @defaultValue 4
+* @returns A `StretchFactory` bound to the given FFT parameters.
+*
+* @example
+* import { SoundTouch } from '@soundtouchjs/core';
+* import { createPhaseVocoderFactory } from '@soundtouchjs/stretch-phase-vocoder';
+*
+* const st = new SoundTouch({ stretchFactory: createPhaseVocoderFactory(1024, 4) });
+*/
+function createPhaseVocoderFactory(fftSize = 2048, overlapFactor = 4) {
+	return (_sampleRate, opts) => new PhaseVocoder({
+		fftSize,
+		overlapFactor,
+		...opts
+	});
+}
+//#endregion
+//#region src/phase-vocoder-processor.ts
+var PROCESSOR_NAME = "phase-vocoder-processor";
+/**
+* Audio render-thread processor that applies SoundTouch + phase vocoder transformations.
+*
+* @remarks
+* Uses a `PhaseVocoder` as the time-stretch stage (via `stretchFactory`) inside
+* a `SoundTouch` pipeline, enabling smoother time-stretching at extreme ratios
+* compared to the default WSOLA algorithm. Handles runtime strategy switching and
+* reports observability metrics via the message port.
+*/
+var PhaseVocoderProcessor = class extends SoundTouchProcessorBase {
 	/** Static AudioParam metadata consumed by the browser. */
 	static get parameterDescriptors() {
 		return STANDARD_PARAMETER_DESCRIPTORS;
@@ -2041,10 +2433,13 @@ var SoundTouchProcessor = class extends SoundTouchProcessorBase {
 	* so render-thread startup remains resilient.
 	*/
 	constructor(options) {
-		super("[SoundTouchProcessor]", {
+		const fftSize = options?.processorOptions?.fftSize ?? 2048;
+		const overlapFactor = options?.processorOptions?.overlapFactor ?? 4;
+		super("[PhaseVocoderProcessor]", {
 			sampleRate,
 			sampleBufferType: options?.processorOptions?.sampleBufferType ?? "circular",
-			interpolationStrategy: SoundTouchProcessorBase.resolveStrategy(options?.processorOptions?.interpolationStrategy, "[SoundTouchProcessor]")
+			interpolationStrategy: SoundTouchProcessorBase.resolveStrategy(options?.processorOptions?.interpolationStrategy, "[PhaseVocoderProcessor]"),
+			stretchFactory: createPhaseVocoderFactory(fftSize, overlapFactor)
 		});
 	}
 	onProcessComplete(result) {
@@ -2058,7 +2453,7 @@ var SoundTouchProcessor = class extends SoundTouchProcessorBase {
 		});
 	}
 };
-registerProcessor(PROCESSOR_NAME, SoundTouchProcessor);
+registerProcessor(PROCESSOR_NAME, PhaseVocoderProcessor);
 //#endregion
 
-//# sourceMappingURL=soundtouch-processor.js.map
+//# sourceMappingURL=phase-vocoder-processor.js.map
