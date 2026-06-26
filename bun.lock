@@ -6,11 +6,7 @@
       "name": "obrez-ts",
       "dependencies": {
         "@fontsource-variable/rubik": "^5.2.8",
-        "@soundtouchjs/audio-worklet": "^2.0.4",
-        "@soundtouchjs/interpolation-strategy-blackman": "^2.0.4",
-        "@soundtouchjs/interpolation-strategy-hann": "^2.0.4",
-        "@soundtouchjs/interpolation-strategy-kaiser": "^2.0.4",
-        "@soundtouchjs/interpolation-strategy-linear": "^2.0.4",
+        "@soundtouchjs/phase-vocoder-worklet": "^2.0.4",
         "mediabunny": "^1.46.0",
         "react": "^19.0.0",
         "react-dom": "^19.0.0",
@@ -58,19 +54,13 @@
 
     "@playwright/test": ["@playwright/test@1.60.0", "", { "dependencies": { "playwright": "1.60.0" }, "bin": { "playwright": "cli.js" } }, "sha512-O71yZIbAh/PxDMNGns37GHBIfrVkEVyn+AXyIa5dOTfb4/xNvRWV+Vv/NMbNCtODB/pO7vLlF2OTmMVLhmr7Ag=="],
 
-    "@soundtouchjs/audio-worklet": ["@soundtouchjs/audio-worklet@2.0.4", "", { "dependencies": { "@soundtouchjs/core": "2.0.4", "@soundtouchjs/interpolation-strategy-lanczos": "2.0.4", "@soundtouchjs/worklet-base": "2.0.4" } }, "sha512-Qfj0wjo3sG5vLsgEeepvs0xo9KjhpicYB1JOMEqnLyy79/DPleNE3x2qwVTdb7ATl0NVFtSyGJggLmY1M40viA=="],
-
     "@soundtouchjs/core": ["@soundtouchjs/core@2.0.4", "", { "dependencies": { "@soundtouchjs/interpolation-strategy-lanczos": "2.0.4" } }, "sha512-QVCEtyyVPPFGA4WW9NAXKZb/ujLpUGZeMexkuqJYwh0lVZ5fV+iWQHfI86xLpBSo676E0M+5cskBd6gecV8pUA=="],
-
-    "@soundtouchjs/interpolation-strategy-blackman": ["@soundtouchjs/interpolation-strategy-blackman@2.0.4", "", {}, "sha512-ObZ1GdSMEem7gQ+RTZtgl+H1RPgzjUP8A0icjBA5FFYdWMLFqXSy2rVxvTqMzWPLu1LHsZ8Ku9aCgeZ2LTdY2w=="],
-
-    "@soundtouchjs/interpolation-strategy-hann": ["@soundtouchjs/interpolation-strategy-hann@2.0.4", "", {}, "sha512-GvNe5M8mE+0KXHGCwo+wLSVmp56v8yzxYSdVkERpLdD2fAz5fxW0EqAvmBSpqEmy5jLp2u9EkJKcdx/+bGFePA=="],
-
-    "@soundtouchjs/interpolation-strategy-kaiser": ["@soundtouchjs/interpolation-strategy-kaiser@2.0.4", "", {}, "sha512-8Qk0AtIDYI91l0e+Z2oMEf7MgosCV8xdH8PO1vqu1qjbN8caKu7gQUMaLK5Mc3KjsJpBlg7vm1fUxLDNiQqgqw=="],
 
     "@soundtouchjs/interpolation-strategy-lanczos": ["@soundtouchjs/interpolation-strategy-lanczos@2.0.4", "", {}, "sha512-yjmKTFqxcfZbR34gVybaMjrYJETvYk6gKzgRpZ1NQsIdQdLJnbFnvn88H2HH7NUUZgcUTtC+y9fsQWFurw755w=="],
 
-    "@soundtouchjs/interpolation-strategy-linear": ["@soundtouchjs/interpolation-strategy-linear@2.0.4", "", {}, "sha512-nvLEoBOSyPGmkCAejhayWUmYtg1GTAYajPnvSFq87vWOX7eVa4zPc7u8FJYH4vnhVIliLOIPPA6E8UASj3iEeg=="],
+    "@soundtouchjs/phase-vocoder-worklet": ["@soundtouchjs/phase-vocoder-worklet@2.0.4", "", { "dependencies": { "@soundtouchjs/core": "2.0.4", "@soundtouchjs/stretch-phase-vocoder": "2.0.4", "@soundtouchjs/worklet-base": "2.0.4" } }, "sha512-kq3cXUGgbssUoi78SmcrA4v6xrGX1h5rj4MDL+M66QsBkzJmelfx82WWScr8pYuyVihT5uoHyCu540BKnSaVIw=="],
+
+    "@soundtouchjs/stretch-phase-vocoder": ["@soundtouchjs/stretch-phase-vocoder@2.0.4", "", { "peerDependencies": { "@soundtouchjs/core": "2.0.4" } }, "sha512-STFMvg+9iRSEyx06DzWOmggEvGcHFuOsMlV1nsARa+1YHILGdskn32M9GFMKPtyRXW+j4WG89XLGgT/1TaKs5g=="],
 
     "@soundtouchjs/worklet-base": ["@soundtouchjs/worklet-base@2.0.4", "", { "dependencies": { "@soundtouchjs/core": "2.0.4" } }, "sha512-2gj49iFxrsvxuecFYIfeJFcgnMp6y5lSHCa5kykBPFOsnmSIfTVJYJCNrFNn4m6hWhobBQbdS/TfHptKehaBLg=="],
 

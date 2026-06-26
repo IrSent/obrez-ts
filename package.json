@@ -24,11 +24,7 @@
   "homepage": "https://github.com/IrSent/obrez-ts#readme",
   "dependencies": {
     "@fontsource-variable/rubik": "^5.2.8",
-    "@soundtouchjs/audio-worklet": "^2.0.4",
-    "@soundtouchjs/interpolation-strategy-blackman": "^2.0.4",
-    "@soundtouchjs/interpolation-strategy-hann": "^2.0.4",
-    "@soundtouchjs/interpolation-strategy-kaiser": "^2.0.4",
-    "@soundtouchjs/interpolation-strategy-linear": "^2.0.4",
+    "@soundtouchjs/phase-vocoder-worklet": "^2.0.4",
     "mediabunny": "^1.46.0",
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
