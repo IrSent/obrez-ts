@@ -1,4 +1,4 @@
-import { memo, useState } from 'react';
+import { memo, useEffect, useState } from 'react';
 import { usePlayerStore } from '../../store/playerStore';
 import type { SoundCensoringEffect } from '../../types';
 
@@ -34,15 +34,18 @@ interface EffectModalProps {
   segmentStart: number;
   onClose: () => void;
   onAdd: (effect: SoundCensoringEffect) => void;
+  onUpdate?: (id: string, updates: Partial<SoundCensoringEffect>) => void;
+  effect?: SoundCensoringEffect | null; // existing effect → edit mode
 }
 
 function uid(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) => {
+const EffectModal = memo(({ segmentStart, onClose, onAdd, onUpdate, effect }: EffectModalProps) => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
   const soundList = Object.values(bleepSounds);
+  const isEdit = !!effect && !!onUpdate;
 
   const [selectedSoundId, setSelectedSoundId] = useState('');
   const [volume, setVolume] = useState(1);
@@ -52,22 +55,54 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
   const [dampenAmount, setDampenAmount] = useState(1);
   const [dampenType, setDampenType] = useState<'sharp' | 'parabolic'>('sharp');
 
+  // Populate fields from existing effect in edit mode.
+  useEffect(() => {
+    if (isEdit && effect) {
+      setSelectedSoundId(effect.soundId);
+      setVolume(effect.volume);
+      setVolumeMode((effect as any).volumeMode ?? 'manual');
+      setPlaybackRate(effect.playbackRate);
+      setDampenOriginal(effect.dampenOriginal);
+      setDampenAmount(effect.dampenAmount);
+      setDampenType(effect.dampenType);
+    }
+  }, [isEdit, effect]);
+
+  // Pre-select the first bleep sound when the modal opens (add mode only).
+  useEffect(() => {
+    if (!isEdit && !selectedSoundId && soundList.length > 0) {
+      setSelectedSoundId(soundList[0].id);
+    }
+  }, [segmentStart, soundList, isEdit]);
+
   const handleSubmit = () => {
     if (!selectedSoundId) return;
 
-    const effect: SoundCensoringEffect = {
-      id: uid(),
-      segmentStart,
-      soundId: selectedSoundId,
-      volume,
-      volumeMode,
-      playbackRate,
-      dampenOriginal,
-      dampenAmount,
-      dampenType,
-      effectType: 'sound',
-    };
-    onAdd(effect);
+    if (isEdit && effect && onUpdate) {
+      onUpdate(effect.id, {
+        soundId: selectedSoundId,
+        volume,
+        volumeMode,
+        playbackRate,
+        dampenOriginal,
+        dampenAmount,
+        dampenType,
+      });
+    } else {
+      const newEffect: SoundCensoringEffect = {
+        id: uid(),
+        segmentStart,
+        soundId: selectedSoundId,
+        volume,
+        volumeMode,
+        playbackRate,
+        dampenOriginal,
+        dampenAmount,
+        dampenType,
+        effectType: 'sound',
+      };
+      onAdd(newEffect);
+    }
     onClose();
   };
 
@@ -75,13 +110,11 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div
-        className="bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4"
-      >
+      <div className="bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4">
         {/* Header */}
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold flex items-center gap-2">
-            <BoltIcon /> Add Effect
+            <BoltIcon /> {isEdit ? 'Edit Effect' : 'Add Effect'}
           </h3>
           <button onClick={onClose} className="p-1 rounded hover:bg-zinc-600 text-zinc-400">
             <CloseIcon />
@@ -251,7 +284,7 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
           disabled={!canSubmit}
           className="w-full bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
         >
-          Add Effect
+          {isEdit ? 'Save Changes' : 'Add Effect'}
         </button>
       </div>
     </div>
@@ -260,14 +293,19 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd }: EffectModalProps) =>
 
 /**
  * Badge shown on a transcription row that has a sound effect attached.
+ * Click → open edit modal. Hover → trash icon to remove.
  */
-const EffectBadge = memo(({ effect, onRemove }: { effect: SoundCensoringEffect; onRemove: (id: string) => void }) => {
+const EffectBadge = memo(({ effect, onRemove, onEdit }: {
+  effect: SoundCensoringEffect;
+  onRemove: (id: string) => void;
+  onEdit?: (effect: SoundCensoringEffect) => void;
+}) => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
   const soundLabel = bleepSounds[effect.soundId]?.label ?? 'Unknown';
   const volMode = (effect as any).volumeMode ?? 'manual';
 
   return (
-    <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-900/30 text-blue-400 rounded group">
+    <span className="flex items-center gap-1 px-1.5 py-0.5 bg-blue-900/30 text-blue-400 rounded group cursor-pointer" data-testid="censoring-effects" onClick={(e) => { e.stopPropagation(); onEdit?.(effect); }}>
       <BoltIcon />
       <span className="truncate max-w-[80px]">{soundLabel}</span>
       {volMode === 'auto' && (

@@ -20,17 +20,27 @@ async function build() {
     // Копируем статику
     await $`cp -r ${PUBLIC_DIR}/* ${DIST_DIR}/`.quiet();
 
+    // Copy Phase Vocoder processor from node_modules — always fresh on rebuild
+    // so package updates are picked up without touching public/
+    await $`cp node_modules/@soundtouchjs/phase-vocoder-worklet/.dist/phase-vocoder-processor.js ${DIST_DIR}/`.quiet();
+
     const buildNum = (await $`git rev-list HEAD --count`.text()).trim();
+    const baseVersion = JSON.parse((await $`cat package.json`.text())).version;
 
     const result = await Bun.build({
-      entrypoints: ['./src/index.html'],
+      entrypoints: [
+        './src/index.html',
+        './src/json-import.worker.ts',
+        './src/json-export.worker.ts',
+        './src/censor-worker.ts',
+      ],
       outdir: './dist',
       target: 'browser',
       plugins: [tailwind],
       sourcemap: 'inline',
       minify: false,
       splitting: false,
-      define: { '__BUILD_NUM__': JSON.stringify(buildNum) },
+      define: { '__BASE_VERSION__': JSON.stringify(baseVersion), '__BUILD_NUM__': JSON.stringify(buildNum) },
     });
 
     if (!result.success) {

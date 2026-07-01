@@ -93,6 +93,42 @@ export interface BleepSound {
 }
 
 /**
+ * Phase status in export progress.
+ */
+export type PhaseStatus = 'pending' | 'active' | 'done';
+
+/**
+ * A single phase of the export pipeline.
+ */
+export interface ExportPhase {
+  /** Phase key (used for matching) */
+  key: string;
+
+  /** Human-readable label */
+  label: string;
+
+  /** Current status */
+  status: PhaseStatus;
+
+  /** Progress 0–100 (meaningful only when status === 'active' or 'done') */
+  pct: number;
+
+  /** Sub-detail text (e.g. "chunk 203/450 · 1.2s elapsed") */
+  detail: string | null;
+}
+
+/**
+ * Structured export progress — replaces the old flat exportStage string.
+ */
+export interface ExportProgress {
+  /** All phases of the export pipeline */
+  phases: ExportPhase[];
+
+  /** Total elapsed time in seconds since export started */
+  elapsed: number;
+}
+
+/**
  * Represents the state of the media player
  */
 export type PlayerState = {
@@ -150,8 +186,14 @@ export type PlayerState = {
   /** Whether video export is in progress */
   exporting: boolean;
 
-  /** Current export stage for progress display */
-  exportStage: string | null;
+  /** Structured export progress for phase-by-phase UI display */
+  exportProgress: ExportProgress | null;
+
+  /** Whether JSON import is in progress */
+  importing: boolean;
+
+  /** Current import stage for progress display */
+  importStage: string | null;
 
   /** Audio format to send for transcription: 'wav' (PCM uncompressed) or 'original' (raw compressed packets, no re-encoding) */
   transcribeFormat: 'wav' | 'original';
