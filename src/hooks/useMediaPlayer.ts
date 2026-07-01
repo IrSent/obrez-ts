@@ -68,25 +68,19 @@ export function useMediaPlayer() {
   // "idle" | "playing" | "transitioning" | "paused" — only one transition at a time.
   const playbackStateRef = useRef<string>('idle');
 
-  // Guard: prevents concurrent transitions (e.g., play + seek at the same time).
-  // When true, new transitions are rejected — the in-progress transition
-  // will use the latest state from refs (e.g., playbackSpeedRef).
-  const transitioningRef = useRef<boolean>(false);
-
   // Immediate abort flag — set by stopAudio BEFORE iterator.return().
-  // runAudioIterator checks this at the start of every buffer iteration.
-  // Guarantees no new BufferSources are created after stopAudio is called,
-  // even if the old for-await loop hasn't exited yet.
+  // Stays true until startAudio resets it AFTER the old iterator is dead.
+  // This prevents the old iterator from creating BufferSources while
+  // the new one is being set up.
   const abortAudioRef = useRef<boolean>(false);
 
   // Generation counter — defense-in-depth against overlapping audio.
-  // Incremented in stopAudio BEFORE abortAudioRef is set.
+  // Incremented in startAudio AFTER the old iterator is dead (lock released).
   // The runAudioIterator captures the current generation and checks it on
-  // every loop iteration. If the generation changed (meaning stopAudio was
-  // called), the old iterator exits immediately — even if abortAudioRef
-  // was already reset by a subsequent startAudio call.
+  // every loop iteration. If the generation changed, the old iterator exits
+  // immediately — even if abortAudioRef was already reset.
   // This eliminates the race window where:
-  //   stopAudio → abort=true → lock force-cleared → abort=false →
+  //   stopAudio → abort=true → lock released → abort=false →
   //   old iterator resumes → creates nodes → overlap with new iterator.
   const audioGenerationRef = useRef<number>(0);
 
@@ -439,19 +433,10 @@ export function useMediaPlayer() {
 
     // IMMEDIATE ABORT — set before anything else so runAudioIterator
     // sees it on the very next iteration check, before creating new nodes.
-    // Increment generation FIRST — this is the defense-in-depth mechanism:
-    // even if abortAudioRef gets reset (e.g., by startAudio in a subsequent
-    // transition), the old iterator will see the generation mismatch and exit.
-    audioGenerationRef.current++;
+    // Generation increment is done in startAudio AFTER the old iterator is dead,
+    // so the new iterator captures a clean generation and stale iterators
+    // see a mismatch and exit immediately.
     abortAudioRef.current = true;
-
-    // Keep 'transitioning' state — don't set 'pausing' anymore.
-    // The transitioning guard (set by transitionRef before calling stopAudio)
-    // blocks concurrent transitions. If stopAudio is called from initMediaPlayer
-    // or cleanup (before transitionRef is set up), state is 'idle' — that's fine.
-    if (playbackStateRef.current === 'playing') {
-      playbackStateRef.current = 'transitioning';
-    }
 
     playerActions.setCurrentTime(currentTime);
     playerActions.setIsPlaying(false);
@@ -529,7 +514,7 @@ export function useMediaPlayer() {
   //  At 1x: returns immediately (PhaseVocoderNode is bypassed, no FIFO to fill).
   // =====================================================================
   const startAudio = async () => {
-    console.log('[audio] startAudio start, state=', playbackStateRef.current, 'speed=', playbackSpeedRef.current);
+    console.log('[audio] startAudio start, state=', playbackStateRef.current, 'speed=', playbackSpeedRef.current, 'iterator=', !!audioBufferIteratorRef.current, 'lock=', runAudioIteratorLockRef.current);
     if (!audioSinkRef.current || !audioContextRef.current) {
       console.warn('[audio] startAudio aborted: missing sink or context');
       return;
@@ -565,14 +550,19 @@ export function useMediaPlayer() {
     // doesn't trigger a false [gap] warning (the iterator starts at this position).
     lastBufferEndRef.current = utilsRef.current.getPlaybackTime();
 
-    // CRITICAL: reset abort flag ONLY after the old iterator is confirmed dead
-    // (lock released by its finally block). This guarantees the old iterator
-    // cannot see abort=false and create nodes alongside the new iterator.
-    // The generation check is a second line of defense.
-    abortAudioRef.current = false;
+    // CRITICAL: increment generation BEFORE resetting abortAudioRef.
+    // The new runAudioIterator captures generation as its first action.
+    // Then we reset abort — any old iterator that resumes between gen-increment
+    // and abort-reset sees generation mismatch and exits immediately.
+    // If we reset abort first (old code), the old iterator could resume,
+    // see abort=false + old generation, and create BufferSources alongside
+    // the new iterator → overlapping audio.
+    audioGenerationRef.current++;
 
     audioBufferIteratorRef.current = audioSinkRef.current.buffers(utilsRef.current.getPlaybackTime());
     void runAudioIteratorRef.current?.();
+    // abortAudioRef is reset inside runAudioIterator AFTER capturing generation.
+    // This guarantees no race window.
 
     // Wait for bootstrap silence to warm up PhaseVocoderNode before proceeding.
     // At 1x, PhaseVocoderNode is bypassed (stGain=0) — no wait needed.
@@ -839,6 +829,11 @@ export function useMediaPlayer() {
       // and this iterator is stale.
       const myGeneration = audioGenerationRef.current;
 
+      // NOW safe to reset abortAudioRef — the new iterator has captured
+      // the generation. Any old iterator that resumes sees generation mismatch
+      // and exits before creating nodes (even if abort=false).
+      abortAudioRef.current = false;
+
       const ctx = audioContextRef.current;
       const stNode = stNodeRef.current;
       const speed = playbackSpeedRef.current;
@@ -876,6 +871,11 @@ export function useMediaPlayer() {
       // Initialize to the end of the silence bootstrap so the first real buffer
       // chains seamlessly — no gap between silence and audio.
       let lastEnd = ctx.currentTime + (BOOTSTRAP_MS / 1000) / speed;
+
+      // Margin to add after onended fires — onended triggers ~1 render quantum
+      // before the node is truly silent on the Web Audio render thread.
+      // ~128 samples ≈ 2.67ms at 48kHz. We use 3ms to be safe.
+      const RENDER_QUANTUM_MARGIN = 0.003;
 
       // Track the actual end time of each BufferSource via the 'ended' event.
       // This corrects for speed changes that occur mid-buffer — when speed
@@ -916,16 +916,13 @@ export function useMediaPlayer() {
         const bufferEndAtSpeed = wrapped.buffer.duration / currentSpeed;
 
   // Apply correction from the previous buffer's actual end time.
-        // At >1x: use directly. At 1x: onended fires before audio truly stops
-        // on the render thread — the previous buffer is still playing for a few
-        // more samples. Without correction, the next buffer starts at expectedEnd,
-        // overlapping with the tail → amplitude jump → click. Add 0.5ms margin
-        // at 1x to cover the render-thread delay — no overlap, no gap.
-        if (actualEndCorrection != null && currentSpeed > 1) {
-          lastEnd = actualEndCorrection;
-          actualEndCorrection = null;
-        } else if (actualEndCorrection != null && currentSpeed === 1) {
-          lastEnd = actualEndCorrection + 0.0005;
+  // CRITICAL: onended fires BEFORE audio truly stops on the render thread —
+  // the node is still producing samples in the current render quantum
+  // (~128 samples ≈ 2.67ms at 48kHz). Without a margin, the next buffer
+  // starts while the previous one is still playing → overlap → click/pop.
+  // We add RENDER_QUANTUM_MARGIN at ALL speeds to ensure clean handoff.
+        if (actualEndCorrection != null) {
+          lastEnd = actualEndCorrection + RENDER_QUANTUM_MARGIN;
           actualEndCorrection = null;
         }
 
@@ -999,6 +996,7 @@ export function useMediaPlayer() {
         const expectedEnd = snappedStart + bufferEndAtSpeed;
 
         queuedAudioNodesRef.current.add(source);
+        console.log('[audio] BufferSource created, total queued=', queuedAudioNodesRef.current.size, 'generation=', myGeneration, 'bufferStart=', wrapped.timestamp.toFixed(3), 'bufferEnd=', (wrapped.timestamp + wrapped.buffer.duration).toFixed(3));
         // Track actual end time to correct lastEnd for the next buffer.
         // This eliminates gaps/overlaps caused by speed changes mid-buffer.
         source.onended = () => {
@@ -1106,7 +1104,9 @@ export function useMediaPlayer() {
   const initMediaPlayer = useCallback(async (resource: File | string) => {
     try {
       // Stop any current playback before reinitializing.
-      await stopAudioRef.current();
+      if (stopAudioRef.current) {
+        await stopAudioRef.current();
+      }
       playbackStateRef.current = 'idle';
       peakPlayingSourcesRef.current = 0;
 
@@ -1511,36 +1511,14 @@ export function useMediaPlayer() {
         const codecParamString = await transcribeAudioTrack.getCodecParameterString();
         const decoderConfig = await transcribeAudioTrack.getDecoderConfig();
 
-        // Collect raw audio packets from the independent track
-        const encodedSink = new EncodedPacketSink(transcribeAudioTrack);
-        const packets = [];
-        const YIELD_EVERY = 10;
-
-        // Quick count of total packets (metadata-only scan)
-        let totalPackets = 0;
-        for await (const _ of encodedSink.packets(undefined, undefined, { metadataOnly: true })) {
-          totalPackets++;
-        }
-
-        for await (const packet of encodedSink.packets()) {
-          packets.push(packet);
-          playerActions.setTranscribeStage(
-            `Collecting audio packets… ${packets.length} / ${totalPackets}`
-          );
-
-          // Yield to event loop every N packets so the UI stays responsive
-          if (packets.length % YIELD_EVERY === 0) {
-            await new Promise((r) => setTimeout(r, 0));
-          }
-        }
-
-        // Find the minimum timestamp — some AAC packets start negative.
-        // Shift all timestamps so they start at 0.
-        let minTs = Infinity;
-        for (const p of packets) {
-          if (p.timestamp < minTs) minTs = p.timestamp;
-        }
-        const tsShift = minTs < 0 ? -minTs : 0;
+        // Streaming remux: one pass — read packet → mux to MP4.
+        // No metadata scan, no packet accumulation in memory.
+        const outputFormat = new Mp4OutputFormat();
+        const bufferTarget = new BufferTarget();
+        const output = new Output({ format: outputFormat, target: bufferTarget });
+        const encodedSource = new EncodedAudioPacketSource(codec);
+        await output.addAudioTrack(encodedSource);
+        await output.start();
 
         // Build chunk metadata for the first add() call — required by the muxer.
         // For AAC: provide description (AudioSpecificConfig) so the muxer doesn't
@@ -1555,45 +1533,45 @@ export function useMediaPlayer() {
           },
         };
 
-        playerActions.setTranscribeStage(
-          `Remuxing audio — ${packets.length} total packets`
-        );
+        const encodedSink = new EncodedPacketSink(transcribeAudioTrack);
+        const YIELD_EVERY = 100;
+        let packetCount = 0;
+        let tsShift = 0;
 
-        const outputFormat = new Mp4OutputFormat();
-        const bufferTarget = new BufferTarget();
-        const output = new Output({ format: outputFormat, target: bufferTarget });
-
-        const encodedSource = new EncodedAudioPacketSource(codec);
-        const outputTrack = await output.addAudioTrack(encodedSource);
-        await output.start();
-
-        // Add packets in batches, yielding after each batch so the progress UI
-        // has a chance to repaint.
-        const REMUX_BATCH = 10;
-        for (let i = 0; i < packets.length; i += REMUX_BATCH) {
-          const end = Math.min(i + REMUX_BATCH, packets.length);
-          for (let j = i; j < end; j++) {
-            const pkt = packets[j];
-            // Shift timestamp to be non-negative
-            const shiftedPkt = tsShift > 0
-              ? new EncodedPacket(
-                  pkt.data,
-                  pkt.type,
-                  pkt.timestamp + tsShift,
-                  pkt.duration,
-                )
-              : pkt;
-            // Pass chunk metadata on the very first packet; await for backpressure
-            await encodedSource.add(shiftedPkt, i === 0 && j === 0 ? chunkMeta : undefined);
+        // Read and mux in a single pass. AAC timestamps are monotonic,
+        // so the first packet gives us the tsShift (negative → shift to 0).
+        for await (const pkt of encodedSink.packets()) {
+          if (packetCount === 0) {
+            tsShift = pkt.timestamp < 0 ? -pkt.timestamp : 0;
           }
-          const pct = Math.round((end / packets.length) * 100);
-          playerActions.setTranscribeStage(
-            `Remuxing audio — ${end} / ${packets.length} (${pct}%)`
-          );
-          // Yield so React can render the progress update
-          await new Promise((r) => setTimeout(r, 0));
+
+          if (tsShift > 0) {
+            await encodedSource.add(
+              new EncodedPacket(
+                pkt.data,
+                pkt.type,
+                pkt.timestamp + tsShift,
+                pkt.duration,
+              ),
+              packetCount === 0 ? chunkMeta : undefined,
+            );
+          } else {
+            await encodedSource.add(pkt, packetCount === 0 ? chunkMeta : undefined);
+          }
+          packetCount++;
+
+          // Yield to event loop so the UI stays responsive
+          if (packetCount % YIELD_EVERY === 0) {
+            playerActions.setTranscribeStage(
+              `Remuxing audio — ${packetCount} packets`
+            );
+            await new Promise((r) => setTimeout(r, 0));
+          }
         }
 
+        playerActions.setTranscribeStage(
+          `Remuxing audio — ${packetCount} packets (finalizing…)`
+        );
         await output.finalize();
 
         const result = bufferTarget.buffer;
@@ -1604,10 +1582,8 @@ export function useMediaPlayer() {
         audioBlob = new Blob([result], { type: 'video/mp4' });
         audioFileName = `${fileName}.mp4`;
 
-        // Cleanup: dispose the transcription Input to free resources
-        // and clear the packets array so GC can reclaim memory.
+        // Cleanup: dispose the transcription Input to free resources.
         transcribeInput.dispose();
-        packets.length = 0;
       } else {
         // WAV path: collect decoded buffers, encode as PCM WAV
         if (!audioSinkRef.current) {
@@ -1661,7 +1637,26 @@ export function useMediaPlayer() {
           const msg = JSON.parse(event.data);
           if (msg.status === 'PROCESSING') {
             playerActions.setTranscribing(true);
-            playerActions.setTranscribeStage('Server is transcribing…');
+
+            // Server may send progress info in results: { progress, segments, time, phase }
+            const prog = msg.results;
+            if (prog && typeof prog === 'object' && 'progress' in prog) {
+              const pct = prog.progress ?? 0;
+              const segs = prog.segments ?? '';
+              const time = prog.time ?? '';
+              const phase = prog.phase ?? '';
+              const validPct = isNaN(pct) ? 0 : pct;
+
+              if (phase === 'segmenting') {
+                const detail = [validPct > 0 ? validPct + '%' : '', segs].filter(Boolean).join(' · ');
+                playerActions.setTranscribeStage(`Segmenting — ${detail}`);
+              } else {
+                const detail = [validPct + '%', segs, time].filter(Boolean).join(' · ');
+                playerActions.setTranscribeStage(`Transcribing — ${detail}`);
+              }
+            } else {
+              playerActions.setTranscribeStage('Server is transcribing…');
+            }
           } else if (msg.status === 'DONE') {
             const resultsInSeconds = msg.results.map(
               ([start, end, text]: [number, number, string]) => [start / 1000, end / 1000, text] as [number, number, string]
