@@ -1,22 +1,26 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import { List, useListRef } from 'react-window';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { EffectModal, EffectBadge } from './EffectModal';
 import { AddWordModal } from './AddWordModal';
 import type { SoundCensoringEffect } from '../../types';
 
-/**
- * Icons: chevron up/down for dropdown
- */
+// Worker instances are created once and reused.
+let importWorker: Worker | null = null;
+let jsonExportWorker: Worker | null = null;
+
+// ─── Row height for virtualization ─────────────────────────────
+const ROW_HEIGHT = 36;
+const LIST_HEIGHT = 400;
+
+// ─── Icons ─────────────────────────────────────────────────────
 const ChevronDownIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <polyline points="6 9 12 15 18 9" />
   </svg>
 );
 
-/**
- * Icon: plus
- */
 const PlusIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
     <line x1="12" y1="5" x2="12" y2="19" />
@@ -24,6 +28,151 @@ const PlusIcon = () => (
   </svg>
 );
 
+// ─── SegmentItem ────────────────────────────────────────────────
+const SegmentItem = memo(({
+  start,
+  end,
+  text,
+  triggered,
+  rowEffects,
+  isHighlighted,
+  highlightedText,
+  onJump,
+  onAddEffect,
+  onRemoveEffect,
+  onEditEffect,
+  formatTime,
+}: {
+  start: number;
+  end: number;
+  text: string;
+  triggered: { slug: string; count: number }[];
+  rowEffects: SoundCensoringEffect[];
+  isHighlighted: boolean;
+  highlightedText: { key: string; highlighted: boolean; content: string }[] | null;
+  onJump: (time: number) => void;
+  onAddEffect: (start: number) => void;
+  onRemoveEffect: (id: string) => void;
+  onEditEffect: (effect: SoundCensoringEffect) => void;
+  formatTime: (seconds: number) => string;
+}) => {
+  const hasMatches = triggered.length > 0;
+  const bgClass = isHighlighted
+    ? 'bg-purple-900/40 ring-2 ring-purple-500/50'
+    : hasMatches
+      ? 'bg-zinc-700 hover:bg-zinc-600 ring-1 ring-red-800/50'
+      : 'bg-zinc-700 hover:bg-zinc-600';
+
+  return (
+    <div className={`flex items-center gap-2 text-xs py-1 px-2 rounded cursor-pointer transition-colors ${bgClass}`} data-segment={start} id={`seg-${start}`} onClick={() => onJump(start)}>
+      <span className="timestamp text-zinc-400 whitespace-nowrap">
+        <span
+          className="cursor-pointer hover:text-purple-300"
+          title={start.toFixed(2) + 's'}
+          onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(start.toFixed(2)); }}
+        >
+          {formatTime(start)}
+        </span>
+        <span className="text-zinc-500"> — </span>
+        <span
+          className="cursor-pointer hover:text-purple-300"
+          title={end.toFixed(2) + 's'}
+          onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(end.toFixed(2)); }}
+        >
+          {formatTime(end)}
+        </span>
+      </span>
+      <span className="text text-zinc-200 flex-1 truncate" title={text}>
+        {highlightedText
+          ? highlightedText.map((part) =>
+              part.highlighted ? (
+                <mark key={part.key} className="bg-yellow-900/60 text-yellow-200 rounded px-0.5">
+                  {part.content}
+                </mark>
+              ) : (
+                <span key={part.key}>{part.content}</span>
+              ),
+            )
+          : text}
+      </span>
+      <div className="flex items-center gap-1">
+        {triggered.map(({ slug, count }) => (
+          <span key={slug} className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded">
+            {slug} ×{count}
+          </span>
+        ))}
+        {rowEffects.map((effect) => (
+          <EffectBadge
+            key={effect.id}
+            effect={effect}
+            onRemove={onRemoveEffect}
+            onEdit={onEditEffect}
+          />
+        ))}
+        <button
+          onClick={(e) => { e.stopPropagation(); onAddEffect(start); }}
+          className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded flex items-center gap-1"
+          title="Add effect"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
+          </svg>
+          Effect
+        </button>
+      </div>
+    </div>
+  );
+});
+SegmentItem.displayName = 'SegmentItem';
+
+// ─── RowRenderer — receives index, style, and rowProps from react-window ───
+function TranscriptionRow(props: { index: number; style: React.CSSProperties; closestStart: number | null }) {
+  const { index, style, closestStart } = props;
+  const deps = rowRendererDeps;
+  const [start, end, text] = deps.filteredSegments[index];
+  const triggered = deps.dictMatches?.get(start) ?? [];
+  const rowEffects = deps.segmentEffects.get(start) ?? [];
+  const isHighlighted = start === closestStart;
+  const highlightedText = deps.highlightCache.get(start) ?? null;
+
+  return (
+    <div style={style} className="h-full">
+      <SegmentItem
+        start={start}
+        end={end}
+        text={text}
+        triggered={triggered}
+        rowEffects={rowEffects}
+        isHighlighted={isHighlighted}
+        highlightedText={highlightedText}
+        onJump={deps.onJump}
+        onAddEffect={deps.onAddEffect}
+        onRemoveEffect={deps.onRemoveEffect}
+        onEditEffect={deps.onEditEffect}
+        formatTime={deps.formatTime}
+      />
+    </div>
+  );
+}
+
+/**
+ * Shared mutable bag so TranscriptionRow can read current values
+ * without re-rendering on every change. react-window calls the row
+ * component with current props on each visible row.
+ */
+const rowRendererDeps = {
+  filteredSegments: [] as [number, number, string][],
+  dictMatches: null as Map<number, { slug: string; count: number }[]> | null,
+  segmentEffects: new Map<number, SoundCensoringEffect[]>(),
+  highlightCache: new Map<number, { key: string; highlighted: boolean; content: string }[] | null>(),
+  onJump: (_time: number) => {},
+  onAddEffect: (_start: number) => {},
+  onRemoveEffect: (_id: string) => {},
+  onEditEffect: (_effect: SoundCensoringEffect) => {},
+  formatTime: (_seconds: number) => '',
+};
+
+// ─── Helpers ───────────────────────────────────────────────────
 /**
  * Binary-search the segment containing *time* (segments are sorted by start).
  */
@@ -47,17 +196,39 @@ function findClosestSegment(
 }
 
 /**
- * Parse "Stage — 1,234 / 5,678 (42%)" → { label, pct }
- * For non-numeric stages like "Sending to server…" → { label, pct: null }.
+ * Find the index of a segment by its start time in the filtered list.
+ */
+function findSegmentIndex(
+  filtered: [number, number, string][],
+  start: number,
+): number {
+  let lo = 0, hi = filtered.length - 1;
+  while (lo <= hi) {
+    const mid = (lo + hi) >> 1;
+    if (filtered[mid][0] < start) lo = mid + 1;
+    else if (filtered[mid][0] > start) hi = mid - 1;
+    else return mid;
+  }
+  return -1;
+}
+
+/**
+ * Parse stage strings into { label, pct }:
+ *   "Encoding — 1,234 / 5,678 (42%)"       → label + pct
+ *   "Transcribing — 45% · 3/8 · 120s"     → label + pct
+ *   "Remuxing audio — 12,345 packets"     → label, no pct
+ *   "Sending to server…"                  → label, no pct
  */
 function parseStage(stage: string): { label: string; pct: number | null } {
   const m = stage.match(/^(.+?)\s+—\s+\d+[,\d\s]*\s*\/\s*\d+[,\d\s]*\s*\((\d+)%\)$/);
   if (m) return { label: m[1].trim(), pct: parseInt(m[2], 10) };
-  const m2 = stage.match(/^(.+?)\s+—\s+(\d+[,\d\s]*)\s*\/\s*(\d+[,\d\s]*)$/);
-  if (m2) {
-    const done = parseFloat(m2[2].replace(/,/g, ''));
-    const total = parseFloat(m2[3].replace(/,/g, ''));
-    return { label: m2[1].trim(), pct: Math.round((done / total) * 100) };
+  const m2 = stage.match(/^(.+?)\s+—\s+(\d+)%/);
+  if (m2) return { label: m2[1].trim(), pct: parseInt(m2[2], 10) };
+  const m3 = stage.match(/^(.+?)\s+—\s+(\d+[,\d\s]*)\s*\/\s*(\d+[,\d\s]*)$/);
+  if (m3) {
+    const done = parseFloat(m3[2].replace(/,/g, ''));
+    const total = parseFloat(m3[3].replace(/,/g, ''));
+    return { label: m3[1].trim(), pct: Math.round((done / total) * 100) };
   }
   return { label: stage, pct: null };
 }
@@ -117,8 +288,10 @@ const TranscriptionResultsInner = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [autoScroll, setAutoScroll] = useState(true);
 
-  // Effect modal
+  // Effect modal — add mode
   const [modalSegment, setModalSegment] = useState<number | null>(null);
+  // Effect modal — edit mode
+  const [editEffect, setEditEffect] = useState<SoundCensoringEffect | null>(null);
 
   // Add Word modal
   const [showAddWord, setShowAddWord] = useState(false);
@@ -127,10 +300,13 @@ const TranscriptionResultsInner = () => {
     actions.addSoundEffect(effect);
   };
 
+  const handleUpdateEffect = (id: string, updates: Partial<SoundCensoringEffect>) => {
+    actions.updateSoundEffect(id, updates);
+  };
+
   const handleAddWord = (start: number, end: number, text: string) => {
     const current = transcriptionResults ?? [];
     const newResults = [...current, [start, end, text]];
-    // Sort by start time
     newResults.sort((a, b) => a[0] - b[0]);
     actions.setTranscriptionResults(newResults.length ? newResults : null);
   };
@@ -142,24 +318,40 @@ const TranscriptionResultsInner = () => {
   // JSON export / import
   const importJsonRef = useRef<HTMLInputElement>(null);
 
-  const handleExportJson = () => {
+  const handleExportJson = async () => {
     if (!transcriptionResults) return;
 
-    const payload = {
-      version: 1,
-      transcription: transcriptionResults.map(([start, end, text]) => ({
-        start,
-        end,
-        text,
-      })),
-      effects: (censoringEffects ?? []).filter(
-        (e): e is SoundCensoringEffect => e.effectType === 'sound',
-      ),
-    };
+    if (!jsonExportWorker) {
+      jsonExportWorker = new Worker(
+        '/json-export.worker.js',
+      );
+    }
+
+    const transcriptionData = transcriptionResults.map(([start, end, text]) => ({
+      start,
+      end,
+      text,
+    }));
+
+    const effects = (censoringEffects ?? []).filter(
+      (e): e is SoundCensoringEffect => e.effectType === 'sound',
+    );
+
+    const text = await new Promise<string>((resolve, reject) => {
+      jsonExportWorker!.postMessage({
+        type: 'EXPORT_JSON',
+        payload: { transcription: transcriptionData, effects },
+      });
+      jsonExportWorker!.onmessage = (ev) => {
+        if (ev.data.type === 'JSON_READY') resolve(ev.data.payload);
+        else if (ev.data.type === 'ERROR') reject(new Error(ev.data.payload));
+      };
+      jsonExportWorker!.onerror = (ev) => reject(new Error(ev.message));
+    });
 
     const fileName = usePlayerStore.getState().fileName || 'transcription';
     const baseName = fileName.replace(/\.[^.]+$/, '');
-    const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
+    const blob = new Blob([text], { type: 'application/json' });
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
@@ -174,46 +366,78 @@ const TranscriptionResultsInner = () => {
     const file = e.target.files?.[0];
     if (!file) return;
 
+    if (!importWorker) {
+      importWorker = new Worker(
+        '/json-import.worker.js',
+      );
+    }
+
+    actions.setImporting(true);
+    actions.setImportStage(`Reading file... (${(file.size / 1024).toFixed(0)} KB)`);
+
     try {
       const text = await file.text();
-      const data = JSON.parse(text);
+      await new Promise((r) => requestAnimationFrame(r));
 
-      if (!data.version || !Array.isArray(data.transcription)) {
-        throw new Error('Invalid transcription JSON format');
-      }
+      actions.setImportStage('Parsing JSON...');
 
-      const results = data.transcription.map(
-        (seg: { start: number; end: number; text: string }) =>
-          [seg.start, seg.end, seg.text] as [number, number, string],
-      );
+      const [results, effects] = await new Promise<[[number, number, string][], SoundCensoringEffect[]]>((resolve, reject) => {
+        importWorker!.postMessage({ type: 'PARSE', payload: { text } });
+        importWorker!.onmessage = (ev) => {
+          if (ev.data.type === 'PARSED') {
+            resolve([ev.data.payload.results, ev.data.payload.effects] as [[number, number, string][], SoundCensoringEffect[]]);
+          } else if (ev.data.type === 'ERROR') {
+            reject(new Error(ev.data.payload));
+          } else if (ev.data.type === 'LOG') {
+            console.log('[json-import]', ev.data.payload);
+            actions.setImportStage(ev.data.payload);
+          }
+        };
+        importWorker!.onerror = (ev) => reject(new Error('Worker crash: ' + (ev.message || 'unknown error')));
+      });
 
-      const effects: SoundCensoringEffect[] = (data.effects ?? []).filter(
-        (ef: unknown) => ef && typeof ef === 'object' && (ef as any).effectType === 'sound',
-      );
-
+      actions.setImportStage(`Importing transcription... ${results.length} segments`);
       actions.setTranscriptionResults(results);
+
+      await new Promise((r) => requestAnimationFrame(r));
+
+      actions.setImportStage(`Importing effects... ${effects.length} sound effects`);
       actions.setCensoringEffects(effects);
+
+      await new Promise((r) => requestAnimationFrame(r));
+
+      await new Promise((r) => setTimeout(r, 200));
+      actions.setImportStage('Done ✓');
       setError(null);
     } catch (err) {
-      setError('Import failed: ' + (err instanceof Error ? err.message : String(err)));
+      const detail = err instanceof Error ? err.message : String(err);
+      console.error('[import] Failed:', detail, err);
+      setError(`Import failed: ${detail}`);
+      actions.setImportStage(`Import failed ✗ — ${detail}`);
     } finally {
       if (importJsonRef.current) importJsonRef.current.value = '';
+      setTimeout(() => {
+        actions.setImportDone();
+      }, 800);
     }
   };
 
-  // Build a quick lookup: segmentStart → SoundCensoringEffect[]
-  const segmentEffects = new Map<number, SoundCensoringEffect[]>();
-  for (const e of (censoringEffects ?? [])) {
-    if (e.effectType === 'sound') {
-      const list = segmentEffects.get(e.segmentStart) ?? [];
-      list.push(e as SoundCensoringEffect);
-      segmentEffects.set(e.segmentStart, list);
+  // ─── Optimized: segmentEffects with useMemo ───────────────────
+  const segmentEffects = useMemo(() => {
+    const map = new Map<number, SoundCensoringEffect[]>();
+    for (const e of (censoringEffects ?? [])) {
+      if (e.effectType === 'sound') {
+        const list = map.get(e.segmentStart) ?? [];
+        list.push(e as SoundCensoringEffect);
+        map.set(e.segmentStart, list);
+      }
     }
-  }
+    return map;
+  }, [censoringEffects]);
 
   // Dictionary matches — computed asynchronously after the first render
   // so Aho-Corasick doesn't block the video rAF loop.
-  const [dictMatches, setDictMatches] = useState<Map<number, { slug: string; count: number }[]>>(null);
+  const [dictMatches, setDictMatches] = useState<Map<number, { slug: string; count: number }[]> | null>(null);
   const matchesVersionRef = useRef(0);
 
   useEffect(() => {
@@ -242,85 +466,28 @@ const TranscriptionResultsInner = () => {
     }, 0);
   }, [transcriptionResults, activeDictionaries, loadedDictionaries]);
 
-  // closestSegmentStart — ref, no React re-render
+  // closestSegmentStart — ref for interval comparison (avoids stale closure),
+  // state for react-window rowProps (triggers visible row re-render)
   const closestRef = useRef<number | null>(null);
-  const listRef = useRef<HTMLDivElement>(null);
+  const [closestStart, setClosestStart] = useState<number | null>(null);
 
-  useEffect(() => {
-    const applyHighlight = (closest: number | null, scroll: boolean) => {
-      if (closest == null) return;
-      const el = document.getElementById(`seg-${closest}`);
-      if (el) {
-        el.classList.remove('bg-zinc-700');
-        el.classList.add('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
+  // react-window v2 list ref
+  const rwListRef = useListRef(null);
 
-        if (scroll && listRef.current) {
-          const container = listRef.current;
-          const containerRect = container.getBoundingClientRect();
-          const elRect = el.getBoundingClientRect();
-          // Center the element in the visible area of the container
-          const targetScroll = container.scrollTop + (elRect.top - containerRect.top) - (containerRect.height / 2) + (elRect.height / 2);
-          container.scrollTo({ top: targetScroll, behavior: 'smooth' });
-        }
-      }
-    };
+  // Filter segments by search/matches-only
+  const filteredSegments = useMemo(() => {
+    if (!transcriptionResults) return [];
+    return transcriptionResults.filter(([start, _end, text]) => {
+      if (showMatchesOnly && !dictMatches?.has(start)) return false;
+      if (searchQuery && !text.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+      return true;
+    });
+  }, [transcriptionResults, showMatchesOnly, dictMatches, searchQuery]);
 
-    const removeHighlight = (closest: number | null) => {
-      if (closest == null) return;
-      const el = document.getElementById(`seg-${closest}`);
-      if (el) {
-        el.classList.remove('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
-        el.classList.add('bg-zinc-700');
-      }
-    };
-
-    const t = getPlaybackTime();
-    const newClosest = findClosestSegment(transcriptionResults, t);
-    closestRef.current = newClosest;
-    applyHighlight(newClosest, false);
-
-    const interval = setInterval(() => {
-      const t = getPlaybackTime();
-      const newClosest = findClosestSegment(transcriptionResults, t);
-      if (newClosest === closestRef.current) return;
-
-      removeHighlight(closestRef.current);
-      closestRef.current = newClosest;
-      applyHighlight(newClosest, autoScroll);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [transcriptionResults, getPlaybackTime, autoScroll]);
-
-  const handleTranscribe = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await transcribe();
-      setIsLoading(false);
-    } catch (err) {
-      console.error('Transcription error:', err);
-      setError('Failed to transcribe: ' + (err as Error).message);
-      setIsLoading(false);
-    }
-  };
-
-  const handleJumpToTime = (time: number) => {
-    seekToTime(time);
-    document.getElementById('videoCanvas')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
-
-  const highlightSearch = (text: string): Array<{ key: string; highlighted: boolean; content: string }> => {
-    if (!searchQuery) {
-      return [{ key: '', highlighted: false, content: text }];
-    }
-    const parts: Array<{ key: string; highlighted: boolean; content: string }> = [];
+  // Optimized highlightSearch — returns null when no search
+  const highlightSearch = useCallback((text: string): { key: string; highlighted: boolean; content: string }[] | null => {
+    if (!searchQuery) return null;
+    const parts: { key: string; highlighted: boolean; content: string }[] = [];
     const lower = text.toLowerCase();
     const query = searchQuery.toLowerCase();
     let idx = 0;
@@ -336,6 +503,81 @@ const TranscriptionResultsInner = () => {
       parts.push({ key: pos + '-end', highlighted: false, content: text.slice(pos) });
     }
     return parts;
+  }, [searchQuery]);
+
+  // Pre-compute highlight cache for filtered segments (only when searchQuery is non-empty)
+  const highlightCache = useMemo(() => {
+    if (!searchQuery) return new Map<number, { key: string; highlighted: boolean; content: string }[] | null>();
+    const cache = new Map<number, { key: string; highlighted: boolean; content: string }[] | null>();
+    for (const [start, _end, text] of filteredSegments) {
+      cache.set(start, highlightSearch(text));
+    }
+    return cache;
+  }, [filteredSegments, searchQuery, highlightSearch]);
+
+  const handleJumpToTime = useCallback((time: number) => {
+    seekToTime(time);
+    document.getElementById('videoCanvas')?.scrollIntoView({ behavior: 'smooth' });
+  }, [seekToTime]);
+
+  const formatTime = useCallback((seconds: number): string => {
+    const mins = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+  }, []);
+
+  // Update rowRendererDeps so TranscriptionRow can access current values
+  rowRendererDeps.filteredSegments = filteredSegments;
+  rowRendererDeps.dictMatches = dictMatches;
+  rowRendererDeps.segmentEffects = segmentEffects;
+  rowRendererDeps.highlightCache = highlightCache;
+  rowRendererDeps.onJump = handleJumpToTime;
+  rowRendererDeps.onAddEffect = (start: number) => setModalSegment(start);
+  rowRendererDeps.onRemoveEffect = handleRemoveEffect;
+  rowRendererDeps.onEditEffect = (effect: SoundCensoringEffect) => setEditEffect(effect);
+  rowRendererDeps.formatTime = formatTime;
+
+  // Auto-scroll and highlight tracking
+  useEffect(() => {
+    if (!transcriptionResults) return;
+
+    const t = getPlaybackTime();
+    const newClosest = findClosestSegment(transcriptionResults, t);
+    closestRef.current = newClosest;
+    setClosestStart(newClosest);
+
+    const interval = setInterval(() => {
+      const t = getPlaybackTime();
+      const newClosest = findClosestSegment(transcriptionResults, t);
+      if (newClosest === closestRef.current) return;
+
+      closestRef.current = newClosest;
+      setClosestStart(newClosest);
+
+      // Auto-scroll only when video is playing
+      const isPlaying = usePlayerStore.getState().isPlaying;
+      if (autoScroll && isPlaying && rwListRef.current && newClosest != null) {
+        const idx = findSegmentIndex(filteredSegments, newClosest);
+        if (idx >= 0) {
+          rwListRef.current.scrollToRow({ index: idx, behavior: 'smooth', align: 'center' });
+        }
+      }
+    }, 100);
+
+    return () => clearInterval(interval);
+  }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
+
+  const handleTranscribe = async () => {
+    setIsLoading(true);
+    setError(null);
+    try {
+      await transcribe();
+      setIsLoading(false);
+    } catch (err) {
+      console.error('Transcription error:', err);
+      setError('Failed to transcribe: ' + (err as Error).message);
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -434,8 +676,11 @@ const TranscriptionResultsInner = () => {
       </div>
 
       {error && (
-        <div className="mb-3 text-xs text-red-400 p-2 bg-red-900/20 rounded">
-          {error}
+        <div className="mb-3 text-xs text-red-400 p-3 bg-red-900/20 rounded space-y-1">
+          <div className="font-semibold">{error}</div>
+          <div className="text-[11px] text-red-400/70">
+            Check the browser console for details. If the file was exported from another session, it may have an outdated format.
+          </div>
         </div>
       )}
 
@@ -444,96 +689,37 @@ const TranscriptionResultsInner = () => {
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
-        <div ref={listRef} className="space-y-1 max-h-[400px] overflow-y-auto pr-1">
-          {transcriptionResults.map(([start, end, text]) => {
-            const triggered = dictMatches?.get(start) ?? [];
-
-            if (showMatchesOnly && triggered.length === 0) {
-              return null;
-            }
-
-            if (searchQuery && !text.toLowerCase().includes(searchQuery.toLowerCase())) {
-              return null;
-            }
-
-            const highlightedText = highlightSearch(text);
-            const hasMatches = triggered.length > 0;
-            const rowEffects = segmentEffects.get(start) ?? [];
-            const rowClass = `flex items-center gap-2 text-xs py-1.5 px-2 rounded bg-zinc-700 ${hasMatches ? 'ring-1 ring-red-800/50' : ''}`;
-
-            return (
-              <div key={`${start}-${end}-${text}`} className={rowClass} data-segment={start} id={`seg-${start}`}>
-                <span className="timestamp text-zinc-400 whitespace-nowrap">
-                  <span
-                    className="cursor-pointer hover:text-purple-300"
-                    title={start.toFixed(2) + 's'}
-                    onClick={() => navigator.clipboard.writeText(start.toFixed(2))}
-                  >
-                    {formatTime(start)}
-                  </span>
-                  <span className="text-zinc-500"> — </span>
-                  <span
-                    className="cursor-pointer hover:text-purple-300"
-                    title={end.toFixed(2) + 's'}
-                    onClick={() => navigator.clipboard.writeText(end.toFixed(2))}
-                  >
-                    {formatTime(end)}
-                  </span>
-                </span>
-                <span className="text text-zinc-200 flex-1">
-                  {highlightedText.map((part) =>
-                    part.highlighted ? (
-                      <mark key={part.key} className="bg-yellow-900/60 text-yellow-200 rounded px-0.5">
-                        {part.content}
-                      </mark>
-                    ) : (
-                      <span key={part.key}>{part.content}</span>
-                    )
-                  )}
-                </span>
-                <div className="flex items-center gap-1">
-                  {triggered.map(({ slug, count }) => (
-                    <span key={slug} className="px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded">
-                      {slug} ×{count}
-                    </span>
-                  ))}
-                  {rowEffects.map((effect) => (
-                    <EffectBadge
-                      key={effect.id}
-                      effect={effect}
-                      onRemove={handleRemoveEffect}
-                    />
-                  ))}
-                  <button
-                    onClick={() => handleJumpToTime(start)}
-                    className="text-xs text-purple-400 hover:text-purple-300 px-1 py-0.5 hover:bg-purple-900/30 rounded"
-                  >
-                    Jump
-                  </button>
-                  <button
-                    onClick={() => setModalSegment(start)}
-                    className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded"
-                    title="Add effect"
-                  >
-                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
-                      <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
-                    </svg>
-                  </button>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <List
+          listRef={rwListRef}
+          rowCount={filteredSegments.length}
+          rowHeight={ROW_HEIGHT}
+          // @ts-expect-error react-window v2 rowProps type inference bug
+          rowProps={{ closestStart, effectVersion: censoringEffects?.length ?? 0 }}
+          overscanCount={5}
+          style={{ height: LIST_HEIGHT, width: '100%' }}
+          rowComponent={TranscriptionRow}
+        />
       ) : (
         <div className="text-xs text-zinc-500 py-2">No transcription data</div>
       )}
 
-      {/* Effect modal */}
+      {/* Effect modal — add mode */}
       {modalSegment != null && (
         <EffectModal
           segmentStart={modalSegment}
           onClose={() => setModalSegment(null)}
           onAdd={handleAddEffect}
+        />
+      )}
+
+      {/* Effect modal — edit mode */}
+      {editEffect && (
+        <EffectModal
+          segmentStart={editEffect.segmentStart}
+          onClose={() => setEditEffect(null)}
+          onAdd={handleAddEffect}
+          onUpdate={handleUpdateEffect}
+          effect={editEffect}
         />
       )}
 
