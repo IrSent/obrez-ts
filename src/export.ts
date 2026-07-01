@@ -297,16 +297,20 @@ async function pickAudioCodec(format: 'mp4' | 'webm', originalCodec?: string | n
  * Growable per-channel Float32Array buffer with frame-ready signaling.
  * The collector writes frames sequentially; the renderer waits until
  * a given frame range is fully populated before reading.
+ *
+ * Supports multiple concurrent waiters — each call to wait() gets its own
+ * promise that resolves when enough frames have been collected.
  */
 class WritableBuffer {
   public channels: Float32Array[] = [];
   private totalFrames = 0;
   private collectedFrames = 0;
   private lastPct = -1;
+  private _done = false;
 
-  // Resolved when at least `readyResolveAt` frames are collected
-  private readyResolveAt = 0;
-  private readyResolve: (() => void) | null = null;
+  // Queue of pending waiters, sorted by frames threshold (ascending).
+  // Each entry resolves when collectedFrames >= its threshold.
+  private waitQueue: { frames: number; resolve: () => void }[] = [];
 
   constructor(
     readonly numChannels: number,
@@ -354,11 +358,13 @@ class WritableBuffer {
     this.collectedFrames += chunkFrames;
     this.totalFrames = Math.max(this.totalFrames, this.collectedFrames);
 
-    // Signal
-    if (this.collectedFrames >= this.readyResolveAt && this.readyResolve) {
-      this.readyResolve();
-      this.readyResolve = null;
+    // Resolve all waiters whose threshold is now met
+    let i = 0;
+    while (i < this.waitQueue.length && this.collectedFrames >= this.waitQueue[i].frames) {
+      this.waitQueue[i].resolve();
+      i++;
     }
+    this.waitQueue.splice(0, i);
 
     // Progress
     const pct = Math.round((chunkCount / estimatedTotalChunks) * 100);
@@ -371,13 +377,21 @@ class WritableBuffer {
     }
   }
 
-  /** Resolve when at least `frames` frames have been collected. */
+  /** Resolve when at least `frames` frames have been collected, or when done is signaled. */
   async wait(frames: number): Promise<void> {
-    if (this.collectedFrames >= frames) return;
+    if (this._done || this.collectedFrames >= frames) return;
     return new Promise<void>((resolve) => {
-      this.readyResolveAt = frames;
-      this.readyResolve = resolve;
+      this.waitQueue.push({ frames, resolve });
     });
+  }
+
+  /** Signal that no more frames will be written — unblocks pending waiters. */
+  markDone(): void {
+    this._done = true;
+    for (const waiter of this.waitQueue) {
+      waiter.resolve();
+    }
+    this.waitQueue.length = 0;
   }
 
   /** Final channel data arrays (trimmed to actual size). */
@@ -507,6 +521,10 @@ export async function exportCensoredVideo(
         rmsMap.set(autoSegs[i].segStart, Math.sqrt(segSums[i] / segCounts[i]));
       }
     }
+
+    // Signal that no more frames will be written — unblocks renderSegmentData
+    // which may be waiting for a segment that exceeds actual audio length
+    wbuf.markDone();
 
     updatePhase('collect', { status: 'done', pct: 100, detail: `${chunkCount} chunks` });
     console.log('[export] Collect done,', chunkCount, 'chunks,', wbuf.collectedFramesCount, 'frames');
@@ -639,19 +657,32 @@ export async function exportCensoredVideo(
 
     const startAheadRender = (index: number) => {
       aheadPromise = (async () => {
-        const seg = await renderSegmentData(index);
-        aheadData = seg.data;
-        aheadFrames = seg.frames;
+        try {
+          const seg = await renderSegmentData(index);
+          aheadData = seg.data;
+          aheadFrames = seg.frames;
+        } catch {
+          // If ahead render fails, treat as no data — the main loop will
+          // fill silence and finish. This prevents unhandled rejections
+          // from killing the pipeline.
+          aheadData = null;
+          aheadFrames = 0;
+        }
       })();
     };
 
     const audioProcess = async (_sample: AudioSample) => {
+      const framesNeeded = _sample.numberOfFrames;
+      const ts = _sample.timestamp;
+      const sampleRate = _sample.sampleRate;
+      const numCh = _sample.numberOfChannels;
+
+      // Close the input sample immediately — we've read what we need
+      _sample.close();
+
+      const data = new Float32Array(numCh * framesNeeded);
+
       try {
-        const framesNeeded = _sample.numberOfFrames;
-        const ts = _sample.timestamp;
-
-        const data = new Float32Array(numChannels * framesNeeded);
-
         // Load the first segment
         if (segIndex === 0 && segFrames === 0) {
           const seg = await renderSegmentData(0);
@@ -673,7 +704,7 @@ export async function exportCensoredVideo(
           const available = segFrames - segOffset;
           const copyLen = Math.min(available, remaining);
 
-          for (let ch = 0; ch < numChannels; ch++) {
+          for (let ch = 0; ch < numCh; ch++) {
             const dstOffset = ch * framesNeeded + (framesNeeded - remaining);
             const src = segData[ch];
             for (let i = 0; i < copyLen; i++) {
@@ -708,21 +739,19 @@ export async function exportCensoredVideo(
             }
           }
         }
-
-        _sample.close();
-
-        return new AudioSample({
-          format: 'f32-planar',
-          sampleRate: _sample.sampleRate,
-          numberOfFrames: framesNeeded,
-          numberOfChannels: _sample.numberOfChannels,
-          timestamp: ts,
-          data,
-        });
       } catch (e) {
-        _sample.close();
-        throw e;
+        console.error('[export] audioProcess error:', e);
+        // Fill silence on error — don't let the pipeline crash
       }
+
+      return new AudioSample({
+        format: 'f32-planar',
+        sampleRate,
+        numberOfFrames: framesNeeded,
+        numberOfChannels: numCh,
+        timestamp: ts,
+        data,
+      });
     };
 
     updatePhase('encode', { status: 'active', pct: 0, detail: 'starting' });
