@@ -2,6 +2,7 @@ import { memo, useState, useCallback } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { exportCensoredVideo } from '../../export';
+import type { PhaseStatus } from '../../types';
 
 /**
  * Icon: close (X)
@@ -24,24 +25,83 @@ const DownloadIcon = () => (
 );
 
 /**
- * Progress bar component reused from TranscriptionResults styling.
+ * Phase status icon.
  */
-function ExportProgressBar({ stage }: { stage: string }) {
-  const pctMatch = stage.match(/\b(\d+)%\b/);
-  const pct = pctMatch ? parseInt(pctMatch[1], 10) : null;
-  const label = pct != null ? stage.replace(/\s*·?\s*\d+%\s*/g, '').trim() : stage;
+function PhaseIcon({ status }: { status: PhaseStatus }) {
+  if (status === 'done') {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-green-400">
+        <polyline points="20 6 9 17 4 12" />
+      </svg>
+    );
+  }
+  if (status === 'active') {
+    return (
+      <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-yellow-400 animate-spin">
+        <circle cx="12" cy="12" r="10" strokeOpacity="0.25" />
+        <path d="M12 2a10 10 0 0 1 10 10" strokeLinecap="round" />
+      </svg>
+    );
+  }
+  return (
+    <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="text-zinc-600">
+      <circle cx="12" cy="12" r="4" />
+    </svg>
+  );
+}
+
+/**
+ * Progress bar component with phase-by-phase detail.
+ */
+function ExportProgressBar() {
+  const progress = usePlayerStore((state) => state.exportProgress);
+  if (!progress) return null;
 
   return (
-    <div className="space-y-1">
-      <div className="flex items-center justify-between text-zinc-400">
-        <span>{label}</span>
-        {pct != null && <span>{pct}%</span>}
-      </div>
-      <div className="w-full bg-zinc-700 rounded-full h-1.5 overflow-hidden">
-        <div
-          className={`bg-green-500 h-1.5 rounded-full transition-all duration-200 ${pct == null ? 'animate-pulse' : ''}`}
-          style={{ width: pct != null ? `${pct}%` : '100%' }}
-        />
+    <div className="space-y-1.5">
+      {/* Phase list */}
+      {progress.phases.map((phase) => (
+        <div key={phase.key} className="flex items-center gap-2 text-xs">
+          <PhaseIcon status={phase.status} />
+          <div className="flex-1 min-w-0">
+            <div className="flex items-center justify-between gap-2">
+              <span className={`${
+                phase.status === 'active' ? 'text-white font-semibold' :
+                phase.status === 'done' ? 'text-zinc-300' :
+                'text-zinc-500'
+              }`}>
+                {phase.label}
+              </span>
+              {(phase.status === 'active' || phase.status === 'done') && phase.pct > 0 && (
+                <span className="text-zinc-400 tabular-nums">{phase.pct}%</span>
+              )}
+            </div>
+            {phase.status === 'active' && phase.detail && (
+              <div className="text-[10px] text-zinc-500 truncate">
+                {phase.detail}
+              </div>
+            )}
+            {phase.status === 'done' && phase.detail && phase.detail !== 'done' && phase.detail !== 'complete' && (
+              <div className="text-[10px] text-zinc-500 truncate">
+                {phase.detail}
+              </div>
+            )}
+          </div>
+          {/* Mini progress bar for active phase */}
+          {phase.status === 'active' && (
+            <div className="w-10 bg-zinc-700 rounded-full h-1 overflow-hidden shrink-0">
+              <div
+                className="bg-green-400 h-1 rounded-full transition-all duration-200"
+                style={{ width: `${phase.pct}%` }}
+              />
+            </div>
+          )}
+        </div>
+      ))}
+
+      {/* Total elapsed */}
+      <div className="text-[10px] text-zinc-500 pt-0.5 border-t border-zinc-700/50">
+        Elapsed: {progress.elapsed.toFixed(1)}s
       </div>
     </div>
   );
@@ -165,7 +225,6 @@ const ExportModal = memo(({ format, onFormatChange, onExport, onClose, videoCode
 const ExportButtonInner = () => {
   const fileName = usePlayerStore((state) => state.fileName);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
-  const exportStage = usePlayerStore((state) => state.exportStage);
   const exporting = usePlayerStore((state) => state.exporting);
   const actions = usePlayerActions();
   const { getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
@@ -203,25 +262,28 @@ const ExportButtonInner = () => {
       const targetFormat: 'mp4' | 'webm' = format === 'same' ? originalFormat : format;
       const preferOriginal = format === 'same';
 
-      const buffer = await exportCensoredVideo(
-        input, audioTrack, audioSink, targetFormat,
-        preferOriginal ? (videoTrack?.codec ?? null) : null,
-        preferOriginal ? (audioTrack.codec ?? null) : null,
-      );
+      try {
+        const buffer = await exportCensoredVideo(
+          input, audioTrack, audioSink, targetFormat,
+          preferOriginal ? (videoTrack?.codec ?? null) : null,
+          preferOriginal ? (audioTrack.codec ?? null) : null,
+        );
 
       const mimeType = targetFormat === 'mp4' ? 'video/mp4' : 'video/webm';
       const extension = targetFormat === 'mp4' ? 'mp4' : 'webm';
       const baseName = (fileName || 'video').replace(/\.[^.]+$/, '');
 
-      const blob = new Blob([buffer], { type: mimeType });
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement('a');
-      a.href = url;
-      a.download = `${baseName}_censored.${extension}`;
-      document.body.appendChild(a);
-      a.click();
-      document.body.removeChild(a);
-      URL.revokeObjectURL(url);
+       const blob = new Blob([buffer], { type: mimeType });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = `${baseName}_censored.${extension}`;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      } finally {
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Export failed');
       console.error('Export error:', err);
@@ -249,8 +311,8 @@ const ExportButtonInner = () => {
         )}
 
         {/* Progress bar visible even when modal is closed */}
-        {exporting && exportStage && (
-          <ExportProgressBar stage={exportStage} />
+        {exporting && (
+          <ExportProgressBar />
         )}
       </div>
 

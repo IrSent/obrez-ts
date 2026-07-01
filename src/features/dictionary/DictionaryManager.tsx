@@ -3,7 +3,7 @@ import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { backendPath } from '../../config';
 import { FastAhoScanner } from '../../aho-corasick';
 
-const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords'];
+const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
 
 const DictionaryManagerInner = () => {
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);

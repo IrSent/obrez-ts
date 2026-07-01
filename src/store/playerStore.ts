@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { PlayerState, Dictionary, BleepSound, CensoringEffect, SoundCensoringEffect, PlaybackSpeed } from '../types';
+import type { PlayerState, Dictionary, BleepSound, CensoringEffect, SoundCensoringEffect, PlaybackSpeed, ExportProgress } from '../types';
 import { FastAhoScanner } from '../aho-corasick';
 import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData, dbUpdateUrl } from './bleepDb';
 
@@ -68,7 +68,11 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   // Export state
   exporting: false,
-  exportStage: null,
+  exportProgress: null,
+
+  // Import state
+  importing: false,
+  importStage: null,
 
   // Transcribe format
   transcribeFormat: 'original',
@@ -310,15 +314,29 @@ export const playerActions = {
   // Export actions
   setExporting: (exporting: boolean) =>
     usePlayerStore.setState({ exporting }),
-  setExportStage: (stage: string | null) =>
-    usePlayerStore.setState({ exportStage: stage }),
+  setExportProgress: (progress: ExportProgress | null) =>
+    usePlayerStore.setState({ exportProgress: progress }),
   /**
-   * Set export done: exporting=false + clear stage in one setState.
+   * Set export done: exporting=false + clear progress in one setState.
    */
   setExportDone: () =>
     usePlayerStore.setState({
       exporting: false,
-      exportStage: null,
+      exportProgress: null,
+    }),
+
+  // Import actions
+  setImporting: (importing: boolean) =>
+    usePlayerStore.setState({ importing }),
+  setImportStage: (stage: string | null) =>
+    usePlayerStore.setState({ importStage: stage }),
+  /**
+   * Set import done: importing=false + clear stage in one setState.
+   */
+  setImportDone: () =>
+    usePlayerStore.setState({
+      importing: false,
+      importStage: null,
     }),
 };
 

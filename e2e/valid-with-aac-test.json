@@ -1,0 +1,56 @@
+{
+  "version": 1,
+  "transcription": [
+    {
+      "start": 0.5,
+      "end": 1.2,
+      "text": "Hello"
+    },
+    {
+      "start": 1.3,
+      "end": 2.0,
+      "text": "world"
+    },
+    {
+      "start": 2.1,
+      "end": 3.0,
+      "text": "this"
+    },
+    {
+      "start": 3.1,
+      "end": 4.0,
+      "text": "is"
+    },
+    {
+      "start": 4.1,
+      "end": 5.5,
+      "text": "a test"
+    }
+  ],
+  "effects": [
+    {
+      "id": "eff-1",
+      "segmentStart": 0.5,
+      "soundId": "bleep-1",
+      "volume": 1,
+      "volumeMode": "manual",
+      "playbackRate": 1,
+      "dampenOriginal": true,
+      "dampenAmount": 1,
+      "dampenType": "sharp",
+      "effectType": "sound"
+    },
+    {
+      "id": "eff-2",
+      "segmentStart": 2.1,
+      "soundId": "bleep-1",
+      "volume": 0.5,
+      "volumeMode": "manual",
+      "playbackRate": 1,
+      "dampenOriginal": true,
+      "dampenAmount": 0.5,
+      "dampenType": "parabolic",
+      "effectType": "sound"
+    }
+  ]
+}

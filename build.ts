@@ -16,11 +16,12 @@ async function build() {
     console.log('Copying public assets...');
     await $`cp -r public/* dist/`;
 
-    // Copy Phase Vocoder processor (AudioWorklet, must be served as separate file)
+    // Copy Phase Vocoder processor from node_modules — always fresh
     console.log('Copying Phase Vocoder processor...');
-    await $`cp public/phase-vocoder-processor.js dist/`;
+    await $`cp node_modules/@soundtouchjs/phase-vocoder-worklet/.dist/phase-vocoder-processor.js dist/`.quiet();
 
-    // Get git build number (commit count from HEAD)
+    // Get base version and build number
+    const baseVersion = JSON.parse((await $`cat package.json`.text())).version;
     const buildNum = (await $`git rev-list HEAD --count`.text()).trim();
 
     // Build with Bun and Tailwind
@@ -39,6 +40,7 @@ async function build() {
       minify: false,
       splitting: false,
       define: {
+        '__BASE_VERSION__': JSON.stringify(baseVersion),
         '__BUILD_NUM__': JSON.stringify(buildNum),
       },
     });

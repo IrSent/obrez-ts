@@ -48,7 +48,18 @@ test.describe('Video Playback', () => {
     // Video auto-plays — wait a bit then pause
     await page.waitForTimeout(3000);
 
-    // Hover the canvas to reveal controls, then pause
+    // Hover the canvas to reveal controls
+    await page.locator('canvas[aria-label="Video canvas"]').hover();
+    await page.waitForTimeout(500);
+
+    // Ensure video is playing before pausing (autoplay may be blocked)
+    const playButton = page.getByRole('button', { name: /play/i });
+    if (await playButton.isVisible().catch(() => false)) {
+      await playButton.click();
+      await page.waitForTimeout(2000);
+    }
+
+    // Now pause
     await page.locator('canvas[aria-label="Video canvas"]').hover();
     await page.waitForTimeout(500);
     await page.getByRole('button', { name: /pause/i }).click();
