@@ -221,14 +221,24 @@ export function useMediaPlayer() {
           const ctx = audioContextRef.current;
           const now = ctx?.currentTime ?? 0;
 
-          // 1. Set new speed on PhaseVocoderNode FIRST — before any nodes stop,
-          // so the processor uses the new rate from the start.
+          // 1. Save current media time BEFORE updating playbackSpeedRef.
+          // CRITICAL: stopAudio() and getPlaybackTime() read playbackSpeedRef.
+          // If we update it first, they calculate the wrong position:
+          //   - 2x→1x: reads half the real position → seek backward → overlap
+          //   - 1x→2x: reads double the real position → seek forward → skip
+          const oldSpeed = playbackSpeedRef.current;
+          const currentMediaT = ctx && audioContextStartTimeRef.current != null
+            ? (ctx.currentTime - audioContextStartTimeRef.current) * oldSpeed + playbackTimeAtStartRef.current
+            : playbackTimeAtStartRef.current;
+
+          // 2. Now safe to update the speed — stopAudio will read the correct
+          // old speed because currentMediaT is already captured.
           playbackSpeedRef.current = speed;
           if (stNode) {
             stNode.playbackRate.setValueAtTime(speed, now);
           }
 
-          // 2. If a transition (seek/pause/play) is already in progress,
+          // 3. If a transition (seek/pause/play) is already in progress,
           // skip — the in-progress transition will use the new speed
           // (read from playbackSpeedRef) when it restarts audio.
           if (playbackStateRef.current === 'transitioning') {
@@ -238,7 +248,7 @@ export function useMediaPlayer() {
 
           const wasPlaying = playbackStateRef.current === 'playing';
 
-          // 3. Bridge silence: start feeding PhaseVocoderNode at the new speed
+          // 4. Bridge silence: start feeding PhaseVocoderNode at the new speed
           // BEFORE stopping old audio. This ensures the FIFO never drains.
           // Warmup (3s of silence at init) pre-fills the FIFO, so bridge only
           // needs to cover the brief stop→start gap — 800ms is enough.
@@ -254,14 +264,11 @@ export function useMediaPlayer() {
             console.log(`[audio] bridge silence: ${bridgeSamples} samples (${bridgeMs}ms at ${speed}x)`);
           }
 
-          // 4. Use transitionRef instead of direct stopAudio/startAudio.
+          // 5. Use transitionRef instead of direct stopAudio/startAudio.
           // This prevents race conditions with concurrent seek/pause/play
           // transitions — all audio state changes go through one gate.
           if (wasPlaying && audioSinkRef.current) {
-            // Save current media time before stopping.
-            const currentMediaT = utilsRef.current.getPlaybackTime();
-
-            // Stop audio → seek to same position → start audio at new speed.
+            // Stop audio → seek to saved position → start audio at new speed.
             // transitionRef now has a 'transitioning' guard that blocks other
             // transitions from firing while we rebuild the audio pipeline.
             await transitionRef.current('playing', currentMediaT);
