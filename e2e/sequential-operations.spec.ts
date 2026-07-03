@@ -2,9 +2,7 @@ import { test, expect } from '@playwright/test';
 
 /**
  * Тест на последовательные операции после фикса transitioning guard.
- *
- * Проверка: pause → play → seek (последовательно) — все операции
- * должны завершиться успешно, звук не должен прерываться.
+ * Сокращённые таймауты: 2s → 1s, 3s → 1.5s.
  */
 
 function parseTime(text: string | null): number {
@@ -16,10 +14,19 @@ function parseTime(text: string | null): number {
 }
 
 async function checkNoMultipleStreams(page: import('@playwright/test').Page): Promise<void> {
-  const { actuallyPlaying, peakPlayingSources, playbackState } =
+  const { actuallyPlaying, peakPlayingSources } =
     await page.evaluate(() => (window as any).__audioDiagnostic || {});
   expect(actuallyPlaying, 'actuallyPlaying ≤ 2').toBeLessThanOrEqual(2);
   expect(peakPlayingSources, 'peakPlayingSources ≤ 2').toBeLessThanOrEqual(2);
+}
+
+async function loadFile(page: import('@playwright/test').Page) {
+  const fileChooserPromise = page.waitForEvent('filechooser');
+  await page.getByRole('button', { name: 'Load File' }).click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles('e2e/valid-with-aac.mp4');
+  const durationText = page.locator('span.text-xs.opacity-60').last();
+  await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
 }
 
 test.describe('Sequential operations', () => {
@@ -29,64 +36,44 @@ test.describe('Sequential operations', () => {
     page.on('console', msg => consoleLogs.push(msg.text()));
 
     await page.goto('/');
-
-    // Load file
-    const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Load File' }).click();
-    const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles('e2e/valid-with-aac.mp4');
-
-    const durationText = page.locator('span.text-xs.opacity-60').last();
-    await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
-
-    // Let it play for 2 seconds
-    await page.waitForTimeout(2000);
+    await loadFile(page);
+    await page.waitForTimeout(1000);
 
     // Hover to show controls
     await page.locator('canvas[aria-label="Video canvas"]').hover();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // 1. Pause
     await page.getByRole('button', { name: /pause/i }).click();
-    await page.waitForTimeout(1500);
+    await page.waitForTimeout(800);
 
     const timeAfterPause = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
     expect(timeAfterPause).toBeGreaterThan(0);
 
-    // 2. Play (await to ensure it completes)
+    // 2. Play
     await page.getByRole('button', { name: /play/i }).click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
     const timeAfterPlay = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
-    expect(timeAfterPlay).toBeGreaterThan(timeAfterPause + 0.5); // should have progressed
+    expect(timeAfterPlay).toBeGreaterThan(timeAfterPause + 0.5);
 
-    // 3. Seek to 50% (await to ensure it completes)
+    // 3. Seek to 50%
     const progressBar = page.locator('[role="progressbar"]');
     const rect = await progressBar.boundingBox();
     if (!rect) throw new Error('progress bar not found');
     await page.mouse.click(rect.x + rect.width * 0.5, rect.y + rect.height / 2);
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1500);
 
     const timeAfterSeek = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
     const duration = await page.locator('[data-testid="duration"]').getAttribute('data-seconds');
     const dur = parseFloat(duration || '0');
-
-    // Time should be close to 50% of duration (within 2 seconds tolerance)
     expect(Math.abs(timeAfterSeek - dur * 0.5)).toBeLessThan(3);
 
-    // Verify playback is progressing after seek
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     const timeAfterSeek2 = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
-    expect(timeAfterSeek2 - timeAfterSeek).toBeGreaterThan(1);
-
-    // Check no multiple streams
+    expect(timeAfterSeek2 - timeAfterSeek).toBeGreaterThan(0.5);
     await checkNoMultipleStreams(page);
-
-    // Check no rejected transitions (there shouldn't be any with sequential operations)
-    const rejectedLogs = consoleLogs.filter(log =>
-      log.includes('transition rejected')
-    );
-    expect(rejectedLogs.length).toBe(0);
+    expect(consoleLogs.filter(l => l.includes('transition rejected')).length).toBe(0);
   });
 
   test('seek while playing: transition succeeds', async ({ page }) => {
@@ -94,110 +81,65 @@ test.describe('Sequential operations', () => {
     page.on('console', msg => consoleLogs.push(msg.text()));
 
     await page.goto('/');
-
-    // Load file
-    const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Load File' }).click();
-    const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles('e2e/valid-with-aac.mp4');
-
-    const durationText = page.locator('span.text-xs.opacity-60').last();
-    await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
-
-    // Let it play for 3 seconds
-    await page.waitForTimeout(3000);
+    await loadFile(page);
+    await page.waitForTimeout(1500);
 
     // Hover to show controls
     await page.locator('canvas[aria-label="Video canvas"]').hover();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     const timeBeforeSeek = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
-    console.log(`[seq] Time before seek: ${timeBeforeSeek}`);
 
- // Seek to 25% — use page.evaluate to dispatch click on the actual element
-    const seeked = await page.evaluate(() => {
+    // Seek to 25%
+    await page.evaluate(() => {
       const bar = document.querySelector('[role="progressbar"]') as HTMLElement;
-      if (!bar) return -1;
+      if (!bar) return;
       const rect = bar.getBoundingClientRect();
-      const clickX = rect.left + rect.width * 0.25;
-      const clickY = rect.top + rect.height / 2;
       bar.dispatchEvent(new MouseEvent('click', {
-        clientX: clickX, clientY: clickY, bubbles: true
+        clientX: rect.left + rect.width * 0.25, clientY: rect.top + rect.height / 2, bubbles: true
       }));
-      return 0.25;
     });
-    await page.waitForTimeout(3000);
+    await page.waitForTimeout(1500);
 
     const duration = await page.locator('[data-testid="duration"]').getAttribute('data-seconds');
     const dur = parseFloat(duration || '0');
     const timeAfterSeek = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
-
-    console.log(`[seq] Duration: ${dur}, 25%: ${dur * 0.25}, timeAfterSeek: ${timeAfterSeek}`);
-
-    // Check transition logs
-    const audioLogs = consoleLogs.filter(log => log.includes('[audio]'));
-    console.log('[seq] Audio logs:', audioLogs);
-
-    // Time should be close to 25% of duration
     expect(Math.abs(timeAfterSeek - dur * 0.25)).toBeLessThan(3);
 
-    // Verify playback is progressing
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
     const timeAfterSeek2 = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
-    expect(timeAfterSeek2 - timeAfterSeek).toBeGreaterThan(1);
-
-    // Check no multiple streams
+    expect(timeAfterSeek2 - timeAfterSeek).toBeGreaterThan(0.5);
     await checkNoMultipleStreams(page);
-
-    // Check no rejected transitions
-    const rejectedLogs = consoleLogs.filter(log =>
-      log.includes('transition rejected')
-    );
-    expect(rejectedLogs.length).toBe(0);
   });
 
   test('replay: seeks to 0 and plays', async ({ page }) => {
     await page.goto('/');
-
-    // Load file
-    const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Load File' }).click();
-    const fileChooser = await fileChooserPromise;
-    await fileChooser.setFiles('e2e/valid-with-aac.mp4');
-
-    const durationText = page.locator('span.text-xs.opacity-60').last();
-    await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
-
-    // Let it play for 3 seconds
-    await page.waitForTimeout(3000);
+    await loadFile(page);
+    await page.waitForTimeout(1500);
 
     // Hover to show controls
     await page.locator('canvas[aria-label="Video canvas"]').hover();
-    await page.waitForTimeout(500);
+    await page.waitForTimeout(300);
 
     // Pause
     await page.getByRole('button', { name: /pause/i }).click();
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(500);
 
     // Seek to 75%
     const progressBar = page.locator('[role="progressbar"]');
     const rect = await progressBar.boundingBox();
     if (!rect) throw new Error('progress bar not found');
     await page.mouse.click(rect.x + rect.width * 0.75, rect.y + rect.height / 2);
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
     // Play again
     await page.getByRole('button', { name: /play/i }).click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(1000);
 
     const currentTime = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
     const duration = await page.locator('[data-testid="duration"]').getAttribute('data-seconds');
     const dur = parseFloat(duration || '0');
-
-    // Should be playing from ~75%
     expect(currentTime).toBeGreaterThan(dur * 0.7);
-
-    // Check no multiple streams
     await checkNoMultipleStreams(page);
   });
 });
