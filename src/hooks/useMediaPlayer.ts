@@ -1,4 +1,23 @@
 import { useCallback, useRef, useEffect } from 'react';
+
+// E2E diagnostic — exposed to window
+declare global {
+  interface Window {
+    __audioDiagnostic: {
+      concurrentSources: number;
+      actuallyPlaying: number;
+      peakPlayingSources: number;
+      hasIterator: boolean;
+      iteratorLocked: boolean;
+      playbackState: string;
+      getPlaybackTime: number;
+      analyserPeak: number;
+      analyserRms: number;
+      bypassGain: number | null;
+      stGain: number | null;
+    };
+  }
+}
 import { usePlayerStore, playerActions } from '../store/playerStore';
 import {
   ALL_FORMATS,
@@ -204,6 +223,12 @@ export function useMediaPlayer() {
   // and awaited before video/playback state is started.
   const audioReadyResolveRef = useRef<(() => void) | null>(null);
 
+  // Resolved when the first audio buffer is scheduled in runAudioIterator.
+  // This ensures getPlaybackTime() is accurate from the first sample —
+  // audioContextStartTimeRef is set right before the buffer starts, so
+  // reported time = actual audio position.
+  const firstBufferResolveRef = useRef<(() => void) | null>(null);
+
   // Prev underrun count ref — shared between metrics handler and speed
   // transition so we can reset it on speed change and avoid carry-over.
   const prevUnderrunsRef = useRef<number>(0);
@@ -221,9 +246,9 @@ export function useMediaPlayer() {
           const ctx = audioContextRef.current;
           const now = ctx?.currentTime ?? 0;
 
-          // 1. Save current media time BEFORE updating playbackSpeedRef.
-          // CRITICAL: stopAudio() and getPlaybackTime() read playbackSpeedRef.
-          // If we update it first, they calculate the wrong position:
+      // 1. Save current media time using the OLD speed.
+          // CRITICAL: stopAudio() reads playbackSpeedRef.current to calculate
+          // currentTime. If we update it first, stopAudio gets the wrong time:
           //   - 2x→1x: reads half the real position → seek backward → overlap
           //   - 1x→2x: reads double the real position → seek forward → skip
           const oldSpeed = playbackSpeedRef.current;
@@ -231,9 +256,8 @@ export function useMediaPlayer() {
             ? (ctx.currentTime - audioContextStartTimeRef.current) * oldSpeed + playbackTimeAtStartRef.current
             : playbackTimeAtStartRef.current;
 
-          // 2. Now safe to update the speed — stopAudio will read the correct
-          // old speed because currentMediaT is already captured.
-          playbackSpeedRef.current = speed;
+          // 2. Update PhaseVocoderNode rate — must happen before bridge silence
+          // so the processor uses the new rate from the start.
           if (stNode) {
             stNode.playbackRate.setValueAtTime(speed, now);
           }
@@ -264,14 +288,20 @@ export function useMediaPlayer() {
             console.log(`[audio] bridge silence: ${bridgeSamples} samples (${bridgeMs}ms at ${speed}x)`);
           }
 
-          // 5. Use transitionRef instead of direct stopAudio/startAudio.
-          // This prevents race conditions with concurrent seek/pause/play
-          // transitions — all audio state changes go through one gate.
+         // 5. Use transitionRef — stopAudio reads oldSpeed from playbackSpeedRef.
+          // beforeStartAudio callback updates playbackSpeedRef AND resets
+          // audioContextStartTimeRef to ctx.currentTime. This is critical:
+          // - playbackSpeedRef must be updated before startAudio (correct bootstrap)
+          // - audioContextStartTimeRef must be updated at the same time, otherwise
+          //   getPlaybackTime() in the rAF loop uses (ctx.time - old_T0) * newSpeed
+          //   → time jumps forward → video skips frames → audio rushes ahead
+          // With both updated together: (ctx.time - new_T0) * newSpeed + currentMediaT
+          // = 0 + currentMediaT = correct time, no jump.
           if (wasPlaying && audioSinkRef.current) {
-            // Stop audio → seek to saved position → start audio at new speed.
-            // transitionRef now has a 'transitioning' guard that blocks other
-            // transitions from firing while we rebuild the audio pipeline.
-            await transitionRef.current('playing', currentMediaT);
+            await transitionRef.current('playing', currentMediaT, () => {
+              playbackSpeedRef.current = speed;
+              audioContextStartTimeRef.current = ctx.currentTime;
+            });
 
             // Reset underrun counter so carry-over from 1x (where
             // underruns accumulate silently with stGain=0) doesn't inflate
@@ -279,6 +309,7 @@ export function useMediaPlayer() {
             prevUnderrunsRef.current = liveUnderrunCountRef.current;
           } else if (!wasPlaying) {
             // Was paused — just update gain routing if needed.
+            playbackSpeedRef.current = speed;
             if (bypassGainRef.current && stGainRef.current && ctx) {
               bypassGainRef.current.gain.setValueAtTime(speed === 1 ? 1 : 0, ctx.currentTime);
               stGainRef.current.gain.setValueAtTime(speed === 1 ? 0 : 1, ctx.currentTime);
@@ -552,7 +583,10 @@ export function useMediaPlayer() {
     }
 
    // Start the audio iterator — it feeds bootstrap silence into PhaseVocoderNode.
-    audioContextStartTimeRef.current = ctx.currentTime;
+    // audioContextStartTimeRef is NOT set here — it's set in runAudioIterator
+    // right before the first buffer is scheduled. This ensures getPlaybackTime()
+    // is accurate from the first sample (no drift from lock wait / decode time).
+    // Until then, getPlaybackTime() returns frozen time (state = 'transitioning').
     // FIX: initialize to current playback time so the first buffer from MediaBunny
     // doesn't trigger a false [gap] warning (the iterator starts at this position).
     lastBufferEndRef.current = utilsRef.current.getPlaybackTime();
@@ -573,13 +607,13 @@ export function useMediaPlayer() {
 
     // Wait for bootstrap silence to warm up PhaseVocoderNode before proceeding.
     // At 1x, PhaseVocoderNode is bypassed (stGain=0) — no wait needed.
-    // We listen for the metrics signal (framesBuffered >= 800 for 2 streaks) rather than
+    // We listen for the metrics signal (framesBuffered >= 400 for 2 streaks) rather than
     // relying on a fixed timeout — the FIFO is ready when it's ready.
     if (speed > 1) {
       const startTime = Date.now();
       audioReadyResolveRef.current = () => {}; // no-op placeholder
-      // The metrics handler (set up in runAudioIterator) will resolve this
-      // when framesBuffered >= 800 (achievable even at 1.25x).
+      // The metrics handler (set up in initMediaPlayer) will resolve this
+      // when framesBuffered >= 400 (achievable even at 1.25x).
       await new Promise<void>((resolve) => {
         audioReadyResolveRef.current = resolve;
         // Safety fallback: if metrics never fire, proceed after 2s.
@@ -594,6 +628,25 @@ export function useMediaPlayer() {
       const waited = Date.now() - startTime;
       console.log(`[audio] bootstrap wait done (${waited}ms), proceeding with playback`);
     }
+
+    // Wait for the first buffer to be scheduled. This ensures audioContextStartTimeRef
+    // is set (by runAudioIterator) before we return and transitionRef sets 'playing'.
+    // getPlaybackTime() then returns the correct media time from the first sample.
+    const firstBufferReady = new Promise<void>((resolve) => {
+      firstBufferResolveRef.current = resolve;
+      // Safety: if runAudioIterator never schedules a buffer, proceed after 1s.
+      setTimeout(() => {
+        if (firstBufferResolveRef.current === resolve) {
+          firstBufferResolveRef.current = null;
+          if (audioContextStartTimeRef.current == null) {
+            audioContextStartTimeRef.current = ctx.currentTime;
+          }
+          resolve();
+        }
+      }, 1000);
+    });
+    await firstBufferReady;
+
     console.log('[audio] startAudio done');
   };
 
@@ -610,10 +663,10 @@ export function useMediaPlayer() {
   //  a React re-render.
   // =====================================================================
   const transitionRef = useRef<
-    (target: 'playing' | 'paused', seekTo?: number) => Promise<void>
+    (target: 'playing' | 'paused', seekTo?: number, beforeStartAudio?: () => void) => Promise<void>
   >(null!);
 
-  transitionRef.current = async (target, seekTo) => {
+  transitionRef.current = async (target, seekTo, beforeStartAudio) => {
     // If a transition is already in progress, reject — prevents concurrent
     // stopAudio/startAudio calls that create multiple audio iterators.
     if (playbackStateRef.current === 'transitioning') {
@@ -633,7 +686,9 @@ export function useMediaPlayer() {
       // Mark as transitioning — blocks other transitions until we're done.
       playbackStateRef.current = 'transitioning';
 
-      // Stop current audio if was playing.
+      // Stop current audio if was playing — reads playbackSpeedRef.current
+      // for time calculation. Speed subscriber passes oldSpeed here by NOT
+      // updating playbackSpeedRef yet (uses beforeStartAudio callback).
       if (wasPlaying) {
         await stopAudioRef.current();
       }
@@ -657,6 +712,13 @@ export function useMediaPlayer() {
           playerActions.setIsEnded(false);
           triggeredEffectsRef.current.clear();
           await startVideoIteratorRef.current();
+        }
+
+        // beforeStartAudio: speed subscriber uses this to update playbackSpeedRef
+        // AFTER stopAudio (so stopAudio reads oldSpeed for correct time capture)
+        // but BEFORE startAudio (so startAudio reads newSpeed for correct bootstrap).
+        if (beforeStartAudio) {
+          beforeStartAudio();
         }
 
         if (audioContextRef.current?.state === 'suspended') {
@@ -746,13 +808,42 @@ export function useMediaPlayer() {
       for (const node of queuedAudioNodesRef.current) {
         if (node.playbackState === 'started') playing++;
       }
-      (window as any).__audioDiagnostic = {
+      // Track peak: monotonically increasing maximum of concurrently playing sources
+      if (playing > peakPlayingSourcesRef.current) {
+        peakPlayingSourcesRef.current = playing;
+      }
+
+      // Read analyser data for e2e tests
+      let analyserPeak = 0;
+      let analyserRms = 0;
+      if (analyserRef.current) {
+        const dataArray = new Float32Array(analyserRef.current.frequencyBinCount);
+        analyserRef.current.getFloatTimeDomainData(dataArray);
+        let sum = 0;
+        for (let i = 0; i < dataArray.length; i++) {
+          const abs = Math.abs(dataArray[i]);
+          if (abs > analyserPeak) analyserPeak = abs;
+          sum += dataArray[i] * dataArray[i];
+        }
+        analyserRms = Math.sqrt(sum / dataArray.length);
+      }
+
+      window.__audioDiagnostic = {
         concurrentSources: queuedAudioNodesRef.current.size,
         actuallyPlaying: playing,
         peakPlayingSources: peakPlayingSourcesRef.current,
         hasIterator: !!audioBufferIteratorRef.current,
         iteratorLocked: runAudioIteratorLockRef.current,
         playbackState: playbackStateRef.current,
+        // Expose getPlaybackTime so e2e tests can read precise media time
+        // without going through throttled DOM updates.
+        getPlaybackTime: utilsRef.current.getPlaybackTime(),
+        // Expose analyser data for audio quality checks
+        analyserPeak,
+        analyserRms,
+        // Expose gain routing to detect dual-path overlap
+        bypassGain: bypassGainRef.current?.gain.value ?? null,
+        stGain: stGainRef.current?.gain.value ?? null,
       };
     }, 100);
     return () => clearInterval(id);
@@ -840,7 +931,7 @@ export function useMediaPlayer() {
       // the generation. Any old iterator that resumes sees generation mismatch
       // and exits before creating nodes (even if abort=false).
       abortAudioRef.current = false;
-
+     
       const ctx = audioContextRef.current;
       const stNode = stNodeRef.current;
       const speed = playbackSpeedRef.current;
@@ -890,8 +981,21 @@ export function useMediaPlayer() {
       // When speed decreases, it finishes later.
       let actualEndCorrection: number | null = null;
 
+      // Periodic yield counter: every 30 buffers (~1s of audio at 33ms/buffer)
+      // yield to the event loop so the rAF video render loop isn't starved.
+      // Without this, the iterator processes 4s of audio (aheadThreshold at 1x)
+      // in a single microtask drain → visible video stuttering.
+      let yieldCounter = 0;
+
+      // Recalibrate audioContextStartTimeRef right before the first buffer starts.
+      // startAudio() may not set it (or set it early), so we recalibrate to the
+      // actual start time of the first buffer. This eliminates apparent rate < 1.0x
+      // caused by the gap between startAudio() and the first buffer.
+      let isFirstBuffer = true;
+
+      
       for await (const wrapped of audioBufferIteratorRef.current) {
-        // GENERATION CHECK — primary defense. Must come FIRST because
+               // GENERATION CHECK — primary defense. Must come FIRST because
         // abortAudioRef may be reset by startAudio while the old iterator
         // is still alive. The generation counter is monotonically increasing
         // and never reset, so stale iterators always see a mismatch.
@@ -918,19 +1022,38 @@ export function useMediaPlayer() {
             `[gap] ${gap.toFixed(3)}s between buffers at mediaT=${currentMediaT.toFixed(3)}s`
           );
         }
-
-        const currentSpeed = playbackSpeedRef.current;
+        // Overlap detection — buffers overlap in media time → same audio played twice
+        if (gap < -0.001) {
+          console.error(
+            `[overlap] buffers overlap by ${Math.abs(gap).toFixed(3)}s at mediaT=${currentMediaT.toFixed(3)}s`
+          );
+        }
+       const currentSpeed = playbackSpeedRef.current;
         const bufferEndAtSpeed = wrapped.buffer.duration / currentSpeed;
 
   // Apply correction from the previous buffer's actual end time.
-  // CRITICAL: onended fires BEFORE audio truly stops on the render thread —
+  // onended fires BEFORE audio truly stops on the render thread —
   // the node is still producing samples in the current render quantum
   // (~128 samples ≈ 2.67ms at 48kHz). Without a margin, the next buffer
   // starts while the previous one is still playing → overlap → click/pop.
-  // We add RENDER_QUANTUM_MARGIN at ALL speeds to ensure clean handoff.
+  // We add RENDER_QUANTUM_MARGIN to ensure clean handoff.
+  // At 1x: use correction with margin. expectedEnd is mostly accurate,
+  // but the correction provides feedback from the real audio clock.
+  // Without it, accumulated JS scheduler drift creates gaps at buffer
+  // boundaries → clicks. Margin needed at ALL speeds where onended fires.
         if (actualEndCorrection != null) {
-          lastEnd = actualEndCorrection + RENDER_QUANTUM_MARGIN;
-          actualEndCorrection = null;
+          // At all speeds: apply correction with margin. onended fires ~2.9ms
+          // before audio truly stops on the render thread. Without margin,
+          // the next buffer starts while the previous one is still playing →
+          // overlap → "каша из семплов" (two voices out of sync).
+          // CRITICAL: only apply if correction is ahead of lastEnd.
+          // If actualEndCorrection < lastEnd, the onended fires for a buffer
+          // that was already scheduled — applying it would make lastEnd jump
+          // backward → next buffer starts before the previous one → overlap.
+          if (actualEndCorrection + RENDER_QUANTUM_MARGIN > lastEnd) {
+            lastEnd = actualEndCorrection + RENDER_QUANTUM_MARGIN;
+            actualEndCorrection = null;
+          }
         }
 
         // Safety: if lastEnd is in the past (speed change created a gap),
@@ -964,6 +1087,24 @@ export function useMediaPlayer() {
         // Snap to sample boundary
         const snappedStart = Math.round(ctx.sampleRate * startTime) / ctx.sampleRate;
 
+        // First buffer: recalibrate audioContextStartTimeRef to account for the time
+        // elapsed between beforeStartAudio (or startAudio) and the actual first buffer.
+        // Bootstrap silence advances ctx.currentTime, so T0 set earlier is stale.
+        // We set audioContextStartTimeRef = snappedStart so that:
+        //   getPlaybackTime() = (ctx.time - snappedStart) * speed + playbackTimeAtStartRef
+        // At ctx.time = snappedStart: getPlaybackTime() = playbackTimeAtStartRef. ✓
+        // Old formula was: snappedStart - playbackTimeAtStartRef / speed, which
+        // double-counted playbackTimeAtStartRef → 2x time jump on pause→play.
+        if (isFirstBuffer) {
+          audioContextStartTimeRef.current = snappedStart;
+          isFirstBuffer = false;
+          if (firstBufferResolveRef.current) {
+            const resolve = firstBufferResolveRef.current;
+            firstBufferResolveRef.current = null;
+            resolve();
+          }
+        }
+
         stNode.playbackRate.setValueAtTime(currentSpeed, ctx.currentTime);
         const source = ctx.createBufferSource();
         source.buffer = wrapped.buffer;
@@ -978,9 +1119,19 @@ export function useMediaPlayer() {
         // audio goes directly through bypassGain, so starting at 0.5 creates an
         // audible amplitude dip (previous buffer ends at 1.0, new one starts at 0.5).
         // Use gain=1 at 1x to avoid the dip.
+        // The first buffer gets a fade-in at >1x to mask the silence-to-audio transition
+        // artifact inside the PhaseVocoderNode (spectral smearing from FFT window boundary).
+        // At 1x, PhaseVocoderNode is bypassed — no artifact to mask. A fade-in from 0.5
+        // creates an audible amplitude dip → onset click.
         const bufGain = ctx.createGain();
         if (currentSpeed === 1) {
+          // At 1x: no fade-in, gain=1 from the start.
           bufGain.gain.setValueAtTime(1, snappedStart);
+        } else if (isFirstBuffer) {
+          // First buffer at >1x: fade from 0.5 to 1.0 over 10ms to mask PhaseVocoderNode
+          // bootstrap-to-audio transition (spectral smearing from FFT window boundary).
+          bufGain.gain.setValueAtTime(0.5, snappedStart);
+          bufGain.gain.setTargetAtTime(1, snappedStart, 0.01);
         } else {
           bufGain.gain.setValueAtTime(0.5, snappedStart);
           bufGain.gain.setTargetAtTime(1, snappedStart, 0.001);
@@ -1003,7 +1154,6 @@ export function useMediaPlayer() {
         const expectedEnd = snappedStart + bufferEndAtSpeed;
 
         queuedAudioNodesRef.current.add(source);
-        console.log('[audio] BufferSource created, total queued=', queuedAudioNodesRef.current.size, 'generation=', myGeneration, 'bufferStart=', wrapped.timestamp.toFixed(3), 'bufferEnd=', (wrapped.timestamp + wrapped.buffer.duration).toFixed(3));
         // Track actual end time to correct lastEnd for the next buffer.
         // This eliminates gaps/overlaps caused by speed changes mid-buffer.
         source.onended = () => {
@@ -1014,9 +1164,22 @@ export function useMediaPlayer() {
         // Use expected end as best estimate; actualEndCorrection will fix it.
         lastEnd = expectedEnd;
 
+        // Periodic yield: every 30 buffers (~1s of audio) yield to the
+        // event loop so the rAF video render loop isn't starved.
+        yieldCounter++;
+        if (yieldCounter >= 30) {
+          yieldCounter = 0;
+          await new Promise(r => setTimeout(r, 0));
+        }
+
         // Backpressure: slow down to avoid scheduling too far ahead.
         // At 1x, MediaBunny can be slow — keep 4s ahead to prevent gaps
         // (gap filler doesn't work at 1x).
+        // CRITICAL: reset actualEndCorrection before waiting. During the wait,
+        // onended callbacks from scheduled buffers fire and set actualEndCorrection.
+        // Without reset, the stale correction would be applied to the NEXT buffer
+        // after the wait, causing lastEnd to jump backward → overlap.
+        actualEndCorrection = null;
         // At >1x, keep 2s ahead (iterating faster = fewer FIFO gaps).
         const aheadThreshold = currentSpeed > 1 ? 2 : 4;
         const aheadTarget = aheadThreshold - 0.5;
@@ -1039,7 +1202,7 @@ export function useMediaPlayer() {
           });
         }
       }
-    } catch {
+    } catch (e) {
       // Итератор остановлен (pause) — нормально
     } finally {
       runAudioIteratorLockRef.current = false;
@@ -1197,6 +1360,24 @@ export function useMediaPlayer() {
           sampleBufferType: 'fifo',
         });
 
+        // Warmup: feed silence into PhaseVocoderNode before any real audio.
+        // Without this, FFT windows start as zeros — the silence-to-audio boundary
+        // inside the node creates spectral-smearing artifacts ("каша из семплов").
+        // 3s at 2x ensures all FFT windows are fully primed with silence.
+        // stGain = 0 at 1x, so warmup output is completely inaudible.
+        // Fire-and-forget — doesn't block playback.
+        (async () => {
+          const warmupSamples = Math.ceil(audioContextRef.current!.sampleRate * 3);
+          const warmupBuffer = audioContextRef.current!.createBuffer(2, warmupSamples, audioContextRef.current!.sampleRate);
+          const warmupSource = audioContextRef.current!.createBufferSource();
+          warmupSource.buffer = warmupBuffer;
+          warmupSource.playbackRate.setValueAtTime(2, audioContextRef.current!.currentTime);
+          warmupSource.connect(stNodeRef.current!);
+          warmupSource.start();
+          // Wait for warmup to finish (3s of silence at 2x = 1.5s wall-clock)
+          await new Promise(r => setTimeout(r, 1600));
+        })();
+
         // Monitor PhaseVocoderNode for underruns (indicates pipeline can't keep up)
         let stReadyStreak = 0; // consecutive checks above target
         stNodeRef.current.addEventListener('metrics', (e: any) => {
@@ -1215,10 +1396,11 @@ export function useMediaPlayer() {
           }
 
           // Signal audio-ready when FIFO has enough samples for 2 consecutive checks.
-          // Target: 800 frames ≈ 18ms at 44.1kHz. 2 streaks = ~200ms sustained buffering.
-          // With warmup + bridge, this resolves in 100-400ms.
+          // Target: 400 frames ≈ 8.3ms at 48kHz. 2 streaks = stability confirmed.
+          // Lower target resolves at 1.25x-1.75x without hitting the 2s timeout.
+          // With warmup + bridge, this resolves in 50-200ms.
           if (audioReadyResolveRef.current && curSpeed > 1) {
-            const target = 800;
+            const target = 400;
             if (m.framesBuffered >= target) {
               stReadyStreak++;
               if (stReadyStreak >= 2) {
@@ -1289,31 +1471,7 @@ export function useMediaPlayer() {
         bypassGainRef.current = bypassGain;
         stGainRef.current = stGain;
 
-  // Warmup PhaseVocoderNode FIFO: feed 3 seconds of silence at 2x
-        // so the FIFO is pre-filled when the first speed change happens.
-        // stGain is 0 at 1x, so the warmup silence is inaudible through PhaseVocoderNode.
-        // The real audio will go through bypassGain (which is at 1).
-        {
-          const warmupCtx = audioContextRef.current!;
-          const warmupStNode = stNodeRef.current!;
-          const warmupMs = 3000;
-          const warmupSamples = Math.ceil(warmupCtx.sampleRate * warmupMs / 1000);
-          const warmupBuffer = warmupCtx.createBuffer(2, warmupSamples, warmupCtx.sampleRate);
-          const warmupSource = warmupCtx.createBufferSource();
-          warmupSource.buffer = warmupBuffer;
-          warmupSource.playbackRate.setValueAtTime(2, warmupCtx.currentTime);
-          warmupSource.connect(warmupStNode);
-          warmupSource.start(warmupCtx.currentTime);
-          // Fire-and-forget: don't block playback waiting for the FIFO to fill.
-          // The warmup source plays 3s of silence at 2x (1.5s wall-clock).
-          // It stops on its own via onended. By the time the first speed change
-          // happens, the FIFO will be significantly pre-filled.
-          warmupSource.onended = () => {
-            console.log(`[audio] PhaseVocoderNode warmup done: ${warmupSamples} samples at 2x`);
-          };
-        }
-
-        // Monitor for clipping + sand + output artifacts (every 50 ms)
+ // Monitor for clipping + sand + output artifacts (every 50 ms)
         const dataArray = new Float32Array(analyserRef.current.frequencyBinCount);
         const freqData = new Uint8Array(analyserRef.current.frequencyBinCount);
 

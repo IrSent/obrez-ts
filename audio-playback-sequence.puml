@@ -1,0 +1,288 @@
+@startuml
+title Воспроизведение аудио — полный поток от init до первого буфера
+
+skinparam responseMessageBelowArrow true
+skinparam maxmessagesize 80
+
+autonumber
+
+actor "Пользователь / React\nmount" as User
+participant "initMediaPlayer()\nL:1234" as Init
+participant "AudioContext +\nPhaseVocoderNode" as AC
+participant "transitionRef\nL:646" as Trans
+participant "stopAudio()\nL:440" as Stop
+participant "startAudio()\nL:535" as Start
+participant "runAudioIterator()\nL:893" as Iter
+participant "MediaBunny\naudioSink.buffers()" as MB
+participant "BufferSource\n(Web Audio)" as BS
+participant "rAF Loop\n(видео)" as RAF
+
+== 1. ИНИЦИАЛИЗАЦИЯ ==
+
+User -> Init: загрузить файл
+activate Init
+
+Init -> Init: stopAudio() если был предыдущий
+Init -> Init: close() старый AudioContext
+Init -> Init: new Input(), getPrimaryVideoTrack, getPrimaryAudioTrack
+Init -> AC: new AudioContext({ sampleRate })
+Init -> AC: PhaseVocoderNode.register()
+Init -> AC: new PhaseVocoderNode(fftSize=2048, overlapFactor=4)
+
+Init -> AC: new DynamicsCompressor (threshold=-12, ratio=20)
+Init -> AC: new DynamicsCompressor как limiter (-0.5dB, ratio=60)
+Init -> AC: new AnalyserNode (fftSize=4096)
+Init -> AC: new GainNode (volume = 0.25)
+Init -> AC: bypassGain (value=1), stGain (value=0)
+
+note right of AC
+  Цепочка:
+  source → bypassGain → compressor
+  source → stNode → stGain → compressor
+  compressor → limiter → analyser → gain → dest
+end note
+
+Init -> Init: warmup — 3s тишины @2x в stNode
+async [fire-and-forget]
+activate Init #FFAAAA
+Init -> AC: warmupSource.start()
+Init -> Init: await setTimeout(1600)
+deactivate Init #FFAAAA
+note right of Init
+  Warmup НЕ блокирует playback.
+  stGain=0 при 1x — тишина неслышна.
+end note
+
+Init -> Init: metrics handler — framesBuffered >= 400 × 2
+Init -> Init: monitor interval — clip/click/sand/rip детекторы
+
+Init -> Trans: await startVideoIterator()
+Init -> Trans: await transitionRef('playing')
+activate Trans
+
+== 2. ПЕРХОД IDLE → PLAYING ==
+
+Trans -> Trans: state = 'transitioning'
+Trans -> Trans: wasPlaying = false (idle)
+Trans -> Trans: skip stopAudio() — не было воспроизведения
+
+Trans -> Start: await startAudio()
+activate Start
+
+Start -> Start: gain routing — bypassGain=1, stGain=0 (при 1x)
+Start -> Start: wait lock (runAudioIteratorLockRef) — нет старого
+Start -> Start: lastBufferEndRef = getPlaybackTime() = 0
+Start -> Start: audioGenerationRef++ (0→1)
+Start -> MB: audioSink.buffers(0)
+MB --> Start: AsyncGenerator<WrappedAudioBuffer>
+Start -> Iter: void runAudioIterator()
+activate Iter #LightBlue
+
+Start --> Trans: #LightBlue
+  note right of Trans
+    При 1x: bootstrap пропущен (BOOTSTRAP_MS=0).
+    При >1x: ждать framesBuffered >= 400.
+  end note
+deactivate Start
+
+Start -> Start: await firstBufferReady (1s timeout)
+startnote
+  firstBufferResolveRef решается когда
+  Iter расписывает первый буфер
+end startnote
+Start --> Trans: first buffer scheduled
+
+Trans -> Trans: state = 'playing'
+Trans -> RAF: getPlaybackTime() теперь идёт вперёд
+deactivate Trans
+
+== 3. RUN AUDIO ITERATOR — ПЕРВЫЕ БУФЕРЫ ==
+
+Iter -> Iter: myGeneration = 1
+Iter -> Iter: abortAudioRef = false
+
+Iter -> Iter: speed = playbackSpeedRef = 1
+
+alt При 1x (первичный запуск)
+  Iter -> Iter: BOOTSTRAP_MS = 0, нет bootstrap тишины
+  Iter -> Iter: lastEnd = ctx.currentTime + 0 = ctx.currentTime
+else При >1x
+  Iter -> Iter: BOOTSTRAP_MS = ceil(400 × speed)
+  Iter -> AC: createBuffer(silence, stereo)
+  Iter -> AC: silenceSource @ speed
+  Iter -> AC: silenceSource.connect(stNode)
+  Iter -> AC: silenceSource.connect(bypassGain)
+  Iter -> AC: silenceSource.start()
+  Iter -> Iter: lastEnd = ctx.currentTime + BOOTSTRAP_MS/speed
+endalt
+
+Iter -> MB: for await (wrapped of iterator)
+MB --> Iter: WrappedAudioBuffer { timestamp: 0, buffer: AudioBuffer }
+
+Iter -> Iter: generation check (1 == 1) ✓
+Iter -> Iter: abort check (false) ✓
+
+Iter -> Iter: gap = wrapped.timestamp - lastBufferEndRef
+Iter -> Iter: lastBufferEndRef = 0 + duration
+
+Iter -> Iter: isFirstBuffer = true
+
+Iter -> Iter: audioContextStartTimeRef = snappedStart - 0/speed
+
+Iter -> AC: source = createBufferSource()
+Iter -> AC: source.buffer = wrapped.buffer
+Iter -> AC: source.playbackRate = speed (если != 1)
+
+Iter -> AC: bufGain = createGain()
+alt isFirstBuffer
+  Iter -> AC: bufGain.setValueAtTime(0.5, snappedStart)
+  Iter -> AC: bufGain.setTargetAtTime(1, snappedStart, tau=0.01)
+  note right of Iter
+    Fade-in 0.5→1.0 за 10ms tau.
+    При 1x: первый ~30ms тише!
+  end note
+else currentSpeed == 1
+  Iter -> AC: bufGain.setValueAtTime(1, snappedStart)
+else currentSpeed > 1
+  Iter -> AC: bufGain.setValueAtTime(0.5, snappedStart)
+  Iter -> AC: bufGain.setTargetAtTime(1, snappedStart, tau=0.001)
+  note right of Iter
+    Fade-in 0.5→1.0 за 1ms tau.
+    Маскирует спектральное размытие
+    PhaseVocoderNode на границе
+    тишина→аудио.
+  end note
+endalt
+
+Iter -> AC: source.connect(stNode)
+Iter -> AC: source.connect(bufGain)
+Iter -> AC: bufGain.connect(bypassGain)
+note right of Iter
+  ⚠️ source подключён К ОБОИМ путям:
+  - stNode (PhaseVocoderNode)
+  - bufGain → bypassGain
+  При 1x: bypassGain=1, stGain=0 → только bypass слышен.
+  Но stNode получает те же семплы!
+end note
+
+Iter -> AC: source.start(snappedStart)
+BS --> Iter: buffer scheduled
+
+Iter -> Iter: expectedEnd = snappedStart + duration/speed
+Iter -> Iter: lastEnd = expectedEnd
+
+Iter -> BS: onended → actualEndCorrection = ctx.currentTime
+
+Iter -> Iter: yieldCounter++
+alt yieldCounter >= 30
+  Iter -> Iter: await setTimeout(0) — yield
+endalt
+
+Iter -> Iter: backpressure check
+alt wrapped.timestamp - getPlaybackTime() >= 4s (1x)
+  Iter -> Iter: await до aheadTarget (3.5s)
+endalt
+
+MB --> Iter: следующий буфер
+Iter --> BS: повтор цикла
+note right of Iter
+  Цикл продолжается пока:
+  - generation совпадает
+  - abort = false
+  - есть буферы
+end note
+
+== 4. WARMUP ВЗАИМОДЕЙСТВИЕ (при >1x) ==
+
+note over Init,AC
+  Timeline при запуске:
+
+  T0:        initMediaPlayer()
+  T0:        warmup тишина @2x → stNode (1.5s wall-clock)
+  T0+ε:      transitionRef('playing')
+  T0+ε:      startAudio() → runAudioIterator()
+  T0+ε:      bootstrap тишина @speed → stNode
+  T0+ε+Δ:    первый реальный буфер → stNode + bypassGain
+  T0+1.5s:   warmup заканчивается
+
+  Проблема: warmup и bootstrap и первый буфер
+  все кормят один PhaseVocoderNode.
+  Тишина + реальный аудио = реальный аудио (OK).
+  НО FFT окна содержат смесь.
+end note
+
+== 5. ВОЗМОЖНЫЕ ПРИЧИНЫ "КАШИ ИЗ СЕМПЛОВ" ==
+
+note as Soup1
+  🔴 ПРИЧИНА 1: Dual-path при >1x
+  Каждый BufferSource кормит и stNode и bypassGain.
+  При смене скорости bypassGain переключается,
+  но с задержкой. В момент переключения
+  ОБОИМ путям может быть != 0 →
+  аудио из старого пути + нового пути = наслоение.
+end note
+
+note as Soup2
+  🔴 ПРИЧИНА 2: Warmup + first buffer
+  при >1x. Warmup кормит тишину @2x,
+  первый буфер кормит аудио @speed.
+  PhaseVocoderNode FIFO: тишина → аудио.
+  Граница тишина→аудио в FFT окнах
+  = спектральное размытие ~42.7ms (fftSize).
+  Fade-in 10ms маскирует только часть.
+end note
+
+note as Soup3
+  🟡 ПРИЧИНА 3: Bootstrap → first buffer
+  handoff. Bootstrap тишина заканчивается
+  в lastEnd. Первый буфер начинается в
+  snappedStart = lastEnd. НО если между
+  ними есть зазор (JS задержка), gap filler
+  добавляет ещё тишину. Если нет зазора —
+  OK. Но если lastEnd вычислен неверно —
+  буферы перекрываются.
+end note
+
+note as Soup4
+  🟡 ПРИЧИНА 4: RENDER_QUANTUM_MARGIN 3ms
+  при >1x. lastEnd = actualEnd + 3ms.
+  Если actualEndCorrection неточная
+  (onended fires early), margin
+  накапливается буфер за буфером →
+  lastEnd уходит вперёд → буферы
+  начинают играть раньше → overlap.
+end note
+
+note as Soup5
+  🟡 ПРИЧИНА 5: firstBufferResolveRef
+  race. startAudio() fire-and-forget
+  runAudioIterator(). Если первый буфер
+  расписан ДО того, как audioContextStartTimeRef
+  установлен корректно, getPlaybackTime()
+  возвращает замороженное время.
+  rAF цикл уже работает — видео может
+  получить буфер до аудио sync.
+end note
+
+note as Soup6
+  🔴 ПРИЧИНА 6: MediaBunny buffers() может
+  вернуть перекрывающиеся буферы.
+  Если wrapped.timestamp[N+1] <
+  wrapped.timestamp[N] + duration[N],
+  буферы N и N+1 играют одновременно.
+  gap-логика проверяет зазоры, но НЕ
+  перекрывания.
+end note
+
+Soup1 -.-> Iter
+Soup2 -.-> Iter
+Soup3 -.-> Iter
+Soup4 -.-> Iter
+Soup5 -.-> Start
+Soup6 -.-> MB
+
+deactivate Iter
+deactivate Start
+deactivate Trans
+deactivate Init
+@enduml
