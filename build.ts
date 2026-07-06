@@ -64,6 +64,16 @@ async function build() {
       },
     });
 
+    // Inject settings.js into the built index.html
+    const indexPath = `${outDir}/index.html`;
+    const builtIndex = Bun.file(indexPath);
+    const html = await builtIndex.text();
+    const withSettings = html.replace(
+      '</body>',
+      '<script src="/settings.js"></script></body>',
+    );
+    await Bun.write(builtIndex, withSettings);
+
     console.log(`Build completed successfully! → ${outDir}`);
   } catch (error) {
     console.error('Build failed:', error);
