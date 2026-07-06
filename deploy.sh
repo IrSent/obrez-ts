@@ -97,8 +97,10 @@ fetch('stable-versions.json').then(r=>r.json()).then(d=>{
 </script></head><body></body></html>
 REDIRECT
 
-# ── settings-early.js (loaded by build.ts with hash) ──
-# No need to copy — build.ts copies and injects settings-early.<hash>.js
+# ── settings-early and settings-ui (shared across versions) ──
+# Build copies them into master/; we need them at the root level (../ resolution)
+cp "$WORKDIR/master/settings-early."*.js "$WORKDIR/" 2>/dev/null || true
+cp "$WORKDIR/master/settings-ui."*.js "$WORKDIR/" 2>/dev/null || true
 
 # ── commit and push ──
 cd "$WORKDIR"

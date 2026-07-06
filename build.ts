@@ -37,12 +37,19 @@ async function build() {
 
     // Cache-bust: copy settings-early and settings-ui with MD5 hash in filename.
     // GitHub Pages caches for 600s — new filename = new URL = fresh content.
+    // Copied to dist/ root (for ../ resolution from version dirs) and outDir (dev mode).
     const earlyHash = MD5.hash(await Bun.file('public/settings-early.js').arrayBuffer(), 'hex').slice(0, 8);
     const uiHash = MD5.hash(await Bun.file('public/settings-ui.js').arrayBuffer(), 'hex').slice(0, 8);
-    await $`cp public/settings-early.js ${outDir}/settings-early.${earlyHash}.js`;
-    await $`cp public/settings-ui.js ${outDir}/settings-ui.${uiHash}.js`;
-    console.log(`  settings-early.${earlyHash}.js → ${outDir}/`);
-    console.log(`  settings-ui.${uiHash}.js → ${outDir}/`);
+    const earlyName = `settings-early.${earlyHash}.js`;
+    const uiName = `settings-ui.${uiHash}.js`;
+    await $`cp public/settings-early.js dist/${earlyName}`;
+    await $`cp public/settings-ui.js dist/${uiName}`;
+    // Also copy into version dir for dev mode
+    if (version) {
+      await $`cp public/settings-early.js ${outDir}/${earlyName}`;
+      await $`cp public/settings-ui.js ${outDir}/${uiName}`;
+    }
+    console.log(`  ${earlyName}, ${uiName} → dist/`);
 
     // Copy Phase Vocoder processor from node_modules — always fresh
     console.log('Copying Phase Vocoder processor...');

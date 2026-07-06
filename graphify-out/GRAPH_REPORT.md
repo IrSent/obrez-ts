@@ -1,16 +1,16 @@
 # Graph Report - obrez-ts  (2026-07-06)
 
 ## Corpus Check
-- 62 files · ~106,313 words
+- 63 files · ~106,436 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 353 nodes · 537 edges · 48 communities (33 shown, 15 thin omitted)
+- 353 nodes · 533 edges · 49 communities (33 shown, 16 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `01b2ea0c`
+- Built from commit: `247fae56`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -44,8 +44,8 @@
 - [[_COMMUNITY_Community 32|Community 32]]
 - [[_COMMUNITY_Community 33|Community 33]]
 - [[_COMMUNITY_Community 34|Community 34]]
-- [[_COMMUNITY_Community 35|Community 35]]
 - [[_COMMUNITY_Community 36|Community 36]]
+- [[_COMMUNITY_Community 37|Community 37]]
 - [[_COMMUNITY_Community 41|Community 41]]
 - [[_COMMUNITY_Community 45|Community 45]]
 - [[_COMMUNITY_Community 50|Community 50]]
@@ -84,7 +84,7 @@
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 - **E2E Test Fixtures (audio-only profanity test + full video AAC test)** — e2e_ru_profanity, e2e_valid_with_aac [EXTRACTED 1.00]
 
-## Communities (48 total, 15 thin omitted)
+## Communities (49 total, 16 thin omitted)
 
 ### Community 0 - "Export Modal + Context"
 Cohesion: 0.11
@@ -146,10 +146,6 @@ Nodes (9): Fix 1: Add render-quantum margin to `actualEndCorrection` (main fix),
 Cohesion: 0.50
 Nodes (3): effects, transcription, version
 
-### Community 35 - "Community 35"
-Cohesion: 0.80
-Nodes (4): parseStack(), renderErrors(), showErrorItem(), updateBadge()
-
 ### Community 36 - "Community 36"
 Cohesion: 0.50
 Nodes (3): effects, transcription, version
@@ -163,9 +159,9 @@ Cohesion: 0.08
 Nodes (18): CODEC_LABELS, ExportButton, ExportFormat, ExportModal, ExportModalProps, ExportProgressBar(), computeSegmentBoundaries(), ensureBleepDecoded() (+10 more)
 
 ## Knowledge Gaps
-- **116 isolated node(s):** `AddModalProps`, `SoundRowProps`, `DEFAULT_DICTIONARIES`, `SegmentItem`, `rowRendererDeps` (+111 more)
+- **116 isolated node(s):** `versionIdx`, `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR`, `clients` (+111 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
@@ -174,7 +170,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.037) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **What connects `AddModalProps`, `SoundRowProps`, `DEFAULT_DICTIONARIES` to the rest of the system?**
+- **What connects `versionIdx`, `DIST_DIR`, `PUBLIC_DIR` to the rest of the system?**
   _116 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
   _Cohesion score 0.10975609756097561 - nodes in this community are weakly interconnected._

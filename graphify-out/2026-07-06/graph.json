@@ -82,294 +82,14 @@
   },
   "nodes": [
     {
-      "label": "settings.js",
-      "file_type": "code",
-      "source_file": "public/settings.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "public_settings",
-      "community": 35,
-      "norm_label": "settings.js"
-    },
-    {
-      "label": "updateBadge()",
-      "file_type": "code",
-      "source_file": "public/settings.js",
-      "source_location": "L202",
-      "_origin": "ast",
-      "id": "public_settings_updatebadge",
-      "community": 35,
-      "norm_label": "updatebadge()"
-    },
-    {
-      "label": "showErrorItem()",
-      "file_type": "code",
-      "source_file": "public/settings.js",
-      "source_location": "L213",
-      "_origin": "ast",
-      "id": "public_settings_showerroritem",
-      "community": 35,
-      "norm_label": "showerroritem()"
-    },
-    {
-      "label": "renderErrors()",
-      "file_type": "code",
-      "source_file": "public/settings.js",
-      "source_location": "L219",
-      "_origin": "ast",
-      "id": "public_settings_rendererrors",
-      "community": 35,
-      "norm_label": "rendererrors()"
-    },
-    {
-      "label": "BleepSoundManager.tsx",
-      "file_type": "code",
-      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "bleep_sounds_bleepsoundmanager",
-      "community": 3,
-      "norm_label": "bleepsoundmanager.tsx"
-    },
-    {
-      "label": "AddModalProps",
-      "file_type": "code",
-      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
-      "source_location": "L14",
-      "_origin": "ast",
-      "id": "bleep_sounds_bleepsoundmanager_addmodalprops",
-      "community": 3,
-      "norm_label": "addmodalprops"
-    },
-    {
-      "label": "AddModal",
-      "file_type": "code",
-      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
-      "source_location": "L19",
-      "_origin": "ast",
-      "id": "bleep_sounds_bleepsoundmanager_addmodal",
-      "community": 3,
-      "norm_label": "addmodal"
-    },
-    {
-      "label": "SoundRowProps",
-      "file_type": "code",
-      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
-      "source_location": "L171",
-      "_origin": "ast",
-      "id": "bleep_sounds_bleepsoundmanager_soundrowprops",
-      "community": 3,
-      "norm_label": "soundrowprops"
-    },
-    {
-      "label": "SoundRow",
-      "file_type": "code",
-      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
-      "source_location": "L183",
-      "_origin": "ast",
-      "id": "bleep_sounds_bleepsoundmanager_soundrow",
-      "community": 3,
-      "norm_label": "soundrow"
-    },
-    {
-      "label": "BleepSoundManagerInner()",
-      "file_type": "code",
-      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
-      "source_location": "L356",
-      "_origin": "ast",
-      "id": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner",
-      "community": 3,
-      "norm_label": "bleepsoundmanagerinner()"
-    },
-    {
-      "label": "BleepSoundManager",
-      "file_type": "code",
-      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
-      "source_location": "L549",
-      "_origin": "ast",
-      "id": "bleep_sounds_bleepsoundmanager_bleepsoundmanager",
-      "community": 3,
-      "norm_label": "bleepsoundmanager"
-    },
-    {
-      "label": "DictionaryManager.tsx",
-      "file_type": "code",
-      "source_file": "src/features/dictionary/DictionaryManager.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "dictionary_dictionarymanager",
-      "community": 7,
-      "norm_label": "dictionarymanager.tsx"
-    },
-    {
-      "label": "DEFAULT_DICTIONARIES",
-      "file_type": "code",
-      "source_file": "src/features/dictionary/DictionaryManager.tsx",
-      "source_location": "L6",
-      "_origin": "ast",
-      "id": "dictionary_dictionarymanager_default_dictionaries",
-      "community": 7,
-      "norm_label": "default_dictionaries"
-    },
-    {
-      "label": "DictionaryManagerInner()",
-      "file_type": "code",
-      "source_file": "src/features/dictionary/DictionaryManager.tsx",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "dictionary_dictionarymanager_dictionarymanagerinner",
-      "community": 0,
-      "norm_label": "dictionarymanagerinner()"
-    },
-    {
-      "label": "DictionaryManager",
-      "file_type": "code",
-      "source_file": "src/features/dictionary/DictionaryManager.tsx",
-      "source_location": "L129",
-      "_origin": "ast",
-      "id": "dictionary_dictionarymanager_dictionarymanager",
-      "community": 7,
-      "norm_label": "dictionarymanager"
-    },
-    {
-      "label": "TranscriptionResults.tsx",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults",
-      "community": 4,
-      "norm_label": "transcriptionresults.tsx"
-    },
-    {
-      "label": "ChevronDownIcon()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L22",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_chevrondownicon",
-      "community": 4,
-      "norm_label": "chevrondownicon()"
-    },
-    {
-      "label": "PlusIcon()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L28",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_plusicon",
-      "community": 4,
-      "norm_label": "plusicon()"
-    },
-    {
-      "label": "SegmentItem",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L36",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_segmentitem",
-      "community": 4,
-      "norm_label": "segmentitem"
-    },
-    {
-      "label": "TranscriptionRow()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L133",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcriptionrow",
-      "community": 4,
-      "norm_label": "transcriptionrow()"
-    },
-    {
-      "label": "rowRendererDeps",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L167",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_rowrendererdeps",
-      "community": 4,
-      "norm_label": "rowrendererdeps"
-    },
-    {
-      "label": "findClosestSegment()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L183",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_findclosestsegment",
-      "community": 4,
-      "norm_label": "findclosestsegment()"
-    },
-    {
-      "label": "findSegmentIndex()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L205",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_findsegmentindex",
-      "community": 4,
-      "norm_label": "findsegmentindex()"
-    },
-    {
-      "label": "parseStage()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L226",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_parsestage",
-      "community": 4,
-      "norm_label": "parsestage()"
-    },
-    {
-      "label": "TranscribeProgressBar()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L240",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcribeprogressbar",
-      "community": 4,
-      "norm_label": "transcribeprogressbar()"
-    },
-    {
-      "label": "TranscribeProgress()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L265",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcribeprogress",
-      "community": 4,
-      "norm_label": "transcribeprogress()"
-    },
-    {
-      "label": "TranscriptionResultsInner()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L279",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcriptionresultsinner",
-      "community": 0,
-      "norm_label": "transcriptionresultsinner()"
-    },
-    {
-      "label": "TranscriptionResults",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L848",
-      "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcriptionresults",
-      "community": 4,
-      "norm_label": "transcriptionresults"
-    },
-    {
       "label": "build.ts",
       "file_type": "code",
       "source_file": "build.ts",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "build",
       "community": 16,
-      "norm_label": "build.ts",
-      "id": "build"
+      "norm_label": "build.ts"
     },
     {
       "label": "versionIdx",
@@ -377,9 +97,9 @@
       "source_file": "build.ts",
       "source_location": "L6",
       "_origin": "ast",
+      "id": "build_versionidx",
       "community": 16,
-      "norm_label": "versionidx",
-      "id": "build_versionidx"
+      "norm_label": "versionidx"
     },
     {
       "label": "build()",
@@ -387,9 +107,9 @@
       "source_file": "build.ts",
       "source_location": "L16",
       "_origin": "ast",
+      "id": "build_build",
       "community": 16,
-      "norm_label": "build()",
-      "id": "build_build"
+      "norm_label": "build()"
     },
     {
       "label": "deploy.sh",
@@ -401,9 +121,9 @@
         "kind": "file"
       },
       "_origin": "ast",
+      "id": "deploy",
       "community": 28,
-      "norm_label": "deploy.sh",
-      "id": "deploy"
+      "norm_label": "deploy.sh"
     },
     {
       "label": "deploy.sh script",
@@ -415,9 +135,9 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
+      "id": "home_irsent_gh_obrez_ts_deploy_sh__entry",
       "community": 28,
-      "norm_label": "deploy.sh script",
-      "id": "home_irsent_gh_obrez_ts_deploy_sh__entry"
+      "norm_label": "deploy.sh script"
     },
     {
       "label": "build_version()",
@@ -429,9 +149,349 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
+      "id": "deploy_build_version",
       "community": 28,
-      "norm_label": "build_version()",
-      "id": "deploy_build_version"
+      "norm_label": "build_version()"
+    },
+    {
+      "label": "settings-early.js",
+      "file_type": "code",
+      "source_file": "public/settings-early.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "public_settings_early",
+      "community": 40,
+      "norm_label": "settings-early.js"
+    },
+    {
+      "label": "parseStack()",
+      "file_type": "code",
+      "source_file": "public/settings-early.js",
+      "source_location": "L9",
+      "_origin": "ast",
+      "id": "public_settings_early_parsestack",
+      "community": 40,
+      "norm_label": "parsestack()"
+    },
+    {
+      "label": "settings-ui.js",
+      "file_type": "code",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "public_settings_ui",
+      "community": 37,
+      "norm_label": "settings-ui.js"
+    },
+    {
+      "label": "updateBadge()",
+      "file_type": "code",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L204",
+      "_origin": "ast",
+      "id": "public_settings_ui_updatebadge",
+      "community": 37,
+      "norm_label": "updatebadge()"
+    },
+    {
+      "label": "renderErrors()",
+      "file_type": "code",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L215",
+      "_origin": "ast",
+      "id": "public_settings_ui_rendererrors",
+      "community": 37,
+      "norm_label": "rendererrors()"
+    },
+    {
+      "label": "settings.js",
+      "file_type": "code",
+      "source_file": "public/settings.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "settings.js",
+      "id": "public_settings"
+    },
+    {
+      "label": "updateBadge()",
+      "file_type": "code",
+      "source_file": "public/settings.js",
+      "source_location": "L211",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "updatebadge()",
+      "id": "public_settings_updatebadge"
+    },
+    {
+      "label": "parseStack()",
+      "file_type": "code",
+      "source_file": "public/settings.js",
+      "source_location": "L223",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "parsestack()",
+      "id": "public_settings_parsestack"
+    },
+    {
+      "label": "showErrorItem()",
+      "file_type": "code",
+      "source_file": "public/settings.js",
+      "source_location": "L246",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "showerroritem()",
+      "id": "public_settings_showerroritem"
+    },
+    {
+      "label": "renderErrors()",
+      "file_type": "code",
+      "source_file": "public/settings.js",
+      "source_location": "L261",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "rendererrors()",
+      "id": "public_settings_rendererrors"
+    },
+    {
+      "label": "BleepSoundManager.tsx",
+      "file_type": "code",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "bleepsoundmanager.tsx",
+      "id": "bleep_sounds_bleepsoundmanager"
+    },
+    {
+      "label": "AddModalProps",
+      "file_type": "code",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_location": "L14",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "addmodalprops",
+      "id": "bleep_sounds_bleepsoundmanager_addmodalprops"
+    },
+    {
+      "label": "AddModal",
+      "file_type": "code",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_location": "L19",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "addmodal",
+      "id": "bleep_sounds_bleepsoundmanager_addmodal"
+    },
+    {
+      "label": "SoundRowProps",
+      "file_type": "code",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_location": "L171",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "soundrowprops",
+      "id": "bleep_sounds_bleepsoundmanager_soundrowprops"
+    },
+    {
+      "label": "SoundRow",
+      "file_type": "code",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_location": "L183",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "soundrow",
+      "id": "bleep_sounds_bleepsoundmanager_soundrow"
+    },
+    {
+      "label": "BleepSoundManagerInner()",
+      "file_type": "code",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_location": "L356",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "bleepsoundmanagerinner()",
+      "id": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner"
+    },
+    {
+      "label": "BleepSoundManager",
+      "file_type": "code",
+      "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
+      "source_location": "L549",
+      "_origin": "ast",
+      "community": 3,
+      "norm_label": "bleepsoundmanager",
+      "id": "bleep_sounds_bleepsoundmanager_bleepsoundmanager"
+    },
+    {
+      "label": "DictionaryManager.tsx",
+      "file_type": "code",
+      "source_file": "src/features/dictionary/DictionaryManager.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 7,
+      "norm_label": "dictionarymanager.tsx",
+      "id": "dictionary_dictionarymanager"
+    },
+    {
+      "label": "DEFAULT_DICTIONARIES",
+      "file_type": "code",
+      "source_file": "src/features/dictionary/DictionaryManager.tsx",
+      "source_location": "L6",
+      "_origin": "ast",
+      "community": 7,
+      "norm_label": "default_dictionaries",
+      "id": "dictionary_dictionarymanager_default_dictionaries"
+    },
+    {
+      "label": "DictionaryManagerInner()",
+      "file_type": "code",
+      "source_file": "src/features/dictionary/DictionaryManager.tsx",
+      "source_location": "L8",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "dictionarymanagerinner()",
+      "id": "dictionary_dictionarymanager_dictionarymanagerinner"
+    },
+    {
+      "label": "DictionaryManager",
+      "file_type": "code",
+      "source_file": "src/features/dictionary/DictionaryManager.tsx",
+      "source_location": "L129",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "dictionarymanager",
+      "id": "dictionary_dictionarymanager_dictionarymanager"
+    },
+    {
+      "label": "TranscriptionResults.tsx",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "transcriptionresults.tsx",
+      "id": "transcription_transcriptionresults"
+    },
+    {
+      "label": "ChevronDownIcon()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L22",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "chevrondownicon()",
+      "id": "transcription_transcriptionresults_chevrondownicon"
+    },
+    {
+      "label": "PlusIcon()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L28",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "plusicon()",
+      "id": "transcription_transcriptionresults_plusicon"
+    },
+    {
+      "label": "SegmentItem",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L36",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "segmentitem",
+      "id": "transcription_transcriptionresults_segmentitem"
+    },
+    {
+      "label": "TranscriptionRow()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L133",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "transcriptionrow()",
+      "id": "transcription_transcriptionresults_transcriptionrow"
+    },
+    {
+      "label": "rowRendererDeps",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L167",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "rowrendererdeps",
+      "id": "transcription_transcriptionresults_rowrendererdeps"
+    },
+    {
+      "label": "findClosestSegment()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L183",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "findclosestsegment()",
+      "id": "transcription_transcriptionresults_findclosestsegment"
+    },
+    {
+      "label": "findSegmentIndex()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L205",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "findsegmentindex()",
+      "id": "transcription_transcriptionresults_findsegmentindex"
+    },
+    {
+      "label": "parseStage()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L226",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "parsestage()",
+      "id": "transcription_transcriptionresults_parsestage"
+    },
+    {
+      "label": "TranscribeProgressBar()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L240",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "transcribeprogressbar()",
+      "id": "transcription_transcriptionresults_transcribeprogressbar"
+    },
+    {
+      "label": "TranscribeProgress()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L265",
+      "_origin": "ast",
+      "community": 4,
+      "norm_label": "transcribeprogress()",
+      "id": "transcription_transcriptionresults_transcribeprogress"
+    },
+    {
+      "label": "TranscriptionResultsInner()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L279",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "transcriptionresultsinner()",
+      "id": "transcription_transcriptionresults_transcriptionresultsinner"
+    },
+    {
+      "label": "TranscriptionResults",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L848",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "transcriptionresults",
+      "id": "transcription_transcriptionresults_transcriptionresults"
     },
     {
       "label": "dev.ts",
@@ -1369,7 +1429,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "app.tsx",
       "id": "src_app"
     },
@@ -1379,7 +1439,7 @@
       "source_file": "src/App.tsx",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "app()",
       "id": "src_app_app"
     },
@@ -2519,7 +2579,7 @@
       "source_file": "src/features/transcription/ImportProgressModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "importprogressmodal.tsx",
       "id": "transcription_importprogressmodal"
     },
@@ -2529,7 +2589,7 @@
       "source_file": "src/features/transcription/ImportProgressModal.tsx",
       "source_location": "L9",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "importprogressmodalinner()",
       "id": "transcription_importprogressmodal_importprogressmodalinner"
     },
@@ -2539,7 +2599,7 @@
       "source_file": "src/features/transcription/ImportProgressModal.tsx",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "importprogressmodal",
       "id": "transcription_importprogressmodal_importprogressmodal"
     },
@@ -2599,7 +2659,7 @@
       "source_file": "src/main.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "main.tsx",
       "id": "src_main"
     },
@@ -2899,7 +2959,7 @@
       "source_file": "src/types/index.ts",
       "source_location": "L98",
       "_origin": "ast",
-      "community": 2,
+      "community": 0,
       "norm_label": "phasestatus",
       "id": "types_index_phasestatus"
     },
@@ -2989,7 +3049,7 @@
       "source_file": "src/version.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 0,
       "norm_label": "version.ts",
       "id": "src_version"
     },
@@ -3681,12 +3741,114 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "build.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "build",
+      "target": "build_build"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "build.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "build",
+      "target": "build_versionidx"
+    },
+    {
+      "relation": "defines",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "deploy",
+      "target": "deploy_build_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "deploy",
+      "target": "home_irsent_gh_obrez_ts_deploy_sh__entry"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L60",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "home_irsent_gh_obrez_ts_deploy_sh__entry",
+      "target": "deploy_build_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings-early.js",
+      "source_location": "L9",
+      "weight": 1.0,
+      "source": "public_settings_early",
+      "target": "public_settings_early_parsestack",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L215",
+      "weight": 1.0,
+      "source": "public_settings_ui",
+      "target": "public_settings_ui_rendererrors",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L204",
+      "weight": 1.0,
+      "source": "public_settings_ui",
+      "target": "public_settings_ui_updatebadge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L231",
+      "weight": 1.0,
+      "source": "public_settings_ui_rendererrors",
+      "target": "public_settings_ui_updatebadge",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings.js",
+      "source_location": "L223",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "public_settings",
+      "target": "public_settings_parsestack"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "public/settings.js",
       "source_location": "L219",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "public_settings",
-      "target": "public_settings_rendererrors",
-      "confidence_score": 1.0
+      "target": "public_settings_rendererrors"
     },
     {
       "relation": "contains",
@@ -3694,9 +3856,9 @@
       "source_file": "public/settings.js",
       "source_location": "L213",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "public_settings",
-      "target": "public_settings_showerroritem",
-      "confidence_score": 1.0
+      "target": "public_settings_showerroritem"
     },
     {
       "relation": "contains",
@@ -3704,9 +3866,9 @@
       "source_file": "public/settings.js",
       "source_location": "L202",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "public_settings",
-      "target": "public_settings_updatebadge",
-      "confidence_score": 1.0
+      "target": "public_settings_updatebadge"
     },
     {
       "relation": "calls",
@@ -3715,9 +3877,9 @@
       "source_file": "public/settings.js",
       "source_location": "L236",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "public_settings_rendererrors",
-      "target": "public_settings_updatebadge",
-      "confidence_score": 1.0
+      "target": "public_settings_updatebadge"
     },
     {
       "relation": "calls",
@@ -3726,9 +3888,20 @@
       "source_file": "public/settings.js",
       "source_location": "L215",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "public_settings_showerroritem",
-      "target": "public_settings_updatebadge",
-      "confidence_score": 1.0
+      "target": "public_settings_updatebadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings.js",
+      "source_location": "L247",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "public_settings_showerroritem",
+      "target": "public_settings_parsestack"
     },
     {
       "relation": "calls",
@@ -3737,9 +3910,9 @@
       "source_file": "public/settings.js",
       "source_location": "L216",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "public_settings_showerroritem",
-      "target": "public_settings_rendererrors",
-      "confidence_score": 1.0
+      "target": "public_settings_rendererrors"
     },
     {
       "relation": "imports_from",
@@ -4769,57 +4942,6 @@
       "confidence_score": 1.0,
       "source": "src_app",
       "target": "transcription_transcriptionresults_transcriptionresults"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "build.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "build",
-      "target": "build_build"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "build.ts",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "build",
-      "target": "build_versionidx"
-    },
-    {
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "source_file": "deploy.sh",
-      "source_location": "L33",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "deploy",
-      "target": "deploy_build_version"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "deploy.sh",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "deploy",
-      "target": "home_irsent_gh_obrez_ts_deploy_sh__entry"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "deploy.sh",
-      "source_location": "L60",
-      "weight": 1.0,
-      "context": "call",
-      "confidence_score": 1.0,
-      "source": "home_irsent_gh_obrez_ts_deploy_sh__entry",
-      "target": "deploy_build_version"
     },
     {
       "relation": "contains",
@@ -9344,5 +9466,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "9aff4c5f8631b6fa9cd14568af8062ae081d1141"
+  "built_at_commit": "247fae56982ad92f2605105a22d8acbb8f00a76f"
 }
