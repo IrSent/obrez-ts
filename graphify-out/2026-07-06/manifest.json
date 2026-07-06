@@ -1,7 +1,7 @@
 {
   "build.ts": {
-    "mtime": 1783321618.920164,
-    "ast_hash": "015fe4c61e45adb06d187cd7fea81b9a",
+    "mtime": 1782658395.5202181,
+    "ast_hash": "46330310faa95b0d1fcd601da209827f",
     "semantic_hash": ""
   },
   "e2e/playback.spec.ts": {
@@ -10,8 +10,8 @@
     "semantic_hash": ""
   },
   "package.json": {
-    "mtime": 1783320773.4861643,
-    "ast_hash": "abe5b1af06fb5b8a4226c16314c99715",
+    "mtime": 1782571630.569358,
+    "ast_hash": "59103692706cf620204b64b8af2845f4",
     "semantic_hash": ""
   },
   "playwright.config.ts": {
@@ -25,8 +25,8 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1783273177.9607909,
-    "ast_hash": "15910c9251a4565acddf80a59ad5ee6e",
+    "mtime": 1783234856.3531983,
+    "ast_hash": "755708a13a583efa06ff8456869b4176",
     "semantic_hash": ""
   },
   "src/aho-corasick.ts": {
@@ -55,8 +55,8 @@
     "semantic_hash": "14d5458f4630ba6b422d42efbaa43634"
   },
   "src/features/dictionary/DictionaryManager.tsx": {
-    "mtime": 1783277885.6871457,
-    "ast_hash": "04b1ea1576f5b2ad3437e8e7ffa28e6a",
+    "mtime": 1782476872.9074922,
+    "ast_hash": "b166beec29d3daf47e6cef04f641f5a0",
     "semantic_hash": ""
   },
   "src/features/export/ExportModal.tsx": {
@@ -90,13 +90,13 @@
     "semantic_hash": ""
   },
   "src/features/transcription/TranscriptionResults.tsx": {
-    "mtime": 1783259993.9590664,
-    "ast_hash": "180cf6ab85dc13c101c21a50522b1e6b",
+    "mtime": 1783248004.2864523,
+    "ast_hash": "40feb330aec985dfef95b5fd82fcc84a",
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
-    "mtime": 1783277703.9450674,
-    "ast_hash": "67bfbd2d59d09bd944e9c415a943dcc4",
+    "mtime": 1783104276.307629,
+    "ast_hash": "70e686a5b7ebdaaf9ff9ee5be312905f",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -205,9 +205,9 @@
     "semantic_hash": "82efb97a359f5c7290bf2513d14686be"
   },
   "src/config.ts": {
-    "mtime": 1783273074.220052,
-    "ast_hash": "1f6a005f2a0ec6f4e1a1790e3f9e86af",
-    "semantic_hash": ""
+    "mtime": 1781436524.562207,
+    "ast_hash": "929bf2f023caa052e9a21fa0096f6b89",
+    "semantic_hash": "929bf2f023caa052e9a21fa0096f6b89"
   },
   "src/features/bleep-sounds/bleep-audio.ts": {
     "mtime": 1781173482.6490605,
@@ -345,13 +345,13 @@
     "semantic_hash": ""
   },
   "src/features/auth/ConfirmationModal.tsx": {
-    "mtime": 1783259973.0680058,
-    "ast_hash": "53c3588aa4acada1d74dae6bb77d584a",
+    "mtime": 1783248809.2319841,
+    "ast_hash": "0f77f25f916f30ed283fa8c716c20d61",
     "semantic_hash": ""
   },
   "src/features/auth/LoginModal.tsx": {
-    "mtime": 1783273452.8940961,
-    "ast_hash": "b9a6a9269746b29f38d4fa08f081689a",
+    "mtime": 1783249168.3878438,
+    "ast_hash": "d3b132031deb94ce5f2a1003f2522fc7",
     "semantic_hash": ""
   },
   "src/features/auth/TopupModal.tsx": {
@@ -360,28 +360,8 @@
     "semantic_hash": ""
   },
   "src/store/authStore.ts": {
-    "mtime": 1783273340.5789466,
-    "ast_hash": "34121f4c35aaa1741c39141a0ca9316f",
-    "semantic_hash": ""
-  },
-  "deploy.sh": {
-    "mtime": 1783322034.3847558,
-    "ast_hash": "abb0c74dff349a09104c17782ca8a1df",
-    "semantic_hash": ""
-  },
-  "public/backend-url.json": {
-    "mtime": 1783319561.4659963,
-    "ast_hash": "1a2591418e6d12a372fe4b643d32289d",
-    "semantic_hash": ""
-  },
-  "public/stable-versions.json": {
-    "mtime": 1783318068.7129772,
-    "ast_hash": "93f52ccba965c6cebb2921cb3343f506",
-    "semantic_hash": ""
-  },
-  "public/root-index.html": {
-    "mtime": 1783318044.265576,
-    "ast_hash": "6415f0fc1360c493a3bc2fce055bc47b",
+    "mtime": 1783248938.797887,
+    "ast_hash": "e2aa4fad3da814dd086429c438079ebd",
     "semantic_hash": ""
   }
 }
