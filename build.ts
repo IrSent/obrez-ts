@@ -70,7 +70,7 @@ async function build() {
     const html = await builtIndex.text();
     const withSettings = html.replace(
       '</body>',
-      '<script src="/settings.js"></script></body>',
+      '<script src="../settings.js"></script></body>',
     );
     await Bun.write(builtIndex, withSettings);
 

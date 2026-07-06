@@ -8,7 +8,7 @@ export async function loadBackendUrl(): Promise<string> {
   if (_backendUrl) return _backendUrl;
 
   try {
-    const resp = await fetch('/backend-url.json');
+    const resp = await fetch('../backend-url.json');
     if (resp.ok) {
       const data = await resp.json();
       _backendUrl = data.url;

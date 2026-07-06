@@ -55,10 +55,12 @@ if [ "$BUILD" = true ]; then
     git worktree add -f "$tmpdir" "$ver"
     (
       cd "$tmpdir"
-      bun install --frozen-lockfile 2>/dev/null || true
+      bun install 2>/dev/null || true
       bun run build.ts --version "$ver"
     )
-    cp -r "$tmpdir/dist/$ver" "$outdir"
+    rm -rf "$outdir"
+    mkdir -p "$outdir"
+    cp -r "$tmpdir/dist/$ver/"* "$outdir"/
     git worktree remove -f "$tmpdir"
     echo "✅ $ver → $outdir"
   }
@@ -85,12 +87,13 @@ fi
 # ── root index.html (redirects to default version) ──
 cat > "$WORKDIR/index.html" << 'REDIRECT'
 <!DOCTYPE html><html><head><meta charset="UTF-8"><title>Obrez</title>
+<meta http-equiv="refresh" content="3;url=master/">
 <script>
-fetch('/stable-versions.json').then(r=>r.json()).then(d=>{
+fetch('stable-versions.json').then(r=>r.json()).then(d=>{
   const v = localStorage.getItem('obrez-version');
   const ver = (v && d.versions.includes(v)) ? v : d.default;
-  window.location.replace('/'+ver+'/');
-});
+  window.location.replace(ver+'/');
+}).catch(function(){ window.location.replace('master/'); });
 </script></head><body></body></html>
 REDIRECT
 
