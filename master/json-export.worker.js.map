@@ -1,0 +1,10 @@
+{
+  "version": 3,
+  "sources": ["../../src/json-export.worker.ts"],
+  "sourcesContent": [
+    "/**\n * Web Worker for exporting transcription + effects as JSON.\n * Runs JSON.stringify off the main thread so large datasets\n * don't block video playback (rAF loop).\n */\n\nself.onmessage = (e) => {\n  const { type, payload } = e.data;\n\n  if (type === 'EXPORT_JSON') {\n    try {\n      const { transcription, effects } = payload;\n\n      const data = JSON.stringify(\n        {\n          version: 1,\n          transcription,\n          effects,\n        },\n        null,\n        2,\n      );\n\n      self.postMessage({ type: 'JSON_READY', payload: data });\n    } catch (err) {\n      self.postMessage({\n        type: 'ERROR',\n        payload: err instanceof Error ? err.message : String(err),\n      });\n    }\n  }\n};\n"
+  ],
+  "mappings": ";AAMA,KAAK,YAAY,CAAC,MAAM;AAAA,EACtB,QAAQ,MAAM,YAAY,EAAE;AAAA,EAE5B,IAAI,SAAS,eAAe;AAAA,IAC1B,IAAI;AAAA,MACF,QAAQ,eAAe,YAAY;AAAA,MAEnC,MAAM,OAAO,KAAK,UAChB;AAAA,QACE,SAAS;AAAA,QACT;AAAA,QACA;AAAA,MACF,GACA,MACA,CACF;AAAA,MAEA,KAAK,YAAY,EAAE,MAAM,cAAc,SAAS,KAAK,CAAC;AAAA,MACtD,OAAO,KAAK;AAAA,MACZ,KAAK,YAAY;AAAA,QACf,MAAM;AAAA,QACN,SAAS,eAAe,QAAQ,IAAI,UAAU,OAAO,GAAG;AAAA,MAC1D,CAAC;AAAA;AAAA,EAEL;AAAA;",
+  "debugId": "221AF948A948ECEE64756E2164756E21",
+  "names": []
+}
