@@ -1,4 +1,3 @@
-<script>
 (function() {
   // Compute base path: /obrez-ts/master/ → base = '/obrez-ts/', version = 'master'
   var parts = window.location.pathname.split('/').filter(Boolean);
@@ -108,4 +107,3 @@
   overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
   gear.addEventListener('click', function() { overlay.classList.add('open'); });
 })();
-</script>
