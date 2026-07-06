@@ -69,6 +69,28 @@
     }
     #obrez-modal .close-btn:hover { background: #444; }
     #obrez-modal .version-label { font-weight: 600; }
+    #obrez-debug-btn {
+      position: fixed; bottom: 12px; right: 12px;
+      width: 36px; height: 36px;
+      background: #222; color: #888;
+      border: 1px solid #333; border-radius: 8px;
+      font-size: 16px; line-height: 34px;
+      text-align: center; cursor: pointer;
+      z-index: 9999; user-select: none;
+    }
+    #obrez-debug-btn:hover { background: #333; color: #ccc; }
+    #obrez-debug-tooltip {
+      display: none;
+      position: fixed; bottom: 56px; right: 12px;
+      background: #1f1f23; color: #e55;
+      border: 1px solid #333; border-radius: 8px;
+      padding: 12px 16px; max-width: 320px;
+      font-size: 12px; font-family: monospace;
+      white-space: pre-wrap; word-break: break-all;
+      max-height: 240px; overflow-y: auto;
+      z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+    }
+    #obrez-debug-tooltip.open { display: block; }
   `;
   document.head.appendChild(style);
 
@@ -106,4 +128,53 @@
   document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); });
   overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
   gear.addEventListener('click', function() { overlay.classList.add('open'); });
+
+  // ── Debug button ──
+  var errors = [];
+  var debugBtn = document.createElement('div');
+  debugBtn.id = 'obrez-debug-btn';
+  debugBtn.textContent = '🐛';
+  debugBtn.title = 'Copy errors to clipboard';
+  document.body.appendChild(debugBtn);
+
+  var tooltip = document.createElement('div');
+  tooltip.id = 'obrez-debug-tooltip';
+  document.body.appendChild(tooltip);
+
+  // Intercept console.error
+  var _origError = console.error;
+  console.error = function() {
+    var msg = Array.prototype.slice.call(arguments).map(function(a) {
+      return typeof a === 'string' ? a : (a && a.message ? a.message : JSON.stringify(a));
+    }).join(' ');
+    errors.push(msg);
+    _origError.apply(console, arguments);
+  };
+
+  // Intercept unhandled errors
+  window.addEventListener('error', function(e) {
+    errors.push(e.message + ' (' + e.filename + ':' + e.lineno + ')');
+  });
+
+  // Intercept unhandled promise rejections
+  window.addEventListener('unhandledrejection', function(e) {
+    errors.push('Uncaught Promise: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
+  });
+
+  // Click handler: copy errors, show tooltip
+  debugBtn.addEventListener('click', function() {
+    if (errors.length === 0) {
+      tooltip.textContent = 'No errors';
+      tooltip.classList.add('open');
+      setTimeout(function() { tooltip.classList.remove('open'); }, 1500);
+      return;
+    }
+    var text = errors.join('\n\n');
+    // Copy to clipboard
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).catch(function() {});
+    }
+    tooltip.textContent = text;
+    tooltip.classList.toggle('open');
+  });
 })();
