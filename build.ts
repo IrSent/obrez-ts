@@ -74,9 +74,10 @@ async function build() {
     const indexPath = `${outDir}/index.html`;
     const builtIndex = Bun.file(indexPath);
     const html = await builtIndex.text();
+    // Load settings.<hash>.js via fetch(cache:no-store) so GitHub Pages 600s TTL never serves stale settings
     const withSettings = html.replace(
       '</body>',
-      `<script src="../settings.${settingsHash}.js"></script></body>`,
+      `<script>fetch("../settings.${settingsHash}.js",{cache:"no-store"}).then(r=>r.text()).then(t=>eval(t))</script></body>`,
     );
     await Bun.write(builtIndex, withSettings);
 
