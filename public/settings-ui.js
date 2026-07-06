@@ -1,10 +1,14 @@
+// ── SETTINGS UI ──
+// Loaded via DOMContentLoaded after settings-early.js has been running.
 (function() {
-  // Compute base path: /obrez-ts/master/ → base = '/obrez-ts/', version = 'master'
+  var errors = window.__obrezErrors || [];
+  window.__obrezErrors = errors; // make sure mutations go to the same array
+
   var parts = window.location.pathname.split('/').filter(Boolean);
   var base = '/' + parts[0] + '/';
   var currentVersion = parts[parts.length - 1] || 'master';
 
-  // Inject styles
+  // ── styles ──
   var style = document.createElement('style');
   style.textContent = `
     #obrez-gear {
@@ -68,8 +72,6 @@
     }
     #obrez-modal .close-btn:hover { background: #444; }
     #obrez-modal .version-label { font-weight: 600; }
-
-    /* ── Debug button ── */
     #obrez-debug-btn {
       position: fixed; bottom: 16px; right: 16px;
       width: 48px; height: 48px;
@@ -117,9 +119,7 @@
       display: flex; align-items: center; justify-content: space-between;
       margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #333;
     }
-    #obrez-debug-tooltip .err-header span {
-      font-weight: 700; color: #ff6b6b;
-    }
+    #obrez-debug-tooltip .err-header span { font-weight: 700; color: #ff6b6b; }
     #obrez-debug-tooltip .err-clear {
       font-size: 10px; color: #888; cursor: pointer;
       background: none; border: none; padding: 4px 8px;
@@ -148,25 +148,21 @@
     #obrez-debug-tooltip .err-stack-line {
       padding-left: 8px; border-left: 2px solid #333; margin-top: 1px;
     }
-    #obrez-debug-tooltip .err-empty {
-      color: #666; text-align: center; padding: 12px 0;
-    }
   `;
   document.head.appendChild(style);
 
-  // Gear button
+  // ── gear button ──
   var gear = document.createElement('div');
   gear.id = 'obrez-gear';
   gear.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>';
   document.body.appendChild(gear);
 
-  // Modal
+  // ── modal ──
   var overlay = document.createElement('div');
   overlay.id = 'obrez-modal-overlay';
   overlay.innerHTML = '<div id="obrez-modal"><h2>⚙ Настройки</h2><div class="version-list" id="obrez-version-list"></div><button class="close-btn" id="obrez-close-modal">Закрыть</button></div>';
   document.body.appendChild(overlay);
 
-  // Load version list
   fetch(base + 'stable-versions.json')
     .then(function(r) { return r.json(); })
     .then(function(data) {
@@ -181,16 +177,13 @@
         });
         list.appendChild(item);
       });
-    })
-    .catch(function() {});
+    }).catch(function() {});
 
-  // Close modal
   document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); });
   overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
   gear.addEventListener('click', function() { overlay.classList.add('open'); });
 
-  // ── Debug button ──
-  var errors = [];
+  // ── debug button ──
   var tooltipOpen = false;
 
   var debugBtn = document.createElement('div');
@@ -219,49 +212,9 @@
     }
   }
 
-  // Parse stack trace: extract file:line and first meaningful frames
-  function parseStack(raw) {
-    var lines = (raw || '').split('\n').slice(1); // skip error message line
-    var source = null;
-    var frames = [];
-    for (var i = 0; i < lines.length && frames.length < 3; i++) {
-      var ln = lines[i].trim();
-      // "at /path/to/file.tsx:123:45" or "at Component (file.tsx:123:45)"
-      var m = ln.match(/\((.*):(\d+):\d+\)/);
-      if (!m) m = ln.match(/^(\/.*?\.tsx?:\d+:\d+)/);
-      if (m) {
-        var file = m[1];
-        var line = m[2] || '?';
-        // shorten path: keep last 3 segments
-        var segs = file.split('/').filter(Boolean);
-        var short = segs.length > 3 ? '…/' + segs.slice(-3).join('/') : file;
-        var frameStr = short + ':' + line;
-        if (!source) source = frameStr;
-        frames.push(frameStr);
-      }
-    }
-    return { source: source, frames: frames };
-  }
-
-  function showErrorItem(label, msg, raw) {
-    var parsed = parseStack(raw || msg);
-    var firstLines = (msg || '').split('\n').slice(0, 3).join(' ');
-    errors.push({
-      label: label,
-      msg: firstLines,
-      source: parsed.source,
-      frames: parsed.frames,
-      raw: (raw || msg),
-      time: new Date().toLocaleTimeString()
-    });
-    updateBadge();
-    if (tooltipOpen) renderErrors();
-  }
-
   function renderErrors() {
     tooltip.innerHTML = '';
 
-    // Header
     var header = document.createElement('div');
     header.className = 'err-header';
     var title = document.createElement('span');
@@ -274,7 +227,7 @@
       clearBtn.textContent = 'Clear all';
       clearBtn.addEventListener('click', function(e) {
         e.stopPropagation();
-        errors = [];
+        errors.length = 0;
         updateBadge();
         renderErrors();
       });
@@ -306,9 +259,7 @@
           (err.source ? '\n📍 ' + err.source : '') +
           (err.msg ? '\n' + err.msg : '') +
           '\n\n--- Raw ---\n' + err.raw;
-        if (navigator.clipboard) {
-          navigator.clipboard.writeText(text).catch(function() {});
-        }
+        if (navigator.clipboard) navigator.clipboard.writeText(text).catch(function() {});
         row.style.background = '#3a3a40';
         setTimeout(function() { row.style.background = ''; }, 300);
       });
@@ -318,70 +269,9 @@
     tooltip.classList.add('open');
   }
 
-  // Intercept console.error
-  var _origError = console.error;
-  console.error = function() {
-    var args = Array.prototype.slice.call(arguments);
-    // Build full raw: include stack traces from Error objects
-    var rawParts = [];
-    var msgParts = [];
-    for (var i = 0; i < args.length; i++) {
-      var a = args[i];
-      if (a && a.stack) {
-        rawParts.push(a.stack);
-        msgParts.push(a.message);
-      } else if (typeof a === 'string') {
-        rawParts.push(a);
-        msgParts.push(a);
-      } else if (a && a.message) {
-        rawParts.push(a.message);
-        msgParts.push(a.message);
-      } else if (a && typeof a === 'object') {
-        var s = JSON.stringify(a);
-        rawParts.push(s);
-        msgParts.push(s.length > 200 ? s.slice(0, 200) + '…' : s);
-      } else {
-        var str = String(a);
-        rawParts.push(str);
-        msgParts.push(str);
-      }
-    }
-    var msg = msgParts.join(' ');
-    var raw = rawParts.join('\n');
-    showErrorItem('console.error', msg, raw);
-    _origError.apply(console, arguments);
-  };
+  // Show badge immediately if errors were collected
+  updateBadge();
 
-  // Intercept console.warn (lower priority, but still captured)
-  var _origWarn = console.warn;
-  console.warn = function() {
-    var args = Array.prototype.slice.call(arguments);
-    var msg = args.map(function(a) {
-      if (a && a.stack) return a.message + '\n' + a.stack;
-      if (a && a.message) return a.message;
-      if (typeof a === 'string') return a;
-      if (a && typeof a === 'object') return JSON.stringify(a).slice(0, 300);
-      return String(a);
-    }).join(' ');
-    showErrorItem('warn', msg.split('\n')[0], msg);
-    _origWarn.apply(console, arguments);
-  };
-
-  // Intercept unhandled errors
-  window.addEventListener('error', function(e) {
-    var detail = (e.filename || '') + (e.lineno ? ':' + e.lineno : '');
-    showErrorItem('Error', e.message + (detail ? ' (' + detail + ')' : ''), e.message + '\n' + detail + '\n' + (e.error && e.error.stack || ''));
-  });
-
-  // Intercept unhandled promise rejections
-  window.addEventListener('unhandledrejection', function(e) {
-    var reason = e.reason;
-    var msg = reason && reason.message ? reason.message : String(reason);
-    var raw = msg + '\n' + (reason && reason.stack ? reason.stack : '');
-    showErrorItem('Uncaught Promise', msg, raw);
-  });
-
-  // Toggle tooltip on button click
   debugBtn.addEventListener('click', function(e) {
     e.stopPropagation();
     if (!tooltip.classList.contains('open')) {
@@ -393,15 +283,18 @@
     }
   });
 
-  // Close tooltip when tapping elsewhere
+  // Re-render when new errors arrive (early layer pushes to same array)
+  var _origShow = window.__obrezShowError;
+  window.__obrezShowError = function(label, msg, raw) {
+    _origShow(label, msg, raw);
+    updateBadge();
+    if (tooltipOpen) renderErrors();
+  };
+
   document.addEventListener('click', function(e) {
     if (!tooltip.contains(e.target) && e.target !== debugBtn && !debugBtn.contains(e.target)) {
       tooltipOpen = false;
       tooltip.classList.remove('open');
     }
   });
-
-  // Expose for use by iframe content scripts
-  window.__obrezErrors = errors;
-  window.__showErrorItem = showErrorItem;
 })();

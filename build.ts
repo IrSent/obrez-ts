@@ -35,11 +35,14 @@ async function build() {
     console.log('Copying public assets...');
     await $`cp -r public/* ${outDir}/`;
 
-    // Also copy settings.js as settings.<hash>.js for cache-busting (GitHub Pages 600s TTL)
-    const settingsBuffer = await Bun.file('public/settings.js').arrayBuffer();
-    const settingsHash = MD5.hash(settingsBuffer, 'hex').slice(0, 8);
-    await $`cp public/settings.js ${outDir}/settings.${settingsHash}.js`;
-    console.log(`  settings.${settingsHash}.js → ${outDir}/`);
+    // Cache-bust: copy settings-early and settings-ui with MD5 hash in filename.
+    // GitHub Pages caches for 600s — new filename = new URL = fresh content.
+    const earlyHash = MD5.hash(await Bun.file('public/settings-early.js').arrayBuffer(), 'hex').slice(0, 8);
+    const uiHash = MD5.hash(await Bun.file('public/settings-ui.js').arrayBuffer(), 'hex').slice(0, 8);
+    await $`cp public/settings-early.js ${outDir}/settings-early.${earlyHash}.js`;
+    await $`cp public/settings-ui.js ${outDir}/settings-ui.${uiHash}.js`;
+    console.log(`  settings-early.${earlyHash}.js → ${outDir}/`);
+    console.log(`  settings-ui.${uiHash}.js → ${outDir}/`);
 
     // Copy Phase Vocoder processor from node_modules — always fresh
     console.log('Copying Phase Vocoder processor...');
@@ -70,15 +73,23 @@ async function build() {
       },
     });
 
-    // Inject settings.<hash>.js into the built index.html
+    // Inject settings scripts:
+    // - early (error intercept) in <head> — runs before anything else
+    // - ui (buttons, modal) in <body> — runs when DOM is ready
     const indexPath = `${outDir}/index.html`;
     const builtIndex = Bun.file(indexPath);
     const html = await builtIndex.text();
-    // Inject settings.<hash>.js — hash in filename means new URL = no CDN cache hit
-    const withSettings = html.replace(
-      '</body>',
-      `<script src="../settings.${settingsHash}.js"></script></body>`,
-    );
+    const withSettings = html
+      .replace(
+        '<head>',
+        `<head><script src="../settings-early.${earlyHash}.js"></script>`,
+      )
+      .replace(
+        '</body>',
+        `<script>document.addEventListener('DOMContentLoaded',function(){
+          var s=document.createElement('script');s.src='../settings-ui.${uiHash}.js';document.head.appendChild(s);
+        });</script></body>`,
+      );
     await Bun.write(builtIndex, withSettings);
 
     console.log(`Build completed successfully! → ${outDir}`);

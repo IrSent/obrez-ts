@@ -97,8 +97,8 @@ fetch('stable-versions.json').then(r=>r.json()).then(d=>{
 </script></head><body></body></html>
 REDIRECT
 
-# ── settings.js ──
-cp public/settings.js "$WORKDIR/settings.js"
+# ── settings-early.js (loaded by build.ts with hash) ──
+# No need to copy — build.ts copies and injects settings-early.<hash>.js
 
 # ── commit and push ──
 cd "$WORKDIR"
