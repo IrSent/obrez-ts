@@ -72,7 +72,7 @@ const DictionaryManagerInner = () => {
 
   return (
     <div className="bg-zinc-800 rounded-lg p-4">
-      <h2 className="text-sm font-semibold text-zinc-300 mb-3">Dictionaries</h2>
+      <h2 className="block text-base sm:text-lg font-semibold text-zinc-300 mb-3 w-1/2">Dictionaries</h2>
 
       <button
         onClick={handleAddDictionary}

@@ -758,7 +758,7 @@ const TranscriptionResultsInner = () => {
   return (
     <div className="bg-zinc-800 rounded-lg p-4">
       <div className="flex items-center justify-between mb-3 gap-3">
-        <h2 className="text-sm font-semibold text-zinc-300 shrink-0">Transcription Results</h2>
+        <h2 className="block text-base sm:text-lg font-semibold text-zinc-300 shrink-0 w-1/2">Transcription Results</h2>
         <div className="flex items-center gap-2">
           <button
            onClick={() => setAutoScroll((v) => !v)}
