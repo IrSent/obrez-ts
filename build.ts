@@ -1,4 +1,4 @@
-import { $ } from 'bun';
+import { $, MD5 } from 'bun';
 import { mkdir, rm, cp, readdir, stat } from 'fs/promises';
 import tailwind from 'bun-plugin-tailwind';
 
@@ -36,7 +36,8 @@ async function build() {
     await $`cp -r public/* ${outDir}/`;
 
     // Also copy settings.js as settings.<hash>.js for cache-busting (GitHub Pages 600s TTL)
-    const settingsHash = (await $`md5 public/settings.js`.text()).trim().split(' ').pop()?.slice(0, 8) || '';
+    const settingsBuffer = await Bun.file('public/settings.js').arrayBuffer();
+    const settingsHash = MD5.hash(settingsBuffer, 'hex').slice(0, 8);
     await $`cp public/settings.js ${outDir}/settings.${settingsHash}.js`;
     console.log(`  settings.${settingsHash}.js → ${outDir}/`);
 
