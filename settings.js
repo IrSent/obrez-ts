@@ -70,24 +70,24 @@
     #obrez-modal .close-btn:hover { background: #444; }
     #obrez-modal .version-label { font-weight: 600; }
     #obrez-debug-btn {
-      position: fixed; bottom: 12px; right: 12px;
-      width: 36px; height: 36px;
-      background: #222; color: #888;
-      border: 1px solid #333; border-radius: 8px;
-      font-size: 16px; line-height: 34px;
+      position: fixed; bottom: 16px; right: 16px;
+      width: 44px; height: 44px;
+      background: #1a1a1a; color: #ff4444;
+      border: 2px solid #ff4444; border-radius: 10px;
+      font-size: 20px; line-height: 40px;
       text-align: center; cursor: pointer;
       z-index: 9999; user-select: none;
+      box-shadow: 0 2px 8px rgba(255,68,68,0.3);
     }
-    #obrez-debug-btn:hover { background: #333; color: #ccc; }
     #obrez-debug-tooltip {
       display: none;
-      position: fixed; bottom: 56px; right: 12px;
+      position: fixed; bottom: 68px; right: 16px;
       background: #1f1f23; color: #e55;
-      border: 1px solid #333; border-radius: 8px;
-      padding: 12px 16px; max-width: 320px;
-      font-size: 12px; font-family: monospace;
+      border: 1px solid #444; border-radius: 10px;
+      padding: 12px 16px; max-width: 300px;
+      font-size: 11px; font-family: monospace;
       white-space: pre-wrap; word-break: break-all;
-      max-height: 240px; overflow-y: auto;
+      max-height: 200px; overflow-y: auto;
       z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
     }
     #obrez-debug-tooltip.open { display: block; }
@@ -131,50 +131,85 @@
 
   // ── Debug button ──
   var errors = [];
+
   var debugBtn = document.createElement('div');
   debugBtn.id = 'obrez-debug-btn';
   debugBtn.textContent = '🐛';
-  debugBtn.title = 'Copy errors to clipboard';
+  debugBtn.title = 'View errors';
   document.body.appendChild(debugBtn);
 
   var tooltip = document.createElement('div');
   tooltip.id = 'obrez-debug-tooltip';
   document.body.appendChild(tooltip);
 
-  // Intercept console.error
-  var _origError = console.error;
-  console.error = function() {
-    var msg = Array.prototype.slice.call(arguments).map(function(a) {
-      return typeof a === 'string' ? a : (a && a.message ? a.message : JSON.stringify(a));
-    }).join(' ');
-    errors.push(msg);
-    _origError.apply(console, arguments);
-  };
+  function showErrorItem(label, detail, raw) {
+    errors.push({ label: label, detail: detail, raw: raw });
+    renderErrors();
+  }
 
-  // Intercept unhandled errors
-  window.addEventListener('error', function(e) {
-    errors.push(e.message + ' (' + e.filename + ':' + e.lineno + ')');
-  });
-
-  // Intercept unhandled promise rejections
-  window.addEventListener('unhandledrejection', function(e) {
-    errors.push('Uncaught Promise: ' + (e.reason && e.reason.message ? e.reason.message : e.reason));
-  });
-
-  // Click handler: copy errors, show tooltip
-  debugBtn.addEventListener('click', function() {
+  function renderErrors() {
+    tooltip.innerHTML = '';
     if (errors.length === 0) {
       tooltip.textContent = 'No errors';
       tooltip.classList.add('open');
       setTimeout(function() { tooltip.classList.remove('open'); }, 1500);
       return;
     }
-    var text = errors.join('\n\n');
-    // Copy to clipboard
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).catch(function() {});
+    errors.forEach(function(err, i) {
+      var row = document.createElement('div');
+      row.style.cssText = 'padding: 6px 0; border-bottom: 1px solid #333; cursor: pointer;';
+      row.innerHTML = '<div style="color:#ff6b6b;font-weight:bold;font-size:11px;">⚠ ' + err.label + '</div>' +
+        (err.detail ? '<div style="color:#999;margin-top:2px;">' + err.detail + '</div>' : '');
+      row.addEventListener('click', function() {
+        var text = (i + 1) + '. ' + err.label + (err.detail ? '\n' + err.detail : '') + '\n\n' + err.raw;
+        if (navigator.clipboard) {
+          navigator.clipboard.writeText(text).catch(function() {});
+        }
+        row.style.background = '#2a2a30';
+        setTimeout(function() { row.style.background = ''; }, 200);
+      });
+      tooltip.appendChild(row);
+    });
+    tooltip.classList.add('open');
+  }
+
+  // Intercept console.error
+  var _origError = console.error;
+  console.error = function() {
+    var args = Array.prototype.slice.call(arguments);
+    var msg = args.map(function(a) {
+      return typeof a === 'string' ? a : (a && a.stack ? a.message + '\n' + a.stack : (a && a.message ? a.message : JSON.stringify(a)));
+    }).join(' ');
+    showErrorItem('console.error', msg.split('\n')[0], msg);
+    _origError.apply(console, arguments);
+  };
+
+  // Intercept unhandled errors
+  window.addEventListener('error', function(e) {
+    var detail = (e.filename || '') + (e.lineno ? ':' + e.lineno : '');
+    showErrorItem('Error', e.message, e.message + '\n' + detail + '\n' + (e.error && e.error.stack || ''));
+  });
+
+  // Intercept unhandled promise rejections
+  window.addEventListener('unhandledrejection', function(e) {
+    var reason = e.reason;
+    var msg = reason && reason.message ? reason.message : String(reason);
+    showErrorItem('Uncaught Promise', msg, msg + '\n' + (reason && reason.stack ? reason.stack : ''));
+  });
+
+  // Toggle tooltip on button click
+  debugBtn.addEventListener('click', function() {
+    if (!tooltip.classList.contains('open')) {
+      renderErrors();
+    } else {
+      tooltip.classList.remove('open');
     }
-    tooltip.textContent = text;
-    tooltip.classList.toggle('open');
+  });
+
+  // Close tooltip when tapping elsewhere
+  document.addEventListener('click', function(e) {
+    if (!tooltip.contains(e.target) && e.target !== debugBtn) {
+      tooltip.classList.remove('open');
+    }
   });
 })();
