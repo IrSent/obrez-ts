@@ -136,8 +136,17 @@
       color: #ff6b6b; font-weight: 600; font-size: 11px;
       text-transform: uppercase; letter-spacing: 0.5px;
     }
-    #obrez-debug-tooltip .err-detail {
-      color: #bbb; margin-top: 3px; font-size: 12px;
+    #obrez-debug-tooltip .err-source {
+      color: #6c8cff; font-size: 11px; margin-top: 2px;
+    }
+    #obrez-debug-tooltip .err-msg {
+      color: #ddd; margin-top: 3px; font-size: 12px;
+    }
+    #obrez-debug-tooltip .err-stack {
+      margin-top: 3px; color: #888; font-size: 11px;
+    }
+    #obrez-debug-tooltip .err-stack-line {
+      padding-left: 8px; border-left: 2px solid #333; margin-top: 1px;
     }
     #obrez-debug-tooltip .err-empty {
       color: #666; text-align: center; padding: 12px 0;
@@ -210,8 +219,41 @@
     }
   }
 
-  function showErrorItem(label, detail, raw) {
-    errors.push({ label: label, detail: detail, raw: raw, time: new Date().toLocaleTimeString() });
+  // Parse stack trace: extract file:line and first meaningful frames
+  function parseStack(raw) {
+    var lines = (raw || '').split('\n').slice(1); // skip error message line
+    var source = null;
+    var frames = [];
+    for (var i = 0; i < lines.length && frames.length < 3; i++) {
+      var ln = lines[i].trim();
+      // "at /path/to/file.tsx:123:45" or "at Component (file.tsx:123:45)"
+      var m = ln.match(/\((.*):(\d+):\d+\)/);
+      if (!m) m = ln.match(/^(\/.*?\.tsx?:\d+:\d+)/);
+      if (m) {
+        var file = m[1];
+        var line = m[2] || '?';
+        // shorten path: keep last 3 segments
+        var segs = file.split('/').filter(Boolean);
+        var short = segs.length > 3 ? '…/' + segs.slice(-3).join('/') : file;
+        var frameStr = short + ':' + line;
+        if (!source) source = frameStr;
+        frames.push(frameStr);
+      }
+    }
+    return { source: source, frames: frames };
+  }
+
+  function showErrorItem(label, msg, raw) {
+    var parsed = parseStack(raw || msg);
+    var firstLines = (msg || '').split('\n').slice(0, 3).join(' ');
+    errors.push({
+      label: label,
+      msg: firstLines,
+      source: parsed.source,
+      frames: parsed.frames,
+      raw: (raw || msg),
+      time: new Date().toLocaleTimeString()
+    });
     updateBadge();
     if (tooltipOpen) renderErrors();
   }
@@ -248,12 +290,21 @@
     errors.slice().reverse().forEach(function(err) {
       var row = document.createElement('div');
       row.className = 'err-row';
-      row.innerHTML =
-        '<div class="err-label">[' + err.time + '] ' + err.label + '</div>' +
-        (err.detail ? '<div class="err-detail">' + err.detail + '</div>' : '');
+
+      var html = '<div class="err-label">[' + err.time + '] ' + err.label + '</div>';
+      if (err.source) html += '<div class="err-source">📍 ' + err.source + '</div>';
+      if (err.msg) html += '<div class="err-msg">' + err.msg + '</div>';
+      if (err.frames && err.frames.length) {
+        html += '<div class="err-stack">';
+        err.frames.forEach(function(f) { html += '<div class="err-stack-line">at ' + f + '</div>'; });
+        html += '</div>';
+      }
+      row.innerHTML = html;
+
       row.addEventListener('click', function() {
         var text = '[' + err.time + '] ' + err.label +
-          (err.detail ? '\n' + err.detail : '') +
+          (err.source ? '\n📍 ' + err.source : '') +
+          (err.msg ? '\n' + err.msg : '') +
           '\n\n--- Raw ---\n' + err.raw;
         if (navigator.clipboard) {
           navigator.clipboard.writeText(text).catch(function() {});
@@ -271,23 +322,46 @@
   var _origError = console.error;
   console.error = function() {
     var args = Array.prototype.slice.call(arguments);
-    var msg = args.map(function(a) {
-      if (typeof a === 'string') return a;
-      if (a && a.stack) return a.message + '\n' + a.stack;
-      if (a && a.message) return a.message;
-      if (a && typeof a === 'object') return JSON.stringify(a);
-      return String(a);
-    }).join(' ');
-    showErrorItem('console.error', msg.split('\n')[0], msg);
+    // Build full raw: include stack traces from Error objects
+    var rawParts = [];
+    var msgParts = [];
+    for (var i = 0; i < args.length; i++) {
+      var a = args[i];
+      if (a && a.stack) {
+        rawParts.push(a.stack);
+        msgParts.push(a.message);
+      } else if (typeof a === 'string') {
+        rawParts.push(a);
+        msgParts.push(a);
+      } else if (a && a.message) {
+        rawParts.push(a.message);
+        msgParts.push(a.message);
+      } else if (a && typeof a === 'object') {
+        var s = JSON.stringify(a);
+        rawParts.push(s);
+        msgParts.push(s.length > 200 ? s.slice(0, 200) + '…' : s);
+      } else {
+        var str = String(a);
+        rawParts.push(str);
+        msgParts.push(str);
+      }
+    }
+    var msg = msgParts.join(' ');
+    var raw = rawParts.join('\n');
+    showErrorItem('console.error', msg, raw);
     _origError.apply(console, arguments);
   };
 
-  // Intercept console.warn (as lower priority)
+  // Intercept console.warn (lower priority, but still captured)
   var _origWarn = console.warn;
   console.warn = function() {
     var args = Array.prototype.slice.call(arguments);
     var msg = args.map(function(a) {
-      return typeof a === 'string' ? a : (a && a.message ? a.message : String(a));
+      if (a && a.stack) return a.message + '\n' + a.stack;
+      if (a && a.message) return a.message;
+      if (typeof a === 'string') return a;
+      if (a && typeof a === 'object') return JSON.stringify(a).slice(0, 300);
+      return String(a);
     }).join(' ');
     showErrorItem('warn', msg.split('\n')[0], msg);
     _origWarn.apply(console, arguments);
@@ -303,12 +377,9 @@
   window.addEventListener('unhandledrejection', function(e) {
     var reason = e.reason;
     var msg = reason && reason.message ? reason.message : String(reason);
-    showErrorItem('Uncaught Promise', msg, msg + '\n' + (reason && reason.stack ? reason.stack : ''));
+    var raw = msg + '\n' + (reason && reason.stack ? reason.stack : '');
+    showErrorItem('Uncaught Promise', msg, raw);
   });
-
-  // Intercept React error boundaries via __reactErrorBoundary (if available)
-  // Also intercept beforeunload for crash detection
-  var _origRender = null;
 
   // Toggle tooltip on button click
   debugBtn.addEventListener('click', function(e) {
