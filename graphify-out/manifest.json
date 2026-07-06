@@ -5,8 +5,8 @@
     "semantic_hash": ""
   },
   "e2e/playback.spec.ts": {
-    "mtime": 1782476872.9015915,
-    "ast_hash": "e21768ecc5de595f4c43623630536925",
+    "mtime": 1783168871.8670366,
+    "ast_hash": "8bed738a700d657aab73f4d1bc5d978a",
     "semantic_hash": ""
   },
   "package.json": {
@@ -15,8 +15,8 @@
     "semantic_hash": ""
   },
   "playwright.config.ts": {
-    "mtime": 1782476872.9062967,
-    "ast_hash": "d6cd171ea5727ece7bfa748b5fcd181a",
+    "mtime": 1782992608.2270486,
+    "ast_hash": "9070c7302cab3ab45aa9182e0e0fbbad",
     "semantic_hash": ""
   },
   "server.ts": {
@@ -25,7 +25,7 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1782718833.3402462,
+    "mtime": 1783234856.3531983,
     "ast_hash": "755708a13a583efa06ff8456869b4176",
     "semantic_hash": ""
   },
@@ -90,13 +90,13 @@
     "semantic_hash": ""
   },
   "src/features/transcription/TranscriptionResults.tsx": {
-    "mtime": 1782847812.927501,
-    "ast_hash": "5c4de62852a958bfe6ac5eb743479e16",
+    "mtime": 1783248004.2864523,
+    "ast_hash": "40feb330aec985dfef95b5fd82fcc84a",
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
-    "mtime": 1782911484.2100582,
-    "ast_hash": "4c4a88a90d6367035305f74e62392190",
+    "mtime": 1783104276.307629,
+    "ast_hash": "70e686a5b7ebdaaf9ff9ee5be312905f",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1782656857.083662,
-    "ast_hash": "9989de5bd5bcee0503566ccffb29f1f6",
+    "mtime": 1783238136.835309,
+    "ast_hash": "a35ed9ca0b75398fa9e29e3a4d188588",
     "semantic_hash": ""
   },
   "tailwind.config.js": {
@@ -249,49 +249,29 @@
     "ast_hash": "5647a0cbb204d13a8dee0b9085573063",
     "semantic_hash": ""
   },
-  "e2e/speed-change.spec.ts": {
-    "mtime": 1781774326.279739,
-    "ast_hash": "26b89f0be1b4c9213bc6d642e4e041cd",
-    "semantic_hash": ""
-  },
-  "e2e/audio-speeds.spec.ts": {
-    "mtime": 1782457874.1241524,
-    "ast_hash": "f233cd90aeb0826ec31a9d3ab9e4455c",
-    "semantic_hash": ""
-  },
   "e2e/audio-artifacts.spec.ts": {
-    "mtime": 1782457719.3165905,
-    "ast_hash": "cf19fea49c41458a23d8f0c7c502ff67",
-    "semantic_hash": ""
-  },
-  "e2e/ru-profanity2.mp4": {
-    "mtime": 1781261782.7404716,
-    "ast_hash": "54f6d38ff028aacb1e30a04bd2aed2a2",
+    "mtime": 1782999598.8230667,
+    "ast_hash": "c6835beb86f9ab9dd9c244b69703f4ca",
     "semantic_hash": ""
   },
   "e2e/audio-stress.spec.ts": {
-    "mtime": 1782384510.842113,
-    "ast_hash": "e9612e1b65837d62f2a392a914cf8337",
-    "semantic_hash": ""
-  },
-  "e2e/temp-ru-profanity2.spec.ts": {
-    "mtime": 1782131036.715567,
-    "ast_hash": "0e8236257e3366af5b317cbd6f69db97",
+    "mtime": 1783166778.5678954,
+    "ast_hash": "40bff83a8e2f85476fa9fdff875147d5",
     "semantic_hash": ""
   },
   "e2e/censor-export.spec.ts": {
-    "mtime": 1782903792.7913592,
-    "ast_hash": "3733da472e200d9c8431625264ab0b1a",
+    "mtime": 1782999956.7090437,
+    "ast_hash": "77b5730df5b669c2ad758c6ef7254f47",
     "semantic_hash": ""
   },
   "e2e/click-1x-ru-profanity3.spec.ts": {
-    "mtime": 1782457813.6921556,
-    "ast_hash": "f1d1de6600bba82f5d9a36ff31bc193c",
+    "mtime": 1783004536.175052,
+    "ast_hash": "8d519a0dd473a774f23148d781b77174",
     "semantic_hash": ""
   },
   "e2e/pause-play-diagnostic.spec.ts": {
-    "mtime": 1782296479.4074588,
-    "ast_hash": "de863165a81e41360c90ad7f40baaea1",
+    "mtime": 1783169898.870635,
+    "ast_hash": "39aa2258cfe9eb28b05f0e67111b8dea",
     "semantic_hash": ""
   },
   "src/censor-worker.ts": {
@@ -315,18 +295,13 @@
     "semantic_hash": ""
   },
   "e2e/multi-segment-race.spec.ts": {
-    "mtime": 1782324571.778789,
-    "ast_hash": "dcbdef93b163d61c6d50eea122046048",
+    "mtime": 1783176961.856694,
+    "ast_hash": "6fb26a3a38a8335ad5fae52c6ce615c3",
     "semantic_hash": ""
   },
   "e2e/sequential-operations.spec.ts": {
-    "mtime": 1782329641.9548037,
-    "ast_hash": "8a881e0d75d078f66bdd50eb4723417a",
-    "semantic_hash": ""
-  },
-  "e2e/ru-profanity2.json": {
-    "mtime": 1781276056.3595343,
-    "ast_hash": "c17e52f31c67353a1b0b5ce7c7ad6fe8",
+    "mtime": 1783163556.6484437,
+    "ast_hash": "2089d8c1f554bd1081a713d9d6cabe83",
     "semantic_hash": ""
   },
   "e2e/ru-profanity3.json": {
@@ -340,8 +315,8 @@
     "semantic_hash": ""
   },
   "e2e/json-import-export.spec.ts": {
-    "mtime": 1782579992.2293854,
-    "ast_hash": "49c4c373ea67bf17c2343d0db1a3243b",
+    "mtime": 1782999692.1741564,
+    "ast_hash": "bae038d4400690277339093763f2e0e3",
     "semantic_hash": ""
   },
   "e2e/valid-with-aac-test.json": {
@@ -362,6 +337,31 @@
   "public/assets/obrez-logo.jpg": {
     "mtime": 1782718777.0107968,
     "ast_hash": "672dffeb132092fd3fdc67a62ee244b7",
+    "semantic_hash": ""
+  },
+  "e2e/sequential-playback.spec.ts": {
+    "mtime": 1783170972.1781242,
+    "ast_hash": "5cc2a5eb0ffb5f45eb5db21da0430ca8",
+    "semantic_hash": ""
+  },
+  "src/features/auth/ConfirmationModal.tsx": {
+    "mtime": 1783248809.2319841,
+    "ast_hash": "0f77f25f916f30ed283fa8c716c20d61",
+    "semantic_hash": ""
+  },
+  "src/features/auth/LoginModal.tsx": {
+    "mtime": 1783249168.3878438,
+    "ast_hash": "d3b132031deb94ce5f2a1003f2522fc7",
+    "semantic_hash": ""
+  },
+  "src/features/auth/TopupModal.tsx": {
+    "mtime": 1783249343.2864578,
+    "ast_hash": "116ddfedab3b87b569996784e0bd7389",
+    "semantic_hash": ""
+  },
+  "src/store/authStore.ts": {
+    "mtime": 1783248938.797887,
+    "ast_hash": "e2aa4fad3da814dd086429c438079ebd",
     "semantic_hash": ""
   }
 }

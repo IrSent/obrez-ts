@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
-import { backendPath } from '../../config';
+import { loadBackendUrl, backendPath } from '../../config';
 import { FastAhoScanner } from '../../aho-corasick';
 
 const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
@@ -14,6 +14,7 @@ const DictionaryManagerInner = () => {
   // Auto-load default dictionaries on mount
   useEffect(() => {
     const loadDefaults = async () => {
+      await loadBackendUrl();
       for (const slug of DEFAULT_DICTIONARIES) {
         if (slug in loadedDictionaries) continue;
         try {
@@ -42,6 +43,7 @@ const DictionaryManagerInner = () => {
     setIsLoading((prev) => ({ ...prev, [slug]: true }));
 
     try {
+      await loadBackendUrl();
       const response = await fetch(backendPath(`/dictionary/${slug}`));
       if (!response.ok) {
         alert(`Dictionary not found: ${slug}`);

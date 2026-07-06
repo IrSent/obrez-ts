@@ -1,9 +1,13 @@
 import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { List, useListRef } from 'react-window';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
+import { useAuthStore } from '../../store/authStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { EffectModal, EffectBadge } from './EffectModal';
 import { AddWordModal } from './AddWordModal';
+import { LoginModal } from '../auth/LoginModal';
+import { TopupModal } from '../auth/TopupModal';
+import { ConfirmationModal } from '../auth/ConfirmationModal';
 import type { SoundCensoringEffect } from '../../types';
 
 // Worker instances are created once and reused.
@@ -296,6 +300,14 @@ const TranscriptionResultsInner = () => {
   // Add Word modal
   const [showAddWord, setShowAddWord] = useState(false);
 
+  // Auth modals — one state, can't conflict
+  const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(null);
+
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const authUser = useAuthStore((s) => s.user);
+  const checkAuth = useAuthStore((s) => s.checkAuth);
+  const clearAuthError = useAuthStore((s) => s.clearError);
+
   const handleAddEffect = (effect: SoundCensoringEffect) => {
     actions.addSoundEffect(effect);
   };
@@ -567,15 +579,83 @@ const TranscriptionResultsInner = () => {
     return () => clearInterval(interval);
   }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
 
+  const canFreeTopup = (lastFreeTopup: string | null | undefined): boolean => {
+    if (!lastFreeTopup) return true;
+    const last = new Date(lastFreeTopup);
+    const now = new Date();
+    const daysDiff = (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
+    return daysDiff >= 30;
+  };
+
   const handleTranscribe = async () => {
+    // 1. Check auth
+    try {
+      await checkAuth();
+    } catch {
+      // ignore
+    }
+
+    const user = useAuthStore.getState().user;
+    if (!user) {
+      setAuthModal('login');
+      return;
+    }
+
+    // 2. Check if topup modal should show:
+    //    a) 30+ days since last free topup — user can get free hours
+    //    b) video duration > user balance — user needs more hours
+    const videoDuration = duration;
+    const freeAvailable = canFreeTopup(user.last_free_topup);
+    const balanceInsufficient = videoDuration > user.remaining_seconds;
+
+    if (freeAvailable || balanceInsufficient) {
+      setAuthModal('topup');
+      return;
+    }
+
+    // 3. Show confirmation modal
+    setAuthModal('confirm');
+  };
+
+  // After login: check balance, show topup or confirm
+  const handleLoggedIn = async () => {
+    await checkAuth();
+    const user = useAuthStore.getState().user;
+    if (user) {
+      const freeAvailable = canFreeTopup(user.last_free_topup);
+      const balanceInsufficient = duration > user.remaining_seconds;
+      if (freeAvailable || balanceInsufficient) {
+        setAuthModal('topup');
+      } else {
+        setAuthModal('confirm');
+      }
+    }
+  };
+
+  // React to login: when user gets authenticated, handle it
+  useEffect(() => {
+    if (authModal === 'login' && isAuthenticated) {
+      handleLoggedIn();
+    }
+  }, [isAuthenticated, authModal]);
+
+  // Confirm and transcribe
+  const handleConfirmTranscribe = async () => {
+    setAuthModal(null);
     setIsLoading(true);
     setError(null);
     try {
       await transcribe();
       setIsLoading(false);
+      await checkAuth();
     } catch (err) {
-      console.error('Transcription error:', err);
-      setError('Failed to transcribe: ' + (err as Error).message);
+      const msg = (err as Error).message;
+      console.error('Transcription error:', msg);
+      if (msg.includes('402') || msg.includes('quota')) {
+        setAuthModal('topup');
+      } else {
+        setError('Failed to transcribe: ' + msg);
+      }
       setIsLoading(false);
     }
   };
@@ -729,6 +809,36 @@ const TranscriptionResultsInner = () => {
           onClose={() => setShowAddWord(false)}
           onAdd={handleAddWord}
           duration={duration}
+        />
+      )}
+
+      {/* Auth modals — only one at a time */}
+      {authModal === 'login' && (
+        <LoginModal
+          onClose={() => setAuthModal(null)}
+        />
+      )}
+      {authModal === 'topup' && (
+        <TopupModal
+          onClose={() => {
+            setAuthModal(null);
+            clearAuthError();
+          }}
+          onTopup={async () => {
+            await checkAuth();
+            setAuthModal('confirm');
+          }}
+        />
+      )}
+      {authModal === 'confirm' && (
+        <ConfirmationModal
+          videoDuration={duration}
+          onClose={() => setAuthModal(null)}
+          onConfirm={handleConfirmTranscribe}
+          onLogout={async () => {
+            await useAuthStore.getState().logout();
+            setAuthModal(null);
+          }}
         />
       )}
     </div>

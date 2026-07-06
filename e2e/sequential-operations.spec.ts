@@ -37,7 +37,7 @@ test.describe('Sequential operations', () => {
 
     await page.goto('/');
     await loadFile(page);
-    await page.waitForTimeout(1000);
+    await page.waitForTimeout(2000);
 
     // Hover to show controls
     await page.locator('canvas[aria-label="Video canvas"]').hover();
@@ -45,7 +45,7 @@ test.describe('Sequential operations', () => {
 
     // 1. Pause
     await page.getByRole('button', { name: /pause/i }).click();
-    await page.waitForTimeout(800);
+    await page.waitForTimeout(1000);
 
     const timeAfterPause = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
     expect(timeAfterPause).toBeGreaterThan(0);

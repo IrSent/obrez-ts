@@ -148,6 +148,8 @@ test.describe('Sequential Playback — No Overlap', () => {
     // Bootstrap + settle
     await page.waitForTimeout(3000);
 
+    // Discard first sample (may overlap with tail end of transition)
+    await collectSamples(page, 1);
     const samples = await collectSamples(page, 10);
 
     // ── Линейность на 2x ──
@@ -237,8 +239,10 @@ test.describe('Sequential Playback — No Overlap', () => {
     await page.getByRole('button', { name: '1x' }).click();
     await page.waitForTimeout(300);
     await page.getByRole('button', { name: '2x' }).click();
-    await page.waitForTimeout(2000);
+    await page.waitForTimeout(3000);
 
+    // Discard first sample (may overlap with transition bootstrap)
+    await collectSamples(page, 1);
     const samples2x = await collectSamples(page, 5);
 
     console.log('\n═══ 2x SAMPLES ═══');

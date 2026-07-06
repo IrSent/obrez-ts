@@ -1,5 +1,13 @@
 import { test, expect } from '@playwright/test';
 
+function parseTime(text: string | null): number {
+  if (!text) return 0;
+  const parts = text.split(':').map(p => parseFloat(p));
+  if (parts.length === 3) return parts[0] * 3600 + parts[1] * 60 + parts[2];
+  if (parts.length === 2) return parts[0] * 60 + parts[1];
+  return parts[0];
+}
+
 test.describe('Video Playback', () => {
   test('loads a video file, plays it, and time progresses', async ({ page }) => {
     await page.goto('/');
@@ -16,15 +24,24 @@ test.describe('Video Playback', () => {
     const durationText = page.locator('span.text-xs.opacity-60').last();
     await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15000 });
 
-    // 4. Record the initial current time (left-side time display)
+    // 4. Wait for playback to actually start (time advances)
+    let waited = 0;
+    while (waited < 10000) {
+      await page.waitForTimeout(500);
+      waited += 500;
+      const timeNow = await page.locator('span.text-xs.opacity-60').first().textContent();
+      if (parseTime(timeNow) > 0.5) break;
+    }
+
+    // 5. Record the initial current time (left-side time display)
     const currentTimeBefore = page.locator('span.text-xs.opacity-60').first();
     const initialTime = await currentTimeBefore.textContent();
     expect(initialTime).not.toBeNull();
 
-    // 5. Video auto-plays after loading — just wait for playback to progress
+    // 6. Wait for playback to progress
     await page.waitForTimeout(5000);
 
-    // 6. Check that current time has changed (playback is progressing)
+    // 7. Check that current time has changed (playback is progressing)
     const currentTimeAfter = await page.locator('span.text-xs.opacity-60').first().textContent();
     expect(currentTimeAfter).not.toBe(initialTime);
 
