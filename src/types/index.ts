@@ -206,3 +206,21 @@ export type PlayerState = {
  * Available playback speed options.
  */
 export type PlaybackSpeed = 0.5 | 0.75 | 1 | 1.25 | 1.5 | 1.75 | 2 | 2.5 | 3;
+
+/**
+ * Authenticated user from Telegram
+ */
+export interface AuthUser {
+  id: number;
+  tg_user_id: number;
+  first_name: string;
+  username?: string | null;
+  photo_url?: string | null;
+  remaining_seconds: number;
+  last_free_topup?: string | null;
+}
+
+/**
+ * Package types for topping up transcription hours
+ */
+export type PackageType = 'free' | 'basic' | 'pro';

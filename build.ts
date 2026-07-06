@@ -1,24 +1,43 @@
 import { $ } from 'bun';
-import { mkdir, rm } from 'fs/promises';
+import { mkdir, rm, cp, readdir, stat } from 'fs/promises';
 import tailwind from 'bun-plugin-tailwind';
 
+// Parse --version flag using Bun.argv (strips bun's own flags)
+const versionIdx = Bun.argv.indexOf('--version');
+const version = versionIdx >= 0
+  ? Bun.argv[versionIdx + 1]?.replace(/^v/, '') || null
+  : null;
+
+/**
+ * Build the app.
+ * Without --version: builds into dist/ (dev mode, full cleanup).
+ * With --version: builds into dist/<version>/ (deploy mode, no cleanup of other versions).
+ */
 async function build() {
+  const outDir = version ? `dist/${version}` : 'dist';
+
   try {
-    // Clean dist folder
-    console.log('Cleaning dist folder...');
-    await rm('dist', { recursive: true, force: true });
+    if (!version) {
+      // Dev mode: clean entire dist folder
+      console.log('Cleaning dist folder...');
+      await rm('dist', { recursive: true, force: true });
+    } else {
+      // Deploy mode: clean only this version folder
+      console.log(`Cleaning ${outDir}/...`);
+      await rm(outDir, { recursive: true, force: true });
+    }
 
     // Create dist folder
     console.log('Creating dist folder...');
-    await mkdir('dist', { recursive: true });
+    await mkdir(outDir, { recursive: true });
 
     // Copy public assets
     console.log('Copying public assets...');
-    await $`cp -r public/* dist/`;
+    await $`cp -r public/* ${outDir}/`;
 
     // Copy Phase Vocoder processor from node_modules — always fresh
     console.log('Copying Phase Vocoder processor...');
-    await $`cp node_modules/@soundtouchjs/phase-vocoder-worklet/.dist/phase-vocoder-processor.js dist/`.quiet();
+    await $`cp node_modules/@soundtouchjs/phase-vocoder-worklet/.dist/phase-vocoder-processor.js ${outDir}/`.quiet();
 
     // Get base version and build number
     const baseVersion = JSON.parse((await $`cat package.json`.text())).version;
@@ -33,7 +52,7 @@ async function build() {
         './src/json-export.worker.ts',
         './src/censor-worker.ts',
       ],
-      outdir: './dist',
+      outdir: outDir,
       target: 'browser',
       plugins: [tailwind],
       sourcemap: 'external',
@@ -45,7 +64,7 @@ async function build() {
       },
     });
 
-    console.log('Build completed successfully!');
+    console.log(`Build completed successfully! → ${outDir}`);
   } catch (error) {
     console.error('Build failed:', error);
     process.exit(1);
