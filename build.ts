@@ -35,6 +35,11 @@ async function build() {
     console.log('Copying public assets...');
     await $`cp -r public/* ${outDir}/`;
 
+    // Also copy settings.js as settings.<hash>.js for cache-busting (GitHub Pages 600s TTL)
+    const settingsHash = (await $`md5 public/settings.js`.text()).trim().split(' ').pop()?.slice(0, 8) || '';
+    await $`cp public/settings.js ${outDir}/settings.${settingsHash}.js`;
+    console.log(`  settings.${settingsHash}.js → ${outDir}/`);
+
     // Copy Phase Vocoder processor from node_modules — always fresh
     console.log('Copying Phase Vocoder processor...');
     await $`cp node_modules/@soundtouchjs/phase-vocoder-worklet/.dist/phase-vocoder-processor.js ${outDir}/`.quiet();
@@ -64,13 +69,13 @@ async function build() {
       },
     });
 
-    // Inject settings.js into the built index.html
+    // Inject settings.<hash>.js into the built index.html
     const indexPath = `${outDir}/index.html`;
     const builtIndex = Bun.file(indexPath);
     const html = await builtIndex.text();
     const withSettings = html.replace(
       '</body>',
-      '<script src="../settings.js"></script></body>',
+      `<script src="../settings.${settingsHash}.js"></script></body>`,
     );
     await Bun.write(builtIndex, withSettings);
 
