@@ -1,7 +1,13 @@
 <script>
 (function() {
-  // Inject gear settings UI into the page
-  const style = document.createElement('style');
+  // Compute base path: /obrez-ts/master/ → base = '/obrez-ts/', version = 'master'
+  var parts = window.location.pathname.split('/').filter(Boolean);
+  // ['', 'obrez-ts', 'master', ''] → ['obrez-ts', 'master']
+  var base = '/' + parts[0] + '/';
+  var currentVersion = parts[parts.length - 1] || 'master';
+
+  // Inject styles
+  var style = document.createElement('style');
   style.textContent = `
     #obrez-gear {
       position: fixed; top: -36px; right: -36px;
@@ -68,41 +74,38 @@
   document.head.appendChild(style);
 
   // Gear button
-  const gear = document.createElement('div');
+  var gear = document.createElement('div');
   gear.id = 'obrez-gear';
   gear.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>';
   document.body.appendChild(gear);
 
   // Modal
-  const overlay = document.createElement('div');
+  var overlay = document.createElement('div');
   overlay.id = 'obrez-modal-overlay';
   overlay.innerHTML = '<div id="obrez-modal"><h2>⚙ Настройки</h2><div class="version-list" id="obrez-version-list"></div><button class="close-btn" id="obrez-close-modal">Закрыть</button></div>';
   document.body.appendChild(overlay);
 
-  // Determine current version from URL path
-  const currentVersion = window.location.pathname.split('/')[1] || 'master';
-
   // Load version list
-  fetch('/stable-versions.json')
-    .then(r => r.json())
-    .then(data => {
-      const list = document.getElementById('obrez-version-list');
-      data.versions.forEach(v => {
-        const item = document.createElement('div');
+  fetch(base + 'stable-versions.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      var list = document.getElementById('obrez-version-list');
+      data.versions.forEach(function(v) {
+        var item = document.createElement('div');
         item.className = 'version-item' + (v === currentVersion ? ' active' : '');
         item.innerHTML = '<span class="radio"></span><span class="version-label">' + v + '</span>';
-        item.addEventListener('click', () => {
+        item.addEventListener('click', function() {
           localStorage.setItem('obrez-version', v);
-          window.location.replace('/' + v + '/');
+          window.location.replace(base + v + '/');
         });
         list.appendChild(item);
       });
     })
-    .catch(() => {});
+    .catch(function() {});
 
   // Close modal
-  document.getElementById('obrez-close-modal').addEventListener('click', () => overlay.classList.remove('open'));
-  overlay.addEventListener('click', (e) => { if (e.target === overlay) overlay.classList.remove('open'); });
-  gear.addEventListener('click', () => overlay.classList.add('open'));
+  document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
+  gear.addEventListener('click', function() { overlay.classList.add('open'); });
 })();
 </script>
