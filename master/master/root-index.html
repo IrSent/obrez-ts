@@ -8,14 +8,6 @@
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
     html, body { width: 100%; height: 100%; overflow: hidden; background: #111; }
 
-    /* ── iframe ── */
-    #app-frame {
-      width: 100%; height: 100%;
-      border: none;
-      position: absolute;
-      top: 0; left: 0;
-    }
-
     /* ── шестерня ── */
     #gear {
       position: fixed;
@@ -26,6 +18,7 @@
       transition: transform 0.35s cubic-bezier(.4,0,.2,1), filter 0.35s ease;
       filter: drop-shadow(0 0 0px transparent);
       opacity: 0.25;
+      color: #fff;
     }
     #gear:hover {
       transform: translate(-20px, 20px);
@@ -116,10 +109,21 @@
     }
     #modal .close-btn:hover { background: #444; }
     #modal .version-label { font-weight: 600; }
+
+    /* ── loading ── */
+    #loading {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #555;
+      font-size: 14px;
+    }
   </style>
 </head>
 <body>
-  <iframe id="app-frame" title="Obrez"></iframe>
+  <div id="loading">Loading...</div>
 
   <!-- шестерня -->
   <div id="gear" title="Settings">
@@ -139,11 +143,11 @@
   </div>
 
   <script>
-    const frame = document.getElementById('app-frame');
     const gear = document.getElementById('gear');
     const overlay = document.getElementById('modal-overlay');
     const versionList = document.getElementById('version-list');
     const closeBtn = document.getElementById('close-modal');
+    const loading = document.getElementById('loading');
 
     let versions = { default: 'master', versions: ['master'] };
     let currentVersion = localStorage.getItem('obrez-version') || null;
@@ -154,13 +158,16 @@
       .then(data => { versions = data; })
       .catch(() => {})
       .finally(() => {
-        // Если сохранённая версия есть в списке, используем её, иначе дефолт
         if (currentVersion && !versions.versions.includes(currentVersion)) {
           currentVersion = null;
         }
         currentVersion = currentVersion || versions.default;
-        frame.src = `/${currentVersion}/`;
         renderList();
+
+        // Если URL не содержит версию — редирект
+        if (!window.location.pathname.match(/^\/[^\/]+\//)) {
+          window.location.replace(`/${currentVersion}/`);
+        }
       });
 
     function renderList() {
@@ -171,9 +178,8 @@
         item.innerHTML = `<span class="radio"></span><span class="version-label">${v}</span>`;
         item.addEventListener('click', () => {
           currentVersion = v;
-          frame.src = `/${v}/`;
           localStorage.setItem('obrez-version', v);
-          renderList();
+          window.location.replace(`/${v}/`);
         });
         versionList.appendChild(item);
       });
