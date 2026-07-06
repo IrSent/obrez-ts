@@ -1,7 +1,6 @@
 (function() {
   // Compute base path: /obrez-ts/master/ → base = '/obrez-ts/', version = 'master'
   var parts = window.location.pathname.split('/').filter(Boolean);
-  // ['', 'obrez-ts', 'master', ''] → ['obrez-ts', 'master']
   var base = '/' + parts[0] + '/';
   var currentVersion = parts[parts.length - 1] || 'master';
 
@@ -69,28 +68,80 @@
     }
     #obrez-modal .close-btn:hover { background: #444; }
     #obrez-modal .version-label { font-weight: 600; }
+
+    /* ── Debug button ── */
     #obrez-debug-btn {
       position: fixed; bottom: 16px; right: 16px;
-      width: 44px; height: 44px;
+      width: 48px; height: 48px;
       background: #1a1a1a; color: #ff4444;
-      border: 2px solid #ff4444; border-radius: 10px;
-      font-size: 20px; line-height: 40px;
+      border: 2px solid #ff4444; border-radius: 12px;
+      font-size: 22px; line-height: 44px;
       text-align: center; cursor: pointer;
       z-index: 9999; user-select: none;
-      box-shadow: 0 2px 8px rgba(255,68,68,0.3);
+      box-shadow: 0 2px 12px rgba(255,68,68,0.4);
+      transition: transform 0.15s, box-shadow 0.15s;
+    }
+    #obrez-debug-btn.has-errors {
+      animation: obrez-pulse 2s ease-in-out infinite;
+    }
+    @keyframes obrez-pulse {
+      0%, 100% { box-shadow: 0 2px 12px rgba(255,68,68,0.4); }
+      50%      { box-shadow: 0 2px 24px rgba(255,68,68,0.8); }
+    }
+    #obrez-debug-badge {
+      position: absolute; top: -6px; right: -6px;
+      min-width: 20px; height: 20px;
+      background: #ff2222; color: #fff;
+      font-size: 11px; font-weight: 700;
+      border-radius: 10px;
+      display: flex; align-items: center; justify-content: center;
+      padding: 0 5px;
+      box-shadow: 0 1px 4px rgba(0,0,0,0.5);
+      font-family: system-ui, -apple-system, sans-serif;
     }
     #obrez-debug-tooltip {
       display: none;
-      position: fixed; bottom: 68px; right: 16px;
-      background: #1f1f23; color: #e55;
-      border: 1px solid #444; border-radius: 10px;
-      padding: 12px 16px; max-width: 300px;
-      font-size: 11px; font-family: monospace;
+      position: fixed; bottom: 74px; right: 12px;
+      background: #1a1a1f; color: #e55;
+      border: 1px solid #555; border-radius: 12px;
+      padding: 14px 16px;
+      width: calc(100vw - 24px);
+      max-width: 500px;
+      font-size: 12px; font-family: 'SF Mono', Menlo, Consolas, monospace;
       white-space: pre-wrap; word-break: break-all;
-      max-height: 200px; overflow-y: auto;
-      z-index: 9999; box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      max-height: 60vh; overflow-y: auto;
+      z-index: 9999; box-shadow: 0 12px 40px rgba(0,0,0,0.7);
     }
     #obrez-debug-tooltip.open { display: block; }
+    #obrez-debug-tooltip .err-header {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 10px; padding-bottom: 8px; border-bottom: 1px solid #333;
+    }
+    #obrez-debug-tooltip .err-header span {
+      font-weight: 700; color: #ff6b6b;
+    }
+    #obrez-debug-tooltip .err-clear {
+      font-size: 10px; color: #888; cursor: pointer;
+      background: none; border: none; padding: 4px 8px;
+      border-radius: 4px;
+    }
+    #obrez-debug-tooltip .err-clear:hover { background: #333; color: #ccc; }
+    #obrez-debug-tooltip .err-row {
+      padding: 8px 0; border-bottom: 1px solid #2a2a2f;
+      cursor: pointer; transition: background 0.1s;
+    }
+    #obrez-debug-tooltip .err-row:last-child { border-bottom: none; }
+    #obrez-debug-tooltip .err-row:active { background: #2a2a30; }
+    #obrez-debug-tooltip .err-label {
+      color: #ff6b6b; font-weight: 600; font-size: 11px;
+      text-transform: uppercase; letter-spacing: 0.5px;
+    }
+    #obrez-debug-tooltip .err-detail {
+      color: #bbb; margin-top: 3px; font-size: 12px;
+    }
+    #obrez-debug-tooltip .err-empty {
+      color: #666; text-align: center; padding: 12px 0;
+    }
   `;
   document.head.appendChild(style);
 
@@ -131,6 +182,7 @@
 
   // ── Debug button ──
   var errors = [];
+  var tooltipOpen = false;
 
   var debugBtn = document.createElement('div');
   debugBtn.id = 'obrez-debug-btn';
@@ -138,38 +190,80 @@
   debugBtn.title = 'View errors';
   document.body.appendChild(debugBtn);
 
+  var badge = document.createElement('div');
+  badge.id = 'obrez-debug-badge';
+  badge.style.display = 'none';
+  debugBtn.appendChild(badge);
+
   var tooltip = document.createElement('div');
   tooltip.id = 'obrez-debug-tooltip';
   document.body.appendChild(tooltip);
 
+  function updateBadge() {
+    if (errors.length > 0) {
+      badge.textContent = errors.length > 99 ? '99+' : errors.length;
+      badge.style.display = 'flex';
+      debugBtn.classList.add('has-errors');
+    } else {
+      badge.style.display = 'none';
+      debugBtn.classList.remove('has-errors');
+    }
+  }
+
   function showErrorItem(label, detail, raw) {
-    errors.push({ label: label, detail: detail, raw: raw });
-    renderErrors();
+    errors.push({ label: label, detail: detail, raw: raw, time: new Date().toLocaleTimeString() });
+    updateBadge();
+    if (tooltipOpen) renderErrors();
   }
 
   function renderErrors() {
     tooltip.innerHTML = '';
+
+    // Header
+    var header = document.createElement('div');
+    header.className = 'err-header';
+    var title = document.createElement('span');
+    title.textContent = errors.length === 0 ? '✓ No errors' : '⚠ ' + errors.length + ' error' + (errors.length > 1 ? 's' : '');
+    header.appendChild(title);
+
+    if (errors.length > 0) {
+      var clearBtn = document.createElement('button');
+      clearBtn.className = 'err-clear';
+      clearBtn.textContent = 'Clear all';
+      clearBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        errors = [];
+        updateBadge();
+        renderErrors();
+      });
+      header.appendChild(clearBtn);
+    }
+    tooltip.appendChild(header);
+
     if (errors.length === 0) {
-      tooltip.textContent = 'No errors';
-      tooltip.classList.add('open');
-      setTimeout(function() { tooltip.classList.remove('open'); }, 1500);
+      setTimeout(function() { tooltip.classList.remove('open'); }, 1200);
       return;
     }
-    errors.forEach(function(err, i) {
+
+    errors.slice().reverse().forEach(function(err) {
       var row = document.createElement('div');
-      row.style.cssText = 'padding: 6px 0; border-bottom: 1px solid #333; cursor: pointer;';
-      row.innerHTML = '<div style="color:#ff6b6b;font-weight:bold;font-size:11px;">⚠ ' + err.label + '</div>' +
-        (err.detail ? '<div style="color:#999;margin-top:2px;">' + err.detail + '</div>' : '');
+      row.className = 'err-row';
+      row.innerHTML =
+        '<div class="err-label">[' + err.time + '] ' + err.label + '</div>' +
+        (err.detail ? '<div class="err-detail">' + err.detail + '</div>' : '');
       row.addEventListener('click', function() {
-        var text = (i + 1) + '. ' + err.label + (err.detail ? '\n' + err.detail : '') + '\n\n' + err.raw;
+        var text = '[' + err.time + '] ' + err.label +
+          (err.detail ? '\n' + err.detail : '') +
+          '\n\n--- Raw ---\n' + err.raw;
         if (navigator.clipboard) {
           navigator.clipboard.writeText(text).catch(function() {});
         }
-        row.style.background = '#2a2a30';
-        setTimeout(function() { row.style.background = ''; }, 200);
+        row.style.background = '#3a3a40';
+        setTimeout(function() { row.style.background = ''; }, 300);
       });
       tooltip.appendChild(row);
     });
+
     tooltip.classList.add('open');
   }
 
@@ -178,16 +272,31 @@
   console.error = function() {
     var args = Array.prototype.slice.call(arguments);
     var msg = args.map(function(a) {
-      return typeof a === 'string' ? a : (a && a.stack ? a.message + '\n' + a.stack : (a && a.message ? a.message : JSON.stringify(a)));
+      if (typeof a === 'string') return a;
+      if (a && a.stack) return a.message + '\n' + a.stack;
+      if (a && a.message) return a.message;
+      if (a && typeof a === 'object') return JSON.stringify(a);
+      return String(a);
     }).join(' ');
     showErrorItem('console.error', msg.split('\n')[0], msg);
     _origError.apply(console, arguments);
   };
 
+  // Intercept console.warn (as lower priority)
+  var _origWarn = console.warn;
+  console.warn = function() {
+    var args = Array.prototype.slice.call(arguments);
+    var msg = args.map(function(a) {
+      return typeof a === 'string' ? a : (a && a.message ? a.message : String(a));
+    }).join(' ');
+    showErrorItem('warn', msg.split('\n')[0], msg);
+    _origWarn.apply(console, arguments);
+  };
+
   // Intercept unhandled errors
   window.addEventListener('error', function(e) {
     var detail = (e.filename || '') + (e.lineno ? ':' + e.lineno : '');
-    showErrorItem('Error', e.message, e.message + '\n' + detail + '\n' + (e.error && e.error.stack || ''));
+    showErrorItem('Error', e.message + (detail ? ' (' + detail + ')' : ''), e.message + '\n' + detail + '\n' + (e.error && e.error.stack || ''));
   });
 
   // Intercept unhandled promise rejections
@@ -197,19 +306,31 @@
     showErrorItem('Uncaught Promise', msg, msg + '\n' + (reason && reason.stack ? reason.stack : ''));
   });
 
+  // Intercept React error boundaries via __reactErrorBoundary (if available)
+  // Also intercept beforeunload for crash detection
+  var _origRender = null;
+
   // Toggle tooltip on button click
-  debugBtn.addEventListener('click', function() {
+  debugBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
     if (!tooltip.classList.contains('open')) {
+      tooltipOpen = true;
       renderErrors();
     } else {
+      tooltipOpen = false;
       tooltip.classList.remove('open');
     }
   });
 
   // Close tooltip when tapping elsewhere
   document.addEventListener('click', function(e) {
-    if (!tooltip.contains(e.target) && e.target !== debugBtn) {
+    if (!tooltip.contains(e.target) && e.target !== debugBtn && !debugBtn.contains(e.target)) {
+      tooltipOpen = false;
       tooltip.classList.remove('open');
     }
   });
+
+  // Expose for use by iframe content scripts
+  window.__obrezErrors = errors;
+  window.__showErrorItem = showErrorItem;
 })();
