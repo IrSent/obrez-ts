@@ -1,4 +1,4 @@
-import { $ } from 'bun';
+import { $, MD5 } from 'bun';
 import { mkdir, rm } from 'fs/promises';
 import { watch } from 'fs';
 import tailwind from 'bun-plugin-tailwind';
@@ -24,6 +24,14 @@ async function build() {
     // so package updates are picked up without touching public/
     await $`cp node_modules/@soundtouchjs/phase-vocoder-worklet/.dist/phase-vocoder-processor.js ${DIST_DIR}/`.quiet();
 
+    // Cache-bust: copy settings-early and settings-ui with MD5 hash in filename
+    const earlyHash = MD5.hash(await Bun.file('public/settings-early.js').arrayBuffer(), 'hex').slice(0, 8);
+    const uiHash = MD5.hash(await Bun.file('public/settings-ui.js').arrayBuffer(), 'hex').slice(0, 8);
+    const earlyName = `settings-early.${earlyHash}.js`;
+    const uiName = `settings-ui.${uiHash}.js`;
+    await $`cp public/settings-early.js ${DIST_DIR}/${earlyName}`.quiet();
+    await $`cp public/settings-ui.js ${DIST_DIR}/${uiName}`.quiet();
+
     const buildNum = (await $`git rev-list HEAD --count`.text()).trim();
     const baseVersion = JSON.parse((await $`cat package.json`.text())).version;
 
@@ -47,6 +55,20 @@ async function build() {
       console.error('❌ Build failed:', result.logs);
       return false;
     }
+
+    // Inject settings scripts into index.html
+    const indexPath = join(DIST_DIR, 'index.html');
+    const builtIndex = Bun.file(indexPath);
+    const html = await builtIndex.text();
+    const withSettings = html
+      .replace('<head>', `<head><script src="./${earlyName}"></script>`)
+      .replace(
+        '</body>',
+        `<script>document.addEventListener('DOMContentLoaded',function(){
+          var s=document.createElement('script');s.src='./${uiName}';document.head.appendChild(s);
+        });</script></body>`,
+      );
+    await Bun.write(builtIndex, withSettings);
 
     console.log('✅ Dev build ready');
     return true;
