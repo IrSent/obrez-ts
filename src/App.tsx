@@ -1,20 +1,23 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
 import { FileLoader } from './features/file-loader/FileLoader';
-import { DictionaryManager } from './features/dictionary/DictionaryManager';
-import { BleepSoundManager } from './features/bleep-sounds/BleepSoundManager';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
 import { ExportButton } from './features/export/ExportModal';
 import { APP_VERSION } from './version';
 import { loadBackendUrl } from './config';
+import { SettingsModal } from './features/settings/SettingsModal';
+import { DebugButton } from './features/debug/DebugButton';
 
 export const App = () => {
   // Load backend URL from runtime config on startup
   useEffect(() => {
     loadBackendUrl().then(url => console.log('Backend URL:', url));
   }, []);
+
+  // Settings modal
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <MediaPlayerProvider>
@@ -31,8 +34,8 @@ export const App = () => {
                 <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez <span className="text-xs font-normal text-zinc-500">{APP_VERSION}</span></h1>
               </div>
               <div className="flex items-center gap-1">
-                <div id="obrez-debug-btn" className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">🐛</div>
-                <div id="obrez-gear" className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</div>
+                <DebugButton />
+                <button id="obrez-gear" onClick={() => setSettingsOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</button>
               </div>
             </div>
           </header>
@@ -49,11 +52,14 @@ export const App = () => {
 
               <div className="lg:col-span-1 space-y-6">
                 <ExportButton />
-                <DictionaryManager />
-                <BleepSoundManager />
               </div>
             </div>
           </div>
+
+          {/* Settings modal */}
+          {settingsOpen && (
+            <SettingsModal onClose={() => setSettingsOpen(false)} />
+          )}
         </div>
       </MediaPlayerProvider>
   );

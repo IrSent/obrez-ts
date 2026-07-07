@@ -79,7 +79,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       }
       const data = await response.json();
       set({
-        user: { ...(get().user || {}), remaining_seconds: data.user.remaining_seconds },
+        user: { ...(get().user || {}), ...data.user },
         isLoading: false,
       });
     } catch (err) {

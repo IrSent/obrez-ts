@@ -1351,7 +1351,7 @@ export function useMediaPlayer() {
         audioContextRef.current = new AudioContextClass({ sampleRate });
 
        // Register and create PhaseVocoderNode for pitch-preserving time-stretch
-        await PhaseVocoderNode.register(audioContextRef.current, '/phase-vocoder-processor.js');
+        await PhaseVocoderNode.register(audioContextRef.current, './phase-vocoder-processor.js');
 
         stNodeRef.current = new PhaseVocoderNode({
           context: audioContextRef.current,
@@ -1777,6 +1777,7 @@ export function useMediaPlayer() {
       const response = await fetch(backendPath('/transcribe'), {
         method: 'POST',
         body: formData,
+        credentials: 'include',
       });
 
       if (!response.ok) {

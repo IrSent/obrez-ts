@@ -15,6 +15,7 @@ while [[ $# -gt 0 ]]; do
 done
 
 REPO="git@github.com:IrSent/obrez-ts.git"
+REPO_DIR=$(pwd)
 WORKDIR=$(mktemp -d)
 
 echo "📂 Working dir: $WORKDIR"
@@ -32,9 +33,25 @@ echo "🌐 Ngrok URL: $NGROK_URL"
 # ── write backend-url.json (always) ──
 echo "{\"url\":\"$NGROK_URL\"}" > "$WORKDIR/backend-url.json"
 
+# ── update Telegram bot Menu Button URL ──
+BOT_TOKEN=$(grep TELEGRAM_BOT_TOKEN "$REPO_DIR/.env" 2>/dev/null | cut -d= -f2- || true)
+BOT_TOKEN="${BOT_TOKEN:-$(grep TELEGRAM_BOT_TOKEN ~/gh/GigaAM/.env 2>/dev/null | cut -d= -f2- || true)}"
+if [ -n "$BOT_TOKEN" ]; then
+  TG_OK=$(curl -s -X POST "https://api.telegram.org/bot${BOT_TOKEN}/setChatMenuButton" \
+    -H "Content-Type: application/json" \
+    -d "{\"menu_button\":{\"type\":\"web_app\",\"text\":\"Open Obrez\",\"web_app\":{\"url\":\"$NGROK_URL\"}}}" \
+    | python3 -c "import sys,json; print(json.load(sys.stdin).get('ok', False))" 2>/dev/null || echo "False")
+  if [ "$TG_OK" = "True" ]; then
+    echo "🤖 Telegram Menu Button updated"
+  else
+    echo "⚠ Failed to update Telegram Menu Button"
+  fi
+else
+  echo "⚠ No TELEGRAM_BOT_TOKEN found — skipping Telegram Menu Button update"
+fi
+
 # ── build versions ──
 if [ "$BUILD" = true ]; then
-  REPO_DIR=$(pwd)
   VERSIONS_FILE="$REPO_DIR/public/stable-versions.json"
   if [ ! -f "$VERSIONS_FILE" ]; then
     echo '{"default":"master","versions":["master"]}' > "$VERSIONS_FILE"
