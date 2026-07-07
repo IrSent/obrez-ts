@@ -12,22 +12,14 @@
   var style = document.createElement('style');
   style.textContent = `
     #obrez-gear {
-      position: fixed; top: -36px; right: -36px;
-      width: 72px; height: 72px;
-      z-index: 9999; cursor: pointer;
-      transition: transform 0.35s cubic-bezier(.4,0,.2,1), filter 0.35s ease;
-      filter: drop-shadow(0 0 0px transparent);
-      opacity: 0.25; color: #fff;
+      transition: color 0.2s;
     }
     #obrez-gear:hover {
-      transform: translate(-20px, 20px);
-      filter: drop-shadow(0 0 12px rgba(255,255,255,0.35));
-      opacity: 1;
-    }
-    #obrez-gear svg {
-      width: 100%; height: 100%;
+      color: #a855f7;
       animation: obrez-spin 12s linear infinite;
-      transform-origin: center;
+    }
+    #obrez-gear.modal-open {
+      animation: obrez-spin 12s linear infinite;
     }
     @keyframes obrez-spin { to { transform: rotate(360deg); } }
     #obrez-modal-overlay {
@@ -73,22 +65,12 @@
     #obrez-modal .close-btn:hover { background: #444; }
     #obrez-modal .version-label { font-weight: 600; }
     #obrez-debug-btn {
-      position: fixed; bottom: 16px; right: 16px;
-      width: 48px; height: 48px;
-      background: #1a1a1a; color: #ff4444;
-      border: 2px solid #ff4444; border-radius: 12px;
-      font-size: 22px; line-height: 44px;
-      text-align: center; cursor: pointer;
-      z-index: 9999; user-select: none;
-      box-shadow: 0 2px 12px rgba(255,68,68,0.4);
-      transition: transform 0.15s, box-shadow 0.15s;
+      color: #666;
+      transition: color 0.3s;
+      position: relative;
     }
     #obrez-debug-btn.has-errors {
-      animation: obrez-pulse 2s ease-in-out infinite;
-    }
-    @keyframes obrez-pulse {
-      0%, 100% { box-shadow: 0 2px 12px rgba(255,68,68,0.4); }
-      50%      { box-shadow: 0 2px 24px rgba(255,68,68,0.8); }
+      color: #ff4444;
     }
     #obrez-debug-badge {
       position: absolute; top: -6px; right: -6px;
@@ -101,9 +83,9 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.5);
       font-family: system-ui, -apple-system, sans-serif;
     }
-    #obrez-debug-tooltip {
+     #obrez-debug-tooltip {
       display: none;
-      position: fixed; bottom: 74px; right: 12px;
+      position: fixed; top: 56px; right: 12px;
       background: #1a1a1f; color: #e55;
       border: 1px solid #555; border-radius: 12px;
       padding: 14px 16px;
@@ -111,7 +93,7 @@
       max-width: 500px;
       font-size: 12px; font-family: 'SF Mono', Menlo, Consolas, monospace;
       white-space: pre-wrap; word-break: break-all;
-      max-height: 60vh; overflow-y: auto;
+      max-height: calc(100vh - 68px); overflow-y: auto;
       z-index: 9999; box-shadow: 0 12px 40px rgba(0,0,0,0.7);
     }
     #obrez-debug-tooltip.open { display: block; }
@@ -151,11 +133,15 @@
   `;
   document.head.appendChild(style);
 
-  // ── gear button ──
-  var gear = document.createElement('div');
-  gear.id = 'obrez-gear';
-  gear.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>';
-  document.body.appendChild(gear);
+  // ── gear button (created in App.tsx, find by id) ──
+  var gear = document.getElementById('obrez-gear');
+  if (!gear) {
+    // fallback: create it
+    var gear = document.createElement('div');
+    gear.id = 'obrez-gear';
+    gear.textContent = '⚙️';
+    document.body.appendChild(gear);
+  }
 
   // ── modal ──
   var overlay = document.createElement('div');
@@ -179,19 +165,28 @@
       });
     }).catch(function() {});
 
-  document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); });
-  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
-  gear.addEventListener('click', function() { overlay.classList.add('open'); });
+  document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); gear.classList.remove('modal-open'); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); gear.classList.remove('modal-open'); });
+  gear.addEventListener('click', function() {
+      overlay.classList.toggle('open');
+      gear.classList.toggle('modal-open');
+    });
 
   // ── debug button ──
   var tooltipOpen = false;
 
-  var debugBtn = document.createElement('div');
-  debugBtn.id = 'obrez-debug-btn';
-  debugBtn.textContent = '🐛';
-  debugBtn.title = 'View errors';
-  document.body.appendChild(debugBtn);
+  // ── debug button (created in App.tsx, find by id) ──
+  var debugBtn = document.getElementById('obrez-debug-btn');
+  if (!debugBtn) {
+    // fallback: create it
+    var debugBtn = document.createElement('div');
+    debugBtn.id = 'obrez-debug-btn';
+    debugBtn.textContent = '🐛';
+    debugBtn.title = 'View errors';
+    document.body.appendChild(debugBtn);
+  }
 
+  // Badge
   var badge = document.createElement('div');
   badge.id = 'obrez-debug-badge';
   badge.style.display = 'none';
@@ -236,7 +231,10 @@
     tooltip.appendChild(header);
 
     if (errors.length === 0) {
-      setTimeout(function() { tooltip.classList.remove('open'); }, 1200);
+      // Show "No errors" briefly if user explicitly opened it
+      if (tooltipOpen) {
+        setTimeout(function() { tooltip.classList.remove('open'); tooltipOpen = false; }, 2000);
+      }
       return;
     }
 
