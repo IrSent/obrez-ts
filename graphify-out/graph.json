@@ -95,7 +95,7 @@
       "label": "updateBadge()",
       "file_type": "code",
       "source_file": "public/settings-ui.js",
-      "source_location": "L195",
+      "source_location": "L199",
       "_origin": "ast",
       "id": "public_settings_ui_updatebadge",
       "community": 37,
@@ -105,7 +105,7 @@
       "label": "renderErrors()",
       "file_type": "code",
       "source_file": "public/settings-ui.js",
-      "source_location": "L206",
+      "source_location": "L210",
       "_origin": "ast",
       "id": "public_settings_ui_rendererrors",
       "community": 37,
@@ -117,9 +117,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_app",
       "community": 0,
-      "norm_label": "app.tsx"
+      "norm_label": "app.tsx",
+      "id": "src_app"
     },
     {
       "label": "App()",
@@ -127,9 +127,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L13",
       "_origin": "ast",
-      "id": "src_app_app",
       "community": 0,
-      "norm_label": "app()"
+      "norm_label": "app()",
+      "id": "src_app_app"
     },
     {
       "label": "TranscriptionResults.tsx",
@@ -137,9 +137,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults",
       "community": 4,
-      "norm_label": "transcriptionresults.tsx"
+      "norm_label": "transcriptionresults.tsx",
+      "id": "transcription_transcriptionresults"
     },
     {
       "label": "ChevronDownIcon()",
@@ -147,9 +147,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L22",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_chevrondownicon",
       "community": 4,
-      "norm_label": "chevrondownicon()"
+      "norm_label": "chevrondownicon()",
+      "id": "transcription_transcriptionresults_chevrondownicon"
     },
     {
       "label": "PlusIcon()",
@@ -157,9 +157,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L28",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_plusicon",
       "community": 4,
-      "norm_label": "plusicon()"
+      "norm_label": "plusicon()",
+      "id": "transcription_transcriptionresults_plusicon"
     },
     {
       "label": "SegmentItem",
@@ -167,9 +167,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L36",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_segmentitem",
       "community": 4,
-      "norm_label": "segmentitem"
+      "norm_label": "segmentitem",
+      "id": "transcription_transcriptionresults_segmentitem"
     },
     {
       "label": "TranscriptionRow()",
@@ -177,9 +177,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L133",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcriptionrow",
       "community": 4,
-      "norm_label": "transcriptionrow()"
+      "norm_label": "transcriptionrow()",
+      "id": "transcription_transcriptionresults_transcriptionrow"
     },
     {
       "label": "rowRendererDeps",
@@ -187,9 +187,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L167",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_rowrendererdeps",
       "community": 4,
-      "norm_label": "rowrendererdeps"
+      "norm_label": "rowrendererdeps",
+      "id": "transcription_transcriptionresults_rowrendererdeps"
     },
     {
       "label": "findClosestSegment()",
@@ -197,9 +197,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L183",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_findclosestsegment",
       "community": 4,
-      "norm_label": "findclosestsegment()"
+      "norm_label": "findclosestsegment()",
+      "id": "transcription_transcriptionresults_findclosestsegment"
     },
     {
       "label": "findSegmentIndex()",
@@ -207,9 +207,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L205",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_findsegmentindex",
       "community": 4,
-      "norm_label": "findsegmentindex()"
+      "norm_label": "findsegmentindex()",
+      "id": "transcription_transcriptionresults_findsegmentindex"
     },
     {
       "label": "parseStage()",
@@ -217,9 +217,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L226",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_parsestage",
       "community": 4,
-      "norm_label": "parsestage()"
+      "norm_label": "parsestage()",
+      "id": "transcription_transcriptionresults_parsestage"
     },
     {
       "label": "TranscribeProgressBar()",
@@ -227,9 +227,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L240",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcribeprogressbar",
       "community": 4,
-      "norm_label": "transcribeprogressbar()"
+      "norm_label": "transcribeprogressbar()",
+      "id": "transcription_transcriptionresults_transcribeprogressbar"
     },
     {
       "label": "TranscribeProgress()",
@@ -237,9 +237,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L265",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcribeprogress",
       "community": 4,
-      "norm_label": "transcribeprogress()"
+      "norm_label": "transcribeprogress()",
+      "id": "transcription_transcriptionresults_transcribeprogress"
     },
     {
       "label": "TranscriptionResultsInner()",
@@ -247,9 +247,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L279",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcriptionresultsinner",
       "community": 0,
-      "norm_label": "transcriptionresultsinner()"
+      "norm_label": "transcriptionresultsinner()",
+      "id": "transcription_transcriptionresults_transcriptionresultsinner"
     },
     {
       "label": "TranscriptionResults",
@@ -257,9 +257,9 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L833",
       "_origin": "ast",
-      "id": "transcription_transcriptionresults_transcriptionresults",
       "community": 0,
-      "norm_label": "transcriptionresults"
+      "norm_label": "transcriptionresults",
+      "id": "transcription_transcriptionresults_transcriptionresults"
     },
     {
       "label": "build.ts",
@@ -9250,5 +9250,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "6e703a63a45098993234d4bcc1d7b48d1c71aca9"
+  "built_at_commit": "0750cd8ee0bc97b76968f902f0b3d138ee303dfd"
 }

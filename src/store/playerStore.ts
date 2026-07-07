@@ -77,6 +77,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   // Transcribe format
   transcribeFormat: 'original',
 
+  // Auto-scroll transcription results
+  autoScroll: true,
+
   // Playback speed
   playbackSpeed: 1,
 }));
@@ -116,6 +119,8 @@ export const playerActions = {
     usePlayerStore.setState({ transcribeStage: stage }),
   setTranscribeFormat: (format: 'wav' | 'original') =>
     usePlayerStore.setState({ transcribeFormat: format }),
+  toggleAutoScroll: () =>
+    usePlayerStore.setState((state) => ({ autoScroll: !state.autoScroll })),
   setPlaybackSpeed: (speed: PlaybackSpeed) => {
     console.log(`[playerStore] setPlaybackSpeed: ${speed}`);
     usePlayerStore.setState({ playbackSpeed: speed });

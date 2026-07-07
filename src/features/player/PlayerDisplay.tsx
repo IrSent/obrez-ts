@@ -24,6 +24,8 @@ const PlayerDisplayInner = () => {
   const censoringMode = usePlayerStore((state) => state.censoringMode);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
   const playbackSpeed = usePlayerStore((state) => state.playbackSpeed);
+  const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
+  const autoScroll = usePlayerStore((state) => state.autoScroll);
   const { canvasRef, play, pause, togglePlay, seekToTime } = useMediaPlayerContext();
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
 
@@ -109,6 +111,25 @@ const PlayerDisplayInner = () => {
               title={censoringMode ? 'Censoring ON — click to play original audio' : 'Censoring OFF — click to play with effects'}
             >
               {censoringMode ? '⚡ CENSORED' : '🔊 ORIGINAL'}
+            </button>
+          )}
+
+          {/* Auto-scroll toggle — visible only when transcription results exist */}
+          {transcriptionResults && transcriptionResults.length > 0 && (
+            <button
+              onClick={() => playerActions.toggleAutoScroll()}
+              className={`p-1 rounded transition-colors flex-shrink-0 ${
+                autoScroll
+                  ? 'text-purple-400 bg-purple-900/30'
+                  : 'text-zinc-400 hover:bg-zinc-600 hover:text-zinc-200'
+              }`}
+              title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="2" width="18" height="20" rx="3" />
+                <line x1="12" y1="10" x2="12" y2="16" />
+                <polyline points="9 13 12 16 15 13" />
+              </svg>
             </button>
           )}
 

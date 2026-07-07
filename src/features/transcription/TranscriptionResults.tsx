@@ -1,8 +1,8 @@
 import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
-import { List, useListRef } from 'react-window';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useAuthStore } from '../../store/authStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+import { List, useListRef } from 'react-window';
 import { EffectModal, EffectBadge } from './EffectModal';
 import { AddWordModal } from './AddWordModal';
 import { LoginModal } from '../auth/LoginModal';
@@ -288,7 +288,7 @@ const TranscriptionResultsInner = () => {
   const [error, setError] = useState<string | null>(null);
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [autoScroll, setAutoScroll] = useState(true);
+  const autoScroll = usePlayerStore((state) => state.autoScroll);
 
   // Effect modal — add mode
   const [modalSegment, setModalSegment] = useState<number | null>(null);
@@ -759,17 +759,6 @@ const TranscriptionResultsInner = () => {
       <div className="flex items-center justify-between mb-3 gap-3">
         <h2 className="block text-base sm:text-lg font-semibold text-zinc-300 shrink-0 w-1/2">Transcription Results</h2>
         <div className="flex items-center gap-2">
-          <button
-           onClick={() => setAutoScroll((v) => !v)}
-            className={`p-1 rounded transition-colors shrink-0 ${autoScroll ? 'text-purple-400 bg-purple-900/30' : 'text-zinc-400 hover:bg-zinc-600 hover:text-zinc-200'}`}
-            title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="2" width="18" height="20" rx="3" />
-              <line x1="12" y1="10" x2="12" y2="16" />
-              <polyline points="9 13 12 16 15 13" />
-            </svg>
-          </button>
           <input
             type="text"
             value={searchQuery}
