@@ -75,15 +75,17 @@
     #obrez-debug-btn {
       position: fixed; bottom: 16px; right: 16px;
       width: 48px; height: 48px;
-      background: #1a1a1a; color: #ff4444;
-      border: 2px solid #ff4444; border-radius: 12px;
+      background: #1a1a1a; color: #666;
+      border: 2px solid #333; border-radius: 12px;
       font-size: 22px; line-height: 44px;
       text-align: center; cursor: pointer;
       z-index: 9999; user-select: none;
-      box-shadow: 0 2px 12px rgba(255,68,68,0.4);
-      transition: transform 0.15s, box-shadow 0.15s;
+      transition: transform 0.15s, box-shadow 0.15s, color 0.3s, border-color 0.3s;
     }
     #obrez-debug-btn.has-errors {
+      color: #ff4444;
+      border-color: #ff4444;
+      box-shadow: 0 2px 12px rgba(255,68,68,0.4);
       animation: obrez-pulse 2s ease-in-out infinite;
     }
     @keyframes obrez-pulse {
@@ -236,7 +238,10 @@
     tooltip.appendChild(header);
 
     if (errors.length === 0) {
-      setTimeout(function() { tooltip.classList.remove('open'); }, 1200);
+      // Show "No errors" briefly if user explicitly opened it
+      if (tooltipOpen) {
+        setTimeout(function() { tooltip.classList.remove('open'); tooltipOpen = false; }, 2000);
+      }
       return;
     }
 
