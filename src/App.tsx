@@ -24,7 +24,7 @@ export const App = () => {
         <div className="min-h-screen bg-zinc-900 text-zinc-100">
           {/* Sticky header — full width */}
           <header className="sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800">
-            <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
               <div className="flex items-center gap-3">
                 <img
                   src="assets/obrez-logo.jpg"
@@ -40,19 +40,14 @@ export const App = () => {
             </div>
           </header>
 
-          <div className="max-w-7xl mx-auto px-4 py-4">
+          <div className="max-w-4xl mx-auto px-4 py-4">
             <ImportProgressModal />
 
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-              <div className="lg:col-span-2 space-y-6">
+            <div className="flex flex-col items-center gap-6">
                 <FileLoader />
                 <PlayerDisplay />
                 <TranscriptionResults />
-              </div>
-
-              <div className="lg:col-span-1 space-y-6">
                 <ExportButton />
-              </div>
             </div>
           </div>
 
