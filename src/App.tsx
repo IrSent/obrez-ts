@@ -18,17 +18,26 @@ export const App = () => {
 
   return (
     <MediaPlayerProvider>
-        <div className="min-h-screen bg-zinc-900 text-zinc-100 p-4">
-          <div className="max-w-7xl mx-auto">
-            <div className="flex items-center gap-3 mb-6">
-              <img
-                src="assets/obrez-logo.jpg"
-                alt="Obrez Logo"
-                className="w-8 h-8"
-              />
-              <h1 className="text-xl font-semibold text-purple-500">Obrez <span className="text-xs font-normal text-zinc-500">{APP_VERSION}</span></h1>
+        <div className="min-h-screen bg-zinc-900 text-zinc-100">
+          {/* Sticky header — full width */}
+          <header className="sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800">
+            <div className="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+              <div className="flex items-center gap-3">
+                <img
+                  src="assets/obrez-logo.jpg"
+                  alt="Obrez Logo"
+                  className="w-8 h-8"
+                />
+                <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez <span className="text-xs font-normal text-zinc-500">{APP_VERSION}</span></h1>
+              </div>
+              <div className="flex items-center gap-1">
+                <div id="obrez-debug-btn" className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">🐛</div>
+                <div id="obrez-gear" className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</div>
+              </div>
             </div>
+          </header>
 
+          <div className="max-w-7xl mx-auto px-4 py-4">
             <ImportProgressModal />
 
             <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">

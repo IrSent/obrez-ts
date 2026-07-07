@@ -12,22 +12,13 @@
   var style = document.createElement('style');
   style.textContent = `
     #obrez-gear {
-      position: fixed; top: -36px; right: -36px;
-      width: 72px; height: 72px;
-      z-index: 9999; cursor: pointer;
-      transition: transform 0.35s cubic-bezier(.4,0,.2,1), filter 0.35s ease;
-      filter: drop-shadow(0 0 0px transparent);
-      opacity: 0.25; color: #fff;
+      transition: color 0.2s;
     }
     #obrez-gear:hover {
-      transform: translate(-20px, 20px);
-      filter: drop-shadow(0 0 12px rgba(255,255,255,0.35));
-      opacity: 1;
+      color: #a855f7;
     }
-    #obrez-gear svg {
-      width: 100%; height: 100%;
+    #obrez-gear.modal-open {
       animation: obrez-spin 12s linear infinite;
-      transform-origin: center;
     }
     @keyframes obrez-spin { to { transform: rotate(360deg); } }
     #obrez-modal-overlay {
@@ -73,19 +64,11 @@
     #obrez-modal .close-btn:hover { background: #444; }
     #obrez-modal .version-label { font-weight: 600; }
     #obrez-debug-btn {
-      position: fixed; bottom: 16px; right: 16px;
-      width: 48px; height: 48px;
-      background: #1a1a1a; color: #666;
-      border: 2px solid #333; border-radius: 12px;
-      font-size: 22px; line-height: 44px;
-      text-align: center; cursor: pointer;
-      z-index: 9999; user-select: none;
-      transition: transform 0.15s, box-shadow 0.15s, color 0.3s, border-color 0.3s;
+      color: #666;
+      transition: color 0.3s;
     }
     #obrez-debug-btn.has-errors {
       color: #ff4444;
-      border-color: #ff4444;
-      box-shadow: 0 2px 12px rgba(255,68,68,0.4);
       animation: obrez-pulse 2s ease-in-out infinite;
     }
     @keyframes obrez-pulse {
@@ -154,10 +137,13 @@
   document.head.appendChild(style);
 
   // ── gear button ──
-  var gear = document.createElement('div');
-  gear.id = 'obrez-gear';
-  gear.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6Z"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1Z"/></svg>';
-  document.body.appendChild(gear);
+  var gear = document.getElementById('obrez-gear');
+  if (!gear) {
+    var gear = document.createElement('div');
+    gear.id = 'obrez-gear';
+    gear.textContent = '⚙️';
+    document.body.appendChild(gear);
+  }
 
   // ── modal ──
   var overlay = document.createElement('div');
@@ -181,9 +167,12 @@
       });
     }).catch(function() {});
 
-  document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); });
-  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); });
-  gear.addEventListener('click', function() { overlay.classList.add('open'); });
+  document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); gear.classList.remove('modal-open'); });
+  overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); gear.classList.remove('modal-open'); });
+  gear.addEventListener('click', function() { overlay.classList.toggle('open'); gear.classList.toggle('modal-open'); });
+  // Spin on hover
+  gear.addEventListener('mouseenter', function() { gear.classList.add('modal-open'); });
+  gear.addEventListener('mouseleave', function() { if (!overlay.classList.contains('open')) gear.classList.remove('modal-open'); });
 
   // ── debug button ──
   var tooltipOpen = false;

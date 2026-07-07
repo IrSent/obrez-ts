@@ -278,7 +278,6 @@ function TranscribeProgress() {
 const TranscriptionResultsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const transcribing = usePlayerStore((state) => state.transcribing);
-  const transcribeFormat = usePlayerStore((state) => state.transcribeFormat);
   const duration = usePlayerStore((state) => state.duration);
   const censoringEffects = usePlayerStore((state) => state.censoringEffects);
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
@@ -785,21 +784,7 @@ const TranscriptionResultsInner = () => {
           >
             Matches only
           </button>
-          {/* Transcribe format dropdown */}
-          <div className="relative shrink-0">
-            <select
-              value={transcribeFormat}
-              onChange={(e) => actions.setTranscribeFormat(e.target.value as 'wav' | 'original')}
-              className="appearance-none text-xs bg-zinc-700 text-zinc-200 border border-zinc-600 rounded px-2 py-1 pr-5 focus:outline-none focus:border-purple-500 cursor-pointer"
-              aria-label="Transcribe format"
-            >
-              <option value="original">Original</option>
-              <option value="wav">WAV</option>
-            </select>
-            <span className="pointer-events-none absolute right-1.5 top-1/2 -translate-y-1/2 text-zinc-400">
-              <ChevronDownIcon />
-            </span>
-          </div>
+          {/* Transcribe format: always original — dropdown removed */}
           <button
             onClick={handleTranscribe}
             disabled={isLoading}

@@ -82,14 +82,44 @@
   },
   "nodes": [
     {
+      "label": "settings-ui.js",
+      "file_type": "code",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "public_settings_ui",
+      "community": 37,
+      "norm_label": "settings-ui.js"
+    },
+    {
+      "label": "updateBadge()",
+      "file_type": "code",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L206",
+      "_origin": "ast",
+      "id": "public_settings_ui_updatebadge",
+      "community": 37,
+      "norm_label": "updatebadge()"
+    },
+    {
+      "label": "renderErrors()",
+      "file_type": "code",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L217",
+      "_origin": "ast",
+      "id": "public_settings_ui_rendererrors",
+      "community": 37,
+      "norm_label": "rendererrors()"
+    },
+    {
       "label": "build.ts",
       "file_type": "code",
       "source_file": "build.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "build",
       "community": 16,
-      "norm_label": "build.ts"
+      "norm_label": "build.ts",
+      "id": "build"
     },
     {
       "label": "versionIdx",
@@ -97,9 +127,9 @@
       "source_file": "build.ts",
       "source_location": "L6",
       "_origin": "ast",
-      "id": "build_versionidx",
       "community": 16,
-      "norm_label": "versionidx"
+      "norm_label": "versionidx",
+      "id": "build_versionidx"
     },
     {
       "label": "build()",
@@ -107,9 +137,9 @@
       "source_file": "build.ts",
       "source_location": "L16",
       "_origin": "ast",
-      "id": "build_build",
       "community": 16,
-      "norm_label": "build()"
+      "norm_label": "build()",
+      "id": "build_build"
     },
     {
       "label": "deploy.sh",
@@ -121,9 +151,9 @@
         "kind": "file"
       },
       "_origin": "ast",
-      "id": "deploy",
       "community": 28,
-      "norm_label": "deploy.sh"
+      "norm_label": "deploy.sh",
+      "id": "deploy"
     },
     {
       "label": "deploy.sh script",
@@ -135,9 +165,9 @@
         "kind": "bash_entrypoint"
       },
       "_origin": "ast",
-      "id": "home_irsent_gh_obrez_ts_deploy_sh__entry",
       "community": 28,
-      "norm_label": "deploy.sh script"
+      "norm_label": "deploy.sh script",
+      "id": "home_irsent_gh_obrez_ts_deploy_sh__entry"
     },
     {
       "label": "build_version()",
@@ -149,9 +179,9 @@
         "kind": "bash_function"
       },
       "_origin": "ast",
-      "id": "deploy_build_version",
       "community": 28,
-      "norm_label": "build_version()"
+      "norm_label": "build_version()",
+      "id": "deploy_build_version"
     },
     {
       "label": "App.tsx",
@@ -159,9 +189,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "src_app",
       "community": 0,
-      "norm_label": "app.tsx"
+      "norm_label": "app.tsx",
+      "id": "src_app"
     },
     {
       "label": "App()",
@@ -169,9 +199,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L13",
       "_origin": "ast",
-      "id": "src_app_app",
       "community": 0,
-      "norm_label": "app()"
+      "norm_label": "app()",
+      "id": "src_app_app"
     },
     {
       "label": "PlayerDisplay.tsx",
@@ -179,9 +209,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "player_playerdisplay",
       "community": 0,
-      "norm_label": "playerdisplay.tsx"
+      "norm_label": "playerdisplay.tsx",
+      "id": "player_playerdisplay"
     },
     {
       "label": "SPEEDS",
@@ -189,9 +219,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L8",
       "_origin": "ast",
-      "id": "player_playerdisplay_speeds",
       "community": 0,
-      "norm_label": "speeds"
+      "norm_label": "speeds",
+      "id": "player_playerdisplay_speeds"
     },
     {
       "label": "ChevronDownIcon()",
@@ -199,9 +229,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L13",
       "_origin": "ast",
-      "id": "player_playerdisplay_chevrondownicon",
       "community": 0,
-      "norm_label": "chevrondownicon()"
+      "norm_label": "chevrondownicon()",
+      "id": "player_playerdisplay_chevrondownicon"
     },
     {
       "label": "PlayerDisplayInner()",
@@ -209,9 +239,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "player_playerdisplay_playerdisplayinner",
       "community": 0,
-      "norm_label": "playerdisplayinner()"
+      "norm_label": "playerdisplayinner()",
+      "id": "player_playerdisplay_playerdisplayinner"
     },
     {
       "label": "PlayerDisplay",
@@ -219,9 +249,9 @@
       "source_file": "src/features/player/PlayerDisplay.tsx",
       "source_location": "L157",
       "_origin": "ast",
-      "id": "player_playerdisplay_playerdisplay",
       "community": 0,
-      "norm_label": "playerdisplay"
+      "norm_label": "playerdisplay",
+      "id": "player_playerdisplay_playerdisplay"
     },
     {
       "label": "VolumeControls.tsx",
@@ -229,9 +259,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "player_volumecontrols",
       "community": 0,
-      "norm_label": "volumecontrols.tsx"
+      "norm_label": "volumecontrols.tsx",
+      "id": "player_volumecontrols"
     },
     {
       "label": "VolumeControlsInner()",
@@ -239,9 +269,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L5",
       "_origin": "ast",
-      "id": "player_volumecontrols_volumecontrolsinner",
       "community": 0,
-      "norm_label": "volumecontrolsinner()"
+      "norm_label": "volumecontrolsinner()",
+      "id": "player_volumecontrols_volumecontrolsinner"
     },
     {
       "label": "VolumeControls",
@@ -249,9 +279,9 @@
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L48",
       "_origin": "ast",
-      "id": "player_volumecontrols_volumecontrols",
       "community": 0,
-      "norm_label": "volumecontrols"
+      "norm_label": "volumecontrols",
+      "id": "player_volumecontrols_volumecontrols"
     },
     {
       "label": "dev.ts",
@@ -1132,36 +1162,6 @@
       "community": 40,
       "norm_label": "parsestack()",
       "id": "public_settings_early_parsestack"
-    },
-    {
-      "label": "settings-ui.js",
-      "file_type": "code",
-      "source_file": "public/settings-ui.js",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 37,
-      "norm_label": "settings-ui.js",
-      "id": "public_settings_ui"
-    },
-    {
-      "label": "updateBadge()",
-      "file_type": "code",
-      "source_file": "public/settings-ui.js",
-      "source_location": "L204",
-      "_origin": "ast",
-      "community": 37,
-      "norm_label": "updatebadge()",
-      "id": "public_settings_ui_updatebadge"
-    },
-    {
-      "label": "renderErrors()",
-      "file_type": "code",
-      "source_file": "public/settings-ui.js",
-      "source_location": "L215",
-      "_origin": "ast",
-      "community": 37,
-      "norm_label": "rendererrors()",
-      "id": "public_settings_ui_rendererrors"
     },
     {
       "label": "stable-versions.json",
@@ -3639,6 +3639,37 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L215",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "public_settings_ui",
+      "target": "public_settings_ui_rendererrors"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L204",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "public_settings_ui",
+      "target": "public_settings_ui_updatebadge"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "public/settings-ui.js",
+      "source_location": "L231",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "public_settings_ui_rendererrors",
+      "target": "public_settings_ui_updatebadge"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "build.ts",
       "source_location": "L5",
       "weight": 1.0,
@@ -4917,37 +4948,6 @@
       "confidence_score": 1.0,
       "source": "public_settings_early",
       "target": "public_settings_early_parsestack"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "public/settings-ui.js",
-      "source_location": "L215",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_settings_ui",
-      "target": "public_settings_ui_rendererrors"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "public/settings-ui.js",
-      "source_location": "L204",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_settings_ui",
-      "target": "public_settings_ui_updatebadge"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "public/settings-ui.js",
-      "source_location": "L231",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "public_settings_ui_rendererrors",
-      "target": "public_settings_ui_updatebadge"
     },
     {
       "relation": "contains",
@@ -9250,5 +9250,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "b8d93b584765a68c69f86fe5e84c0189d909d797"
+  "built_at_commit": "f0f7ab58ee24ebdb359b38e911d01ab3c57a9c5f"
 }
