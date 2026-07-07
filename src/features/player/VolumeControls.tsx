@@ -16,10 +16,10 @@ const VolumeControlsInner = () => {
     toggleMute();
   };
 
-  const volumeIcon = isMuted ? '/assets/volume-off-icon.svg'
-    : volume >= 0.67 ? '/assets/volume-2-icon.svg'
-    : volume >= 0.34 ? '/assets/volume-1-icon.svg'
-    : '/assets/volume-0-icon.svg';
+  const volumeIcon = isMuted ? 'assets/volume-off-icon.svg'
+    : volume >= 0.67 ? 'assets/volume-2-icon.svg'
+    : volume >= 0.34 ? 'assets/volume-1-icon.svg'
+    : 'assets/volume-0-icon.svg';
 
   return (
     <div className="flex items-center gap-2">

@@ -22,7 +22,7 @@ export const App = () => {
           <div className="max-w-7xl mx-auto">
             <div className="flex items-center gap-3 mb-6">
               <img
-                src="/assets/obrez-logo.jpg"
+                src="assets/obrez-logo.jpg"
                 alt="Obrez Logo"
                 className="w-8 h-8"
               />

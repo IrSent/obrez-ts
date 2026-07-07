@@ -48,10 +48,8 @@ async function build() {
       // Also copy into version dir for dev mode
       await $`cp public/settings-early.js ${outDir}/${earlyName}`;
       await $`cp public/settings-ui.js ${outDir}/${uiName}`;
-      // Copy assets to dist/ root so /assets/... works on GitHub Pages (no version-relative routing)
-      await $`cp -r public/assets dist/assets`;
     }
-    console.log(`  ${earlyName}, ${uiName}${version ? ', assets/' : ''} → dist/`);
+    console.log(`  ${earlyName}, ${uiName} → dist/`);
 
     // Copy Phase Vocoder processor from node_modules — always fresh
     console.log('Copying Phase Vocoder processor...');

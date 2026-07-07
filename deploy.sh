@@ -102,9 +102,6 @@ REDIRECT
 cp "$WORKDIR/master/settings-early."*.js "$WORKDIR/" 2>/dev/null || true
 cp "$WORKDIR/master/settings-ui."*.js "$WORKDIR/" 2>/dev/null || true
 
-# ── assets/ (shared across versions, served from /assets/... in code) ──
-cp -r "$WORKDIR/master/assets" "$WORKDIR/assets" 2>/dev/null || true
-
 # ── commit and push ──
 cd "$WORKDIR"
 git add -A

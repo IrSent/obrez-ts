@@ -69,7 +69,7 @@ const PlayerDisplayInner = () => {
             aria-label="Replay from start"
           >
             <img
-              src="/assets/replay-icon.svg"
+              src="assets/replay-icon.svg"
               alt="Replay"
               className="w-10 h-10"
             />
@@ -89,7 +89,7 @@ const PlayerDisplayInner = () => {
             aria-label={isPlaying ? 'Pause' : 'Play'}
           >
             <img
-              src={isPlaying ? '/assets/pause-icon.svg' : '/assets/play-icon.svg'}
+              src={isPlaying ? 'assets/pause-icon.svg' : 'assets/play-icon.svg'}
               alt={isPlaying ? 'Pause' : 'Play'}
               className="w-6 h-6"
             />
