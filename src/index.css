@@ -5,6 +5,13 @@
   [role="button"]:not(:disabled) {
     cursor: pointer;
   }
+  /* No white background on overscroll / edges */
+  html, body {
+    overscroll-behavior: none;
+    background-color: #18181b;
+    margin: 0;
+    padding: 0;
+  }
 }
 
 @theme {
