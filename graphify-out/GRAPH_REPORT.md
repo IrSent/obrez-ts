@@ -1,7 +1,7 @@
 # Graph Report - obrez-ts  (2026-07-07)
 
 ## Corpus Check
-- 63 files · ~106,596 words
+- 63 files · ~106,391 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f0f7ab58`
+- Built from commit: `6e703a63`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -63,12 +63,12 @@
 10. `DbRecord` - 8 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `TranscribeProgress()` --calls--> `usePlayerStore`  [EXTRACTED]
+  src/features/transcription/TranscriptionResults.tsx → src/store/playerStore.ts
 - `ProgressBarInner()` --calls--> `formatSeconds()`  [INFERRED]
   src/features/player/ProgressBar.tsx → src/features/auth/TopupModal.tsx
 - `ExportProgressBar()` --calls--> `usePlayerStore`  [EXTRACTED]
   src/features/export/ExportModal.tsx → src/store/playerStore.ts
-- `TranscribeProgress()` --calls--> `usePlayerStore`  [EXTRACTED]
-  src/features/transcription/TranscriptionResults.tsx → src/store/playerStore.ts
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Muted - Speaker with X Overlay`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-1-icon.svg
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Low - Speaker with Single Arc`  [INFERRED] [semantically similar]
@@ -159,7 +159,7 @@ Cohesion: 0.08
 Nodes (18): CODEC_LABELS, ExportButton, ExportFormat, ExportModal, ExportModalProps, ExportProgressBar(), computeSegmentBoundaries(), ensureBleepDecoded() (+10 more)
 
 ## Knowledge Gaps
-- **113 isolated node(s):** `versionIdx`, `SPEEDS`, `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR` (+108 more)
+- **113 isolated node(s):** `SegmentItem`, `rowRendererDeps`, `versionIdx`, `SPEEDS`, `DIST_DIR` (+108 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -170,7 +170,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.038) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **What connects `versionIdx`, `SPEEDS`, `DIST_DIR` to the rest of the system?**
+- **What connects `SegmentItem`, `rowRendererDeps`, `versionIdx` to the rest of the system?**
   _113 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
   _Cohesion score 0.10569105691056911 - nodes in this community are weakly interconnected._

@@ -16,6 +16,7 @@
     }
     #obrez-gear:hover {
       color: #a855f7;
+      animation: obrez-spin 12s linear infinite;
     }
     #obrez-gear.modal-open {
       animation: obrez-spin 12s linear infinite;
@@ -66,14 +67,10 @@
     #obrez-debug-btn {
       color: #666;
       transition: color 0.3s;
+      position: relative;
     }
     #obrez-debug-btn.has-errors {
       color: #ff4444;
-      animation: obrez-pulse 2s ease-in-out infinite;
-    }
-    @keyframes obrez-pulse {
-      0%, 100% { box-shadow: 0 2px 12px rgba(255,68,68,0.4); }
-      50%      { box-shadow: 0 2px 24px rgba(255,68,68,0.8); }
     }
     #obrez-debug-badge {
       position: absolute; top: -6px; right: -6px;
@@ -86,9 +83,9 @@
       box-shadow: 0 1px 4px rgba(0,0,0,0.5);
       font-family: system-ui, -apple-system, sans-serif;
     }
-    #obrez-debug-tooltip {
+     #obrez-debug-tooltip {
       display: none;
-      position: fixed; bottom: 74px; right: 12px;
+      position: fixed; top: 56px; right: 12px;
       background: #1a1a1f; color: #e55;
       border: 1px solid #555; border-radius: 12px;
       padding: 14px 16px;
@@ -96,7 +93,7 @@
       max-width: 500px;
       font-size: 12px; font-family: 'SF Mono', Menlo, Consolas, monospace;
       white-space: pre-wrap; word-break: break-all;
-      max-height: 60vh; overflow-y: auto;
+      max-height: calc(100vh - 68px); overflow-y: auto;
       z-index: 9999; box-shadow: 0 12px 40px rgba(0,0,0,0.7);
     }
     #obrez-debug-tooltip.open { display: block; }
@@ -136,9 +133,10 @@
   `;
   document.head.appendChild(style);
 
-  // ── gear button ──
+  // ── gear button (created in App.tsx, find by id) ──
   var gear = document.getElementById('obrez-gear');
   if (!gear) {
+    // fallback: create it
     var gear = document.createElement('div');
     gear.id = 'obrez-gear';
     gear.textContent = '⚙️';
@@ -169,20 +167,26 @@
 
   document.getElementById('obrez-close-modal').addEventListener('click', function() { overlay.classList.remove('open'); gear.classList.remove('modal-open'); });
   overlay.addEventListener('click', function(e) { if (e.target === overlay) overlay.classList.remove('open'); gear.classList.remove('modal-open'); });
-  gear.addEventListener('click', function() { overlay.classList.toggle('open'); gear.classList.toggle('modal-open'); });
-  // Spin on hover
-  gear.addEventListener('mouseenter', function() { gear.classList.add('modal-open'); });
-  gear.addEventListener('mouseleave', function() { if (!overlay.classList.contains('open')) gear.classList.remove('modal-open'); });
+  gear.addEventListener('click', function() {
+      overlay.classList.toggle('open');
+      gear.classList.toggle('modal-open');
+    });
 
   // ── debug button ──
   var tooltipOpen = false;
 
-  var debugBtn = document.createElement('div');
-  debugBtn.id = 'obrez-debug-btn';
-  debugBtn.textContent = '🐛';
-  debugBtn.title = 'View errors';
-  document.body.appendChild(debugBtn);
+  // ── debug button (created in App.tsx, find by id) ──
+  var debugBtn = document.getElementById('obrez-debug-btn');
+  if (!debugBtn) {
+    // fallback: create it
+    var debugBtn = document.createElement('div');
+    debugBtn.id = 'obrez-debug-btn';
+    debugBtn.textContent = '🐛';
+    debugBtn.title = 'View errors';
+    document.body.appendChild(debugBtn);
+  }
 
+  // Badge
   var badge = document.createElement('div');
   badge.id = 'obrez-debug-badge';
   badge.style.display = 'none';

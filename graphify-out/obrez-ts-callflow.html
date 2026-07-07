@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 349 nodes, 530 edges, 49 communities. Commit: f0f7ab5</p>
+<p class="subtitle">Generated from graphify knowledge graph: 349 nodes, 530 edges, 49 communities. Commit: 6e703a6</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -119,12 +119,12 @@ flowchart LR
     OTHER_D0941E68("Other<br/><small>22 nodes</small>")
     class OTHER_D0941E68 module;
     OUTPUTS_DOCS_ED82387C -->|imports x15| SERVE_API_35EC8E86
-    OUTPUTS_DOCS_ED82387C -->|imports x10| TRANSCRIPTION_MODALS_494ECDA3
+    OUTPUTS_DOCS_ED82387C -->|imports x8| TRANSCRIPTION_MODALS_494ECDA3
+    TRANSCRIPTION_MODALS_494ECDA3 -->|imports x8| OUTPUTS_DOCS_ED82387C
     SERVE_API_35EC8E86 -->|contains x8| OUTPUTS_DOCS_ED82387C
     INGEST_CACHE_UPDATE_FF457338 -->|imports x8| SERVE_API_35EC8E86
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x6| OUTPUTS_DOCS_ED82387C
     TRANSCRIPTION_MODALS_494ECDA3 -->|imports x6| SERVE_API_35EC8E86
-    TRANSCRIPTION_MODALS_494ECDA3 -->|imports x6| OUTPUTS_DOCS_ED82387C
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x6| OUTPUTS_DOCS_ED82387C
     SERVE_API_35EC8E86 -->|contains x4| TRANSCRIPTION_MODALS_494ECDA3
     OUTPUTS_DOCS_ED82387C -->|imports x2| INGEST_CACHE_UPDATE_FF457338
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -529,16 +529,19 @@ flowchart LR
         src_export_c368fe7e("export.ts")
         src_export_makeinitialphases_6b4a2237("makeInitialPhases()<br/><small>src/export.ts</small>")
         src_export_initprogress_edcd6bab("initProgress()<br/><small>src/export.ts</small>")
-        src_export_updatephase_c6e0f7ba("updatePhase()<br/><small>src/export.ts</small>")
     end
     subgraph outputs_docs_src_context_MediaPlayerContext_tsx_e8ba1515["src/context/MediaPlayerContext.tsx"]
-        context_mediaplayercontext_usemediaplayercontext_6e6b7797("useMediaPlayerContext()<br/><small>src/context/MediaPlayerContext.tsx</small>")
         context_mediaplayercontext_a34c7b7e("MediaPlayerContext.tsx")
+        context_mediaplayercontext_usemediaplayercontext_6e6b7797("useMediaPlayerContext()<br/><small>src/context/MediaPlayerContext.tsx</small>")
         context_mediaplayercontext_mediaplayerprovider_e13e53a9("MediaPlayerProvider()<br/><small>src/context/MediaPlayerContext.tsx</small>")
     end
     subgraph outputs_docs_features_player_PlayerDisplay_tsx_94127006["features/player/PlayerDisplay.tsx"]
         player_playerdisplay_96c04d4c("PlayerDisplay.tsx")
         player_playerdisplay_playerdisplayinner_21501529("PlayerDisplayInner()<br/><small>features/player/PlayerDisplay.tsx</small>")
+    end
+    subgraph outputs_docs_src_store_playerStore_ts_286f02f8["src/store/playerStore.ts"]
+        store_playerstore_useplayeractions_2de0ac0e("usePlayerActions()<br/><small>src/store/playerStore.ts</small>")
+        store_playerstore_useplayerstore_5d310b80("usePlayerStore<br/><small>src/store/playerStore.ts</small>")
     end
     export_exportmodal_exportbuttoninner_4a68e111("ExportButtonInner()<br/><small>features/export/ExportModal.tsx</small>")
     file_loader_fileloader_fileloader_ab7274c4("FileLoader()<br/><small>features/file-loader/FileLoader.tsx</small>")
@@ -547,7 +550,9 @@ flowchart LR
     transcription_transcriptionresults_transcription_d3874bb4("TranscriptionResultsInner()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
     src_app_46efd68e("App.tsx")
     hooks_usemediaplayer_usemediaplayer_659ae66d("useMediaPlayer()<br/><small>src/hooks/useMediaPlayer.ts</small>")
-    store_playerstore_useplayerstore_5d310b80("usePlayerStore<br/><small>src/store/playerStore.ts</small>")
+    transcription_transcriptionresults_transcription_d3874bb4 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_playerstore_useplayeractions_2de0ac0e
+    transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_playerstore_useplayerstore_5d310b80
     player_playerdisplay_playerdisplayinner_21501529 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     player_playerdisplay_playerdisplayinner_21501529 -->|calls| store_playerstore_useplayerstore_5d310b80
     player_volumecontrols_volumecontrolsinner_305102a4 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
@@ -556,11 +561,11 @@ flowchart LR
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| file_loader_fileloader_fileloader_ab7274c4
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_progressbar_progressbarinner_03464bbb
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| transcription_transcriptionresults_transcription_d3874bb4
     src_export_makeinitialphases_6b4a2237 -->|calls| src_export_initprogress_edcd6bab
+    export_exportmodal_exportbuttoninner_4a68e111 -->|calls| store_playerstore_useplayeractions_2de0ac0e
     export_exportmodal_exportbuttoninner_4a68e111 -->|calls| store_playerstore_useplayerstore_5d310b80
+    file_loader_fileloader_fileloader_ab7274c4 -->|calls| store_playerstore_useplayeractions_2de0ac0e
     player_progressbar_progressbarinner_03464bbb -->|calls| store_playerstore_useplayerstore_5d310b80
-    transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_playerstore_useplayerstore_5d310b80
     src_app_46efd68e -->|imports| context_mediaplayercontext_a34c7b7e
     src_app_46efd68e -->|imports| context_mediaplayercontext_mediaplayerprovider_e13e53a9
     src_app_46efd68e -->|imports| file_loader_fileloader_fileloader_ab7274c4
@@ -569,18 +574,18 @@ flowchart LR
     player_playerdisplay_96c04d4c -->|imports| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     player_playerdisplay_96c04d4c -->|imports| store_playerstore_useplayerstore_5d310b80
     context_mediaplayercontext_a34c7b7e -->|imports| hooks_usemediaplayer_usemediaplayer_659ae66d
-    src_export_c368fe7e -->|imports| store_playerstore_useplayerstore_5d310b80
-    %% Omitted for readability: 68 nodes, 0 edges
+    %% Omitted for readability: 68 nodes, 1 edges
     class src_export_writablebuffer_7323feaa klass;
     class src_export_c368fe7e module;
     class src_export_makeinitialphases_6b4a2237 function;
     class src_export_initprogress_edcd6bab function;
-    class src_export_updatephase_c6e0f7ba function;
-    class context_mediaplayercontext_usemediaplayercontext_6e6b7797 ui;
     class context_mediaplayercontext_a34c7b7e ui;
+    class context_mediaplayercontext_usemediaplayercontext_6e6b7797 ui;
     class context_mediaplayercontext_mediaplayerprovider_e13e53a9 ui;
     class player_playerdisplay_96c04d4c ui;
     class player_playerdisplay_playerdisplayinner_21501529 ui;
+    class store_playerstore_useplayeractions_2de0ac0e ui;
+    class store_playerstore_useplayerstore_5d310b80 ui;
     class export_exportmodal_exportbuttoninner_4a68e111 ui;
     class file_loader_fileloader_fileloader_ab7274c4 ui;
     class player_progressbar_progressbarinner_03464bbb ui;
@@ -588,7 +593,6 @@ flowchart LR
     class transcription_transcriptionresults_transcription_d3874bb4 ui;
     class src_app_46efd68e ui;
     class hooks_usemediaplayer_usemediaplayer_659ae66d ui;
-    class store_playerstore_useplayerstore_5d310b80 ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -628,6 +632,22 @@ flowchart LR
 </tr>
 <tr>
   <td>3</td>
+  <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>TranscriptionResultsInner() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>TranscriptionResults</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>TranscriptionResults node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>5</td>
   <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -635,7 +655,7 @@ flowchart LR
   <td>Module file in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>6</td>
   <td><code>SPEEDS</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -643,7 +663,7 @@ flowchart LR
   <td>SPEEDS node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>7</td>
   <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -651,7 +671,7 @@ flowchart LR
   <td>ChevronDownIcon() node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>8</td>
   <td><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -659,7 +679,7 @@ flowchart LR
   <td>PlayerDisplayInner() node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>9</td>
   <td><code>PlayerDisplay</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -667,7 +687,7 @@ flowchart LR
   <td>PlayerDisplay node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>10</td>
   <td><code>VolumeControls.tsx</code><br><small style="color:var(--muted)">features/player/VolumeControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
@@ -675,7 +695,7 @@ flowchart LR
   <td>Module file in features/player/VolumeControls.tsx.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>11</td>
   <td><code>VolumeControlsInner()</code><br><small style="color:var(--muted)">features/player/VolumeControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -683,7 +703,7 @@ flowchart LR
   <td>VolumeControlsInner() node in features/player/VolumeControls.tsx.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>12</td>
   <td><code>VolumeControls</code><br><small style="color:var(--muted)">features/player/VolumeControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
@@ -691,7 +711,7 @@ flowchart LR
   <td>VolumeControls node in features/player/VolumeControls.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>13</td>
   <td><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -699,7 +719,7 @@ flowchart LR
   <td>Module file in src/config.ts.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>14</td>
   <td><code>loadBackendUrl()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -707,7 +727,7 @@ flowchart LR
   <td>loadBackendUrl() node in src/config.ts.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>15</td>
   <td><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -715,7 +735,7 @@ flowchart LR
   <td>backendPath() node in src/config.ts.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>16</td>
   <td><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -723,7 +743,7 @@ flowchart LR
   <td>backendWsPath() node in src/config.ts.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>17</td>
   <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>VolumeControls.tsx</code><br><small style="color:var(--muted)">features/player/VolumeControls.tsx</small></td>
@@ -731,7 +751,7 @@ flowchart LR
   <td>Module file in src/context/MediaPlayerContext.tsx.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>18</td>
   <td><code>MediaPlayerContext</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -739,7 +759,7 @@ flowchart LR
   <td>MediaPlayerContext node in src/context/MediaPlayerContext.tsx.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>19</td>
   <td><code>MediaPlayerProvider()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -747,15 +767,15 @@ flowchart LR
   <td>MediaPlayerProvider() node in src/context/MediaPlayerContext.tsx.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>20</td>
   <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>VolumeControls.tsx</code><br><small style="color:var(--muted)">features/player/VolumeControls.tsx</small><br>+1 more</td>
-  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+4 more</td>
+  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br>+2 more</td>
+  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+3 more</td>
   <td>useMediaPlayerContext() node in src/context/MediaPlayerContext.tsx.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>21</td>
   <td><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br>+1 more</td>
@@ -763,7 +783,7 @@ flowchart LR
   <td>Module file in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>22</td>
   <td><code>DEFAULT_DICTIONARIES</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -771,7 +791,7 @@ flowchart LR
   <td>DEFAULT_DICTIONARIES node in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>23</td>
   <td><code>DictionaryManagerInner()</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -779,7 +799,7 @@ flowchart LR
   <td>DictionaryManagerInner() node in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>24</td>
   <td><code>DictionaryManager</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -787,7 +807,7 @@ flowchart LR
   <td>DictionaryManager node in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>25</td>
   <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
@@ -795,7 +815,7 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>26</td>
   <td><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
@@ -803,7 +823,7 @@ flowchart LR
   <td>Module file in features/file-loader/FileLoader.tsx.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>27</td>
   <td><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
@@ -811,7 +831,7 @@ flowchart LR
   <td>FileLoader() node in features/file-loader/FileLoader.tsx.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>28</td>
   <td><code>ProgressBar.tsx</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
@@ -819,7 +839,7 @@ flowchart LR
   <td>Module file in features/player/ProgressBar.tsx.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>29</td>
   <td><code>ProgressBarInner()</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
@@ -827,28 +847,12 @@ flowchart LR
   <td>ProgressBarInner() node in features/player/ProgressBar.tsx.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>30</td>
   <td><code>ProgressBar</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td>No direct outbound edge</td>
   <td>ProgressBar node in features/player/ProgressBar.tsx.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>ImportProgressModal.tsx</code><br><small style="color:var(--muted)">features/transcription/ImportProgressModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>Module file in features/transcription/ImportProgressModal.tsx.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>ImportProgressModalInner()</code><br><small style="color:var(--muted)">features/transcription/ImportProgressModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>ImportProgressModalInner() node in features/transcription/ImportProgressModal.tsx.</td>
 </tr>
 </table>
 
@@ -1841,7 +1845,7 @@ flowchart LR
 
 <!-- ====== 8. Transcription Modals ====== -->
 <h2 id="transcription-modals">8. Transcription Modals</h2>
-<p>Transcription Modals groups implementation around features, transcription, auth, transcriptionresultstsx, mostly in features/transcription/TranscriptionResults.tsx, features/transcription/EffectModal.tsx, features/auth/TopupModal.tsx. This section covers 44 nodes and 68 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Transcription Modals groups implementation around features, transcription, transcriptionresultstsx, auth, mostly in features/transcription/TranscriptionResults.tsx, features/transcription/EffectModal.tsx, features/auth/TopupModal.tsx. This section covers 44 nodes and 68 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
@@ -1849,18 +1853,23 @@ flowchart LR
     %% Section: Transcription Modals (44 nodes, 68 edges)
     subgraph transcription_modals_features_auth_ConfirmationM_3b58c97f["features/auth/ConfirmationModal.tsx"]
         auth_confirmationmodal_f9a1af42("ConfirmationModal.tsx")
-        auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
         auth_confirmationmodal_formatduration_1ba061e3("formatDuration()<br/><small>features/auth/ConfirmationModal.tsx</small>")
+        auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
     end
     subgraph transcription_modals_features_auth_TopupModal_ts_cb74593b["features/auth/TopupModal.tsx"]
         auth_topupmodal_5fbdbcde("TopupModal.tsx")
         auth_topupmodal_formatseconds_73559c25("formatSeconds()<br/><small>features/auth/TopupModal.tsx</small>")
         auth_topupmodal_topupmodal_4bc16812("TopupModal()<br/><small>features/auth/TopupModal.tsx</small>")
     end
+    subgraph transcription_modals_features_transcription_Effe_ffb9f7b9["features/transcription/EffectModal.tsx"]
+        transcription_effectmodal_5a588a15("EffectModal.tsx")
+        transcription_effectmodal_effectbadge_f29a394c("EffectBadge<br/><small>features/transcription/EffectModal.tsx</small>")
+        transcription_effectmodal_effectmodal_75dfcab3("EffectModal<br/><small>features/transcription/EffectModal.tsx</small>")
+    end
     subgraph transcription_modals_features_transcription_Tran_f0cc1b7d["features/transcription/TranscriptionResults.tsx"]
+        transcription_transcriptionresults_9a779401("TranscriptionResults.tsx")
         transcription_transcriptionresults_parsestage_50197875("parseStage()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
         transcription_transcriptionresults_transcribepro_909f732c("TranscribeProgressBar()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
-        transcription_transcriptionresults_9a779401("TranscriptionResults.tsx")
     end
     subgraph transcription_modals_features_auth_LoginModal_ts_02e68b10["features/auth/LoginModal.tsx"]
         auth_loginmodal_55c21e7a("LoginModal.tsx")
@@ -1874,54 +1883,49 @@ flowchart LR
         store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
         store_authstore_2c5e1d9c("authStore.ts")
     end
-    subgraph transcription_modals_src_types_index_ts_203bb6bf["src/types/index.ts"]
-        types_index_packagetype_8d1f1a36("PackageType<br/><small>src/types/index.ts</small>")
-        types_index_soundcensoringeffect_753def75("SoundCensoringEffect<br/><small>src/types/index.ts</small>")
-    end
-    transcription_effectmodal_5a588a15("EffectModal.tsx")
+    transcription_transcriptionresults_parsestage_50197875 -->|calls| transcription_transcriptionresults_transcribepro_909f732c
     auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
     auth_confirmationmodal_confirmationmodal_8b7e668a -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_loginmodal_loginmodal_992d0af3 -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_formatseconds_73559c25 -->|calls| auth_topupmodal_topupmodal_4bc16812
     auth_topupmodal_topupmodal_4bc16812 -->|calls| store_authstore_useauthstore_4a03c2d9
-    transcription_transcriptionresults_parsestage_50197875 -->|calls| transcription_transcriptionresults_transcribepro_909f732c
+    transcription_transcriptionresults_9a779401 -->|imports| auth_confirmationmodal_f9a1af42
+    transcription_transcriptionresults_9a779401 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
+    transcription_transcriptionresults_9a779401 -->|imports| auth_loginmodal_55c21e7a
+    transcription_transcriptionresults_9a779401 -->|imports| auth_loginmodal_loginmodal_992d0af3
+    transcription_transcriptionresults_9a779401 -->|imports| auth_topupmodal_5fbdbcde
+    transcription_transcriptionresults_9a779401 -->|imports| auth_topupmodal_topupmodal_4bc16812
+    transcription_transcriptionresults_9a779401 -->|imports| store_authstore_2c5e1d9c
+    transcription_transcriptionresults_9a779401 -->|imports| store_authstore_useauthstore_4a03c2d9
+    transcription_transcriptionresults_9a779401 -->|imports| transcription_addwordmodal_6168d795
+    transcription_transcriptionresults_9a779401 -->|imports| transcription_addwordmodal_addwordmodal_dcd20f8a
+    transcription_transcriptionresults_9a779401 -->|imports| transcription_effectmodal_5a588a15
+    transcription_transcriptionresults_9a779401 -->|imports| transcription_effectmodal_effectbadge_f29a394c
+    transcription_transcriptionresults_9a779401 -->|imports| transcription_effectmodal_effectmodal_75dfcab3
     auth_confirmationmodal_f9a1af42 -->|imports| store_authstore_2c5e1d9c
     auth_confirmationmodal_f9a1af42 -->|imports| store_authstore_useauthstore_4a03c2d9
-    auth_confirmationmodal_f9a1af42 -->|imports| transcription_transcriptionresults_9a779401
-    auth_confirmationmodal_confirmationmodal_8b7e668a -->|imports| transcription_transcriptionresults_9a779401
     auth_loginmodal_55c21e7a -->|imports| store_authstore_2c5e1d9c
     auth_loginmodal_55c21e7a -->|imports| store_authstore_useauthstore_4a03c2d9
-    auth_loginmodal_55c21e7a -->|imports| transcription_transcriptionresults_9a779401
-    auth_loginmodal_loginmodal_992d0af3 -->|imports| transcription_transcriptionresults_9a779401
     auth_topupmodal_5fbdbcde -->|imports| store_authstore_2c5e1d9c
-    auth_topupmodal_5fbdbcde -->|imports| store_authstore_useauthstore_4a03c2d9
-    auth_topupmodal_5fbdbcde -->|imports| types_index_packagetype_8d1f1a36
-    auth_topupmodal_5fbdbcde -->|imports| transcription_transcriptionresults_9a779401
-    auth_topupmodal_topupmodal_4bc16812 -->|imports| transcription_transcriptionresults_9a779401
-    transcription_addwordmodal_6168d795 -->|imports| transcription_transcriptionresults_9a779401
-    transcription_addwordmodal_addwordmodal_dcd20f8a -->|imports| transcription_transcriptionresults_9a779401
-    transcription_effectmodal_5a588a15 -->|imports| types_index_soundcensoringeffect_753def75
-    transcription_effectmodal_5a588a15 -->|imports| transcription_transcriptionresults_9a779401
-    transcription_transcriptionresults_9a779401 -->|imports| store_authstore_2c5e1d9c
-    %% Omitted for readability: 26 nodes, 3 edges
+    %% Omitted for readability: 26 nodes, 1 edges
     class auth_confirmationmodal_f9a1af42 ui;
-    class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
     class auth_confirmationmodal_formatduration_1ba061e3 ui;
+    class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
     class auth_topupmodal_5fbdbcde ui;
     class auth_topupmodal_formatseconds_73559c25 ui;
     class auth_topupmodal_topupmodal_4bc16812 ui;
+    class transcription_effectmodal_5a588a15 ui;
+    class transcription_effectmodal_effectbadge_f29a394c ui;
+    class transcription_effectmodal_effectmodal_75dfcab3 ui;
+    class transcription_transcriptionresults_9a779401 ui;
     class transcription_transcriptionresults_parsestage_50197875 ui;
     class transcription_transcriptionresults_transcribepro_909f732c ui;
-    class transcription_transcriptionresults_9a779401 ui;
     class auth_loginmodal_55c21e7a ui;
     class auth_loginmodal_loginmodal_992d0af3 ui;
     class transcription_addwordmodal_6168d795 ui;
     class transcription_addwordmodal_addwordmodal_dcd20f8a ui;
     class store_authstore_useauthstore_4a03c2d9 ui;
     class store_authstore_2c5e1d9c ui;
-    class types_index_packagetype_8d1f1a36 klass;
-    class types_index_soundcensoringeffect_753def75 klass;
-    class transcription_effectmodal_5a588a15 ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1945,214 +1949,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>Module file in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td>formatDuration() node in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>ConfirmationModalProps</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ConfirmationModalProps node in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>ConfirmationModal() node in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>Module file in features/auth/LoginModal.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>LoginModalProps</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>LoginModalProps node in features/auth/LoginModal.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>PackageType</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br>+1 more</td>
-  <td>Module file in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>PACKAGES</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>PACKAGES node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>formatSeconds()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td>formatSeconds() node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>formatSeconds()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>AddWordModal.tsx</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>Module file in features/transcription/AddWordModal.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CloseIcon() node in features/transcription/AddWordModal.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>PlusIcon()</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>PlusIcon() node in features/transcription/AddWordModal.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>AddWordModalProps</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AddWordModalProps node in features/transcription/AddWordModal.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>AddWordModal</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>AddWordModal node in features/transcription/AddWordModal.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>Module file in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CloseIcon() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>BoltIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>BoltIcon() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>TrashIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TrashIcon() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>EffectModalProps</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>EffectModalProps node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>uid()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>uid() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>EffectModal</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>EffectModal node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>EffectBadge</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>EffectBadge node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>26</td>
   <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>AddWordModal</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small><br><code>AddWordModal.tsx</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small><br><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br>+8 more</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>AddWordModal</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small><br><code>AddWordModal.tsx</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br>+11 more</td>
   <td>Module file in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>2</td>
   <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2160,7 +1964,7 @@ flowchart LR
   <td>ChevronDownIcon() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>3</td>
   <td><code>PlusIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2168,7 +1972,7 @@ flowchart LR
   <td>PlusIcon() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>4</td>
   <td><code>SegmentItem</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2176,12 +1980,212 @@ flowchart LR
   <td>SegmentItem node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>5</td>
   <td><code>TranscriptionRow()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>TranscriptionRow() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>rowRendererDeps</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>rowRendererDeps node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>findClosestSegment() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>findSegmentIndex()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>findSegmentIndex() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>parseStage() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>TranscribeProgressBar() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>Module file in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td>formatDuration() node in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>ConfirmationModalProps</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ConfirmationModalProps node in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>ConfirmationModal() node in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>Module file in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>LoginModalProps</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>LoginModalProps node in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>PackageType</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>Module file in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>PACKAGES</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>PACKAGES node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>formatSeconds()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td>formatSeconds() node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>formatSeconds()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>AddWordModal.tsx</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>Module file in features/transcription/AddWordModal.tsx.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CloseIcon() node in features/transcription/AddWordModal.tsx.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>PlusIcon()</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>PlusIcon() node in features/transcription/AddWordModal.tsx.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>AddWordModalProps</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>AddWordModalProps node in features/transcription/AddWordModal.tsx.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>AddWordModal</code><br><small style="color:var(--muted)">features/transcription/AddWordModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>AddWordModal node in features/transcription/AddWordModal.tsx.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td>Module file in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CloseIcon() node in features/transcription/EffectModal.tsx.</td>
 </tr>
 </table>
 
@@ -3283,7 +3287,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-07 06:58 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-07 07:33 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
