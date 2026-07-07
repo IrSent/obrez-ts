@@ -1,16 +1,16 @@
-# Graph Report - obrez-ts  (2026-07-07)
+# Graph Report - obrez-ts  (2026-07-06)
 
 ## Corpus Check
-- 63 files · ~106,493 words
+- 63 files · ~106,436 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 349 nodes · 530 edges · 49 communities (33 shown, 16 thin omitted)
+- 353 nodes · 533 edges · 49 communities (33 shown, 16 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `b8d93b58`
+- Built from commit: `247fae56`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -67,12 +67,12 @@
   src/features/player/ProgressBar.tsx → src/features/auth/TopupModal.tsx
 - `ExportProgressBar()` --calls--> `usePlayerStore`  [EXTRACTED]
   src/features/export/ExportModal.tsx → src/store/playerStore.ts
-- `TranscribeProgress()` --calls--> `usePlayerStore`  [EXTRACTED]
-  src/features/transcription/TranscriptionResults.tsx → src/store/playerStore.ts
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Muted - Speaker with X Overlay`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-1-icon.svg
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Low - Speaker with Single Arc`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-2-icon.svg
+- `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume High - Speaker with Double Arc`  [INFERRED] [semantically similar]
+  public/assets/volume-0-icon.svg → public/assets/volume-off-icon.svg
 
 ## Import Cycles
 - None detected.
@@ -88,15 +88,15 @@
 
 ### Community 0 - "Export Modal + Context"
 Cohesion: 0.11
-Nodes (29): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), ExportButtonInner(), FileLoader() (+21 more)
+Nodes (28): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), ExportButtonInner(), FileLoader() (+20 more)
 
 ### Community 1 - "Package Dependencies"
-Cohesion: 0.07
-Nodes (29): author, bugs, url, devDependencies, bun-plugin-tailwind, @playwright/test, tailwindcss, @types/node (+21 more)
+Cohesion: 0.05
+Nodes (40): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabunny, node-web-audio-api, react (+32 more)
 
 ### Community 2 - "Dictionary + Aho-Corasick"
-Cohesion: 0.15
-Nodes (20): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+12 more)
+Cohesion: 0.14
+Nodes (21): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+13 more)
 
 ### Community 3 - "Bleep Sounds + Icons"
 Cohesion: 0.14
@@ -127,8 +127,8 @@ Cohesion: 0.50
 Nodes (4): audioBuffersToWav, WavProgress type, writeString utility, yieldToEventLoop utility
 
 ### Community 12 - "App Entry"
-Cohesion: 0.18
-Nodes (11): dependencies, @fontsource-variable/rubik, mediabunny, node-web-audio-api, react, react-dom, react-window, soundtouchjs (+3 more)
+Cohesion: 0.50
+Nodes (3): index.css, main.tsx, root div
 
 ### Community 13 - "README"
 Cohesion: 0.50
@@ -159,7 +159,7 @@ Cohesion: 0.08
 Nodes (18): CODEC_LABELS, ExportButton, ExportFormat, ExportModal, ExportModalProps, ExportProgressBar(), computeSegmentBoundaries(), ensureBleepDecoded() (+10 more)
 
 ## Knowledge Gaps
-- **113 isolated node(s):** `versionIdx`, `SPEEDS`, `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR` (+108 more)
+- **116 isolated node(s):** `versionIdx`, `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR`, `clients` (+111 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -167,16 +167,16 @@ Nodes (18): CODEC_LABELS, ExportButton, ExportFormat, ExportModal, ExportModalPr
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `usePlayerStore` connect `Export Modal + Context` to `Dictionary + Aho-Corasick`, `Community 50`, `Bleep Sounds + Icons`, `Transcription Modals`?**
-  _High betweenness centrality (0.038) - this node is a cross-community bridge._
+  _High betweenness centrality (0.037) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **What connects `versionIdx`, `SPEEDS`, `DIST_DIR` to the rest of the system?**
-  _113 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `versionIdx`, `DIST_DIR`, `PUBLIC_DIR` to the rest of the system?**
+  _116 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
-  _Cohesion score 0.10569105691056911 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.10975609756097561 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
-  _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
+- **Should `Dictionary + Aho-Corasick` be split into smaller, more focused modules?**
+  _Cohesion score 0.14482758620689656 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**
   _Cohesion score 0.14153846153846153 - nodes in this community are weakly interconnected._
-- **Should `Transcription Modals` be split into smaller, more focused modules?**
-  _Cohesion score 0.07188160676532769 - nodes in this community are weakly interconnected._
