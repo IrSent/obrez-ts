@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import { DictionaryManager } from '../dictionary/DictionaryManager';
 import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
+import { APP_VERSION } from '../../version';
 
 type TabKey = 'dictionaries' | 'bleep' | 'version';
 
@@ -145,7 +146,7 @@ function VersionContent({ versions, currentVersion, onSelect }: VersionContentPr
             <span className="text-[10px] text-zinc-500 ml-auto">default</span>
           )}
           {v === currentVersion && (
-            <span className="text-[10px] text-purple-400 ml-auto">current</span>
+            <span className="text-[10px] text-purple-400 ml-auto">current {APP_VERSION}</span>
           )}
         </button>
       ))}
