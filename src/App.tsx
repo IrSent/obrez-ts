@@ -4,8 +4,7 @@ import { PlayerDisplay } from './features/player/PlayerDisplay';
 import { FileLoader } from './features/file-loader/FileLoader';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
-import { ExportButton } from './features/export/ExportModal';
-import { APP_VERSION } from './version';
+import { HeaderExportButton } from './features/export/HeaderExportButton';
 import { loadBackendUrl } from './config';
 import { SettingsModal } from './features/settings/SettingsModal';
 import { DebugButton } from './features/debug/DebugButton';
@@ -31,9 +30,10 @@ export const App = () => {
                   alt="Obrez Logo"
                   className="w-8 h-8"
                 />
-                <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez <span className="text-xs font-normal text-zinc-500">{APP_VERSION}</span></h1>
+                <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez</h1>
               </div>
               <div className="flex items-center gap-1">
+                <HeaderExportButton />
                 <DebugButton />
                 <button id="obrez-gear" onClick={() => setSettingsOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</button>
               </div>
@@ -47,7 +47,6 @@ export const App = () => {
                 <FileLoader />
                 <PlayerDisplay />
                 <TranscriptionResults />
-                <ExportButton />
             </div>
           </div>
 
