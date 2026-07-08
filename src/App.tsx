@@ -10,6 +10,7 @@ import { loadBackendUrl, backendPath, backendHeaders } from './config';
 import { SettingsModal } from './features/settings/SettingsModal';
 import { DebugButton } from './features/debug/DebugButton';
 import { usePlayerStore, playerActions } from './store/playerStore';
+import { useAuthStore } from './store/authStore';
 import { FastAhoScanner } from './aho-corasick';
 
 const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
@@ -39,6 +40,29 @@ export const App = () => {
       }
     };
     loadDefaults();
+  }, []);
+
+  // OIDC callback: handle Telegram auth code
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const code = params.get('code');
+    const state = params.get('state');
+
+    if (code && state) {
+      const savedState = sessionStorage.getItem('obrez_pkce_state');
+      if (savedState === state) {
+        const authStore = useAuthStore.getState();
+        authStore.exchangeCode(code).then(() => {
+          // Clear URL params and sessionStorage
+          history.replaceState({}, '', window.location.pathname);
+          sessionStorage.removeItem('obrez_pkce_verifier');
+          sessionStorage.removeItem('obrez_pkce_state');
+          sessionStorage.removeItem('obrez_pkce_nonce');
+        });
+      } else {
+        console.error('OIDC state mismatch — possible CSRF');
+      }
+    }
   }, []);
 
   // Settings modal

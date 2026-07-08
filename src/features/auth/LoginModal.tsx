@@ -1,70 +1,43 @@
-import { useEffect, useRef, useState } from 'react';
-import { useAuthStore } from '../../store/authStore';
-import { loadBackendUrl } from '../../config';
+import { useCallback } from 'react';
+import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce';
 
-const TELEGRAM_BOT_USERNAME = 'last_resort_obrez_bot';
+const TELEGRAM_CLIENT_ID = '8886675841';
 
 interface LoginModalProps {
   onClose: () => void;
 }
 
 export function LoginModal({ onClose }: LoginModalProps) {
-  const telegramRef = useRef<HTMLDivElement>(null);
-  const setUser = useAuthStore((s: ReturnType<typeof useAuthStore>) => s.setUser);
-  const isAuthenticated = useAuthStore((s: ReturnType<typeof useAuthStore>) => s.isAuthenticated);
-  const onLoggedInRef = useRef<(() => void) | null>(null);
-  const [backendUrl, setBackendUrl] = useState<string | null>(null);
+  const handleSignIn = useCallback(async () => {
+    // PKCE
+    const codeVerifier = generateCodeVerifier();
+    const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-  // Load backend URL
-  useEffect(() => {
-    loadBackendUrl().then(setBackendUrl);
+    // State + nonce
+    const state = crypto.randomUUID();
+    const nonce = crypto.randomUUID();
+
+    // Store in sessionStorage for callback verification
+    sessionStorage.setItem('obrez_pkce_verifier', codeVerifier);
+    sessionStorage.setItem('obrez_pkce_state', state);
+    sessionStorage.setItem('obrez_pkce_nonce', nonce);
+
+    // Redirect URI = current page (no query params)
+    const redirectUri = window.location.origin + window.location.pathname;
+
+    // Build auth URL
+    const authUrl = new URL('https://oauth.telegram.org/auth');
+    authUrl.searchParams.set('client_id', TELEGRAM_CLIENT_ID);
+    authUrl.searchParams.set('redirect_uri', redirectUri);
+    authUrl.searchParams.set('response_type', 'code');
+    authUrl.searchParams.set('code_challenge', codeChallenge);
+    authUrl.searchParams.set('code_challenge_method', 'S256');
+    authUrl.searchParams.set('scope', 'openid profile');
+    authUrl.searchParams.set('state', state);
+    authUrl.searchParams.set('nonce', nonce);
+
+    window.location.href = authUrl.toString();
   }, []);
-
-  // When authenticated, close the modal and trigger the callback
-  useEffect(() => {
-    if (isAuthenticated && onLoggedInRef.current) {
-      onLoggedInRef.current();
-    }
-  }, [isAuthenticated]);
-
-  // Inject Telegram widget only after we have the backend URL
-  useEffect(() => {
-    if (!backendUrl) return;
-
-    const existing = document.querySelector(
-      `script[data-telegram-login="${TELEGRAM_BOT_USERNAME}"]`,
-    );
-    if (existing) return;
-
-    const script = document.createElement('script');
-    script.async = true;
-    script.setAttribute('data-telegram-login', TELEGRAM_BOT_USERNAME);
-    script.setAttribute('data-size', 'large');
-    script.setAttribute('data-radius', '8');
-    script.setAttribute('data-auth-url', `${backendUrl}/api/auth/telegram`);
-    script.setAttribute('data-request-access', 'write');
-    script.setAttribute('data-onauth', 'onTelegramAuth');
-    script.src = 'https://telegram.org/js/telegram-widget.js';
-
-    (window as unknown as Record<string, unknown>).onTelegramAuth = (
-      user: Record<string, unknown>,
-    ) => {
-      console.log('Telegram auth success:', user);
-      setUser({
-        id: Number(user.id),
-        tg_user_id: Number(user.id),
-        first_name: (user.first_name as string) || '',
-        username: (user.username as string) || null,
-        photo_url: (user.photo_url as string) || null,
-        remaining_seconds: 0, // will be updated by checkAuth
-        last_free_topup: null,
-      });
-    };
-
-    if (telegramRef.current) {
-      telegramRef.current.appendChild(script);
-    }
-  }, [backendUrl, setUser]);
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -83,7 +56,15 @@ export function LoginModal({ onClose }: LoginModalProps) {
           Transcription requires authentication. Sign in with Telegram to continue.
         </p>
 
-        <div ref={telegramRef} className="flex justify-center mb-4" />
+        <button
+          onClick={handleSignIn}
+          className="w-full bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-2"
+        >
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.214-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.333-.373-.121l-6.861 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.83.945z"/>
+          </svg>
+          Sign in with Telegram
+        </button>
       </div>
     </div>
   );

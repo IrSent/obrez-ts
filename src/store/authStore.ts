@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { AuthUser, PackageType } from '../types';
-import { loadBackendUrl, backendPath } from '../config';
+import { loadBackendUrl } from '../config';
 
 interface AuthState {
   user: AuthUser | null;
@@ -14,6 +14,7 @@ interface AuthActions {
   logout: () => Promise<void>;
   topup: (packageType: PackageType) => Promise<void>;
   checkAuth: () => Promise<void>;
+  exchangeCode: (code: string) => Promise<void>;
   clearError: () => void;
 }
 
@@ -30,6 +31,36 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   setUser: (user) => set({ user, isAuthenticated: !!user, error: null }),
 
   clearError: () => set({ error: null }),
+
+  exchangeCode: async (code: string) => {
+    try {
+      const codeVerifier = sessionStorage.getItem('obrez_pkce_verifier');
+      const redirectUri = window.location.origin + window.location.pathname;
+
+      if (!codeVerifier) {
+        set({ error: 'PKCE verifier missing' });
+        return;
+      }
+
+      const url = await loadBackendUrl();
+      const response = await fetch(`${url}/api/auth/telegram-oidc`, {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ code, code_verifier: codeVerifier, redirect_uri: redirectUri }),
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        set({ user: data.user, isAuthenticated: true, error: null });
+      } else {
+        const err = await response.json().catch(() => ({ detail: 'Auth failed' }));
+        set({ error: err.detail || 'Auth failed' });
+      }
+    } catch {
+      set({ error: 'Network error during auth' });
+    }
+  },
 
   checkAuth: async () => {
     try {
