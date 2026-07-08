@@ -4,8 +4,10 @@ import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
 const ProgressBarInner = () => {
   const duration = usePlayerStore((state) => state.duration);
-  const { seekToTime, formatSeconds, getPlaybackTime } = useMediaPlayerContext();
+  const isPlaying = usePlayerStore((state) => state.isPlaying);
+  const { seekToTime, formatSeconds, getPlaybackTime, pause } = useMediaPlayerContext();
   const isDraggingRef = useRef(false);
+  const wasPlayingRef = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
 
   // Read currentTime directly from playback, not from store — avoids setState
@@ -25,44 +27,28 @@ const ProgressBarInner = () => {
     return () => clearInterval(interval);
   }, [getPlaybackTime]);
 
-  const handleClick = (e: React.MouseEvent) => {
+  /**
+   * Compute seek time from a pointer X coordinate (mouse or touch).
+   */
+  const seekFromX = useCallback((clientX: number) => {
     if (!progressRef.current) return;
     const rect = progressRef.current.getBoundingClientRect();
-    const percent = (e.clientX - rect.left) / rect.width;
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const time = duration * percent;
     void seekToTime(time);
-  };
+  }, [duration, seekToTime]);
 
-  const handleDragStart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    isDraggingRef.current = true;
-    // Update visual immediately on drag start
-    handleClick(e);
-  };
-
-  const handleDragEnd = useCallback((e: MouseEvent) => {
-    if (!isDraggingRef.current) return;
-    isDraggingRef.current = false;
-
-    // Seek to the final position only once on drag end
+  /**
+   * Update visuals during drag (no seek — seek happens on release).
+   */
+  const updateDragVisual = useCallback((clientX: number) => {
     if (!progressRef.current) return;
     const rect = progressRef.current.getBoundingClientRect();
-    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
-    const time = duration * percent;
-    void seekToTime(time);
-  }, [duration]);
-
-  // During drag: update visuals only — no seek, no iterator restart
-  const handleDragVisual = useCallback((e: MouseEvent) => {
-    if (!progressRef.current || !isDraggingRef.current) return;
-    const rect = progressRef.current.getBoundingClientRect();
-    const percent = Math.max(0, Math.min(1, (e.clientX - rect.left) / rect.width));
+    const percent = Math.max(0, Math.min(1, (clientX - rect.left) / rect.width));
     const time = duration * percent;
 
-    // Update store time for display
     playerActions.setCurrentTime(time);
 
-    // Update progress bar DOM directly
     const cache = {
       currentTimeEl: document.querySelector('[data-testid="current-time"]') as HTMLElement | null,
       progressFill: document.querySelector('[data-testid="progress-fill"]') as HTMLElement | null,
@@ -73,14 +59,68 @@ const ProgressBarInner = () => {
     if (cache.progressThumb) cache.progressThumb.style.left = `${percent * 100}%`;
   }, [duration, formatSeconds]);
 
+  const handleDragStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    wasPlayingRef.current = isPlaying;
+    if (isPlaying) void pause();
+    isDraggingRef.current = true;
+    updateDragVisual(e.clientX);
+  };
+
+  const handleDragEnd = useCallback((clientX: number) => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    seekFromX(clientX);
+  }, [seekFromX]);
+
+  const handleDragVisualMouse = useCallback((e: MouseEvent) => {
+    if (!isDraggingRef.current) return;
+    updateDragVisual(e.clientX);
+  }, [updateDragVisual]);
+
+  const handleMouseUp = useCallback((e: MouseEvent) => {
+    handleDragEnd(e.clientX);
+  }, [handleDragEnd]);
+
+  // Touch handlers for iOS Safari
+  const handleTouchStart = useCallback((e: React.TouchEvent) => {
+    const touch = e.touches[0];
+    wasPlayingRef.current = isPlaying;
+    if (isPlaying) void pause();
+    isDraggingRef.current = true;
+    updateDragVisual(touch.clientX);
+  }, [isPlaying, pause, updateDragVisual]);
+
+  const handleTouchMove = useCallback((e: TouchEvent) => {
+    if (!isDraggingRef.current) return;
+    // Prevent page scroll on iOS while dragging the progress bar
+    e.preventDefault();
+    const touch = e.touches[0];
+    updateDragVisual(touch.clientX);
+  }, [updateDragVisual]);
+
+  const handleTouchEnd = useCallback(() => {
+    if (!isDraggingRef.current) return;
+    isDraggingRef.current = false;
+    // seekFromX is called on the last known position via handleDragEnd
+    // But for touch we don't have clientX on end — the visual time is already
+    // in the store from updateDragVisual. Just seek to that time.
+    const time = usePlayerStore.getState().currentTime;
+    void seekToTime(time);
+  }, [seekToTime]);
+
   useEffect(() => {
-    window.addEventListener('mousemove', handleDragVisual);
-    window.addEventListener('mouseup', handleDragEnd);
+    window.addEventListener('mousemove', handleDragVisualMouse);
+    window.addEventListener('mouseup', handleMouseUp);
+    window.addEventListener('touchmove', handleTouchMove, { passive: false });
+    window.addEventListener('touchend', handleTouchEnd);
     return () => {
-      window.removeEventListener('mousemove', handleDragVisual);
-      window.removeEventListener('mouseup', handleDragEnd);
+      window.removeEventListener('mousemove', handleDragVisualMouse);
+      window.removeEventListener('mouseup', handleMouseUp);
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
     };
-  }, [handleDragVisual, handleDragEnd]);
+  }, [handleDragVisualMouse, handleMouseUp, handleTouchMove, handleTouchEnd]);
 
   const progress = duration > 0 ? Math.max(0, Math.min(100, (currentTime / duration) * 100)) : 0;
 
@@ -90,7 +130,8 @@ const ProgressBarInner = () => {
 
       <div
         ref={progressRef}
-        onClick={handleClick}
+        onMouseDown={handleDragStart}
+        onTouchStart={handleTouchStart}
         className="flex-1 py-1 flex items-center cursor-pointer relative"
         role="progressbar"
         aria-valuenow={currentTime}
@@ -105,7 +146,6 @@ const ProgressBarInner = () => {
             className="h-full bg-purple-500 rounded-full"
           />
           <div
-            onMouseDown={handleDragStart}
             data-testid="progress-thumb"
             style={{ left: `${progress}%` }}
             className="absolute w-4 h-4 bg-purple-500 rounded-full -top-1.5 -translate-x-1/2 cursor-grab active:cursor-grabbing"
