@@ -103,21 +103,4 @@
     window.__obrezShowError('Uncaught Promise', msg, raw);
   });
 
-  // ── inject ngrok-skip-browser-warning into all fetch calls ──
-  // Ngrok free tier shows an intercept page on browser-like requests.
-  var _origFetch = window.fetch;
-  window.fetch = function(resource, init) {
-    if (resource && typeof resource === 'string' && resource.includes('ngrok-free.app')) {
-      if (!init) init = {};
-      if (!init.headers) init.headers = {};
-      // Normalize headers to object
-      var h = init.headers;
-      if (h instanceof Headers) {
-        h = Object.fromEntries(h.entries());
-      }
-      h['ngrok-skip-browser-warning'] = 'true';
-      init.headers = h;
-    }
-    return _origFetch(resource, init);
-  };
-})();
+  })();
