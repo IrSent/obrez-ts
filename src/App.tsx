@@ -4,15 +4,41 @@ import { PlayerDisplay } from './features/player/PlayerDisplay';
 import { FileLoader } from './features/file-loader/FileLoader';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
+import { ExportButton } from './features/export/ExportModal';
 import { HeaderExportButton } from './features/export/HeaderExportButton';
-import { loadBackendUrl } from './config';
+import { loadBackendUrl, backendPath, backendHeaders } from './config';
 import { SettingsModal } from './features/settings/SettingsModal';
 import { DebugButton } from './features/debug/DebugButton';
+import { usePlayerStore, playerActions } from './store/playerStore';
+import { FastAhoScanner } from './aho-corasick';
+
+const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
 
 export const App = () => {
-  // Load backend URL from runtime config on startup
+  // Load backend URL and default dictionaries on startup
   useEffect(() => {
-    loadBackendUrl().then(url => console.log('Backend URL:', url));
+    const loadDefaults = async () => {
+      await loadBackendUrl();
+
+      const store = usePlayerStore.getState();
+      const loadedDictionaries = store.loadedDictionaries;
+
+      for (const slug of DEFAULT_DICTIONARIES) {
+        if (slug in loadedDictionaries) continue;
+        try {
+          const response = await fetch(backendPath(`/dictionary/${slug}`), {
+            headers: backendHeaders(),
+          });
+          if (!response.ok) continue;
+          const buffer = await response.arrayBuffer();
+          const scanner = new FastAhoScanner(buffer);
+          playerActions.loadDictionary(slug, slug, scanner);
+        } catch (error) {
+          console.error(`Failed to load default dictionary ${slug}:`, error);
+        }
+      }
+    };
+    loadDefaults();
   }, []);
 
   // Settings modal
@@ -43,10 +69,15 @@ export const App = () => {
           <div className="max-w-4xl mx-auto px-4 py-4">
             <ImportProgressModal />
 
-            <div className="flex flex-col items-center gap-6">
+            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6">
+              <div className="space-y-6">
                 <FileLoader />
                 <PlayerDisplay />
                 <TranscriptionResults />
+              </div>
+              <div className="hidden lg:flex lg:flex-col lg:gap-6">
+                <ExportButton />
+              </div>
             </div>
           </div>
 

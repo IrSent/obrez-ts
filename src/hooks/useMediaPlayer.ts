@@ -38,7 +38,7 @@ import {
 } from 'mediabunny';
 import { PhaseVocoderNode } from '@soundtouchjs/phase-vocoder-worklet';
 import { audioBuffersToWav } from '../audio';
-import { loadBackendUrl, backendPath, backendWsPath } from '../config';
+import { loadBackendUrl, backendPath, backendWsPath, backendHeaders } from '../config';
 
 /**
  * Хук для управления воспроизведением медиафайлов через MediaBunny.
@@ -1775,6 +1775,7 @@ export function useMediaPlayer() {
       formData.append('file', audioBlob, audioFileName);
 
       const response = await fetch(backendPath('/transcribe'), {
+        headers: backendHeaders(),
         method: 'POST',
         body: formData,
         credentials: 'include',

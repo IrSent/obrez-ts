@@ -1,4 +1,4 @@
-import { memo, useCallback, useState } from 'react';
+import { memo, useCallback, useState, useEffect, useRef } from 'react';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { ProgressBar } from './ProgressBar';
@@ -28,12 +28,27 @@ const PlayerDisplayInner = () => {
   const autoScroll = usePlayerStore((state) => state.autoScroll);
   const { canvasRef, play, pause, togglePlay, seekToTime } = useMediaPlayerContext();
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+  const [controlsVisible, setControlsVisible] = useState(false);
+  const [isHovered, setIsHovered] = useState(false);
+  const hideTimerRef = useRef<ReturnType<typeof setTimeout>>();
+
+  const showControls = controlsVisible || isHovered;
 
   const handleCanvasClick = useCallback((e: React.MouseEvent) => {
     // Ignore clicks that originate from controls
     if ((e.target as HTMLElement).closest('.player-controls')) return;
+
+    // Reset hide timer whenever controls are shown
+    if (hideTimerRef.current) clearTimeout(hideTimerRef.current);
+
+    // On mobile: first tap shows controls, second tap toggles play
+    if (!controlsVisible) {
+      setControlsVisible(true);
+      hideTimerRef.current = setTimeout(() => setControlsVisible(false), 3000);
+      return;
+    }
     void togglePlay();
-  }, [togglePlay]);
+  }, [togglePlay, controlsVisible]);
 
   const handleReplay = useCallback(async (e: React.MouseEvent) => {
     e.stopPropagation();
@@ -45,14 +60,16 @@ const PlayerDisplayInner = () => {
   return (
     <div
       data-testid="player-display-container"
-      className="relative w-full bg-zinc-900 rounded-lg overflow-hidden group"
+      className="relative w-full max-h-[30rem] bg-zinc-900 rounded-lg overflow-hidden flex items-center justify-center"
+      onMouseEnter={() => setIsHovered(true)}
+      onMouseLeave={() => setIsHovered(false)}
     >
       <canvas
         id="videoCanvas"
         ref={canvasRef}
         aria-label="Video canvas"
         role="img"
-        className="w-full bg-zinc-800 cursor-pointer"
+        className="w-full max-h-[30rem] bg-zinc-800 cursor-pointer [object-fit:contain]"
         onClick={handleCanvasClick}
       />
 
@@ -80,7 +97,9 @@ const PlayerDisplayInner = () => {
       )}
 
       {/* Controls overlay at the bottom */}
-      <div className="player-controls absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+      <div className={`player-controls absolute bottom-0 left-0 right-0 px-4 py-3 bg-gradient-to-t from-black/70 to-transparent transition-opacity ${
+            showControls ? 'opacity-100' : 'opacity-0'
+          }`}>
         <div className="flex items-center gap-4">
           <button
             onClick={() => {

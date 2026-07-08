@@ -1,6 +1,6 @@
 import { memo, useEffect, useState } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
-import { loadBackendUrl, backendPath } from '../../config';
+import { loadBackendUrl, backendPath, backendHeaders } from '../../config';
 import { FastAhoScanner } from '../../aho-corasick';
 
 const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
@@ -18,7 +18,9 @@ const DictionaryManagerInner = () => {
       for (const slug of DEFAULT_DICTIONARIES) {
         if (slug in loadedDictionaries) continue;
         try {
-          const response = await fetch(backendPath(`/dictionary/${slug}`));
+          const response = await fetch(backendPath(`/dictionary/${slug}`), {
+            headers: backendHeaders(),
+          });
           if (!response.ok) continue;
           const buffer = await response.arrayBuffer();
           const scanner = new FastAhoScanner(buffer);
@@ -44,7 +46,9 @@ const DictionaryManagerInner = () => {
 
     try {
       await loadBackendUrl();
-      const response = await fetch(backendPath(`/dictionary/${slug}`));
+      const response = await fetch(backendPath(`/dictionary/${slug}`), {
+        headers: backendHeaders(),
+      });
       if (!response.ok) {
         alert(`Dictionary not found: ${slug}`);
         return;

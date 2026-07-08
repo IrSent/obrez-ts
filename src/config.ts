@@ -28,6 +28,11 @@ export function backendPath(path: string): string {
   return `${_backendUrl}${path}`;
 }
 
+/** Headers needed for ngrok free tier to bypass the intercept page. */
+export function backendHeaders(): Record<string, string> {
+  return { 'ngrok-skip-browser-warning': 'true' };
+}
+
 /** Must only be called after loadBackendUrl() — e.g. in async contexts. */
 export function backendWsPath(path: string): string {
   if (!_backendUrl) throw new Error('Backend URL not loaded. Call loadBackendUrl() first.');
