@@ -1,7 +1,7 @@
 # Graph Report - obrez-ts  (2026-07-07)
 
 ## Corpus Check
-- 66 files · ~107,078 words
+- 66 files · ~107,168 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `63f04e31`
+- Built from commit: `435f5414`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -158,7 +158,7 @@ Cohesion: 0.13
 Nodes (11): computeSegmentBoundaries(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects(), initProgress(), makeInitialPhases(), pickAudioCodec(), pickVideoCodec() (+3 more)
 
 ## Knowledge Gaps
-- **119 isolated node(s):** `versionIdx`, `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR`, `clients` (+114 more)
+- **119 isolated node(s):** `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR`, `clients`, `server` (+114 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -169,7 +169,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.041) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Transcription Modals`?**
   _High betweenness centrality (0.013) - this node is a cross-community bridge._
-- **What connects `versionIdx`, `DIST_DIR`, `PUBLIC_DIR` to the rest of the system?**
+- **What connects `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR` to the rest of the system?**
   _119 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
   _Cohesion score 0.08943089430894309 - nodes in this community are weakly interconnected._
