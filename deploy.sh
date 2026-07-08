@@ -113,3 +113,6 @@ rm -rf "$WORKDIR"
 
 echo ""
 echo "✅ Deployed!"
+echo ""
+echo "🤖 Update BotFather domain (copy-paste into @BotFather chat):"
+echo "   /setdomain ${NGROK_URL}"
