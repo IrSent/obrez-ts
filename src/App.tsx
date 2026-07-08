@@ -50,14 +50,14 @@ export const App = () => {
           {/* Sticky header — full width */}
           <header className="sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800">
             <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-              <div className="flex items-center gap-3">
+              <a href="https://irsent.github.io/obrez-ts" className="flex items-center gap-3">
                 <img
                   src="assets/obrez-logo.jpg"
                   alt="Obrez Logo"
                   className="w-8 h-8"
                 />
                 <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez</h1>
-              </div>
+              </a>
               <div className="flex items-center gap-1">
                 <HeaderExportButton />
                 <DebugButton />

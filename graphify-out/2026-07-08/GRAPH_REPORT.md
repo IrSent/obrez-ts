@@ -1,16 +1,16 @@
 # Graph Report - obrez-ts  (2026-07-08)
 
 ## Corpus Check
-- 73 files · ~111,962 words
+- 73 files · ~112,153 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 482 nodes · 685 edges · 55 communities (39 shown, 16 thin omitted)
+- 485 nodes · 688 edges · 55 communities (40 shown, 15 thin omitted)
 - Extraction: 98% EXTRACTED · 2% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `c90200d1`
+- Built from commit: `5f2cc790`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -70,14 +70,14 @@
 ## Surprising Connections (you probably didn't know these)
 - `ProgressBarInner()` --calls--> `formatSeconds()`  [INFERRED]
   src/features/player/ProgressBar.tsx → src/features/auth/TopupModal.tsx
-- `ImportProgressModalInner()` --calls--> `usePlayerStore`  [EXTRACTED]
-  src/features/transcription/ImportProgressModal.tsx → src/store/playerStore.ts
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Muted - Speaker with X Overlay`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-1-icon.svg
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Low - Speaker with Single Arc`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-2-icon.svg
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume High - Speaker with Double Arc`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-off-icon.svg
+- `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Muted - Speaker with Arcs and Diagonal Slash`  [INFERRED] [semantically similar]
+  public/assets/volume-0-icon.svg → public/assets/volume-x-icon.svg
 
 ## Import Cycles
 - None detected.
@@ -89,11 +89,11 @@
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 - **E2E Test Fixtures (audio-only profanity test + full video AAC test)** — e2e_ru_profanity, e2e_valid_with_aac [EXTRACTED 1.00]
 
-## Communities (55 total, 16 thin omitted)
+## Communities (55 total, 15 thin omitted)
 
 ### Community 0 - "Export Modal + Context"
-Cohesion: 0.09
-Nodes (29): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner(), ExportFormat (+21 more)
+Cohesion: 0.08
+Nodes (34): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DebugButton(), ErrorEntry, CODEC_LABELS, ExportButton, ExportButtonInner() (+26 more)
 
 ### Community 1 - "Package Dependencies"
 Cohesion: 0.05
@@ -104,8 +104,8 @@ Cohesion: 0.15
 Nodes (20): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+12 more)
 
 ### Community 3 - "Bleep Sounds + Icons"
-Cohesion: 0.15
-Nodes (20): decodeAudio(), isRemoteUrl(), CloseIcon(), DownloadIcon(), FileIcon(), LinkIcon(), LoadingIcon(), PlayIcon() (+12 more)
+Cohesion: 0.14
+Nodes (21): decodeAudio(), isRemoteUrl(), CloseIcon(), DownloadIcon(), FileIcon(), LinkIcon(), LoadingIcon(), PlayIcon() (+13 more)
 
 ### Community 4 - "Community 4"
 Cohesion: 0.07
@@ -120,8 +120,8 @@ Cohesion: 0.40
 Nodes (4): __dirname, handleTranscriptionRequest(), Bun TLS Server (port 3000), server
 
 ### Community 7 - "Media Player + Audio"
-Cohesion: 0.08
-Nodes (30): LoginModalProps, BleepSoundManager, DebugButton(), ErrorEntry, DEFAULT_DICTIONARIES, DictionaryManager, Window, SettingsModal() (+22 more)
+Cohesion: 0.12
+Nodes (17): DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), Window, SettingsModal(), SettingsModalProps, TabKey, TABS (+9 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -139,6 +139,10 @@ Nodes (25): Actions, API Reference, Audio Utilities (`src/audio.ts`), Auth, auth
 Cohesion: 0.50
 Nodes (4): bun run build, bun x serve ./dist/, Install, obrez-ts
 
+### Community 24 - "Community 24"
+Cohesion: 0.40
+Nodes (4): Documentation, graphify, Key Facts, Repomix
+
 ### Community 26 - "Community 26"
 Cohesion: 0.24
 Nodes (8): build(), buildVersion(), clients, DIST_DIR, getVersions(), PUBLIC_DIR, server, SRC_DIR
@@ -148,8 +152,8 @@ Cohesion: 0.50
 Nodes (3): effects, transcription, version
 
 ### Community 35 - "Community 35"
-Cohesion: 0.08
-Nodes (21): ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal(), formatSeconds(), PACKAGES, TopupModal(), TopupModalProps (+13 more)
+Cohesion: 0.07
+Nodes (28): ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal(), LoginModalProps, formatSeconds(), PACKAGES, TopupModal() (+20 more)
 
 ### Community 36 - "Community 36"
 Cohesion: 0.50
@@ -184,24 +188,24 @@ Cohesion: 0.20
 Nodes (9): Console Diagnostics, Diagnostic Hooks, Playwright Config, Running Tests, Test Fixtures, Test Suite, Testing Guide, `window.__audioDiagnostic` (+1 more)
 
 ## Knowledge Gaps
-- **199 isolated node(s):** `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR`, `clients`, `server` (+194 more)
+- **202 isolated node(s):** `Key Facts`, `Documentation`, `Repomix`, `graphify`, `DIST_DIR` (+197 more)
   These have ≤1 connection - possible missing edges or undocumented components.
-- **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `usePlayerStore` connect `Export Modal + Context` to `Dictionary + Aho-Corasick`, `Community 35`, `Bleep Sounds + Icons`, `Media Player + Audio`, `Community 50`?**
-  _High betweenness centrality (0.025) - this node is a cross-community bridge._
-- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Media Player + Audio`?**
+  _High betweenness centrality (0.024) - this node is a cross-community bridge._
+- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`, `Media Player + Audio`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `DIST_DIR`, `PUBLIC_DIR`, `SRC_DIR` to the rest of the system?**
-  _199 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `Key Facts`, `Documentation`, `Repomix` to the rest of the system?**
+  _202 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
-  _Cohesion score 0.08637873754152824 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.07692307692307693 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**
-  _Cohesion score 0.14666666666666667 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14153846153846153 - nodes in this community are weakly interconnected._
 - **Should `Community 4` be split into smaller, more focused modules?**
   _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._
