@@ -25,8 +25,8 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1783507820.8523445,
-    "ast_hash": "4384c03d0ad10e0d315542fe909ff8aa",
+    "mtime": 1783528526.57366,
+    "ast_hash": "55a0de0d958c4445aed80720e6bf1ce5",
     "semantic_hash": ""
   },
   "src/aho-corasick.ts": {
@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "src/features/auth/LoginModal.tsx": {
-    "mtime": 1783323254.3334208,
-    "ast_hash": "b9a6a9269746b29f38d4fa08f081689a",
+    "mtime": 1783527709.868248,
+    "ast_hash": "51ef5ae5d926bfbf53242f0fb5e515b4",
     "semantic_hash": ""
   },
   "src/features/auth/TopupModal.tsx": {
@@ -355,13 +355,13 @@
     "semantic_hash": ""
   },
   "src/store/authStore.ts": {
-    "mtime": 1783422060.404058,
-    "ast_hash": "b67987af43cd26ed621dbf39e7b6ab46",
+    "mtime": 1783527911.5855212,
+    "ast_hash": "73a65aa9769ed2c06ec6e9380577eb21",
     "semantic_hash": ""
   },
   "deploy.sh": {
-    "mtime": 1783510690.8304405,
-    "ast_hash": "6399f0a9891579c308c9cb368cc80383",
+    "mtime": 1783529554.5563946,
+    "ast_hash": "718fbf0b2751e2684e6041ecaa10817c",
     "semantic_hash": ""
   },
   "public/backend-url.json": {
@@ -442,6 +442,11 @@
   "docs/transcription.md": {
     "mtime": 1783499640.2228928,
     "ast_hash": "baecb98c3d061156de2a05c8c95114b0",
+    "semantic_hash": ""
+  },
+  "src/utils/pkce.ts": {
+    "mtime": 1783527356.4090772,
+    "ast_hash": "e1bae45c60676db4740a65479e172dda",
     "semantic_hash": ""
   }
 }

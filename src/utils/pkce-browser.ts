@@ -1,4 +1,4 @@
-// PKCE utilities for Telegram OIDC
+// PKCE utilities for Telegram OIDC (browser)
 
 /**
  * Generate a random code_verifier (43-128 chars).
@@ -22,6 +22,10 @@ export async function generateCodeChallenge(codeVerifier: string): Promise<strin
  * Base64url encode (no padding).
  */
 function base64urlEncode(bytes: Uint8Array): string {
-  const base64 = btoa(String.fromCharCode(...bytes));
+  let binary = '';
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  const base64 = btoa(binary);
   return base64.replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
 }

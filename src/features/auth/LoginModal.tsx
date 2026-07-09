@@ -1,5 +1,5 @@
 import { useCallback } from 'react';
-import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce';
+import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce-browser';
 
 const TELEGRAM_CLIENT_ID = '8886675841';
 

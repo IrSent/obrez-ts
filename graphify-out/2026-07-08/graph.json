@@ -82,14 +82,44 @@
   },
   "nodes": [
     {
+      "label": "ProgressBar.tsx",
+      "file_type": "code",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "player_progressbar",
+      "community": 0,
+      "norm_label": "progressbar.tsx"
+    },
+    {
+      "label": "ProgressBarInner()",
+      "file_type": "code",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "player_progressbar_progressbarinner",
+      "community": 0,
+      "norm_label": "progressbarinner()"
+    },
+    {
+      "label": "ProgressBar",
+      "file_type": "code",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L161",
+      "_origin": "ast",
+      "id": "player_progressbar_progressbar",
+      "community": 0,
+      "norm_label": "progressbar"
+    },
+    {
       "label": "CLAUDE.md",
       "file_type": "document",
       "source_file": "CLAUDE.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "claude",
       "community": 24,
-      "norm_label": "claude.md"
+      "norm_label": "claude.md",
+      "id": "claude"
     },
     {
       "label": "Key Facts",
@@ -97,9 +127,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "claude_key_facts",
       "community": 24,
-      "norm_label": "key facts"
+      "norm_label": "key facts",
+      "id": "claude_key_facts"
     },
     {
       "label": "Documentation",
@@ -107,9 +137,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L11",
       "_origin": "ast",
-      "id": "claude_documentation",
       "community": 24,
-      "norm_label": "documentation"
+      "norm_label": "documentation",
+      "id": "claude_documentation"
     },
     {
       "label": "Repomix",
@@ -117,9 +147,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L22",
       "_origin": "ast",
-      "id": "claude_repomix",
       "community": 24,
-      "norm_label": "repomix"
+      "norm_label": "repomix",
+      "id": "claude_repomix"
     },
     {
       "label": "graphify",
@@ -127,9 +157,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L31",
       "_origin": "ast",
-      "id": "claude_graphify",
       "community": 24,
-      "norm_label": "graphify"
+      "norm_label": "graphify",
+      "id": "claude_graphify"
     },
     {
       "label": "dev.ts",
@@ -3634,36 +3664,6 @@
       "id": "file_loader_fileloader_fileloader"
     },
     {
-      "label": "ProgressBar.tsx",
-      "file_type": "code",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "progressbar.tsx",
-      "id": "player_progressbar"
-    },
-    {
-      "label": "ProgressBarInner()",
-      "file_type": "code",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L5",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "progressbarinner()",
-      "id": "player_progressbar_progressbarinner"
-    },
-    {
-      "label": "ProgressBar",
-      "file_type": "code",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L121",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "progressbar",
-      "id": "player_progressbar_progressbar"
-    },
-    {
       "label": "VolumeControls.tsx",
       "file_type": "code",
       "source_file": "src/features/player/VolumeControls.tsx",
@@ -4997,14 +4997,144 @@
   ],
   "links": [
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlayerDisplay.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playerdisplay",
+      "target": "player_progressbar"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_progressbar",
+      "target": "context_mediaplayercontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_progressbar",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L121",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_progressbar",
+      "target": "player_progressbar_progressbar"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_progressbar",
+      "target": "player_progressbar_progressbarinner"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_progressbar",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_progressbar",
+      "target": "store_playerstore_playeractions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_progressbar",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L89",
+      "weight": 1.0,
+      "source": "player_progressbar_progressbarinner",
+      "target": "auth_topupmodal_formatseconds"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "player_progressbar_progressbarinner",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/player/ProgressBar.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "player_progressbar_progressbarinner",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlayerDisplay.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playerdisplay",
+      "target": "player_progressbar_progressbar"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "CLAUDE.md",
       "source_location": "L11",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude",
-      "target": "claude_documentation",
-      "confidence_score": 1.0
+      "target": "claude_documentation"
     },
     {
       "relation": "contains",
@@ -5022,9 +5152,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L1",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude",
-      "target": "claude_key_facts",
-      "confidence_score": 1.0
+      "target": "claude_key_facts"
     },
     {
       "relation": "contains",
@@ -5032,9 +5162,9 @@
       "source_file": "CLAUDE.md",
       "source_location": "L22",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "claude",
-      "target": "claude_repomix",
-      "confidence_score": 1.0
+      "target": "claude_repomix"
     },
     {
       "relation": "contains",
@@ -5946,28 +6076,6 @@
       "confidence_score": 1.0,
       "source": "player_playerdisplay",
       "target": "player_playerdisplay_speeds"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlayerDisplay.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playerdisplay",
-      "target": "player_progressbar"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlayerDisplay.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playerdisplay",
-      "target": "player_progressbar_progressbar"
     },
     {
       "relation": "imports_from",
@@ -8397,17 +8505,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_progressbar",
-      "target": "context_mediaplayercontext"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/features/player/VolumeControls.tsx",
       "source_location": "L3",
       "weight": 1.0,
@@ -8500,28 +8597,6 @@
       "source_location": "L9",
       "weight": 1.0,
       "source": "file_loader_fileloader_fileloader",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_progressbar",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "source": "player_progressbar_progressbarinner",
       "target": "context_mediaplayercontext_usemediaplayercontext"
     },
     {
@@ -9327,17 +9402,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "auth_topupmodal_topupmodal",
-      "target": "auth_topupmodal_formatseconds"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L89",
-      "weight": 1.0,
-      "source": "player_progressbar_progressbarinner",
       "target": "auth_topupmodal_formatseconds"
     },
     {
@@ -10361,70 +10425,6 @@
       "weight": 1.0,
       "source": "file_loader_fileloader_fileloader",
       "target": "store_playerstore_useplayeractions"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L121",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_progressbar",
-      "target": "player_progressbar_progressbar"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_progressbar",
-      "target": "player_progressbar_progressbarinner"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_progressbar",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_progressbar",
-      "target": "store_playerstore_playeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_progressbar",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/player/ProgressBar.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "source": "player_progressbar_progressbarinner",
-      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "contains",
@@ -12222,5 +12222,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "5f2cc7902ac70d11c0cbf594a36c78cbec933ae8"
+  "built_at_commit": "2854b0487b7a921def61f23ac99e7aaeb950961d"
 }
