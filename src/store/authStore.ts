@@ -34,6 +34,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   exchangeCode: async (code: string) => {
     try {
+      await loadBackendUrl(); // ensure backend URL is loaded
       const codeVerifier = sessionStorage.getItem('obrez_pkce_verifier');
       const redirectUri = window.location.origin + window.location.pathname;
 

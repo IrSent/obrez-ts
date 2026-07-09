@@ -2,7 +2,7 @@
 
 ## High-Level Design
 
-Obrez is a **client-first** video censorship tool. All media processing — decoding, rendering, encoding — happens in the browser via [MediaBunny](https://mediabunny.dev/). The backend (GigaAM) is only used for **transcription** (speech-to-text) and **authentication** (Telegram Login Widget).
+Obrez is a **client-first** video censorship tool. All media processing — decoding, rendering, encoding — happens in the browser via [MediaBunny](https://mediabunny.dev/). The backend (GigaAM) is only used for **transcription** (speech-to-text) and **authentication** (Telegram OIDC + PKCE).
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -105,7 +105,7 @@ App
 │   ├── Header (sticky)
 │   │   ├── Logo + Title
 │   │   ├── HeaderExportButton   ← export progress badge
-│   │   ├── DebugButton          ← 🐛 error collector
+│   │   ├── DebugButton          ← 🐛 aggregates auth + player + JS errors
 │   │   └── ⚙️ → SettingsModal
 │   ├── FileLoader               ← drop file or URL
 │   ├── PlayerDisplay            ← canvas + controls
@@ -117,8 +117,12 @@ App
 │   │   ├── AddWordModal         ← manual transcription entry
 │   │   └── Auth modals (Login, Topup, Confirmation)
 │   └── ExportButton             ← sidebar (desktop)
-└── SettingsModal                ← Dictionaries, Bleep Sounds, Version
+└── SettingsModal                ← 👤📚🔊🔄 (Account, Dictionaries, Bleep Sounds, Version)
 ```
+
+### PlanCard
+
+`src/features/settings/PlanCard.tsx` — 3D animated cards for subscription plans (Free/Basic/Pro). Cards rotate around the Y-axis with inertia (fast spin, deceleration, linger at front face). Shared between `TopupModal` and `SettingsModal` UserContent via the `PLANS[]` export.
 
 ## Data Flow
 

@@ -320,3 +320,31 @@ async function importBleepSounds(
   onAdd: (id: string, label: string, url: string, fileData?: ArrayBuffer) => void,
 ): Promise<number>  // returns count of imported sounds
 ```
+
+## Auth Utilities (`src/utils/auth.ts`)
+
+```typescript
+import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from './utils/auth';
+
+canFreeTopup(lastFreeTopup: string | null | undefined): boolean  // 30+ days since last free topup?
+daysUntilFreeTopup(lastFreeTopup: string | null | undefined): number | null  // days remaining
+formatSeconds(sec: number): string  // "5h 30m 0s"
+```
+
+## PlanCard (`src/features/settings/PlanCard.tsx`)
+
+3D animated plan cards (Free/Basic/Pro). Cards rotate around Y-axis with inertia.
+
+```typescript
+import { PlanCard, PLANS } from './settings/PlanCard';
+
+// PLANS — shared array of { type, hours, price, label, description, emoji, accent, bgFront, textGlow }
+// Used by both TopupModal and SettingsModal UserContent.
+
+// PlanCard props:
+//   plan: Plan
+//   disabled: boolean
+//   isLoading: boolean
+//   onSelect: (type: string) => void
+//   delay: number  // ms stagger offset so cards don't spin in sync
+```

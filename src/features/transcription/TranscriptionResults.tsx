@@ -1,6 +1,7 @@
 import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useAuthStore } from '../../store/authStore';
+import { canFreeTopup } from '../../utils/auth';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { List, useListRef } from 'react-window';
 import { EffectModal, EffectBadge } from './EffectModal';
@@ -672,14 +673,6 @@ const TranscriptionResultsInner = () => {
 
     return () => clearInterval(interval);
   }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
-
-  const canFreeTopup = (lastFreeTopup: string | null | undefined): boolean => {
-    if (!lastFreeTopup) return true;
-    const last = new Date(lastFreeTopup);
-    const now = new Date();
-    const daysDiff = (now.getTime() - last.getTime()) / (1000 * 60 * 60 * 24);
-    return daysDiff >= 30;
-  };
 
   const handleTranscribe = async () => {
     // 1. Check auth

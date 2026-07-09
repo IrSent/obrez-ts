@@ -1,5 +1,6 @@
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce-browser';
+import { useAuthStore } from '../../store/authStore';
 
 const TELEGRAM_CLIENT_ID = '8886675841';
 
@@ -8,6 +9,33 @@ interface LoginModalProps {
 }
 
 export function LoginModal({ onClose }: LoginModalProps) {
+  const exchangeCode = useAuthStore((s) => s.exchangeCode);
+
+  // Listen for auth code from popup
+  useEffect(() => {
+    const handler = (e: MessageEvent) => {
+      // Only accept from our own origin
+      if (e.origin !== window.location.origin) return;
+      if (typeof e.data !== 'string' || !e.data.startsWith('obrez_auth:')) return;
+
+      const code = e.data.slice('obrez_auth:'.length);
+      const savedState = sessionStorage.getItem('obrez_pkce_state');
+      const popupState = sessionStorage.getItem('obrez_pkce_popup_state');
+
+      // Verify state
+      if (savedState === popupState) {
+        exchangeCode(code).then(() => {
+          sessionStorage.removeItem('obrez_pkce_verifier');
+          sessionStorage.removeItem('obrez_pkce_state');
+          sessionStorage.removeItem('obrez_pkce_nonce');
+          sessionStorage.removeItem('obrez_pkce_popup_state');
+        });
+      }
+    };
+    window.addEventListener('message', handler);
+    return () => window.removeEventListener('message', handler);
+  }, [exchangeCode]);
+
   const handleSignIn = useCallback(async () => {
     // PKCE
     const codeVerifier = generateCodeVerifier();
@@ -21,6 +49,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
     sessionStorage.setItem('obrez_pkce_verifier', codeVerifier);
     sessionStorage.setItem('obrez_pkce_state', state);
     sessionStorage.setItem('obrez_pkce_nonce', nonce);
+    sessionStorage.setItem('obrez_pkce_popup_state', state);
 
     // Redirect URI = current page (no query params)
     const redirectUri = window.location.origin + window.location.pathname;
@@ -36,7 +65,13 @@ export function LoginModal({ onClose }: LoginModalProps) {
     authUrl.searchParams.set('state', state);
     authUrl.searchParams.set('nonce', nonce);
 
-    window.location.href = authUrl.toString();
+    // Open in popup — on desktop it's a small window, on mobile it replaces the current tab
+    const popup = window.open(authUrl.toString(), '_blank', 'width=600,height=700');
+
+    // If popup was blocked or opened in same tab (mobile), fallback: wait for page redirect
+    if (!popup || popup.closed) {
+      window.location.href = authUrl.toString();
+    }
   }, []);
 
   return (
@@ -52,8 +87,11 @@ export function LoginModal({ onClose }: LoginModalProps) {
           </button>
         </div>
 
-        <p className="text-sm text-zinc-400 mb-6">
+        <p className="text-sm text-zinc-400 mb-2">
           Transcription requires authentication. Sign in with Telegram to continue.
+        </p>
+        <p className="text-xs text-zinc-500 mb-6">
+          You get 5 free hours every 30 days — don't forget to claim them in the settings.
         </p>
 
         <button

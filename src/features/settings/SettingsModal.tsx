@@ -2,13 +2,17 @@ import { useState, useEffect } from 'react';
 import { DictionaryManager } from '../dictionary/DictionaryManager';
 import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
 import { APP_VERSION } from '../../version';
+import { useAuthStore } from '../../store/authStore';
+import { PlanCard, PLANS } from './PlanCard';
+import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 
-type TabKey = 'dictionaries' | 'bleep' | 'version';
+type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version';
 
-const TABS: { key: TabKey; label: string }[] = [
-  { key: 'dictionaries', label: 'Dictionaries' },
-  { key: 'bleep', label: 'Bleep Sounds' },
-  { key: 'version', label: 'Version' },
+const TABS: { key: TabKey; emoji: string; tooltip: string }[] = [
+  { key: 'user', emoji: '👤', tooltip: 'Account & Balance' },
+  { key: 'dictionaries', emoji: '📚', tooltip: 'Dictionaries' },
+  { key: 'bleep', emoji: '🔊', tooltip: 'Bleep Sounds' },
+  { key: 'version', emoji: '🔄', tooltip: 'Version' },
 ];
 
 interface VersionInfo {
@@ -77,19 +81,23 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
             <button
               key={tab.key}
               onClick={() => setActiveTab(tab.key)}
-              className={`px-3 py-2 text-xs font-semibold rounded-t transition-colors ${
+              title={tab.tooltip}
+              className={`px-3 py-2 text-sm font-semibold rounded-t transition-colors ${
                 activeTab === tab.key
                   ? 'bg-zinc-800 text-purple-400 border-b-2 border-purple-500'
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
               }`}
             >
-              {tab.label}
+              {tab.emoji}
             </button>
           ))}
         </div>
 
         {/* Content */}
         <div className="flex-1 overflow-y-auto">
+          {activeTab === 'user' && (
+            <div className="p-4"><UserContent onClose={onClose} /></div>
+          )}
           {activeTab === 'dictionaries' && (
             <div className="p-4"><DictionaryManager /></div>
           )}
@@ -107,6 +115,111 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           )}
         </div>
       </div>
+    </div>
+  );
+}
+
+// ─── User tab ───
+
+interface UserContentProps {
+  onClose: () => void;
+}
+
+function UserContent({ onClose }: UserContentProps) {
+  const user = useAuthStore((s) => s.user);
+  const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
+  const logout = useAuthStore((s) => s.logout);
+  const topup = useAuthStore((s) => s.topup);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const error = useAuthStore((s) => s.error);
+  const clearError = useAuthStore((s) => s.clearError);
+
+  const freeAvailable = user ? canFreeTopup(user.last_free_topup) : false;
+  const daysLeft = user ? daysUntilFreeTopup(user.last_free_topup) : null;
+
+  const handleLogout = async () => {
+    await logout();
+    onClose();
+  };
+
+  const handleTopup = async (pkgType: string) => {
+    await topup(pkgType as Parameters<typeof topup>[0]);
+    if (!useAuthStore.getState().error) {
+      onClose();
+    }
+  };
+
+  if (!isAuthenticated) {
+    return (
+      <div className="text-center py-8">
+        <div className="text-4xl mb-3">🔒</div>
+        <p className="text-sm text-zinc-400">Not signed in</p>
+        <p className="text-xs text-zinc-500 mt-1">Sign in with Telegram to use transcription.</p>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Profile */}
+      <div className="flex items-center gap-4 p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+        {user?.photo_url ? (
+          <img src={user.photo_url} alt={user.first_name} className="w-12 h-12 rounded-full object-cover" />
+        ) : (
+          <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-lg font-semibold shrink-0">
+            {user?.first_name?.charAt(0) || '?'}
+          </div>
+        )}
+        <div className="flex-1 min-w-0">
+          <div className="text-zinc-100 font-medium">{user?.first_name}</div>
+          {user?.username && (
+            <div className="text-xs text-zinc-400">@{user.username}</div>
+          )}
+          <div className="text-sm text-purple-400 mt-0.5">
+            Balance: {formatSeconds(user?.remaining_seconds || 0)}
+          </div>
+        </div>
+        <button
+          onClick={handleLogout}
+          className="text-xs text-zinc-500 hover:text-red-400 transition-colors shrink-0"
+          title="Log out"
+        >
+          Log out
+        </button>
+      </div>
+
+      {/* Plan cards */}
+      <div className="space-y-3">
+        {PLANS.map((plan, i) => {
+          const isFree = plan.type === 'free';
+          const isDisabled = isFree && !freeAvailable;
+          return (
+            <PlanCard
+              key={plan.type}
+              plan={plan}
+              disabled={isDisabled}
+              isLoading={isLoading}
+              onSelect={handleTopup}
+              delay={i * 1200}
+            />
+          );
+        })}
+      </div>
+
+      {daysLeft !== null && daysLeft > 0 && (
+        <p className="text-xs text-yellow-400 text-center">
+          Free topup available in {daysLeft} day{daysLeft > 1 ? 's' : ''}
+        </p>
+      )}
+
+      {error && (
+        <div className="p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
+          <p className="text-xs text-red-400">{error}</p>
+          <button onClick={clearError} className="text-xs text-red-300 underline mt-1">
+            Dismiss
+          </button>
+        </div>
+      )}
     </div>
   );
 }

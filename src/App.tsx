@@ -40,6 +40,9 @@ export const App = () => {
       }
     };
     loadDefaults();
+
+    // Check auth on startup (cookie may be set from previous login)
+    loadBackendUrl().then(() => useAuthStore.getState().checkAuth());
   }, []);
 
   // OIDC callback: handle Telegram auth code
@@ -51,6 +54,14 @@ export const App = () => {
     if (code && state) {
       const savedState = sessionStorage.getItem('obrez_pkce_state');
       if (savedState === state) {
+        // Popup path: send code to opener and close
+        if (window.opener) {
+          window.opener.postMessage(`obrez_auth:${code}`, window.location.origin);
+          window.close();
+          return;
+        }
+
+        // Direct path (mobile fallback or page reload): exchange code locally
         const authStore = useAuthStore.getState();
         authStore.exchangeCode(code).then(() => {
           // Clear URL params and sessionStorage
@@ -58,6 +69,8 @@ export const App = () => {
           sessionStorage.removeItem('obrez_pkce_verifier');
           sessionStorage.removeItem('obrez_pkce_state');
           sessionStorage.removeItem('obrez_pkce_nonce');
+          // Now check auth — cookie should be set
+          authStore.checkAuth();
         });
       } else {
         console.error('OIDC state mismatch — possible CSRF');
