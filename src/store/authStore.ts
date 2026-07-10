@@ -1,6 +1,6 @@
 import { create } from 'zustand';
 import type { AuthUser, PackageType } from '../types';
-import { loadBackendUrl } from '../config';
+import { loadBackendUrl, backendHeaders } from '../config';
 
 interface AuthState {
   user: AuthUser | null;
@@ -47,7 +47,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const response = await fetch(`${url}/api/auth/telegram-oidc`, {
         method: 'POST',
         credentials: 'include',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', ...backendHeaders() },
         body: JSON.stringify({ code, code_verifier: codeVerifier, redirect_uri: redirectUri }),
       });
 
@@ -68,6 +68,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const url = await loadBackendUrl();
       const response = await fetch(`${url}/api/auth/me`, {
         credentials: 'include',
+        headers: backendHeaders(),
       });
       if (response.ok) {
         const data = await response.json();
@@ -90,6 +91,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       await fetch(`${url}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
+        headers: backendHeaders(),
       });
     } catch {
       // ignore
@@ -103,7 +105,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const url = await loadBackendUrl();
       const response = await fetch(
         `${url}/api/plan/topup?package_type=${packageType}`,
-        { method: 'POST', credentials: 'include' },
+        { method: 'POST', credentials: 'include', headers: backendHeaders() },
       );
       if (!response.ok) {
         const err = await response.json().catch(() => ({ detail: 'Unknown error' }));
