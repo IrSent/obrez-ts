@@ -1,16 +1,16 @@
 # Graph Report - obrez-ts  (2026-07-10)
 
 ## Corpus Check
-- 77 files · ~114,015 words
+- 77 files · ~114,023 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 509 nodes · 748 edges · 58 communities (42 shown, 16 thin omitted)
+- 509 nodes · 749 edges · 58 communities (42 shown, 16 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `e01510fe`
+- Built from commit: `0ad01977`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -199,7 +199,7 @@ Cohesion: 0.60
 Nodes (4): audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop()
 
 ## Knowledge Gaps
-- **206 isolated node(s):** `LoginModalProps`, `TabKey`, `TABS`, `VersionInfo`, `SettingsModalProps` (+201 more)
+- **206 isolated node(s):** `AuthStore`, `LoginModalProps`, `TabKey`, `TABS`, `VersionInfo` (+201 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -210,7 +210,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `LoginModalProps`, `TabKey`, `TABS` to the rest of the system?**
+- **What connects `AuthStore`, `LoginModalProps`, `TabKey` to the rest of the system?**
   _206 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
   _Cohesion score 0.09608843537414966 - nodes in this community are weakly interconnected._

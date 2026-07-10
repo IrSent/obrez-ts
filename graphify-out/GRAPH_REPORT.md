@@ -1,16 +1,16 @@
 # Graph Report - obrez-ts  (2026-07-10)
 
 ## Corpus Check
-- 77 files · ~114,023 words
+- 78 files · ~114,237 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 509 nodes · 749 edges · 58 communities (42 shown, 16 thin omitted)
+- 510 nodes · 749 edges · 59 communities (43 shown, 16 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.89)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0ad01977`
+- Built from commit: `839b9cfb`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -92,7 +92,7 @@
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 - **E2E Test Fixtures (audio-only profanity test + full video AAC test)** — e2e_ru_profanity, e2e_valid_with_aac [EXTRACTED 1.00]
 
-## Communities (58 total, 16 thin omitted)
+## Communities (59 total, 16 thin omitted)
 
 ### Community 0 - "Export Modal + Context"
 Cohesion: 0.10
@@ -199,7 +199,7 @@ Cohesion: 0.60
 Nodes (4): audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop()
 
 ## Knowledge Gaps
-- **206 isolated node(s):** `AuthStore`, `LoginModalProps`, `TabKey`, `TABS`, `VersionInfo` (+201 more)
+- **206 isolated node(s):** `LoginModalProps`, `AuthStore`, `TabKey`, `TABS`, `VersionInfo` (+201 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -210,7 +210,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `AuthStore`, `LoginModalProps`, `TabKey` to the rest of the system?**
+- **What connects `LoginModalProps`, `AuthStore`, `TabKey` to the rest of the system?**
   _206 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
   _Cohesion score 0.09608843537414966 - nodes in this community are weakly interconnected._

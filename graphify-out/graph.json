@@ -82,54 +82,56 @@
   },
   "nodes": [
     {
-      "label": "authStore.ts",
+      "label": "deploy.sh",
       "file_type": "code",
-      "source_file": "src/store/authStore.ts",
+      "source_file": "deploy.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "file"
+      },
+      "_origin": "ast",
+      "id": "deploy",
+      "community": 28,
+      "norm_label": "deploy.sh"
+    },
+    {
+      "label": "deploy.sh script",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L1",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_entrypoint"
+      },
+      "_origin": "ast",
+      "id": "home_irsent_gh_obrez_ts_deploy_sh__entry",
+      "community": 28,
+      "norm_label": "deploy.sh script"
+    },
+    {
+      "label": "build_version()",
+      "file_type": "code",
+      "source_file": "deploy.sh",
+      "source_location": "L43",
+      "metadata": {
+        "language": "bash",
+        "kind": "bash_function"
+      },
+      "_origin": "ast",
+      "id": "deploy_build_version",
+      "community": 28,
+      "norm_label": "build_version()"
+    },
+    {
+      "label": "login-popup.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/login-popup.spec.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "store_authstore",
-      "community": 7,
-      "norm_label": "authstore.ts"
-    },
-    {
-      "label": "AuthState",
-      "file_type": "code",
-      "source_file": "src/store/authStore.ts",
-      "source_location": "L5",
-      "_origin": "ast",
-      "id": "store_authstore_authstate",
-      "community": 7,
-      "norm_label": "authstate"
-    },
-    {
-      "label": "AuthActions",
-      "file_type": "code",
-      "source_file": "src/store/authStore.ts",
-      "source_location": "L12",
-      "_origin": "ast",
-      "id": "store_authstore_authactions",
-      "community": 7,
-      "norm_label": "authactions"
-    },
-    {
-      "label": "AuthStore",
-      "file_type": "code",
-      "source_file": "src/store/authStore.ts",
-      "source_location": "L21",
-      "_origin": "ast",
-      "id": "store_authstore_authstore",
-      "community": 7,
-      "norm_label": "authstore"
-    },
-    {
-      "label": "useAuthStore",
-      "file_type": "code",
-      "source_file": "src/store/authStore.ts",
-      "source_location": "L23",
-      "_origin": "ast",
-      "id": "store_authstore_useauthstore",
-      "community": 7,
-      "norm_label": "useauthstore"
+      "id": "e2e_login_popup_spec",
+      "community": 58,
+      "norm_label": "login-popup.spec.ts"
     },
     {
       "label": "LoginModal.tsx",
@@ -137,9 +139,9 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "auth_loginmodal",
       "community": 30,
-      "norm_label": "loginmodal.tsx",
-      "id": "auth_loginmodal"
+      "norm_label": "loginmodal.tsx"
     },
     {
       "label": "LoginModalProps",
@@ -147,9 +149,9 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L7",
       "_origin": "ast",
+      "id": "auth_loginmodal_loginmodalprops",
       "community": 30,
-      "norm_label": "loginmodalprops",
-      "id": "auth_loginmodal_loginmodalprops"
+      "norm_label": "loginmodalprops"
     },
     {
       "label": "LoginModal()",
@@ -157,9 +159,59 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L11",
       "_origin": "ast",
+      "id": "auth_loginmodal_loginmodal",
       "community": 7,
-      "norm_label": "loginmodal()",
-      "id": "auth_loginmodal_loginmodal"
+      "norm_label": "loginmodal()"
+    },
+    {
+      "label": "authStore.ts",
+      "file_type": "code",
+      "source_file": "src/store/authStore.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 7,
+      "norm_label": "authstore.ts",
+      "id": "store_authstore"
+    },
+    {
+      "label": "AuthState",
+      "file_type": "code",
+      "source_file": "src/store/authStore.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "community": 7,
+      "norm_label": "authstate",
+      "id": "store_authstore_authstate"
+    },
+    {
+      "label": "AuthActions",
+      "file_type": "code",
+      "source_file": "src/store/authStore.ts",
+      "source_location": "L12",
+      "_origin": "ast",
+      "community": 7,
+      "norm_label": "authactions",
+      "id": "store_authstore_authactions"
+    },
+    {
+      "label": "AuthStore",
+      "file_type": "code",
+      "source_file": "src/store/authStore.ts",
+      "source_location": "L21",
+      "_origin": "ast",
+      "community": 7,
+      "norm_label": "authstore",
+      "id": "store_authstore_authstore"
+    },
+    {
+      "label": "useAuthStore",
+      "file_type": "code",
+      "source_file": "src/store/authStore.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "community": 7,
+      "norm_label": "useauthstore",
+      "id": "store_authstore_useauthstore"
     },
     {
       "label": "SettingsModal.tsx",
@@ -1090,48 +1142,6 @@
       "community": 56,
       "norm_label": "base64urlencode()",
       "id": "utils_pkce_node_base64urlencode"
-    },
-    {
-      "label": "deploy.sh",
-      "file_type": "code",
-      "source_file": "deploy.sh",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "file"
-      },
-      "_origin": "ast",
-      "community": 28,
-      "norm_label": "deploy.sh",
-      "id": "deploy"
-    },
-    {
-      "label": "deploy.sh script",
-      "file_type": "code",
-      "source_file": "deploy.sh",
-      "source_location": "L1",
-      "metadata": {
-        "language": "bash",
-        "kind": "bash_entrypoint"
-      },
-      "_origin": "ast",
-      "community": 28,
-      "norm_label": "deploy.sh script",
-      "id": "home_irsent_gh_obrez_ts_deploy_sh__entry"
-    },
-    {
-      "label": "build_version()",
-      "file_type": "code",
-      "source_file": "deploy.sh",
-      "source_location": "L43",
-      "metadata": {
-        "language": "bash",
-        "kind": "bash_function"
-      },
-      "_origin": "ast",
-      "community": 28,
-      "norm_label": "build_version()",
-      "id": "deploy_build_version"
     },
     {
       "label": "pkce.ts",
@@ -5237,15 +5247,77 @@
   ],
   "links": [
     {
-      "relation": "imports_from",
-      "context": "import",
+      "relation": "defines",
       "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/ConfirmationModal.tsx",
+      "source_file": "deploy.sh",
+      "source_location": "L33",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "deploy",
+      "target": "deploy_build_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
       "source_location": "L1",
       "weight": 1.0,
       "confidence_score": 1.0,
-      "source": "auth_confirmationmodal",
-      "target": "store_authstore"
+      "source": "deploy",
+      "target": "home_irsent_gh_obrez_ts_deploy_sh__entry"
+    },
+    {
+      "relation": "calls",
+      "confidence": "EXTRACTED",
+      "source_file": "deploy.sh",
+      "source_location": "L60",
+      "weight": 1.0,
+      "context": "call",
+      "confidence_score": 1.0,
+      "source": "home_irsent_gh_obrez_ts_deploy_sh__entry",
+      "target": "deploy_build_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "auth_loginmodal_loginmodal"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "auth_loginmodal_loginmodalprops"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "src_config"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "src_config_loadbackendurl"
     },
     {
       "relation": "imports_from",
@@ -5256,6 +5328,149 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "auth_loginmodal",
+      "target": "store_authstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "utils_pkce"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "utils_pkce_browser"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "utils_pkce_browser_generatecodechallenge"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "utils_pkce_browser_generatecodeverifier"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "utils_pkce_generatecodechallenge"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_loginmodal",
+      "target": "utils_pkce_generatecodeverifier"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/settings/SettingsModal.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "settings_settingsmodal",
+      "target": "auth_loginmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_loginmodal"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/auth/LoginModal.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "source": "auth_loginmodal_loginmodal",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/settings/SettingsModal.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "settings_settingsmodal",
+      "target": "auth_loginmodal_loginmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_loginmodal_loginmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/auth/ConfirmationModal.tsx",
+      "source_location": "L1",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "auth_confirmationmodal",
       "target": "store_authstore"
     },
     {
@@ -5320,9 +5535,9 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L3",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_authstore",
-      "target": "src_config_backendheaders",
-      "confidence_score": 1.0
+      "target": "src_config_backendheaders"
     },
     {
       "relation": "imports",
@@ -5489,28 +5704,6 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "source": "auth_loginmodal_loginmodal",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/features/auth/TopupModal.tsx",
       "source_location": "L1",
       "weight": 1.0,
@@ -5605,158 +5798,6 @@
       "weight": 1.0,
       "source": "transcription_transcriptionresults_transcriptionresultsinner",
       "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "auth_loginmodal_loginmodal"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "auth_loginmodal_loginmodalprops"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "src_config"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "src_config_loadbackendurl"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "utils_pkce"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "utils_pkce_browser"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "utils_pkce_browser_generatecodechallenge"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "utils_pkce_browser_generatecodeverifier"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "utils_pkce_generatecodechallenge"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/auth/LoginModal.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "auth_loginmodal",
-      "target": "utils_pkce_generatecodeverifier"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/settings/SettingsModal.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "settings_settingsmodal",
-      "target": "auth_loginmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "auth_loginmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/settings/SettingsModal.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "settings_settingsmodal",
-      "target": "auth_loginmodal_loginmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "auth_loginmodal_loginmodal"
     },
     {
       "relation": "imports_from",
@@ -7545,37 +7586,6 @@
       "confidence_score": 1.0,
       "source": "utils_pkce_node_generatecodechallenge",
       "target": "utils_pkce_node_base64urlencode"
-    },
-    {
-      "relation": "defines",
-      "confidence": "EXTRACTED",
-      "source_file": "deploy.sh",
-      "source_location": "L33",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "deploy",
-      "target": "deploy_build_version"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "deploy.sh",
-      "source_location": "L1",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "deploy",
-      "target": "home_irsent_gh_obrez_ts_deploy_sh__entry"
-    },
-    {
-      "relation": "calls",
-      "confidence": "EXTRACTED",
-      "source_file": "deploy.sh",
-      "source_location": "L60",
-      "weight": 1.0,
-      "context": "call",
-      "confidence_score": 1.0,
-      "source": "home_irsent_gh_obrez_ts_deploy_sh__entry",
-      "target": "deploy_build_version"
     },
     {
       "relation": "contains",
@@ -13114,5 +13124,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "0ad01977de61cea130d31f37512cb03ef27d7542"
+  "built_at_commit": "839b9cfb4aa3b1b55d1d39e2b2e86ee0e2caf63d"
 }

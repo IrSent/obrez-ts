@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 509 nodes, 749 edges, 58 communities. Commit: 0ad0197</p>
+<p class="subtitle">Generated from graphify knowledge graph: 510 nodes, 749 edges, 59 communities. Commit: 839b9cf</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -116,7 +116,7 @@ flowchart LR
     class README_F78A71AF module;
     COMMUNITY_31_2075BEB2("Community 31<br/><small>5 nodes</small>")
     class COMMUNITY_31_2075BEB2 module;
-    OTHER_D0941E68("Other<br/><small>41 nodes</small>")
+    OTHER_D0941E68("Other<br/><small>42 nodes</small>")
     class OTHER_D0941E68 module;
     OUTPUTS_DOCS_ED82387C -->|imports x20| SERVE_API_35EC8E86
     MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x12| OUTPUTS_DOCS_ED82387C
@@ -125,11 +125,11 @@ flowchart LR
     MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x5| COMMUNITY_35_B2C5BAA1
     OUTPUTS_DOCS_ED82387C -->|imports x5| INGEST_CACHE_UPDATE_FF457338
     INGEST_CACHE_UPDATE_FF457338 -->|imports x5| SERVE_API_35EC8E86
+    COMMUNITY_30_9CA2CA2E -->|imports x4| MEDIA_PLAYER_AUDIO_4FE18149
     COMMUNITY_35_B2C5BAA1 -->|imports x4| MEDIA_PLAYER_AUDIO_4FE18149
     COMMUNITY_35_B2C5BAA1 -->|imports x4| SERVE_API_35EC8E86
     INGEST_CACHE_UPDATE_FF457338 -->|imports x4| OUTPUTS_DOCS_ED82387C
     OUTPUTS_DOCS_ED82387C -->|imports x3| MEDIA_PLAYER_AUDIO_4FE18149
-    OUTPUTS_DOCS_ED82387C -->|imports x3| COMMUNITY_35_B2C5BAA1
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,7 +146,7 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Graph Build</td><td>90</td><td><code>1, 5, 53, 34, 36, 56, 16, 32, 44, 46, 47</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>16</td><td><code>51</code></td></tr><tr><td>Outputs &amp; Docs</td><td>111</td><td><code>0, 50, 49, 9, 17, 18, 19, 42</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>6</td><td><code>24, 21</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>70</td><td><code>4, 3, 57, 10, 33, 38, 39</code></td></tr><tr><td>Serving API</td><td>58</td><td><code>12, 2, 14</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>12</td><td><code>54, 29</code></td></tr><tr><td>Media Player + Audio</td><td>38</td><td><code>7</code></td></tr><tr><td>Community 35</td><td>25</td><td><code>35</code></td></tr><tr><td>Community 52</td><td>12</td><td><code>52</code></td></tr><tr><td>Community 26</td><td>10</td><td><code>26</code></td></tr><tr><td>Community 30</td><td>10</td><td><code>30</code></td></tr><tr><td>README</td><td>5</td><td><code>13</code></td></tr><tr><td>Community 31</td><td>5</td><td><code>31</code></td></tr><tr><td>Other</td><td>41</td><td><code>45, 6, 8, 41, 48, 28, 15, 20, 40, 55, 11, 22, 23, 25, 27, 37, 43</code></td></tr>
+      <tr><td>Graph Build</td><td>90</td><td><code>1, 5, 53, 34, 36, 56, 16, 32, 44, 46, 47</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>16</td><td><code>51</code></td></tr><tr><td>Outputs &amp; Docs</td><td>111</td><td><code>0, 50, 49, 9, 17, 18, 19, 42</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>6</td><td><code>24, 21</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>70</td><td><code>4, 3, 57, 10, 33, 38, 39</code></td></tr><tr><td>Serving API</td><td>58</td><td><code>12, 2, 14</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>12</td><td><code>54, 29</code></td></tr><tr><td>Media Player + Audio</td><td>38</td><td><code>7</code></td></tr><tr><td>Community 35</td><td>25</td><td><code>35</code></td></tr><tr><td>Community 52</td><td>12</td><td><code>52</code></td></tr><tr><td>Community 26</td><td>10</td><td><code>26</code></td></tr><tr><td>Community 30</td><td>10</td><td><code>30</code></td></tr><tr><td>README</td><td>5</td><td><code>13</code></td></tr><tr><td>Community 31</td><td>5</td><td><code>31</code></td></tr><tr><td>Other</td><td>42</td><td><code>45, 6, 8, 41, 48, 28, 15, 20, 40, 55, 11, 22, 23, 25, 27, 37, 43, 58</code></td></tr>
     </table>
   </div>
   <div class="card">
@@ -158,7 +158,7 @@ flowchart LR
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>509 nodes · 749 edges · 58 communities (42 shown, 16 thin omitted)</li>
+      <li>510 nodes · 749 edges · 59 communities (43 shown, 16 thin omitted)</li>
       <li>Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.89)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `usePlayerStore` - 27 edges</li>
@@ -2135,8 +2135,8 @@ flowchart LR
     end
     auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
     settings_plancard_647e6b96("PlanCard.tsx")
+    auth_loginmodal_loginmodal_992d0af3 -->|calls| store_authstore_useauthstore_4a03c2d9
     store_authstore_useauthstore_4a03c2d9 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
-    store_authstore_useauthstore_4a03c2d9 -->|calls| auth_loginmodal_loginmodal_992d0af3
     store_authstore_useauthstore_4a03c2d9 -->|calls| auth_topupmodal_topupmodal_4bc16812
     store_authstore_useauthstore_4a03c2d9 -->|calls| debug_debugbutton_debugbutton_c3e63bea
     store_authstore_useauthstore_4a03c2d9 -->|calls| settings_settingsmodal_usercontent_d2a4d459
@@ -2147,6 +2147,7 @@ flowchart LR
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_formatseconds_cdef2b69
     auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
+    auth_loginmodal_loginmodal_992d0af3 -->|imports| settings_settingsmodal_68a86dc6
     store_authstore_2c5e1d9c -->|imports| auth_confirmationmodal_f9a1af42
     store_authstore_2c5e1d9c -->|imports| auth_topupmodal_5fbdbcde
     store_authstore_2c5e1d9c -->|imports| debug_debugbutton_373051bf
@@ -2157,7 +2158,6 @@ flowchart LR
     store_authstore_useauthstore_4a03c2d9 -->|imports| auth_topupmodal_5fbdbcde
     store_authstore_useauthstore_4a03c2d9 -->|imports| debug_debugbutton_373051bf
     store_authstore_useauthstore_4a03c2d9 -->|imports| settings_settingsmodal_68a86dc6
-    auth_loginmodal_loginmodal_992d0af3 -->|imports| settings_settingsmodal_68a86dc6
     settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_647e6b96
     %% Omitted for readability: 20 nodes, 9 edges
     class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
@@ -2201,6 +2201,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
+  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>2</td>
   <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2208,7 +2216,7 @@ flowchart LR
   <td>Module file in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>3</td>
   <td><code>AuthState</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -2216,7 +2224,7 @@ flowchart LR
   <td>AuthState node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>4</td>
   <td><code>AuthActions</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -2224,7 +2232,7 @@ flowchart LR
   <td>AuthActions node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>5</td>
   <td><code>AuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2232,20 +2240,12 @@ flowchart LR
   <td>AuthStore node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>5</td>
-  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>DebugButton()</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br>+6 more</td>
-  <td>useAuthStore node in src/store/authStore.ts.</td>
-</tr>
-<tr>
   <td>6</td>
-  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
   <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>DebugButton()</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br>+5 more</td>
+  <td>useAuthStore node in src/store/authStore.ts.</td>
 </tr>
 <tr>
   <td>7</td>
@@ -3453,12 +3453,12 @@ flowchart LR
 
 <!-- ====== 16. Other ====== -->
 <h2 id="other">16. Other</h2>
-<p>Other groups implementation around e2e, sequential, playbackspects, pause, mostly in e2e/pause-play-diagnostic.spec.ts, server.ts, e2e/sequential-playback.spec.ts. This section covers 41 nodes and 27 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Other groups implementation around e2e, sequential, playbackspects, pause, mostly in e2e/pause-play-diagnostic.spec.ts, server.ts, e2e/sequential-playback.spec.ts. This section covers 42 nodes and 27 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Other (41 nodes, 27 edges)
+    %% Section: Other (42 nodes, 27 edges)
     subgraph other_e2e_pause_play_diagnostic_spec_ts_8160306f["e2e/pause-play-diagnostic.spec.ts"]
         e2e_pause_play_diagnostic_spec_waitfordiagnostic_ce2c3204("waitForDiagnostic()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
         e2e_pause_play_diagnostic_spec_loadfile_046487ee("loadFile()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
@@ -3471,14 +3471,13 @@ flowchart LR
         deploy_build_version_93a58c4f("build_version()<br/><small>deploy.sh</small>")
         deploy_b0d51b9f("deploy.sh")
     end
-    subgraph other_e2e_sequential_operations_spec_ts_9bfb25fc["e2e/sequential-operations.spec.ts"]
-        e2e_sequential_operations_spec_checknomultiplest_74687c57("checkNoMultipleStreams()<br/><small>e2e/sequential-operations.spec.ts</small>")
-        e2e_sequential_operations_spec_loadfile_ba66268b("loadFile()<br/><small>e2e/sequential-operations.spec.ts</small>")
-        e2e_sequential_operations_spec_parsetime_cbaa92e7("parseTime()<br/><small>e2e/sequential-operations.spec.ts</small>")
-    end
     subgraph other_e2e_playback_spec_ts_7b9f76c4["e2e/playback.spec.ts"]
         e2e_playback_spec_parsetime_6cc5d75c("parseTime()<br/><small>e2e/playback.spec.ts</small>")
         e2e_playback_spec_80b327fb("playback.spec.ts")
+    end
+    subgraph other_e2e_sequential_operations_spec_ts_9bfb25fc["e2e/sequential-operations.spec.ts"]
+        e2e_sequential_operations_spec_checknomultiplest_74687c57("checkNoMultipleStreams()<br/><small>e2e/sequential-operations.spec.ts</small>")
+        e2e_sequential_operations_spec_loadfile_ba66268b("loadFile()<br/><small>e2e/sequential-operations.spec.ts</small>")
     end
     subgraph other_server_ts_86d1375c["server.ts"]
         server_handletranscriptionrequest_ff2e5f6f("handleTranscriptionRequest()<br/><small>server.ts</small>")
@@ -3489,11 +3488,12 @@ flowchart LR
         src_censor_worker_rendercensored_a4655dfa("renderCensored()<br/><small>src/censor-worker.ts</small>")
     end
     e2e_click_1x_ru_profanity3_spec_595353a1("click-1x-ru-profanity3.spec.ts")
+    e2e_login_popup_spec_a32fb0b4("login-popup.spec.ts")
     home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 -->|calls| deploy_build_version_93a58c4f
     e2e_pause_play_diagnostic_spec_waitfordiagnostic_ce2c3204 -->|calls| e2e_pause_play_diagnostic_spec_loadfile_046487ee
     server_handletranscriptionrequest_ff2e5f6f -->|calls| server_serve_466028ec
     src_censor_worker_decodebleep_79a6d5a0 -->|calls| src_censor_worker_rendercensored_a4655dfa
-    %% Omitted for readability: 23 nodes, 0 edges
+    %% Omitted for readability: 24 nodes, 0 edges
     class e2e_pause_play_diagnostic_spec_waitfordiagnostic_ce2c3204 test;
     class e2e_pause_play_diagnostic_spec_loadfile_046487ee test;
     class e2e_pause_play_diagnostic_spec_checknomultiplest_eb41d277 test;
@@ -3502,16 +3502,16 @@ flowchart LR
     class home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 function;
     class deploy_build_version_93a58c4f function;
     class deploy_b0d51b9f function;
-    class e2e_sequential_operations_spec_checknomultiplest_74687c57 test;
-    class e2e_sequential_operations_spec_loadfile_ba66268b test;
-    class e2e_sequential_operations_spec_parsetime_cbaa92e7 test;
     class e2e_playback_spec_parsetime_6cc5d75c test;
     class e2e_playback_spec_80b327fb test;
+    class e2e_sequential_operations_spec_checknomultiplest_74687c57 test;
+    class e2e_sequential_operations_spec_loadfile_ba66268b test;
     class server_handletranscriptionrequest_ff2e5f6f function;
     class server_serve_466028ec klass;
     class src_censor_worker_decodebleep_79a6d5a0 function;
     class src_censor_worker_rendercensored_a4655dfa function;
     class e2e_click_1x_ru_profanity3_spec_595353a1 test;
+    class e2e_login_popup_spec_a32fb0b4 test;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -3859,10 +3859,10 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>509</td></tr>
+      <tr><td>Nodes</td><td>510</td></tr>
       <tr><td>Edges</td><td>749</td></tr>
       <tr><td>Hyperedges</td><td>5</td></tr>
-      <tr><td>Communities</td><td>58</td></tr>
+      <tr><td>Communities</td><td>59</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
@@ -3878,7 +3878,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-10 11:10 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-10 13:29 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

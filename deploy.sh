@@ -92,9 +92,8 @@ cat > "$WORKDIR/index.html" << 'REDIRECT'
 fetch('stable-versions.json').then(r=>r.json()).then(d=>{
   const v = localStorage.getItem('obrez-version');
   const ver = (v && d.versions.includes(v)) ? v : d.default;
-  const qs = window.location.search;
-  window.location.replace(ver+'/?'+qs);
-}).catch(function(){ const qs = window.location.search; window.location.replace('master/?'+qs); });
+  window.location.replace(ver + '/' + window.location.search);
+}).catch(function(){ window.location.replace('master/' + window.location.search); });
 </script></head><body></body></html>
 REDIRECT
 
