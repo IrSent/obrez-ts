@@ -5,6 +5,7 @@ import { APP_VERSION } from '../../version';
 import { useAuthStore } from '../../store/authStore';
 import { PlanCard, PLANS } from './PlanCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
+import { LoginModal } from '../auth/LoginModal';
 
 type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version';
 
@@ -133,6 +134,7 @@ function UserContent({ onClose }: UserContentProps) {
   const isLoading = useAuthStore((s) => s.isLoading);
   const error = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
+  const [showLogin, setShowLogin] = useState(false);
 
   const freeAvailable = user ? canFreeTopup(user.last_free_topup) : false;
   const daysLeft = user ? daysUntilFreeTopup(user.last_free_topup) : null;
@@ -154,7 +156,14 @@ function UserContent({ onClose }: UserContentProps) {
       <div className="text-center py-8">
         <div className="text-4xl mb-3">🔒</div>
         <p className="text-sm text-zinc-400">Not signed in</p>
-        <p className="text-xs text-zinc-500 mt-1">Sign in with Telegram to use transcription.</p>
+        <p className="text-xs text-zinc-500 mt-1 mb-4">Sign in with Telegram to use transcription.</p>
+        <button
+          onClick={() => setShowLogin(true)}
+          className="bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium px-6 py-2 rounded-lg transition-colors text-sm"
+        >
+          Sign in with Telegram
+        </button>
+        {showLogin && <LoginModal onClose={() => setShowLogin(false)} />}
       </div>
     );
   }

@@ -1,4 +1,4 @@
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useRef } from 'react';
 import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce-browser';
 import { useAuthStore } from '../../store/authStore';
 
@@ -10,6 +10,7 @@ interface LoginModalProps {
 
 export function LoginModal({ onClose }: LoginModalProps) {
   const exchangeCode = useAuthStore((s) => s.exchangeCode);
+  const authUrlRef = useRef<string>('');
 
   // Listen for auth code from popup
   useEffect(() => {
@@ -65,13 +66,42 @@ export function LoginModal({ onClose }: LoginModalProps) {
     authUrl.searchParams.set('state', state);
     authUrl.searchParams.set('nonce', nonce);
 
+    authUrlRef.current = authUrl.toString();
+
     // Open in popup — on desktop it's a small window, on mobile it replaces the current tab
     const popup = window.open(authUrl.toString(), '_blank', 'width=600,height=700');
 
-    // If popup was blocked or opened in same tab (mobile), fallback: wait for page redirect
-    if (!popup || popup.closed) {
+    // If popup was blocked, fallback immediately
+    if (!popup) {
       window.location.href = authUrl.toString();
+      return;
     }
+
+    // If popup closed immediately (blocked or mobile), fallback after short delay
+    if (popup.closed) {
+      window.location.href = authUrl.toString();
+      return;
+    }
+
+    // Monitor popup — if it closes without sending code, fallback
+    const checkClosed = setInterval(() => {
+      if (popup.closed) {
+        clearInterval(checkClosed);
+        // Check if code was already exchanged (state cleared)
+        if (!sessionStorage.getItem('obrez_pkce_popup_state')) {
+          // Code was handled via postMessage — good
+          return;
+        }
+        // Popup closed without completing auth — fallback to direct navigation
+        sessionStorage.removeItem('obrez_pkce_popup_state');
+        window.location.href = authUrlRef.current;
+      }
+    }, 500);
+
+    // Timeout — if popup is still open after 5s, give up and navigate directly
+    setTimeout(() => {
+      clearInterval(checkClosed);
+    }, 30_000);
   }, []);
 
   return (
