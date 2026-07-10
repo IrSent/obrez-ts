@@ -166,8 +166,7 @@
 
         // Если URL не содержит версию — редирект (сохраняя query params)
         if (!window.location.pathname.match(/^\/[^\/]+\//)) {
-          const qs = window.location.search;
-          window.location.replace(`/${currentVersion}/${qs ? '?' + qs : ''}`);
+          window.location.replace(`/${currentVersion}/` + window.location.search);
         }
       });
 
