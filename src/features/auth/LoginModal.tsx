@@ -11,6 +11,7 @@ interface LoginModalProps {
 export function LoginModal({ onClose }: LoginModalProps) {
   const exchangeCode = useAuthStore((s) => s.exchangeCode);
   const authUrlRef = useRef<string>('');
+  const popupRef = useRef<Window | null>(null);
 
   // Listen for auth code from popup
   useEffect(() => {
@@ -27,6 +28,13 @@ export function LoginModal({ onClose }: LoginModalProps) {
       if (savedState === popupState) {
         // Clear popup state immediately to prevent fallback race condition
         sessionStorage.removeItem('obrez_pkce_popup_state');
+        // Close the popup from the opener — more reliable than window.close()
+        // in the popup itself (browsers may block close() after navigation)
+        const popup = popupRef.current;
+        if (popup && !popup.closed) {
+          popup.close();
+        }
+        popupRef.current = null;
         exchangeCode(code).then(() => {
           sessionStorage.removeItem('obrez_pkce_verifier');
           sessionStorage.removeItem('obrez_pkce_state');
@@ -71,6 +79,7 @@ export function LoginModal({ onClose }: LoginModalProps) {
 
     // Open in popup — on desktop it's a small window, on mobile it replaces the current tab
     const popup = window.open(authUrl.toString(), '_blank', 'width=600,height=700');
+    popupRef.current = popup;
 
     // If popup was blocked, fallback immediately
     if (!popup) {
@@ -95,14 +104,30 @@ export function LoginModal({ onClose }: LoginModalProps) {
         }
         // Popup closed without completing auth — fallback to direct navigation
         sessionStorage.removeItem('obrez_pkce_popup_state');
+        popupRef.current = null;
         window.location.href = authUrlRef.current;
       }
     }, 500);
 
-    // Timeout — if popup is still open after 5s, give up and navigate directly
+    // Timeout — if popup is still open after 30s, give up
     setTimeout(() => {
       clearInterval(checkClosed);
+      // If popup is still open and auth wasn't completed, close it and fallback
+      const stillOpen = popupRef.current && !popupRef.current.closed;
+      if (stillOpen && sessionStorage.getItem('obrez_pkce_popup_state')) {
+        popupRef.current?.close();
+        popupRef.current = null;
+        window.location.href = authUrlRef.current;
+      }
     }, 30_000);
+  }, []);
+
+  // Close popup if modal is unmounted (user clicked ✕ or navigation cancelled)
+  useEffect(() => {
+    return () => {
+      popupRef.current?.close();
+      popupRef.current = null;
+    };
   }, []);
 
   return (
