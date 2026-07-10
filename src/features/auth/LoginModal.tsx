@@ -25,11 +25,12 @@ export function LoginModal({ onClose }: LoginModalProps) {
 
       // Verify state
       if (savedState === popupState) {
+        // Clear popup state immediately to prevent fallback race condition
+        sessionStorage.removeItem('obrez_pkce_popup_state');
         exchangeCode(code).then(() => {
           sessionStorage.removeItem('obrez_pkce_verifier');
           sessionStorage.removeItem('obrez_pkce_state');
           sessionStorage.removeItem('obrez_pkce_nonce');
-          sessionStorage.removeItem('obrez_pkce_popup_state');
         });
       }
     };
