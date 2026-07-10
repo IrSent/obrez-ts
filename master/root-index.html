@@ -164,9 +164,10 @@
         currentVersion = currentVersion || versions.default;
         renderList();
 
-        // Если URL не содержит версию — редирект
+        // Если URL не содержит версию — редирект (сохраняя query params)
         if (!window.location.pathname.match(/^\/[^\/]+\//)) {
-          window.location.replace(`/${currentVersion}/`);
+          const qs = window.location.search;
+          window.location.replace(`/${currentVersion}/${qs ? '?' + qs : ''}`);
         }
       });
 
