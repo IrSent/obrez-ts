@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 509 nodes, 748 edges, 58 communities. Commit: e01510f</p>
+<p class="subtitle">Generated from graphify knowledge graph: 509 nodes, 749 edges, 58 communities. Commit: 0ad0197</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -119,17 +119,17 @@ flowchart LR
     OTHER_D0941E68("Other<br/><small>41 nodes</small>")
     class OTHER_D0941E68 module;
     OUTPUTS_DOCS_ED82387C -->|imports x20| SERVE_API_35EC8E86
-    MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x8| OUTPUTS_DOCS_ED82387C
+    MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x12| OUTPUTS_DOCS_ED82387C
     COMMUNITY_35_B2C5BAA1 -->|imports x7| OUTPUTS_DOCS_ED82387C
-    OUTPUTS_DOCS_ED82387C -->|imports x6| MEDIA_PLAYER_AUDIO_4FE18149
-    COMMUNITY_35_B2C5BAA1 -->|imports x6| MEDIA_PLAYER_AUDIO_4FE18149
     SERVE_API_35EC8E86 -->|contains x6| OUTPUTS_DOCS_ED82387C
+    MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x5| COMMUNITY_35_B2C5BAA1
     OUTPUTS_DOCS_ED82387C -->|imports x5| INGEST_CACHE_UPDATE_FF457338
     INGEST_CACHE_UPDATE_FF457338 -->|imports x5| SERVE_API_35EC8E86
-    COMMUNITY_30_9CA2CA2E -->|imports x4| MEDIA_PLAYER_AUDIO_4FE18149
+    COMMUNITY_35_B2C5BAA1 -->|imports x4| MEDIA_PLAYER_AUDIO_4FE18149
     COMMUNITY_35_B2C5BAA1 -->|imports x4| SERVE_API_35EC8E86
     INGEST_CACHE_UPDATE_FF457338 -->|imports x4| OUTPUTS_DOCS_ED82387C
-    MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x3| COMMUNITY_35_B2C5BAA1
+    OUTPUTS_DOCS_ED82387C -->|imports x3| MEDIA_PLAYER_AUDIO_4FE18149
+    OUTPUTS_DOCS_ED82387C -->|imports x3| COMMUNITY_35_B2C5BAA1
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -158,7 +158,7 @@ flowchart LR
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>509 nodes · 748 edges · 58 communities (42 shown, 16 thin omitted)</li>
+      <li>509 nodes · 749 edges · 58 communities (42 shown, 16 thin omitted)</li>
       <li>Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 10 edges (avg confidence: 0.89)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `usePlayerStore` - 27 edges</li>
@@ -2097,33 +2097,29 @@ flowchart LR
 
 <!-- ====== 9. Media Player + Audio ====== -->
 <h2 id="media-player-audio">9. Media Player + Audio</h2>
-<p>Media Player + Audio groups implementation around features, settings, settingsmodaltsx, auth, mostly in features/settings/SettingsModal.tsx, features/settings/PlanCard.tsx, src/store/authStore.ts. This section covers 38 nodes and 70 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Media Player + Audio groups implementation around features, settings, settingsmodaltsx, auth, mostly in features/settings/SettingsModal.tsx, src/store/authStore.ts, features/settings/PlanCard.tsx. This section covers 38 nodes and 70 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
     %% Section: Media Player + Audio (38 nodes, 70 edges)
-    subgraph media_player_audio_features_settings_PlanCard_ts_0ac77e7e["features/settings/PlanCard.tsx"]
-        settings_plancard_647e6b96("PlanCard.tsx")
-        settings_plancard_plancard_1f584c6e("PlanCard<br/><small>features/settings/PlanCard.tsx</small>")
-        settings_plancard_plans_3536a86a("PLANS<br/><small>features/settings/PlanCard.tsx</small>")
+    subgraph media_player_audio_features_auth_ConfirmationMod_c492133a["features/auth/ConfirmationModal.tsx"]
+        auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
+        auth_confirmationmodal_formatduration_1ba061e3("formatDuration()<br/><small>features/auth/ConfirmationModal.tsx</small>")
+        auth_confirmationmodal_f9a1af42("ConfirmationModal.tsx")
     end
     subgraph media_player_audio_src_utils_auth_ts_064617c2["src/utils/auth.ts"]
         utils_auth_canfreetopup_e6832bc1("canFreeTopup()<br/><small>src/utils/auth.ts</small>")
         utils_auth_daysuntilfreetopup_c93d63d8("daysUntilFreeTopup()<br/><small>src/utils/auth.ts</small>")
         utils_auth_formatseconds_cdef2b69("formatSeconds()<br/><small>src/utils/auth.ts</small>")
     end
-    subgraph media_player_audio_features_auth_ConfirmationMod_c492133a["features/auth/ConfirmationModal.tsx"]
-        auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
-        auth_confirmationmodal_formatduration_1ba061e3("formatDuration()<br/><small>features/auth/ConfirmationModal.tsx</small>")
-    end
     subgraph media_player_audio_features_auth_TopupModal_tsx_474daee4["features/auth/TopupModal.tsx"]
         auth_topupmodal_5fbdbcde("TopupModal.tsx")
         auth_topupmodal_topupmodal_4bc16812("TopupModal()<br/><small>features/auth/TopupModal.tsx</small>")
     end
     subgraph media_player_audio_features_debug_DebugButton_ts_bcec7121["features/debug/DebugButton.tsx"]
-        debug_debugbutton_373051bf("DebugButton.tsx")
         debug_debugbutton_debugbutton_c3e63bea("DebugButton()<br/><small>features/debug/DebugButton.tsx</small>")
+        debug_debugbutton_373051bf("DebugButton.tsx")
     end
     subgraph media_player_audio_features_settings_SettingsMod_361b2a41["features/settings/SettingsModal.tsx"]
         settings_settingsmodal_68a86dc6("SettingsModal.tsx")
@@ -2133,51 +2129,55 @@ flowchart LR
         store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
         store_authstore_2c5e1d9c("authStore.ts")
     end
+    subgraph media_player_audio_src_types_index_ts_8cf1903f["src/types/index.ts"]
+        types_index_authuser_aa5ffd3e("AuthUser<br/><small>src/types/index.ts</small>")
+        types_index_packagetype_8d1f1a36("PackageType<br/><small>src/types/index.ts</small>")
+    end
     auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
-    src_version_d1631cbf("version.ts")
-    auth_loginmodal_loginmodal_992d0af3 -->|calls| store_authstore_useauthstore_4a03c2d9
-    settings_settingsmodal_usercontent_d2a4d459 -->|calls| store_authstore_useauthstore_4a03c2d9
+    settings_plancard_647e6b96("PlanCard.tsx")
+    store_authstore_useauthstore_4a03c2d9 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
+    store_authstore_useauthstore_4a03c2d9 -->|calls| auth_loginmodal_loginmodal_992d0af3
+    store_authstore_useauthstore_4a03c2d9 -->|calls| auth_topupmodal_topupmodal_4bc16812
+    store_authstore_useauthstore_4a03c2d9 -->|calls| debug_debugbutton_debugbutton_c3e63bea
+    store_authstore_useauthstore_4a03c2d9 -->|calls| settings_settingsmodal_usercontent_d2a4d459
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_formatseconds_cdef2b69
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_formatseconds_cdef2b69
-    debug_debugbutton_debugbutton_c3e63bea -->|calls| store_authstore_useauthstore_4a03c2d9
-    store_authstore_useauthstore_4a03c2d9 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
     auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
+    store_authstore_2c5e1d9c -->|imports| auth_confirmationmodal_f9a1af42
+    store_authstore_2c5e1d9c -->|imports| auth_topupmodal_5fbdbcde
+    store_authstore_2c5e1d9c -->|imports| debug_debugbutton_373051bf
+    store_authstore_2c5e1d9c -->|imports| settings_settingsmodal_68a86dc6
+    store_authstore_2c5e1d9c -->|imports| types_index_authuser_aa5ffd3e
+    store_authstore_2c5e1d9c -->|imports| types_index_packagetype_8d1f1a36
+    store_authstore_useauthstore_4a03c2d9 -->|imports| auth_confirmationmodal_f9a1af42
+    store_authstore_useauthstore_4a03c2d9 -->|imports| auth_topupmodal_5fbdbcde
+    store_authstore_useauthstore_4a03c2d9 -->|imports| debug_debugbutton_373051bf
+    store_authstore_useauthstore_4a03c2d9 -->|imports| settings_settingsmodal_68a86dc6
     auth_loginmodal_loginmodal_992d0af3 -->|imports| settings_settingsmodal_68a86dc6
     settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_647e6b96
-    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_plancard_1f584c6e
-    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_plans_3536a86a
-    settings_settingsmodal_68a86dc6 -->|imports| src_version_d1631cbf
-    settings_settingsmodal_68a86dc6 -->|imports| store_authstore_2c5e1d9c
-    settings_settingsmodal_68a86dc6 -->|imports| store_authstore_useauthstore_4a03c2d9
-    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_canfreetopup_e6832bc1
-    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_daysuntilfreetopup_c93d63d8
-    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_formatseconds_cdef2b69
-    auth_topupmodal_5fbdbcde -->|imports| settings_plancard_647e6b96
-    auth_topupmodal_5fbdbcde -->|imports| settings_plancard_plancard_1f584c6e
-    %% Omitted for readability: 20 nodes, 8 edges
-    class settings_plancard_647e6b96 ui;
-    class settings_plancard_plancard_1f584c6e ui;
-    class settings_plancard_plans_3536a86a ui;
+    %% Omitted for readability: 20 nodes, 9 edges
+    class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
+    class auth_confirmationmodal_formatduration_1ba061e3 ui;
+    class auth_confirmationmodal_f9a1af42 ui;
     class utils_auth_canfreetopup_e6832bc1 function;
     class utils_auth_daysuntilfreetopup_c93d63d8 function;
     class utils_auth_formatseconds_cdef2b69 function;
-    class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
-    class auth_confirmationmodal_formatduration_1ba061e3 ui;
     class auth_topupmodal_5fbdbcde ui;
     class auth_topupmodal_topupmodal_4bc16812 ui;
-    class debug_debugbutton_373051bf ui;
     class debug_debugbutton_debugbutton_c3e63bea ui;
+    class debug_debugbutton_373051bf ui;
     class settings_settingsmodal_68a86dc6 ui;
     class settings_settingsmodal_usercontent_d2a4d459 ui;
     class store_authstore_useauthstore_4a03c2d9 ui;
     class store_authstore_2c5e1d9c ui;
+    class types_index_authuser_aa5ffd3e klass;
+    class types_index_packagetype_8d1f1a36 klass;
     class auth_loginmodal_loginmodal_992d0af3 ui;
-    class src_version_d1631cbf module;
+    class settings_plancard_647e6b96 ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2201,190 +2201,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
-  <td>Module file in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>TabKey</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TabKey node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>TABS</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TABS node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>VersionInfo</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>VersionInfo node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>SettingsModalProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>SettingsModalProps node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>UserContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>UserContentProps node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>UserContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+1 more</td>
-  <td>UserContent() node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>VersionContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>VersionContentProps node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>VersionContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>VersionContent() node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
-  <td>Module file in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+1 more</td>
-  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>DebugButton.tsx</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>Module file in features/debug/DebugButton.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>ErrorEntry</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ErrorEntry node in features/debug/DebugButton.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>DebugButton()</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>DebugButton() node in features/debug/DebugButton.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>PlanCard.tsx</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>PackageType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td>Module file in features/settings/PlanCard.tsx.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>Plan</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Plan node in features/settings/PlanCard.tsx.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>PLANS</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>PLANS node in features/settings/PlanCard.tsx.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>PlanCardProps</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>PlanCardProps node in features/settings/PlanCard.tsx.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>PlanCard</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>PlanCard node in features/settings/PlanCard.tsx.</td>
-</tr>
-<tr>
-  <td>23</td>
   <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>DebugButton.tsx</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>PackageType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>DebugButton.tsx</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br>+3 more</td>
   <td>Module file in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>2</td>
   <td><code>AuthState</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -2392,7 +2216,7 @@ flowchart LR
   <td>AuthState node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>3</td>
   <td><code>AuthActions</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -2400,7 +2224,7 @@ flowchart LR
   <td>AuthActions node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>4</td>
   <td><code>AuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2408,12 +2232,188 @@ flowchart LR
   <td>AuthStore node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>5</td>
   <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>DebugButton()</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br><code>DebugButton.tsx</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small><br>+4 more</td>
-  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>DebugButton()</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br>+6 more</td>
   <td>useAuthStore node in src/store/authStore.ts.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+5 more</td>
+  <td>Module file in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>TabKey</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TabKey node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>TABS</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TABS node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>VersionInfo</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>VersionInfo node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>SettingsModalProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>SettingsModalProps node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>UserContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>UserContentProps node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>UserContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small></td>
+  <td>UserContent() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>VersionContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>VersionContentProps node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>VersionContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>VersionContent() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+5 more</td>
+  <td>Module file in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small></td>
+  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>DebugButton.tsx</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>Module file in features/debug/DebugButton.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>ErrorEntry</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ErrorEntry node in features/debug/DebugButton.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>DebugButton()</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>DebugButton() node in features/debug/DebugButton.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>PlanCard.tsx</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><code>PackageType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td>Module file in features/settings/PlanCard.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>Plan</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Plan node in features/settings/PlanCard.tsx.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>PLANS</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>PLANS node in features/settings/PlanCard.tsx.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>PlanCardProps</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>PlanCardProps node in features/settings/PlanCard.tsx.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>PlanCard</code><br><small style="color:var(--muted)">features/settings/PlanCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>PlanCard node in features/settings/PlanCard.tsx.</td>
 </tr>
 <tr>
   <td>28</td>
@@ -3860,7 +3860,7 @@ flowchart LR
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><td>Nodes</td><td>509</td></tr>
-      <tr><td>Edges</td><td>748</td></tr>
+      <tr><td>Edges</td><td>749</td></tr>
       <tr><td>Hyperedges</td><td>5</td></tr>
       <tr><td>Communities</td><td>58</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
@@ -3869,7 +3869,7 @@ flowchart LR
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>738</td></tr>
+      <tr><td>EXTRACTED</td><td>739</td></tr>
       <tr><td>INFERRED</td><td>10</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -3878,7 +3878,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-10 06:13 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-10 11:10 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
