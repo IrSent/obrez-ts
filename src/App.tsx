@@ -41,8 +41,16 @@ export const App = () => {
     };
     loadDefaults();
 
-    // Check auth on startup (cookie may be set from previous login)
-    loadBackendUrl().then(() => useAuthStore.getState().checkAuth());
+    // Restore user from localStorage (survives page reload)
+    const saved = localStorage.getItem('obrez_user');
+    if (saved) {
+      try {
+        const user = JSON.parse(saved);
+        useAuthStore.getState().setUser(user);
+      } catch {
+        localStorage.removeItem('obrez_user');
+      }
+    }
   }, []);
 
   // OIDC callback: handle Telegram auth code

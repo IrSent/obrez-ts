@@ -677,29 +677,31 @@ const TranscriptionResultsInner = () => {
   }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
 
   const handleTranscribe = async () => {
-    // 1. Check auth
+    // 1. Check auth against backend (needed to get fresh balance)
     try {
       await checkAuth();
     } catch {
       // ignore — checkAuth sets error in store
     }
 
-    const user = useAuthStore.getState().user;
     const authErr = useAuthStore.getState().error;
 
+    if (authErr) {
+      // Backend error — show with retry
+      setAuthModalError(authErr);
+      setAuthModalRetry(async () => {
+        setAuthModal(null);
+        handleTranscribe();
+      });
+      setAuthModal('login');
+      return;
+    }
+
+    const user = useAuthStore.getState().user;
     if (!user) {
-      if (authErr) {
-        // Backend error — show with retry
-        setAuthModalError(authErr);
-        setAuthModalRetry(async () => {
-          setAuthModal(null);
-          handleTranscribe();
-        });
-      } else {
-        // Truly not logged in
-        setAuthModalError(null);
-        setAuthModalRetry(null);
-      }
+      // Truly not logged in
+      setAuthModalError(null);
+      setAuthModalRetry(null);
       setAuthModal('login');
       return;
     }
@@ -724,6 +726,7 @@ const TranscriptionResultsInner = () => {
   const handleLoggedIn = async () => {
     await checkAuth();
     const user = useAuthStore.getState().user;
+    const authErr = useAuthStore.getState().error;
     if (user) {
       const freeAvailable = canFreeTopup(user.last_free_topup);
       const balanceInsufficient = duration > user.remaining_seconds;
@@ -732,6 +735,13 @@ const TranscriptionResultsInner = () => {
       } else {
         setAuthModal('confirm');
       }
+    } else if (authErr) {
+      // Backend unavailable — show retry in login modal
+      setAuthModalError(authErr);
+      setAuthModalRetry(async () => {
+        setAuthModal(null);
+        handleTranscribe();
+      });
     }
   };
 

@@ -64,6 +64,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       if (response.ok) {
         try {
           const data = await response.json();
+          localStorage.setItem('obrez_user', JSON.stringify(data.user));
           set({ user: data.user, isAuthenticated: true, error: null });
         } catch {
           set({ error: 'Invalid response from server' });
@@ -89,28 +90,39 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       if (response.ok) {
         try {
           const data = await response.json();
+          localStorage.setItem('obrez_user', JSON.stringify(data.user));
           set({
             user: data.user,
             isAuthenticated: true,
             error: null,
           });
         } catch {
-          set({ user: null, isAuthenticated: false, error: 'Invalid server response' });
+          set({ error: 'Invalid server response' });
         }
-      } else {
+      } else if (response.status === 401 || response.status === 403) {
+        // Session expired — clear
         const err = await response.json().catch(() => null);
+        localStorage.removeItem('obrez_user');
         set({
           user: null,
           isAuthenticated: false,
+          error: err?.detail || `Session expired (HTTP ${response.status})`,
+        });
+      } else {
+        // Other server error — keep user, show error
+        const err = await response.json().catch(() => null);
+        set({
           error: err?.detail || `Server error (HTTP ${response.status})`,
         });
       }
     } catch {
-      set({ user: null, isAuthenticated: false, error: 'Backend unavailable' });
+      // Network error — keep user, show error
+      set({ error: 'Backend unavailable' });
     }
   },
 
   logout: async () => {
+    localStorage.removeItem('obrez_user');
     try {
       const url = await loadBackendUrl();
       await fetch(`${url}/api/auth/logout`, {

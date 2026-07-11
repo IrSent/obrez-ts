@@ -64,7 +64,7 @@ export function DebugButton() {
   const badgeText = totalErrors > 0 ? (totalErrors > 99 ? '99+' : String(totalErrors)) : '';
 
   return (
-    <>
+    <div className="relative inline-block">
       <button
         id="obrez-debug-btn"
         onClick={handleToggle}
@@ -82,7 +82,7 @@ export function DebugButton() {
       </button>
 
       {open && (
-        <div className="fixed top-14 right-3 z-50 bg-zinc-900 border border-zinc-700 rounded-xl p-4 w-[calc(100vw-24px)] max-w-[500px] max-h-[calc(100vh-80px)] overflow-y-auto shadow-2xl">
+        <div className="absolute top-10 right-0 z-50 bg-zinc-900 border border-zinc-700 rounded-xl p-4 w-[calc(100vw-24px)] max-w-[500px] max-h-[calc(100vh-80px)] overflow-y-auto shadow-2xl">
           <div className="flex items-center justify-between mb-3 pb-2 border-b border-zinc-800">
             <span className="text-xs font-bold text-red-400">
               {!totalErrors ? '✓ No errors' : `⚠ ${totalErrors} error${totalErrors > 1 ? 's' : ''}`}
@@ -154,6 +154,6 @@ export function DebugButton() {
           )}
         </div>
       )}
-    </>
+    </div>
   );
 }
