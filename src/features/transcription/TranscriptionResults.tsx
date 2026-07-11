@@ -301,6 +301,8 @@ const TranscriptionResultsInner = () => {
 
   // Auth modals — one state, can't conflict
   const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(null);
+  const [authModalError, setAuthModalError] = useState<string | null>(null);
+  const [authModalRetry, setAuthModalRetry] = useState<(() => Promise<void>) | null>(null);
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const authUser = useAuthStore((s) => s.user);
@@ -679,11 +681,25 @@ const TranscriptionResultsInner = () => {
     try {
       await checkAuth();
     } catch {
-      // ignore
+      // ignore — checkAuth sets error in store
     }
 
     const user = useAuthStore.getState().user;
+    const authErr = useAuthStore.getState().error;
+
     if (!user) {
+      if (authErr) {
+        // Backend error — show with retry
+        setAuthModalError(authErr);
+        setAuthModalRetry(async () => {
+          setAuthModal(null);
+          handleTranscribe();
+        });
+      } else {
+        // Truly not logged in
+        setAuthModalError(null);
+        setAuthModalRetry(null);
+      }
       setAuthModal('login');
       return;
     }
@@ -878,6 +894,8 @@ const TranscriptionResultsInner = () => {
       {authModal === 'login' && (
         <LoginModal
           onClose={() => setAuthModal(null)}
+          onRetry={authModalRetry ?? undefined}
+          initialError={authModalError}
         />
       )}
       {authModal === 'topup' && (

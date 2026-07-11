@@ -36,10 +36,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     try {
       await loadBackendUrl(); // ensure backend URL is loaded
       const codeVerifier = sessionStorage.getItem('obrez_pkce_verifier');
+      const nonce = sessionStorage.getItem('obrez_pkce_nonce');
       const redirectUri = window.location.origin + window.location.pathname;
 
       if (!codeVerifier) {
         set({ error: 'PKCE verifier missing' });
+        return;
+      }
+      if (!nonce) {
+        set({ error: 'PKCE nonce missing' });
         return;
       }
 
@@ -48,15 +53,26 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         method: 'POST',
         credentials: 'include',
         headers: { 'Content-Type': 'application/json', ...backendHeaders() },
-        body: JSON.stringify({ code, code_verifier: codeVerifier, redirect_uri: redirectUri }),
+        body: JSON.stringify({
+          code,
+          code_verifier: codeVerifier,
+          redirect_uri: redirectUri,
+          nonce,
+        }),
       });
 
       if (response.ok) {
-        const data = await response.json();
-        set({ user: data.user, isAuthenticated: true, error: null });
+        try {
+          const data = await response.json();
+          set({ user: data.user, isAuthenticated: true, error: null });
+        } catch {
+          set({ error: 'Invalid response from server' });
+        }
       } else {
-        const err = await response.json().catch(() => ({ detail: 'Auth failed' }));
-        set({ error: err.detail || 'Auth failed' });
+        const err = await response.json().catch(() => ({
+          detail: `Auth failed (HTTP ${response.status})`,
+        }));
+        set({ error: err.detail || `Auth failed (HTTP ${response.status})` });
       }
     } catch {
       set({ error: 'Network error during auth' });
@@ -71,17 +87,26 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         headers: backendHeaders(),
       });
       if (response.ok) {
-        const data = await response.json();
-        set({
-          user: data.user,
-          isAuthenticated: true,
-          error: null,
-        });
+        try {
+          const data = await response.json();
+          set({
+            user: data.user,
+            isAuthenticated: true,
+            error: null,
+          });
+        } catch {
+          set({ user: null, isAuthenticated: false, error: 'Invalid server response' });
+        }
       } else {
-        set({ user: null, isAuthenticated: false });
+        const err = await response.json().catch(() => null);
+        set({
+          user: null,
+          isAuthenticated: false,
+          error: err?.detail || `Server error (HTTP ${response.status})`,
+        });
       }
     } catch {
-      set({ user: null, isAuthenticated: false });
+      set({ user: null, isAuthenticated: false, error: 'Backend unavailable' });
     }
   },
 
