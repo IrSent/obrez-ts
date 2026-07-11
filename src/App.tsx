@@ -19,24 +19,28 @@ export const App = () => {
   // Load backend URL and default dictionaries on startup
   useEffect(() => {
     const loadDefaults = async () => {
-      await loadBackendUrl();
+      try {
+        await loadBackendUrl();
 
-      const store = usePlayerStore.getState();
-      const loadedDictionaries = store.loadedDictionaries;
+        const store = usePlayerStore.getState();
+        const loadedDictionaries = store.loadedDictionaries;
 
-      for (const slug of DEFAULT_DICTIONARIES) {
-        if (slug in loadedDictionaries) continue;
-        try {
-          const response = await fetch(backendPath(`/dictionary/${slug}`), {
-            headers: backendHeaders(),
-          });
-          if (!response.ok) continue;
-          const buffer = await response.arrayBuffer();
-          const scanner = new FastAhoScanner(buffer);
-          playerActions.loadDictionary(slug, slug, scanner);
-        } catch (error) {
-          console.error(`Failed to load default dictionary ${slug}:`, error);
+        for (const slug of DEFAULT_DICTIONARIES) {
+          if (slug in loadedDictionaries) continue;
+          try {
+            const response = await fetch(backendPath(`/dictionary/${slug}`), {
+              headers: backendHeaders(),
+            });
+            if (!response.ok) continue;
+            const buffer = await response.arrayBuffer();
+            const scanner = new FastAhoScanner(buffer);
+            playerActions.loadDictionary(slug, slug, scanner);
+          } catch (error) {
+            console.error(`Failed to load default dictionary ${slug}:`, error);
+          }
         }
+      } catch {
+        // Backend not available — skip dictionary loading silently
       }
     };
     loadDefaults();

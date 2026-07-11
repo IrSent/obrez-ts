@@ -18,7 +18,7 @@ export async function loadBackendUrl(): Promise<string> {
     // fall through to default
   }
 
-  _backendUrl = 'https://192.168.3.250:8686';
+  _backendUrl = 'https://obrez-backend.loca.lt';
   return _backendUrl;
 }
 
@@ -28,9 +28,9 @@ export function backendPath(path: string): string {
   return `${_backendUrl}${path}`;
 }
 
-/** Headers needed for ngrok free tier to bypass the intercept page. */
+/** Headers sent with every backend request. */
 export function backendHeaders(): Record<string, string> {
-  return { 'ngrok-skip-browser-warning': 'true' };
+  return {};
 }
 
 /** Must only be called after loadBackendUrl() — e.g. in async contexts. */
