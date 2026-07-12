@@ -100,13 +100,13 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           set({ error: 'Invalid server response' });
         }
       } else if (response.status === 401 || response.status === 403) {
-        // Session expired — clear
-        const err = await response.json().catch(() => null);
+        // Session expired or not authenticated — clear, but don't set error
+        // (401 is expected when user is not logged in)
         localStorage.removeItem('obrez_user');
         set({
           user: null,
           isAuthenticated: false,
-          error: err?.detail || `Session expired (HTTP ${response.status})`,
+          error: null,
         });
       } else {
         // Other server error — keep user, show error

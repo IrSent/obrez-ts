@@ -155,12 +155,18 @@ test('login popup full flow — popup navigates to callback, sends postMessage, 
   // Wait for the main page handler to fire — obrez_pkce_popup_state is cleared
   // as soon as postMessage is received. If Playwright breaks window.opener
   // (cross-origin nav), the popup takes the direct path and cleans its own URL.
+  // Wrap the main-page promise so it never rejects — if the popup wins, the
+  // main-page waitForFunction is abandoned and would otherwise crash the test.
+  const mainPagePromise = page.waitForFunction(() => {
+    return sessionStorage.getItem('obrez_pkce_popup_state') === null;
+  }, { timeout: 12_000 }).catch(() => {});
+
+  const popupPromise = popup.waitForURL((url) => !url.toString().includes('code='), { timeout: 12_000 });
+
   const winner = await raceDiagnostic(
-    page.waitForFunction(() => {
-      return sessionStorage.getItem('obrez_pkce_popup_state') === null;
-    }, { timeout: 12_000 }),
+    mainPagePromise,
     'main-page state cleared',
-    popup.waitForURL((url) => !url.toString().includes('code='), { timeout: 12_000 }),
+    popupPromise,
     'popup URL cleaned',
     15_000,
   );
