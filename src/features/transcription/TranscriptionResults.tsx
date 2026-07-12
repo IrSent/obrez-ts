@@ -302,7 +302,9 @@ const TranscriptionResultsInner = () => {
   // Auth modals — one state, can't conflict
   const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(null);
   const [authModalError, setAuthModalError] = useState<string | null>(null);
-  const [authModalRetry, setAuthModalRetry] = useState<(() => Promise<void>) | null>(null);
+  // Use ref for retry callback — React's setState treats functions as reducers,
+  // so storing a function in state causes it to be called immediately.
+  const authModalRetryRef = useRef<(() => Promise<void>) | null>(null);
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const authUser = useAuthStore((s) => s.user);
@@ -686,14 +688,15 @@ const TranscriptionResultsInner = () => {
     }
 
     const authErr = useAuthStore.getState().error;
+    const authUser = useAuthStore.getState().user;
 
     if (authErr) {
       // Backend error — show with retry
       setAuthModalError(authErr);
-      setAuthModalRetry(async () => {
+      authModalRetryRef.current = async () => {
         setAuthModal(null);
         handleTranscribe();
-      });
+      };
       setAuthModal('login');
       return;
     }
@@ -702,7 +705,7 @@ const TranscriptionResultsInner = () => {
     if (!user) {
       // Truly not logged in
       setAuthModalError(null);
-      setAuthModalRetry(null);
+      authModalRetryRef.current = null;
       setAuthModal('login');
       return;
     }
@@ -739,10 +742,10 @@ const TranscriptionResultsInner = () => {
     } else if (authErr) {
       // Backend unavailable — show retry in login modal
       setAuthModalError(authErr);
-      setAuthModalRetry(async () => {
+      authModalRetryRef.current = async () => {
         setAuthModal(null);
         handleTranscribe();
-      });
+      };
     }
   };
 
@@ -906,7 +909,7 @@ const TranscriptionResultsInner = () => {
       {authModal === 'login' && (
         <LoginModal
           onClose={() => setAuthModal(null)}
-          onRetry={authModalRetry ?? undefined}
+          onRetry={authModalRetryRef.current ?? undefined}
           initialError={authModalError}
         />
       )}

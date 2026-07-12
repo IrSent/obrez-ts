@@ -30,7 +30,7 @@ export function backendPath(path: string): string {
 
 /** Headers sent with every backend request. */
 export function backendHeaders(): Record<string, string> {
-  return {};
+  return { 'bypass-tunnel-reminder': 'true' };
 }
 
 /** Must only be called after loadBackendUrl() — e.g. in async contexts. */
