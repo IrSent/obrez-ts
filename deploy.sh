@@ -23,15 +23,12 @@ echo "📂 Working dir: $WORKDIR"
 # ── clone gh-pages ──
 git clone --depth 1 -b gh-pages "$REPO" "$WORKDIR" > /dev/null 2>&1
 
-# ── ngrok URL ──
-NGROK_URL=$(curl -s http://127.0.0.1:4040/api/tunnels | python3 -c "
-import sys, json; d=json.load(sys.stdin)
-print(d['tunnels'][0]['public_url'])
-")
-echo "🌐 Ngrok URL: $NGROK_URL"
+# ── backend URL (localtunnel with fixed subdomain) ──
+BACKEND_URL="https://obrez-backend.loca.lt"
+echo "🌐 Backend URL: $BACKEND_URL"
 
 # ── write backend-url.json (always) ──
-echo "{\"url\":\"$NGROK_URL\"}" > "$WORKDIR/backend-url.json"
+echo "{\"url\":\"$BACKEND_URL\"}" > "$WORKDIR/backend-url.json"
 
 # ── build versions ──
 if [ "$BUILD" = true ]; then
