@@ -306,6 +306,7 @@ const TranscriptionResultsInner = () => {
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const authUser = useAuthStore((s) => s.user);
+  const authError = useAuthStore((s) => s.error);
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const clearAuthError = useAuthStore((s) => s.clearError);
 
@@ -746,11 +747,12 @@ const TranscriptionResultsInner = () => {
   };
 
   // React to login: when user gets authenticated, handle it
+  // Guard: don't call handleLoggedIn if there's an auth error — that would create a loop
   useEffect(() => {
-    if (authModal === 'login' && isAuthenticated) {
+    if (authModal === 'login' && isAuthenticated && !authError) {
       handleLoggedIn();
     }
-  }, [isAuthenticated, authModal]);
+  }, [isAuthenticated, authModal, authError]);
 
   // Confirm and transcribe
   const handleConfirmTranscribe = async () => {
