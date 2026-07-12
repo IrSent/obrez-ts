@@ -4,6 +4,7 @@ import { useAuthStore } from '../../store/authStore';
 import { DebugButton } from '../debug/DebugButton';
 
 const TELEGRAM_CLIENT_ID = '8886675841';
+const REDIRECT_COUNTDOWN_SECONDS = 15;
 
 interface LoginModalProps {
   onClose: () => void;
@@ -19,10 +20,13 @@ export function LoginModal({ onClose, onRetry, initialError }: LoginModalProps) 
   const [btnDisabled, setBtnDisabled] = useState(false);
   const [retryError, setRetryError] = useState<string | null>(initialError || null);
 
+  // Redirect countdown state
+  const [redirectCountdown, setRedirectCountdown] = useState<number | null>(null);
+  const countdownTimerRef = useRef<ReturnType<typeof setInterval> | null>(null);
+
   // Listen for auth code from popup
   useEffect(() => {
     const handler = (e: MessageEvent) => {
-      // Only accept from our own origin
       if (e.origin !== window.location.origin) return;
       if (typeof e.data !== 'string' || !e.data.startsWith('obrez_auth:')) return;
 
@@ -30,27 +34,26 @@ export function LoginModal({ onClose, onRetry, initialError }: LoginModalProps) 
       const savedState = sessionStorage.getItem('obrez_pkce_state');
       const popupState = sessionStorage.getItem('obrez_pkce_popup_state');
 
-      // Verify state
       if (savedState === popupState) {
-        // Clear popup state immediately to prevent fallback race condition
         sessionStorage.removeItem('obrez_pkce_popup_state');
-        // Close the popup from the opener — more reliable than window.close()
-        // in the popup itself (browsers may block close() after navigation)
         const popup = popupRef.current;
         if (popup && !popup.closed) {
           popup.close();
         }
         popupRef.current = null;
+        // Cancel any pending redirect countdown
+        if (countdownTimerRef.current) {
+          clearInterval(countdownTimerRef.current);
+          countdownTimerRef.current = null;
+        }
+        setRedirectCountdown(null);
         exchangeCode(code)
           .then(() => {
-            // Success — clear PKCE data
             sessionStorage.removeItem('obrez_pkce_verifier');
             sessionStorage.removeItem('obrez_pkce_state');
             sessionStorage.removeItem('obrez_pkce_nonce');
           })
-          .catch(() => {
-            // Failure — keep PKCE data for possible retry
-          })
+          .catch(() => {})
           .finally(() => {
             signingRef.current = false;
             setBtnDisabled(false);
@@ -61,29 +64,49 @@ export function LoginModal({ onClose, onRetry, initialError }: LoginModalProps) 
     return () => window.removeEventListener('message', handler);
   }, [exchangeCode]);
 
+  const startRedirectCountdown = useCallback((countSeconds: number) => {
+    setRedirectCountdown(countSeconds);
+    if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+    countdownTimerRef.current = setInterval(() => {
+      setRedirectCountdown(prev => {
+        if (prev === null || prev <= 0) {
+          if (countdownTimerRef.current) clearInterval(countdownTimerRef.current);
+          countdownTimerRef.current = null;
+          // Trigger redirect
+          window.location.href = authUrlRef.current;
+          return 0;
+        }
+        return prev - 1;
+      });
+    }, 1000);
+  }, []);
+
+  const cancelRedirect = useCallback(() => {
+    if (countdownTimerRef.current) {
+      clearInterval(countdownTimerRef.current);
+      countdownTimerRef.current = null;
+    }
+    setRedirectCountdown(null);
+  }, []);
+
   const handleSignIn = useCallback(async () => {
-    if (signingRef.current) return; // double-click guard
+    if (signingRef.current) return;
     signingRef.current = true;
     setBtnDisabled(true);
 
-    // PKCE
     const codeVerifier = generateCodeVerifier();
     const codeChallenge = await generateCodeChallenge(codeVerifier);
 
-    // State + nonce
     const state = crypto.randomUUID();
     const nonce = crypto.randomUUID();
 
-    // Store in sessionStorage for callback verification
     sessionStorage.setItem('obrez_pkce_verifier', codeVerifier);
     sessionStorage.setItem('obrez_pkce_state', state);
     sessionStorage.setItem('obrez_pkce_nonce', nonce);
     sessionStorage.setItem('obrez_pkce_popup_state', state);
 
-    // Redirect URI = current page (no query params)
     const redirectUri = window.location.origin + window.location.pathname;
 
-    // Build auth URL
     const authUrl = new URL('https://oauth.telegram.org/auth');
     authUrl.searchParams.set('client_id', TELEGRAM_CLIENT_ID);
     authUrl.searchParams.set('redirect_uri', redirectUri);
@@ -96,58 +119,59 @@ export function LoginModal({ onClose, onRetry, initialError }: LoginModalProps) 
 
     authUrlRef.current = authUrl.toString();
 
-    // Open in popup — on desktop it's a small window, on mobile it replaces the current tab
     const popup = window.open(authUrl.toString(), '_blank', 'width=600,height=700');
     popupRef.current = popup;
 
-    // If popup was blocked, fallback immediately
+    // If popup was blocked, redirect immediately
     if (!popup) {
       window.location.href = authUrl.toString();
       return;
     }
 
-    // If popup closed immediately (blocked or mobile), fallback after short delay
+    // If popup closed immediately (blocked or mobile), redirect immediately
     if (popup.closed) {
       window.location.href = authUrl.toString();
       return;
     }
 
-    // Monitor popup — if it closes without sending code, fallback
+    // Monitor popup — if it closes without sending code, start countdown
     const checkClosed = setInterval(() => {
       if (popup.closed) {
         clearInterval(checkClosed);
-        // Check if code was already exchanged (state cleared)
         if (!sessionStorage.getItem('obrez_pkce_popup_state')) {
           // Code was handled via postMessage — good
           return;
         }
-        // Popup closed without completing auth — fallback to direct navigation
+        // Popup closed without completing auth — start redirect countdown
         sessionStorage.removeItem('obrez_pkce_popup_state');
         popupRef.current = null;
-        window.location.href = authUrlRef.current;
+        startRedirectCountdown(REDIRECT_COUNTDOWN_SECONDS);
       }
     }, 500);
 
-    // Timeout — if popup is still open after 30s, give up
+    // Timeout — if popup is still open after 30s, start countdown
     setTimeout(() => {
       clearInterval(checkClosed);
-      // If popup is still open and auth wasn't completed, close it and fallback
       const stillOpen = popupRef.current && !popupRef.current.closed;
       if (stillOpen && sessionStorage.getItem('obrez_pkce_popup_state')) {
         popupRef.current?.close();
         popupRef.current = null;
-        window.location.href = authUrlRef.current;
+        startRedirectCountdown(REDIRECT_COUNTDOWN_SECONDS);
       }
     }, 30_000);
-  }, []);
+  }, [startRedirectCountdown]);
 
-  // Close popup if modal is unmounted (user clicked ✕ or navigation cancelled)
+  // Close popup and cancel countdown if modal is unmounted
   useEffect(() => {
     return () => {
       signingRef.current = false;
       setBtnDisabled(false);
       popupRef.current?.close();
       popupRef.current = null;
+      if (countdownTimerRef.current) {
+        clearInterval(countdownTimerRef.current);
+        countdownTimerRef.current = null;
+      }
     };
   }, []);
 
@@ -163,6 +187,7 @@ export function LoginModal({ onClose, onRetry, initialError }: LoginModalProps) 
               onClick={() => {
                 signingRef.current = false;
                 setBtnDisabled(false);
+                cancelRedirect();
                 onClose();
               }}
               className="text-zinc-400 hover:text-zinc-200 transition-colors"
@@ -194,6 +219,20 @@ export function LoginModal({ onClose, onRetry, initialError }: LoginModalProps) 
                 Retry
               </button>
             )}
+          </div>
+        )}
+
+        {redirectCountdown !== null && (
+          <div className="mb-4 p-3 bg-amber-900/40 border border-amber-700 rounded-lg">
+            <p className="text-sm text-amber-300">
+              Popup was closed. You will be redirected to Telegram to complete sign-in in {redirectCountdown} second{redirectCountdown !== 1 ? 's' : ''}.
+            </p>
+            <button
+              onClick={cancelRedirect}
+              className="mt-2 w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 font-medium py-2 px-4 rounded-lg transition-colors text-sm"
+            >
+              Stay on this page
+            </button>
           </div>
         )}
 
