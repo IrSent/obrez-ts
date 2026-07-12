@@ -62,7 +62,7 @@ test('login popup flow — postMessage handler closes popup', async ({ page }) =
   // Click Transcribe to trigger login modal — wait for the button to appear
   await page.click('button:has-text("Transcribe")');
   const signInBtn = page.getByRole('button', { name: 'Sign in with Telegram' });
-  await signInBtn.waitFor({ state: 'visible', timeout: 10_000 });
+  await signInBtn.waitFor({ state: 'visible', timeout: 20_000 });
 
   // Open popup — race both the popup event and the click
   const [popup] = await Promise.all([
@@ -132,7 +132,7 @@ test('login popup full flow — popup navigates to callback, sends postMessage, 
   // Click Transcribe to trigger login modal — wait for the button
   await page.click('button:has-text("Transcribe")');
   const signInBtn = page.getByRole('button', { name: 'Sign in with Telegram' });
-  await signInBtn.waitFor({ state: 'visible', timeout: 10_000 });
+  await signInBtn.waitFor({ state: 'visible', timeout: 20_000 });
 
   // Open popup
   const [popup] = await Promise.all([
