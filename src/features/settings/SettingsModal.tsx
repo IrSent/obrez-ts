@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { DictionaryManager } from '../dictionary/DictionaryManager';
 import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
 import { APP_VERSION } from '../../version';
@@ -28,10 +28,32 @@ interface SettingsModalProps {
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('dictionaries');
   const [versions, setVersions] = useState<VersionInfo | null>(null);
+  const [contentHeight, setContentHeight] = useState<number>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
 
   const currentVersion = typeof window !== 'undefined'
     ? window.location.pathname.split('/').filter(Boolean).pop() || 'master'
     : 'master';
+
+  // Measure and animate content height on tab change / mount
+  useEffect(() => {
+    if (contentRef.current) {
+      setContentHeight(contentRef.current.scrollHeight);
+    }
+  }, []);
+
+  useEffect(() => {
+    // First collapse
+    setContentHeight(0);
+    // Measure new content after it renders
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (contentRef.current) {
+          setContentHeight(contentRef.current.scrollHeight);
+        }
+      });
+    });
+  }, [activeTab, versions]);
 
   useEffect(() => {
     if (activeTab !== 'version' || versions) return;
@@ -64,7 +86,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       className="fixed inset-0 z-50 flex justify-center bg-black/60 pt-16"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-2xl border border-zinc-700 flex flex-col max-h-[90vh]">
+      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-2xl border border-zinc-700 flex flex-col overflow-hidden max-h-[90vh]">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-zinc-800">
           <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
@@ -94,8 +116,12 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           ))}
         </div>
 
-        {/* Content */}
-        <div className="flex-1 overflow-y-auto">
+        {/* Content — animated height */}
+        <div
+          ref={contentRef}
+          className="overflow-y-auto transition-[max-height] duration-300 ease-in-out"
+          style={{ maxHeight: contentHeight }}
+        >
           {activeTab === 'user' && (
             <div className="p-4"><UserContent onClose={onClose} /></div>
           )}
