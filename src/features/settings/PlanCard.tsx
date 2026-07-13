@@ -66,12 +66,13 @@ export const PlanCard = memo(({ plan, disabled, isLoading, onSelect, delay }: Pl
   const priceColor = isFree ? 'text-green-400' : plan.type === 'pro' ? 'text-amber-400' : 'text-purple-400';
 
   return (
+    <div className="w-full" style={{ contain: 'layout style paint' }}>
     <button
       onClick={() => onSelect(plan.type)}
       disabled={disabled || isLoading}
-      className={`group relative w-full cursor-pointer select-none rounded-2xl border-2 ${plan.accent}
+      className={`group relative w-full cursor-pointer select-none rounded-2xl
         bg-gradient-to-br ${plan.bgFront} shadow-lg
-        transition-all duration-300
+        transition-shadow duration-300
         hover:shadow-xl hover:scale-[1.03]
         active:scale-[0.97]
         disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:scale-100 disabled:hover:shadow-lg`}
@@ -79,7 +80,7 @@ export const PlanCard = memo(({ plan, disabled, isLoading, onSelect, delay }: Pl
     >
       {/* Spinning inner — 3D rotate with inertia like a card settling on the table */}
       <div
-        className="relative w-full"
+        className={`relative w-full rounded-2xl border-2 ${plan.accent}`}
         style={{
           transformStyle: 'preserve-3d',
           animationName: 'card-spin',
@@ -149,5 +150,6 @@ export const PlanCard = memo(({ plan, disabled, isLoading, onSelect, delay }: Pl
         }
       `}</style>
     </button>
+  </div>
   );
 });
