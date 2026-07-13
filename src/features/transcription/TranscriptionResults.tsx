@@ -303,6 +303,12 @@ const TranscriptionResultsInner = () => {
   // Persist in sessionStorage so mobile redirect (full page reload) restores it
   const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(() => {
     const saved = sessionStorage.getItem('obrez_auth_modal');
+    // If we were on 'login' but already authenticated (from localStorage),
+    // skip directly to 'confirm' — no need to show LoginModal again
+    if (saved === 'login') {
+      const user = localStorage.getItem('obrez_user');
+      if (user) return 'confirm';
+    }
     return saved as 'login' | 'topup' | 'confirm' | null;
   });
   const [authModalError, setAuthModalError] = useState<string | null>(null);
@@ -694,51 +700,22 @@ const TranscriptionResultsInner = () => {
     setAuthModal('confirm');
   };
 
-  // After login: check balance, show topup or confirm
-  const handleLoggedIn = async () => {
-    // If already authenticated (e.g. from localStorage), skip checkAuth
-    // — localtunnel can be flaky and 502 will block the flow
-    const currentIsAuth = useAuthStore.getState().isAuthenticated;
-    if (!currentIsAuth) {
-      let lastErr: string | null = null;
-      for (let attempt = 0; attempt < 3; attempt++) {
-        try {
-          await checkAuth();
-          break;
-        } catch {
-          // ignore — checkAuth sets error in store
-        }
-        lastErr = useAuthStore.getState().error;
-        if (!lastErr) break;
-        await new Promise(r => setTimeout(r, 1000));
-      }
-    }
-
-    const user = useAuthStore.getState().user;
-    const authErr = useAuthStore.getState().error;
-    if (user) {
-      const freeAvailable = canFreeTopup(user.last_free_topup);
-      const balanceInsufficient = duration > user.remaining_seconds;
-      if (freeAvailable || balanceInsufficient) {
-        setAuthModal('topup');
-      } else {
-        setAuthModal('confirm');
-      }
-    } else if (authErr) {
-      // Backend unavailable — show retry in login modal
-      setAuthModalError(authErr);
-      authModalRetryRef.current = async () => {
-        setAuthModal(null);
-        handleTranscribe();
-      };
-    }
-  };
-
   // React to login: when user gets authenticated, handle it
-  // Guard: don't call handleLoggedIn if there's an auth error — that would create a loop
+  // Guard: don't switch modals if there's an auth error — that would create a loop
   useEffect(() => {
     if (authModal === 'login' && isAuthenticated && !authError) {
-      handleLoggedIn();
+      // Already authenticated — check balance from store, skip checkAuth
+      // (localtunnel can be flaky and 502 will block the flow)
+      const user = useAuthStore.getState().user;
+      if (user) {
+        const freeAvailable = canFreeTopup(user.last_free_topup);
+        const balanceInsufficient = duration > user.remaining_seconds;
+        if (freeAvailable || balanceInsufficient) {
+          setAuthModal('topup');
+        } else {
+          setAuthModal('confirm');
+        }
+      }
     }
   }, [isAuthenticated, authModal, authError]);
 
