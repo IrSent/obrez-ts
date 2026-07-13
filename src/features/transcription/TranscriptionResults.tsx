@@ -696,17 +696,22 @@ const TranscriptionResultsInner = () => {
 
   // After login: check balance, show topup or confirm
   const handleLoggedIn = async () => {
-    let lastErr: string | null = null;
-    for (let attempt = 0; attempt < 3; attempt++) {
-      try {
-        await checkAuth();
-        break;
-      } catch {
-        // ignore — checkAuth sets error in store
+    // If already authenticated (e.g. from localStorage), skip checkAuth
+    // — localtunnel can be flaky and 502 will block the flow
+    const currentIsAuth = useAuthStore.getState().isAuthenticated;
+    if (!currentIsAuth) {
+      let lastErr: string | null = null;
+      for (let attempt = 0; attempt < 3; attempt++) {
+        try {
+          await checkAuth();
+          break;
+        } catch {
+          // ignore — checkAuth sets error in store
+        }
+        lastErr = useAuthStore.getState().error;
+        if (!lastErr) break;
+        await new Promise(r => setTimeout(r, 1000));
       }
-      lastErr = useAuthStore.getState().error;
-      if (!lastErr) break;
-      await new Promise(r => setTimeout(r, 1000));
     }
 
     const user = useAuthStore.getState().user;
