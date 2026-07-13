@@ -300,7 +300,11 @@ const TranscriptionResultsInner = () => {
   const [showAddWord, setShowAddWord] = useState(false);
 
   // Auth modals — one state, can't conflict
-  const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(null);
+  // Persist in sessionStorage so mobile redirect (full page reload) restores it
+  const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(() => {
+    const saved = sessionStorage.getItem('obrez_auth_modal');
+    return saved as 'login' | 'topup' | 'confirm' | null;
+  });
   const [authModalError, setAuthModalError] = useState<string | null>(null);
   // Use ref for retry callback — React's setState treats functions as reducers,
   // so storing a function in state causes it to be called immediately.
@@ -311,6 +315,15 @@ const TranscriptionResultsInner = () => {
   const authError = useAuthStore((s) => s.error);
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const clearAuthError = useAuthStore((s) => s.clearError);
+
+  // Keep authModal in sessionStorage
+  useEffect(() => {
+    if (authModal) {
+      sessionStorage.setItem('obrez_auth_modal', authModal);
+    } else {
+      sessionStorage.removeItem('obrez_auth_modal');
+    }
+  }, [authModal]);
 
   const handleAddEffect = (effect: SoundCensoringEffect) => {
     actions.addSoundEffect(effect);

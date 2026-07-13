@@ -28,20 +28,25 @@ interface SettingsModalProps {
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('dictionaries');
   const [versions, setVersions] = useState<VersionInfo | null>(null);
-  const [contentHeight, setContentHeight] = useState<number>(null);
+  const [contentHeight, setContentHeight] = useState<number>(400);
   const contentRef = useRef<HTMLDivElement>(null);
 
   const currentVersion = typeof window !== 'undefined'
     ? window.location.pathname.split('/').filter(Boolean).pop() || 'master'
     : 'master';
 
-  // Measure and animate content height on tab change / mount
+  // Measure initial content height after mount
   useEffect(() => {
-    if (contentRef.current) {
-      setContentHeight(contentRef.current.scrollHeight);
-    }
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        if (contentRef.current) {
+          setContentHeight(contentRef.current.scrollHeight);
+        }
+      });
+    });
   }, []);
 
+  // Animate content height on tab change / versions load
   useEffect(() => {
     // First collapse
     setContentHeight(0);
