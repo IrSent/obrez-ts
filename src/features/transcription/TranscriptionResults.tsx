@@ -500,33 +500,6 @@ const TranscriptionResultsInner = () => {
     });
   }, [transcriptionResults, showMatchesOnly, dictMatches, searchQuery]);
 
-   const removeHighlight = (closest: number | null) => {
-      if (closest == null) return;
-      const el = document.getElementById(`seg-${closest}`);
-      if (el) {
-        el.classList.remove('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
-        el.classList.add('bg-zinc-700');
-      }
-    };
-
-    const t = getPlaybackTime();
-    const newClosest = findClosestSegment(transcriptionResults, t);
-    closestRef.current = newClosest;
-    applyHighlight(newClosest, false);
-
-    const interval = setInterval(() => {
-      const t = getPlaybackTime();
-      const newClosest = findClosestSegment(transcriptionResults, t);
-      if (newClosest === closestRef.current) return;
-
-      removeHighlight(closestRef.current);
-      closestRef.current = newClosest;
-      applyHighlight(newClosest, autoScroll);
-    }, 500);
-
-    return () => clearInterval(interval);
-  }, [transcriptionResults, getPlaybackTime, autoScroll]);
-
   // closestSegmentStart stored in a ref — updated via DOM, no React re-render
   const closestRef = useRef<number | null>(null);
 
@@ -571,30 +544,6 @@ const TranscriptionResultsInner = () => {
 
     return () => clearInterval(interval);
   }, [transcriptionResults, getPlaybackTime]);
-
-  const handleTranscribe = async () => {
-    setIsLoading(true);
-    setError(null);
-    try {
-      await transcribe();
-      setIsLoading(false);
-    } catch (err) {
-      console.error('Transcription error:', err);
-      setError('Failed to transcribe: ' + (err as Error).message);
-      setIsLoading(false);
-    }
-  };
-
-  const handleJumpToTime = (time: number) => {
-    seekToTime(time);
-    document.getElementById('videoCanvas')?.scrollIntoView({ behavior: 'smooth' });
-  };
-
-  const formatTime = (seconds: number): string => {
-    const mins = Math.floor(seconds / 60);
-    const secs = Math.floor(seconds % 60);
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-  };
 
   // Optimized highlightSearch — returns null when no search
   const highlightSearch = useCallback((text: string): { key: string; highlighted: boolean; content: string }[] | null => {
