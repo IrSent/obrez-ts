@@ -500,9 +500,6 @@ const TranscriptionResultsInner = () => {
     });
   }, [transcriptionResults, showMatchesOnly, dictMatches, searchQuery]);
 
-  // closestSegmentStart stored in a ref — updated via DOM, no React re-render
-  const closestRef = useRef<number | null>(null);
-
   useEffect(() => {
     // Apply highlight to a segment — DOM-only, no React re-render
     const applyHighlight = (closest: number | null, scroll: boolean) => {
