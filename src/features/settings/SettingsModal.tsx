@@ -28,8 +28,9 @@ interface SettingsModalProps {
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('dictionaries');
   const [versions, setVersions] = useState<VersionInfo | null>(null);
-  const [contentHeight, setContentHeight] = useState<number>(400);
+  const [contentHeight, setContentHeight] = useState<number>(0);
   const contentRef = useRef<HTMLDivElement>(null);
+  const animatingRef = useRef(false);
 
   const currentVersion = typeof window !== 'undefined'
     ? window.location.pathname.split('/').filter(Boolean).pop() || 'master'
@@ -48,15 +49,19 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
   // Animate content height on tab change / versions load
   useEffect(() => {
-    // First collapse
-    setContentHeight(0);
-    // Measure new content after it renders
+    if (animatingRef.current) return;
+    animatingRef.current = true;
+
+    const oldHeight = contentHeight;
+    // Measure new content immediately (before animating)
+    const newHeight = contentRef.current?.scrollHeight ?? 400;
+
+    // Set current height → animate to new height
+    setContentHeight(oldHeight);
     requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (contentRef.current) {
-          setContentHeight(contentRef.current.scrollHeight);
-        }
-      });
+      setContentHeight(newHeight);
+      // Reset after transition ends
+      setTimeout(() => { animatingRef.current = false; }, 350);
     });
   }, [activeTab, versions]);
 
