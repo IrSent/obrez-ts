@@ -249,7 +249,7 @@ import { MediaPlayerProvider, useMediaPlayerContext } from './context/MediaPlaye
 ```typescript
 async function loadBackendUrl(): Promise<string>
 function backendPath(path: string): string        // e.g. backendPath('/transcribe')
-function backendHeaders(): Record<string, string> // { 'ngrok-skip-browser-warning': 'true' }
+function backendHeaders(): Record<string, string> // { 'bypass-tunnel-reminder': 'true' }
 function backendWsPath(path: string): string      // WebSocket URL
 ```
 

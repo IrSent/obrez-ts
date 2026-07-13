@@ -66,14 +66,14 @@ bun x serve ./dist/
 
 ```bash
 bash deploy.sh               # build master + all tags, push to gh-pages
-bash deploy.sh --skip-build   # only update ngrok backend URL
+bash deploy.sh --skip-build   # only update localtunnel backend URL
 bash deploy.sh --force        # rebuild even if already built
 bash deploy.sh --version v1.2.3  # build specific tag
 ```
 
 Deploy steps:
 1. Clone `gh-pages` branch into a temp directory
-2. Read ngrok URL from `curl http://127.0.0.1:4040/api/tunnels` → write `backend-url.json`
+2. Write fixed localtunnel URL `https://obrez-backend.loca.lt` → `backend-url.json`
 3. Build each version (if not `--skip-build`)
 4. Copy root `index.html`, `settings-early.*.js`, `settings-ui.*.js`
 5. Commit and force-push to `gh-pages`
