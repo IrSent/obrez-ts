@@ -640,10 +640,19 @@ const TranscriptionResultsInner = () => {
 
   const handleTranscribe = async () => {
     // 1. Check auth against backend (needed to get fresh balance)
-    try {
-      await checkAuth();
-    } catch {
-      // ignore — checkAuth sets error in store
+    // Retry up to 3 times on network errors (localtunnel can be flaky)
+    let lastErr: string | null = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await checkAuth();
+        break;
+      } catch {
+        // ignore — checkAuth sets error in store
+      }
+      lastErr = useAuthStore.getState().error;
+      if (!lastErr) break; // not a network error, move on
+      // Brief pause before retry
+      await new Promise(r => setTimeout(r, 1000));
     }
 
     const authErr = useAuthStore.getState().error;
@@ -687,7 +696,19 @@ const TranscriptionResultsInner = () => {
 
   // After login: check balance, show topup or confirm
   const handleLoggedIn = async () => {
-    await checkAuth();
+    let lastErr: string | null = null;
+    for (let attempt = 0; attempt < 3; attempt++) {
+      try {
+        await checkAuth();
+        break;
+      } catch {
+        // ignore — checkAuth sets error in store
+      }
+      lastErr = useAuthStore.getState().error;
+      if (!lastErr) break;
+      await new Promise(r => setTimeout(r, 1000));
+    }
+
     const user = useAuthStore.getState().user;
     const authErr = useAuthStore.getState().error;
     if (user) {
