@@ -128,7 +128,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       await fetch(`${url}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
-        headers: backendHeaders(),
+        headers: { ...backendHeaders(), 'Content-Type': 'application/json' },
       });
     } catch {
       // ignore
