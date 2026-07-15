@@ -311,9 +311,10 @@ const TranscriptionResultsInner = () => {
     }
     // If URL contains OIDC callback (?code=...), don't restore 'login' —
     // LoginModal would generate a new PKCE state and overwrite the one from
-    // sessionStorage, causing "OIDC state mismatch" in App.tsx
+    // sessionStorage, causing "OIDC state mismatch" in App.tsx.
+    // Return 'confirm' so the useEffect below can check balance and proceed.
     if (saved === 'login' && typeof window !== 'undefined' && window.location.search.includes('code=')) {
-      return null;
+      return 'confirm';
     }
     return saved as 'login' | 'topup' | 'confirm' | null;
   });
@@ -709,7 +710,7 @@ const TranscriptionResultsInner = () => {
   // React to login: when user gets authenticated, handle it
   // Guard: don't switch modals if there's an auth error — that would create a loop
   useEffect(() => {
-    if (authModal === 'login' && isAuthenticated && !authError) {
+    if ((authModal === 'login' || authModal === 'confirm') && isAuthenticated && !authError) {
       // Already authenticated — check balance from store, skip checkAuth
       // (localtunnel can be flaky and 502 will block the flow)
       const user = useAuthStore.getState().user;
