@@ -18,7 +18,7 @@ export async function loadBackendUrl(): Promise<string> {
     // fall through to default
   }
 
-  _backendUrl = 'https://obrez-backend.loca.lt';
+  _backendUrl = 'https://foolish-cougar-25.loca.lt';
   return _backendUrl;
 }
 

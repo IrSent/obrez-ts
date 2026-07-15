@@ -299,7 +299,7 @@ const TranscriptionResultsInner = () => {
   // Add Word modal
   const [showAddWord, setShowAddWord] = useState(false);
 
-  // Auth modals — one state, can't conflict
+ // Auth modals — one state, can't conflict
   // Persist in sessionStorage so mobile redirect (full page reload) restores it
   const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(() => {
     const saved = sessionStorage.getItem('obrez_auth_modal');
@@ -308,6 +308,12 @@ const TranscriptionResultsInner = () => {
     if (saved === 'login') {
       const user = localStorage.getItem('obrez_user');
       if (user) return 'confirm';
+    }
+    // If URL contains OIDC callback (?code=...), don't restore 'login' —
+    // LoginModal would generate a new PKCE state and overwrite the one from
+    // sessionStorage, causing "OIDC state mismatch" in App.tsx
+    if (saved === 'login' && typeof window !== 'undefined' && window.location.search.includes('code=')) {
+      return null;
     }
     return saved as 'login' | 'topup' | 'confirm' | null;
   });
