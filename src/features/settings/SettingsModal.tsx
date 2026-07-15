@@ -41,15 +41,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (contentRef.current) {
-          let h = contentRef.current.scrollHeight;
-          // Cap to available space: 90vh minus header + tabs
-          const container = contentRef.current.parentElement;
-          if (container) {
-            const header = container.querySelector(':scope > div:first-child')?.clientHeight || 0;
-            const tabs = container.querySelectorAll(':scope > div')[1]?.clientHeight || 0;
-            h = Math.min(h, window.innerHeight * 0.9 - header - tabs);
-          }
-          setContentHeight(h);
+          setContentHeight(contentRef.current.scrollHeight);
         }
       });
     });
@@ -61,17 +53,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     animatingRef.current = true;
 
     const oldHeight = contentHeight;
-    // Measure new content immediately (before animating)
-    let newHeight = contentRef.current?.scrollHeight ?? 400;
-    // Cap to available space: 90vh minus header + tabs
-    const container = contentRef.current?.parentElement;
-    if (container) {
-      const header = container.querySelector(':scope > div:first-child')?.clientHeight || 0;
-      const tabs = container.querySelectorAll(':scope > div')[1]?.clientHeight || 0;
-      const maxVh = window.innerHeight * 0.9;
-      const maxContent = maxVh - header - tabs;
-      newHeight = Math.min(newHeight, maxContent);
-    }
+    const newHeight = contentRef.current?.scrollHeight ?? 400;
 
     // Set current height → animate to new height
     setContentHeight(oldHeight);
@@ -113,7 +95,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       className="fixed inset-0 z-50 flex justify-center bg-black/60 pt-16"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-2xl border border-zinc-700 flex flex-col overflow-hidden max-h-[90vh] min-h-0">
+      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-2xl border border-zinc-700 flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-zinc-800">
           <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
