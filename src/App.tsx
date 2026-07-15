@@ -81,8 +81,9 @@ export const App = () => {
           sessionStorage.removeItem('obrez_pkce_verifier');
           sessionStorage.removeItem('obrez_pkce_state');
           sessionStorage.removeItem('obrez_pkce_nonce');
-          // Now check auth — cookie should be set
-          authStore.checkAuth();
+          // Don't call checkAuth() — exchangeCode already set user and isAuthenticated.
+          // An extra backend request risks localtunnel flakiness (502/timeout)
+          // which would clear isAuthenticated = false and show "Sign in required".
         });
       } else {
         console.error('OIDC state mismatch — possible CSRF');

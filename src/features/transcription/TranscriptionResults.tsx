@@ -318,6 +318,11 @@ const TranscriptionResultsInner = () => {
     }
     return saved as 'login' | 'topup' | 'confirm' | null;
   });
+  // Remember if we were on an OIDC callback at mount — needed when sessionStorage
+  // is lost (Safari clears it on cross-origin redirect) and authModal falls through to null.
+  const wasOidcCallback = useRef(
+    typeof window !== 'undefined' && window.location.search.includes('code='),
+  );
   const [authModalError, setAuthModalError] = useState<string | null>(null);
   // Use ref for retry callback — React's setState treats functions as reducers,
   // so storing a function in state causes it to be called immediately.
@@ -713,6 +718,25 @@ const TranscriptionResultsInner = () => {
     if ((authModal === 'login' || authModal === 'confirm') && isAuthenticated && !authError) {
       // Already authenticated — check balance from store, skip checkAuth
       // (localtunnel can be flaky and 502 will block the flow)
+      const user = useAuthStore.getState().user;
+      if (user) {
+        const freeAvailable = canFreeTopup(user.last_free_topup);
+        const balanceInsufficient = duration > user.remaining_seconds;
+        if (freeAvailable || balanceInsufficient) {
+          setAuthModal('topup');
+        } else {
+          setAuthModal('confirm');
+        }
+      }
+    }
+  }, [isAuthenticated, authModal, authError]);
+
+  // OIDC callback fallback: if we were on a callback page (code= in URL) but
+  // sessionStorage was lost (Safari clears it on cross-origin redirect),
+  // authModal will be null. When the user becomes authenticated, proceed
+  // to confirm/topup instead of leaving them stuck.
+  useEffect(() => {
+    if (wasOidcCallback.current && isAuthenticated && authModal === null && !authError) {
       const user = useAuthStore.getState().user;
       if (user) {
         const freeAvailable = canFreeTopup(user.last_free_topup);
