@@ -320,7 +320,10 @@ const TranscriptionResultsInner = () => {
   });
   // Remember if we were on an OIDC callback at mount — needed when sessionStorage
   // is lost (Safari clears it on cross-origin redirect) and authModal falls through to null.
-  const wasOidcCallback = useRef(window.location.search.includes('code='));
+  // Only used if handleTranscribe was called (obrez_transcribe_pending is set).
+  const wasOidcCallback = useRef(
+    window.location.search.includes('code=') && !!localStorage.getItem('obrez_transcribe_pending'),
+  );
   const [authModalError, setAuthModalError] = useState<string | null>(null);
   // Use ref for retry callback — React's setState treats functions as reducers,
   // so storing a function in state causes it to be called immediately.
@@ -655,6 +658,17 @@ const TranscriptionResultsInner = () => {
   }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
 
   const handleTranscribe = async () => {
+    // Flag for OIDC callback: after mobile redirect, wasOidcCallback checks this
+    // to know whether to auto-resume transcription flow.
+    localStorage.setItem('obrez_transcribe_pending', '1');
+    try {
+      return await _handleTranscribe();
+    } finally {
+      localStorage.removeItem('obrez_transcribe_pending');
+    }
+  };
+
+  const _handleTranscribe = async () => {
     // 1. Check auth against backend (needed to get fresh balance)
     // Retry up to 3 times on network errors (localtunnel can be flaky)
     let lastErr: string | null = null;
@@ -729,22 +743,26 @@ const TranscriptionResultsInner = () => {
     }
   }, [isAuthenticated, authModal, authError]);
 
-  // OIDC callback fallback: if we were on a callback page (code= in URL) but
+// OIDC callback fallback: if we were on a callback page (code= in URL) but
   // sessionStorage was lost (Safari clears it on cross-origin redirect),
   // authModal will be null. When the user becomes authenticated, proceed
   // to confirm/topup instead of leaving them stuck.
-  // Fires at most once — flag is cleared after the first run.
+  // Only fires if obrez_transcribe_pending is set (meaning handleTranscribe
+  // was called — user is not just logging in from SettingsModal).
   useEffect(() => {
     if (wasOidcCallback.current && isAuthenticated && authModal === null && !authError) {
       wasOidcCallback.current = false; // only run once
-      const user = useAuthStore.getState().user;
-      if (user) {
-        const freeAvailable = canFreeTopup(user.last_free_topup);
-        const balanceInsufficient = duration > user.remaining_seconds;
-        if (freeAvailable || balanceInsufficient) {
-          setAuthModal('topup');
-        } else {
-          setAuthModal('confirm');
+      if (localStorage.getItem('obrez_transcribe_pending')) {
+        localStorage.removeItem('obrez_transcribe_pending');
+        const user = useAuthStore.getState().user;
+        if (user) {
+          const freeAvailable = canFreeTopup(user.last_free_topup);
+          const balanceInsufficient = duration > user.remaining_seconds;
+          if (freeAvailable || balanceInsufficient) {
+            setAuthModal('topup');
+          } else {
+            setAuthModal('confirm');
+          }
         }
       }
     }

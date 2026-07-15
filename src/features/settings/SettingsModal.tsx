@@ -26,7 +26,7 @@ interface SettingsModalProps {
 }
 
 export function SettingsModal({ onClose }: SettingsModalProps) {
-  const [activeTab, setActiveTab] = useState<TabKey>('dictionaries');
+  const [activeTab, setActiveTab] = useState<TabKey>('user');
   const [versions, setVersions] = useState<VersionInfo | null>(null);
   const [contentHeight, setContentHeight] = useState<number>(0);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -171,6 +171,14 @@ function UserContent({ onClose }: UserContentProps) {
   const error = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
   const [showLogin, setShowLogin] = useState(false);
+
+  // After successful login, close LoginModal and refresh user data
+  useEffect(() => {
+    if (isAuthenticated && showLogin) {
+      setShowLogin(false);
+      useAuthStore.getState().checkAuth();
+    }
+  }, [isAuthenticated, showLogin]);
 
   const freeAvailable = user ? canFreeTopup(user.last_free_topup) : false;
   const daysLeft = user ? daysUntilFreeTopup(user.last_free_topup) : null;
