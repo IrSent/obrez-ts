@@ -1,10 +1,10 @@
 import { memo } from 'react';
-import type { PackageType } from '../../types';
+import type { HourPackType } from '../../types';
 
-// ─── Plan data ───
+// ─── Hour pack data ───
 
-export interface Plan {
-  type: PackageType;
+export interface HourPack {
+  type: HourPackType;
   hours: number;
   price: string;
   label: string;
@@ -15,7 +15,7 @@ export interface Plan {
   textGlow: string;
 }
 
-export const PLANS: Plan[] = [
+export const HOUR_PACKS: HourPack[] = [
   {
     type: 'free',
     hours: 5,
@@ -53,25 +53,25 @@ export const PLANS: Plan[] = [
 
 // ─── Card ───
 
-interface PlanCardProps {
-  plan: Plan;
+interface HourPackCardProps {
+  pack: HourPack;
   disabled: boolean;
   isLoading: boolean;
-  onSelect: (type: PackageType) => void;
+  onSelect: (type: HourPackType) => void;
   delay: number; // ms — stagger offset so cards don't spin in sync
 }
 
-export const PlanCard = memo(({ plan, disabled, isLoading, onSelect, delay }: PlanCardProps) => {
-  const isFree = plan.type === 'free';
-  const priceColor = isFree ? 'text-green-400' : plan.type === 'pro' ? 'text-amber-400' : 'text-purple-400';
+export const HourPackCard = memo(({ pack, disabled, isLoading, onSelect, delay }: HourPackCardProps) => {
+  const isFree = pack.type === 'free';
+  const priceColor = isFree ? 'text-green-400' : pack.type === 'pro' ? 'text-amber-400' : 'text-purple-400';
 
   return (
     <div className="w-full" style={{ contain: 'layout style paint' }}>
     <button
-      onClick={() => onSelect(plan.type)}
+      onClick={() => onSelect(pack.type)}
       disabled={disabled || isLoading}
       className={`group relative w-full cursor-pointer select-none rounded-2xl
-        bg-gradient-to-br ${plan.bgFront} shadow-lg
+        bg-gradient-to-br ${pack.bgFront} shadow-lg
         transition-shadow duration-300
         hover:shadow-xl hover:scale-[1.03]
         active:scale-[0.97]
@@ -80,7 +80,7 @@ export const PlanCard = memo(({ plan, disabled, isLoading, onSelect, delay }: Pl
     >
       {/* Spinning inner — 3D rotate with inertia like a card settling on the table */}
       <div
-        className={`relative w-full rounded-2xl border-2 ${plan.accent}`}
+        className={`relative w-full rounded-2xl border-2 ${pack.accent}`}
         style={{
           transformStyle: 'preserve-3d',
           animationName: 'card-spin',
@@ -96,23 +96,23 @@ export const PlanCard = memo(({ plan, disabled, isLoading, onSelect, delay }: Pl
           style={{ backfaceVisibility: 'hidden' }}
         >
           <div className="flex items-center gap-3">
-            <span className="text-3xl drop-shadow-lg">{plan.emoji}</span>
+            <span className="text-3xl drop-shadow-lg">{pack.emoji}</span>
             <div>
-              <div className="font-bold text-zinc-100 text-lg leading-tight">{plan.label}</div>
-              <div className="text-[11px] text-zinc-400 leading-tight">{plan.description}</div>
+              <div className="font-bold text-zinc-100 text-lg leading-tight">{pack.label}</div>
+              <div className="text-[11px] text-zinc-400 leading-tight">{pack.description}</div>
             </div>
           </div>
 
           <div className="h-px bg-gradient-to-r from-transparent via-zinc-600 to-transparent" />
 
           <div className="flex items-center justify-between">
-            <div className="text-sm font-semibold text-zinc-300">+{plan.hours} hours</div>
-            <div className={`text-xl font-extrabold ${priceColor}`} style={{ textShadow: plan.textGlow }}>
-              {plan.price}
+            <div className="text-sm font-semibold text-zinc-300">+{pack.hours} hours</div>
+            <div className={`text-xl font-extrabold ${priceColor}`} style={{ textShadow: pack.textGlow }}>
+              {pack.price}
             </div>
           </div>
 
-          {plan.type !== 'free' && (
+          {pack.type !== 'free' && (
             <div className="text-center text-[10px] text-zinc-500 italic">
               Payments coming soon
             </div>
@@ -128,7 +128,7 @@ export const PlanCard = memo(({ plan, disabled, isLoading, onSelect, delay }: Pl
           }}
         >
           <div className="text-center">
-            <span className="text-5xl opacity-20">{plan.emoji}</span>
+            <span className="text-5xl opacity-20">{pack.emoji}</span>
             <div className="text-[10px] text-zinc-600 mt-2 font-mono tracking-widest uppercase">
               Obrez
             </div>

@@ -3,7 +3,7 @@ import { DictionaryManager } from '../dictionary/DictionaryManager';
 import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
 import { APP_VERSION } from '../../version';
 import { useAuthStore } from '../../store/authStore';
-import { PlanCard, PLANS } from './PlanCard';
+import { HourPackCard, HOUR_PACKS } from './HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 import { LoginModal } from '../auth/LoginModal';
 
@@ -95,7 +95,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 overflow-y-auto"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-2xl border border-zinc-700 flex flex-col overflow-hidden">
+      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-[0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)] flex flex-col overflow-hidden">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-zinc-800">
           <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
@@ -240,15 +240,15 @@ function UserContent({ onClose }: UserContentProps) {
         </button>
       </div>
 
-      {/* Plan cards */}
+      {/* Hour pack cards */}
       <div className="space-y-3">
-        {PLANS.map((plan, i) => {
-          const isFree = plan.type === 'free';
+        {HOUR_PACKS.map((pack, i) => {
+          const isFree = pack.type === 'free';
           const isDisabled = isFree && !freeAvailable;
           return (
-            <PlanCard
-              key={plan.type}
-              plan={plan}
+            <HourPackCard
+              key={pack.type}
+              pack={pack}
               disabled={isDisabled}
               isLoading={isLoading}
               onSelect={handleTopup}

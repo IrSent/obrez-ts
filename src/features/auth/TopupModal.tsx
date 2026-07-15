@@ -1,5 +1,5 @@
 import { useAuthStore } from '../../store/authStore';
-import { PlanCard, PLANS } from '../settings/PlanCard';
+import { HourPackCard, HOUR_PACKS } from '../settings/HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 
 interface TopupModalProps {
@@ -68,15 +68,15 @@ export function TopupModal({ onClose, onTopup }: TopupModalProps) {
           </p>
         )}
 
-        {/* Plan cards */}
+        {/* Hour pack cards */}
         <div className="space-y-3">
-          {PLANS.map((plan, i) => {
-            const isFree = plan.type === 'free';
+          {HOUR_PACKS.map((pack, i) => {
+            const isFree = pack.type === 'free';
             const isDisabled = isFree && !freeAvailable;
             return (
-              <PlanCard
-                key={plan.type}
-                plan={plan}
+              <HourPackCard
+                key={pack.type}
+                pack={pack}
                 disabled={isDisabled}
                 isLoading={isLoading}
                 onSelect={handleTopup}

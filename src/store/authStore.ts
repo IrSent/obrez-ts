@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { AuthUser, PackageType } from '../types';
+import type { AuthUser, HourPackType } from '../types';
 import { loadBackendUrl, backendHeaders } from '../config';
 
 interface AuthState {
@@ -12,7 +12,7 @@ interface AuthState {
 interface AuthActions {
   setUser: (user: AuthUser | null) => void;
   logout: () => Promise<void>;
-  topup: (packageType: PackageType) => Promise<void>;
+  topup: (hourPackType: HourPackType) => Promise<void>;
   checkAuth: () => Promise<void>;
   exchangeCode: (code: string) => Promise<void>;
   clearError: () => void;
@@ -136,12 +136,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ user: null, isAuthenticated: false });
   },
 
-  topup: async (packageType: PackageType) => {
+  topup: async (hourPackType: HourPackType) => {
     set({ isLoading: true, error: null });
     try {
       const url = await loadBackendUrl();
       const response = await fetch(
-        `${url}/api/plan/topup?package_type=${packageType}`,
+        `${url}/api/hours/topup?hour_pack_type=${hourPackType}`,
         { method: 'POST', credentials: 'include', headers: backendHeaders() },
       );
       if (!response.ok) {

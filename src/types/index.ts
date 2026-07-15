@@ -221,6 +221,6 @@ export interface AuthUser {
 }
 
 /**
- * Package types for topping up transcription hours
+ * Hour pack types for topping up transcription hours
  */
-export type PackageType = 'free' | 'basic' | 'pro';
+export type HourPackType = 'free' | 'basic' | 'pro';
