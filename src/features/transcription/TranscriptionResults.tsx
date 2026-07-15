@@ -735,8 +735,10 @@ const TranscriptionResultsInner = () => {
   // sessionStorage was lost (Safari clears it on cross-origin redirect),
   // authModal will be null. When the user becomes authenticated, proceed
   // to confirm/topup instead of leaving them stuck.
+  // Fires at most once — flag is cleared after the first run.
   useEffect(() => {
     if (wasOidcCallback.current && isAuthenticated && authModal === null && !authError) {
+      wasOidcCallback.current = false; // only run once
       const user = useAuthStore.getState().user;
       if (user) {
         const freeAvailable = canFreeTopup(user.last_free_topup);
