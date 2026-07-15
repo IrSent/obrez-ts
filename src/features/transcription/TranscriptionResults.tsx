@@ -300,29 +300,27 @@ const TranscriptionResultsInner = () => {
   const [showAddWord, setShowAddWord] = useState(false);
 
  // Auth modals — one state, can't conflict
-  // Persist in sessionStorage so mobile redirect (full page reload) restores it
+  // Restore from sessionStorage ONLY on page reload (not on new tab) to avoid
+  // leaking authModal between tabs — sessionStorage is shared in Safari.
+  const isReload = performance.getEntriesByType('navigation')[0]?.type === 'reload';
   const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(() => {
+    if (!isReload) {
+      // New tab — don't restore from sessionStorage (another tab might have set it)
+      return null;
+    }
     const saved = sessionStorage.getItem('obrez_auth_modal');
+    if (!saved) return null;
     // If we were on 'login' but already authenticated (from localStorage),
     // skip directly to 'confirm' — no need to show LoginModal again
     if (saved === 'login') {
       const user = localStorage.getItem('obrez_user');
       if (user) return 'confirm';
     }
-    // If URL contains OIDC callback (?code=...), don't restore 'login' —
-    // LoginModal would generate a new PKCE state and overwrite the one from
-    // sessionStorage, causing "OIDC state mismatch" in App.tsx.
-    // Return 'confirm' so the useEffect below can check balance and proceed.
-    if (saved === 'login' && typeof window !== 'undefined' && window.location.search.includes('code=')) {
-      return 'confirm';
-    }
     return saved as 'login' | 'topup' | 'confirm' | null;
   });
   // Remember if we were on an OIDC callback at mount — needed when sessionStorage
   // is lost (Safari clears it on cross-origin redirect) and authModal falls through to null.
-  const wasOidcCallback = useRef(
-    typeof window !== 'undefined' && window.location.search.includes('code='),
-  );
+  const wasOidcCallback = useRef(window.location.search.includes('code='));
   const [authModalError, setAuthModalError] = useState<string | null>(null);
   // Use ref for retry callback — React's setState treats functions as reducers,
   // so storing a function in state causes it to be called immediately.
