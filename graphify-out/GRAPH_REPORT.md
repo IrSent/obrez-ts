@@ -1,16 +1,16 @@
 # Graph Report - obrez-ts  (2026-07-15)
 
 ## Corpus Check
-- 78 files · ~116,098 words
+- 78 files · ~116,078 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 507 nodes · 753 edges · 57 communities (42 shown, 15 thin omitted)
+- 512 nodes · 763 edges · 57 communities (42 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6ea35d26`
+- Built from commit: `86329918`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -93,8 +93,8 @@
 ## Communities (57 total, 15 thin omitted)
 
 ### Community 0 - "Export Modal + Context"
-Cohesion: 0.08
-Nodes (38): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner() (+30 more)
+Cohesion: 0.09
+Nodes (32): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner(), ExportFormat (+24 more)
 
 ### Community 1 - "Package Dependencies"
 Cohesion: 0.05
@@ -121,8 +121,8 @@ Cohesion: 0.40
 Nodes (4): __dirname, handleTranscriptionRequest(), Bun TLS Server (port 3000), server
 
 ### Community 7 - "Media Player + Audio"
-Cohesion: 0.09
-Nodes (34): ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal(), LoginModalProps, TopupModal(), TopupModalProps, DebugButton() (+26 more)
+Cohesion: 0.12
+Nodes (23): TopupModal(), TopupModalProps, DictionaryManager, HOUR_PACKS, HourPack, HourPackCard, HourPackCardProps, Plan (+15 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -149,8 +149,8 @@ Cohesion: 0.24
 Nodes (8): build(), buildVersion(), clients, DIST_DIR, getVersions(), PUBLIC_DIR, server, SRC_DIR
 
 ### Community 30 - "Community 30"
-Cohesion: 0.60
-Nodes (4): audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop()
+Cohesion: 0.11
+Nodes (25): ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal(), LoginModalProps, DebugButton(), ErrorEntry, DEFAULT_DICTIONARIES (+17 more)
 
 ### Community 34 - "Community 34"
 Cohesion: 0.50
@@ -193,21 +193,21 @@ Cohesion: 0.20
 Nodes (9): Console Diagnostics, Diagnostic Hooks, Playwright Config, Running Tests, Test Fixtures, Test Suite, Testing Guide, `window.__audioDiagnostic` (+1 more)
 
 ## Knowledge Gaps
-- **203 isolated node(s):** `TabKey`, `TABS`, `VersionInfo`, `SettingsModalProps`, `UserContentProps` (+198 more)
+- **205 isolated node(s):** `TopupModalProps`, `AddModalProps`, `SoundRowProps`, `DEFAULT_DICTIONARIES`, `TabKey` (+200 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `usePlayerStore` connect `Export Modal + Context` to `Dictionary + Aho-Corasick`, `Community 35`, `Bleep Sounds + Icons`, `Media Player + Audio`, `Community 50`?**
+- **Why does `usePlayerStore` connect `Export Modal + Context` to `Dictionary + Aho-Corasick`, `Community 35`, `Bleep Sounds + Icons`, `Community 50`, `Community 30`?**
   _High betweenness centrality (0.024) - this node is a cross-community bridge._
-- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`?**
+- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`, `Community 30`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `TabKey`, `TABS`, `VersionInfo` to the rest of the system?**
-  _203 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `TopupModalProps`, `AddModalProps`, `SoundRowProps` to the rest of the system?**
+  _205 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
-  _Cohesion score 0.07743496672716274 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.0858843537414966 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `Dictionary + Aho-Corasick` be split into smaller, more focused modules?**

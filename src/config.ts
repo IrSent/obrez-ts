@@ -1,24 +1,21 @@
 let _backendUrl: string | null = null;
 
 /**
- * Load backend URL from runtime config written by the backend on startup.
- * Falls back to local dev URL if config is unavailable.
+ * Load backend URL from runtime config (backend-url.json).
+ * Throws if the file is missing or unreadable — no fallback.
  */
 export async function loadBackendUrl(): Promise<string> {
   if (_backendUrl) return _backendUrl;
 
-  try {
-    const resp = await fetch('../backend-url.json');
-    if (resp.ok) {
-      const data = await resp.json();
-      _backendUrl = data.url;
-      return _backendUrl;
-    }
-  } catch {
-    // fall through to default
+  const resp = await fetch('../backend-url.json');
+  if (!resp.ok) {
+    throw new Error(`Failed to load backend URL (HTTP ${resp.status})`);
   }
-
-  _backendUrl = 'https://foolish-cougar-25.loca.lt';
+  const data = await resp.json();
+  if (!data?.url) {
+    throw new Error('backend-url.json is missing a valid "url" field');
+  }
+  _backendUrl = data.url;
   return _backendUrl;
 }
 
