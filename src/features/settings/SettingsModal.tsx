@@ -128,8 +128,8 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         {/* Content — animated height */}
         <div
           ref={contentRef}
-          className="overflow-y-auto transition-[max-height] duration-300 ease-in-out"
-          style={{ maxHeight: contentHeight }}
+          className="overflow-y-auto transition-[height] duration-300 ease-in-out"
+          style={{ height: contentHeight }}
         >
           {activeTab === 'user' && (
             <div className="p-4"><UserContent onClose={onClose} /></div>
