@@ -23,8 +23,8 @@ echo "📂 Working dir: $WORKDIR"
 # ── clone gh-pages ──
 git clone --depth 1 -b gh-pages "$REPO" "$WORKDIR" > /dev/null 2>&1
 
-# ── backend URL (localtunnel with fixed subdomain) ──
-BACKEND_URL="https://obrez-backend.loca.lt"
+# ── backend URL (read from repo's backend-url.json, or environment override) ──
+BACKEND_URL="${BACKEND_URL:-$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['url'])" "$REPO_DIR/public/backend-url.json")}"
 echo "🌐 Backend URL: $BACKEND_URL"
 
 # ── write backend-url.json (always) ──
