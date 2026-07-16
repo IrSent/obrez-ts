@@ -660,12 +660,11 @@ const TranscriptionResultsInner = () => {
   const handleTranscribe = async () => {
     // Flag for OIDC callback: after mobile redirect, wasOidcCallback checks this
     // to know whether to auto-resume transcription flow.
+    // Cleared by the fallback effect after processing — NOT here, because on mobile
+    // the redirect to Telegram happens AFTER _handleTranscribe returns, so by the
+    // time finally runs the flag is gone before the callback page even loads.
     localStorage.setItem('obrez_transcribe_pending', '1');
-    try {
-      return await _handleTranscribe();
-    } finally {
-      localStorage.removeItem('obrez_transcribe_pending');
-    }
+    return await _handleTranscribe();
   };
 
   const _handleTranscribe = async () => {

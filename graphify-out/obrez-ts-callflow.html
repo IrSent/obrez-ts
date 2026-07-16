@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 512 nodes, 763 edges, 57 communities. Commit: 8632991</p>
+<p class="subtitle">Generated from graphify knowledge graph: 512 nodes, 763 edges, 57 communities. Commit: bdd59d2</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -118,18 +118,18 @@ flowchart LR
     class COMMUNITY_45_E4978FE7 module;
     OTHER_D0941E68("Other<br/><small>38 nodes</small>")
     class OTHER_D0941E68 module;
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x19| OUTPUTS_DOCS_ED82387C
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x23| OUTPUTS_DOCS_ED82387C
+    MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x11| INGEST_CACHE_UPDATE_FF457338
     INGEST_CACHE_UPDATE_FF457338 -->|imports x11| SERVE_API_35EC8E86
     COMMUNITY_35_B2C5BAA1 -->|imports x11| OUTPUTS_DOCS_ED82387C
     OUTPUTS_DOCS_ED82387C -->|imports x11| SERVE_API_35EC8E86
     SERVE_API_35EC8E86 -->|contains x10| OUTPUTS_DOCS_ED82387C
-    MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x8| INGEST_CACHE_UPDATE_FF457338
-    OUTPUTS_DOCS_ED82387C -->|imports x7| INGEST_CACHE_UPDATE_FF457338
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x6| MEDIA_PLAYER_AUDIO_4FE18149
     SERVE_API_35EC8E86 -->|imports x4| INGEST_CACHE_UPDATE_FF457338
     COMMUNITY_35_B2C5BAA1 -->|imports x4| INGEST_CACHE_UPDATE_FF457338
     MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x3| OUTPUTS_DOCS_ED82387C
+    INGEST_CACHE_UPDATE_FF457338 -->|contains x3| MEDIA_PLAYER_AUDIO_4FE18149
     SERVE_API_35EC8E86 -->|imports x3| COMMUNITY_35_B2C5BAA1
+    COMMUNITY_35_B2C5BAA1 -->|imports x3| SERVE_API_35EC8E86
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1219,9 +1219,10 @@ flowchart LR
         bleep_sounds_bleepsoundmanager_addmodal_95ad1869("AddModal<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
         bleep_sounds_bleepsoundmanager_soundrow_28f1f91f("SoundRow<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
     end
-    subgraph ingest_cache_update_features_auth_LoginModal_tsx_53eb0ba7["features/auth/LoginModal.tsx"]
-        auth_loginmodal_55c21e7a("LoginModal.tsx")
-        auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
+    subgraph ingest_cache_update_src_config_ts_28a660d5["src/config.ts"]
+        src_config_f55793b8("config.ts")
+        src_config_loadbackendurl_3b6835f4("loadBackendUrl()<br/><small>src/config.ts</small>")
+        src_config_backendheaders_fa10039f("backendHeaders()<br/><small>src/config.ts</small>")
     end
     subgraph ingest_cache_update_features_bleep_sounds_bleep_32d32f75["features/bleep-sounds/bleep-audio.ts"]
         bleep_sounds_bleep_audio_isremoteurl_a835d72c("isRemoteUrl()<br/><small>features/bleep-sounds/bleep-audio.ts</small>")
@@ -1235,13 +1236,10 @@ flowchart LR
         src_audio_writestring_5a146658("writeString()<br/><small>src/audio.ts</small>")
         src_audio_audiobufferstowav_9999abcc("audioBuffersToWav()<br/><small>src/audio.ts</small>")
     end
-    subgraph ingest_cache_update_src_store_authStore_ts_30e2279f["src/store/authStore.ts"]
-        store_authstore_2c5e1d9c("authStore.ts")
-        store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
-    end
     auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
+    auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
     debug_debugbutton_debugbutton_c3e63bea("DebugButton()<br/><small>features/debug/DebugButton.tsx</small>")
-    dictionary_dictionarymanager_7b8dc3d5("DictionaryManager.tsx")
+    store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
     utils_uid_uid_c33be6df("uid()<br/><small>src/utils/uid.ts</small>")
     bleep_sounds_bleepsoundmanager_addmodal_95ad1869 -->|calls| utils_uid_uid_c33be6df
     bleep_sounds_bleepsoundmanager_soundrow_28f1f91f -->|calls| bleep_sounds_bleep_audio_isremoteurl_a835d72c
@@ -1257,27 +1255,24 @@ flowchart LR
     bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_sqlite_exportbleepsounds_a7d83ee8
     bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_sqlite_importbleepsounds_5b1427be
     bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| utils_uid_uid_c33be6df
-    store_authstore_2c5e1d9c -->|imports| auth_loginmodal_55c21e7a
-    store_authstore_useauthstore_4a03c2d9 -->|imports| auth_loginmodal_55c21e7a
-    auth_loginmodal_55c21e7a -->|imports| debug_debugbutton_debugbutton_c3e63bea
     %% Omitted for readability: 81 nodes, 0 edges
     class bleep_sounds_bleepsoundmanager_ce67c1cd ui;
     class bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 ui;
     class bleep_sounds_bleepsoundmanager_addmodal_95ad1869 ui;
     class bleep_sounds_bleepsoundmanager_soundrow_28f1f91f ui;
-    class auth_loginmodal_55c21e7a ui;
-    class auth_loginmodal_loginmodal_992d0af3 ui;
+    class src_config_f55793b8 module;
+    class src_config_loadbackendurl_3b6835f4 function;
+    class src_config_backendheaders_fa10039f function;
     class bleep_sounds_bleep_audio_isremoteurl_a835d72c function;
     class bleep_sounds_bleep_audio_decodeaudio_dffa99f0 function;
     class bleep_sounds_bleep_sqlite_exportbleepsounds_a7d83ee8 function;
     class bleep_sounds_bleep_sqlite_importbleepsounds_5b1427be function;
     class src_audio_writestring_5a146658 function;
     class src_audio_audiobufferstowav_9999abcc function;
-    class store_authstore_2c5e1d9c ui;
-    class store_authstore_useauthstore_4a03c2d9 ui;
     class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
+    class auth_loginmodal_loginmodal_992d0af3 ui;
     class debug_debugbutton_debugbutton_c3e63bea ui;
-    class dictionary_dictionarymanager_7b8dc3d5 ui;
+    class store_authstore_useauthstore_4a03c2d9 ui;
     class utils_uid_uid_c33be6df function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -1302,14 +1297,54 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br>+1 more</td>
-  <td>Module file in features/dictionary/DictionaryManager.tsx.</td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small><br>+1 more</td>
+  <td>Module file in src/config.ts.</td>
 </tr>
 <tr>
   <td>2</td>
+  <td><code>loadBackendUrl()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small><br>+1 more</td>
+  <td>loadBackendUrl() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td>backendPath() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td>backendHeaders() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td>backendWsPath() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br>+1 more</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in features/dictionary/DictionaryManager.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
   <td><code>DEFAULT_DICTIONARIES</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -1317,15 +1352,15 @@ flowchart LR
   <td>DEFAULT_DICTIONARIES node in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>8</td>
   <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+5 more</td>
+  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br>+1 more</td>
+  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>DebugButton.tsx</code><br><small style="color:var(--muted)">features/debug/DebugButton.tsx</small><br>+1 more</td>
   <td>Module file in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>9</td>
   <td><code>AuthState</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1333,7 +1368,7 @@ flowchart LR
   <td>AuthState node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>10</td>
   <td><code>AuthActions</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1341,7 +1376,7 @@ flowchart LR
   <td>AuthActions node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>11</td>
   <td><code>AuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -1349,7 +1384,7 @@ flowchart LR
   <td>AuthStore node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>12</td>
   <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -1357,52 +1392,12 @@ flowchart LR
   <td>useAuthStore node in src/store/authStore.ts.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>13</td>
   <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td>No direct outbound edge</td>
   <td>AuthUser node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>Module file in src/config.ts.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>loadBackendUrl()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>loadBackendUrl() node in src/config.ts.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>backendPath() node in src/config.ts.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>backendHeaders() node in src/config.ts.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>backendWsPath() node in src/config.ts.</td>
 </tr>
 <tr>
   <td>14</td>
@@ -2131,30 +2126,30 @@ flowchart LR
     dictionary_dictionarymanager_dictionarymanager_948c6318("DictionaryManager<br/><small>features/dictionary/DictionaryManager.tsx</small>")
     types_index_hourpacktype_aff69f52("HourPackType<br/><small>src/types/index.ts</small>")
     src_version_d1631cbf("version.ts")
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_formatseconds_cdef2b69
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_formatseconds_cdef2b69
+    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
+    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
+    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_formatseconds_cdef2b69
+    settings_settingsmodal_68a86dc6 -->|imports| dictionary_dictionarymanager_dictionarymanager_948c6318
+    settings_settingsmodal_68a86dc6 -->|imports| settings_hourpackcard_3ac76861
+    settings_settingsmodal_68a86dc6 -->|imports| settings_hourpackcard_hour_packs_cd0adccb
+    settings_settingsmodal_68a86dc6 -->|imports| settings_hourpackcard_hourpackcard_a1e8a159
+    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_647e6b96
+    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_plancard_1f584c6e
+    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_plans_3536a86a
+    settings_settingsmodal_68a86dc6 -->|imports| src_version_d1631cbf
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_fa975395
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_canfreetopup_e6832bc1
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_daysuntilfreetopup_c93d63d8
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_formatseconds_cdef2b69
     auth_topupmodal_5fbdbcde -->|imports| settings_hourpackcard_3ac76861
     auth_topupmodal_5fbdbcde -->|imports| settings_hourpackcard_hour_packs_cd0adccb
     auth_topupmodal_5fbdbcde -->|imports| settings_hourpackcard_hourpackcard_a1e8a159
     auth_topupmodal_5fbdbcde -->|imports| settings_plancard_647e6b96
     auth_topupmodal_5fbdbcde -->|imports| settings_plancard_plancard_1f584c6e
     auth_topupmodal_5fbdbcde -->|imports| settings_plancard_plans_3536a86a
-    auth_topupmodal_5fbdbcde -->|imports| utils_auth_fa975395
-    auth_topupmodal_5fbdbcde -->|imports| utils_auth_canfreetopup_e6832bc1
-    auth_topupmodal_5fbdbcde -->|imports| utils_auth_daysuntilfreetopup_c93d63d8
-    auth_topupmodal_5fbdbcde -->|imports| utils_auth_formatseconds_cdef2b69
-    dictionary_dictionarymanager_dictionarymanager_948c6318 -->|imports| settings_settingsmodal_68a86dc6
-    settings_hourpackcard_3ac76861 -->|imports| types_index_hourpacktype_aff69f52
-    settings_hourpackcard_3ac76861 -->|imports| settings_settingsmodal_68a86dc6
-    settings_hourpackcard_hour_packs_cd0adccb -->|imports| settings_settingsmodal_68a86dc6
-    settings_hourpackcard_hourpackcard_a1e8a159 -->|imports| settings_settingsmodal_68a86dc6
-    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_647e6b96
-    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_plancard_1f584c6e
-    settings_settingsmodal_68a86dc6 -->|imports| settings_plancard_plans_3536a86a
     %% Omitted for readability: 12 nodes, 5 edges
     class utils_auth_canfreetopup_e6832bc1 function;
     class utils_auth_daysuntilfreetopup_c93d63d8 function;
@@ -2197,86 +2192,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
-  <td>Module file in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small></td>
-  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>DictionaryManager</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>DictionaryManager node in features/dictionary/DictionaryManager.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>HourPackCard.tsx</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>Module file in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>HourPack</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>HourPack node in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>HOUR_PACKS</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>HOUR_PACKS node in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>HourPackCardProps</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>HourPackCardProps node in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>HourPackCard</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>HourPackCard node in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
   <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>DictionaryManager</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>HOUR_PACKS</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small><br><code>HourPackCard</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small><br>+1 more</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+5 more</td>
+  <td>External entry / no inbound edge</td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+9 more</td>
   <td>Module file in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>2</td>
   <td><code>TabKey</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2284,7 +2207,7 @@ flowchart LR
   <td>TabKey node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>3</td>
   <td><code>TABS</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2292,7 +2215,7 @@ flowchart LR
   <td>TABS node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>4</td>
   <td><code>VersionInfo</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2300,7 +2223,7 @@ flowchart LR
   <td>VersionInfo node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>5</td>
   <td><code>SettingsModalProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2308,7 +2231,7 @@ flowchart LR
   <td>SettingsModalProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>6</td>
   <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2316,7 +2239,7 @@ flowchart LR
   <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>7</td>
   <td><code>UserContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2324,7 +2247,7 @@ flowchart LR
   <td>UserContentProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>8</td>
   <td><code>UserContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2332,7 +2255,7 @@ flowchart LR
   <td>UserContent() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>9</td>
   <td><code>VersionContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2340,12 +2263,84 @@ flowchart LR
   <td>VersionContentProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>10</td>
   <td><code>VersionContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>VersionContent() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
+  <td>Module file in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small></td>
+  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>DictionaryManager</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>DictionaryManager node in features/dictionary/DictionaryManager.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>HourPackCard.tsx</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td>Module file in features/settings/HourPackCard.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>HourPack</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>HourPack node in features/settings/HourPackCard.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>HOUR_PACKS</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>HOUR_PACKS node in features/settings/HourPackCard.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>HourPackCardProps</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>HourPackCardProps node in features/settings/HourPackCard.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>HourPackCard</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>HourPackCard node in features/settings/HourPackCard.tsx.</td>
 </tr>
 <tr>
   <td>20</td>
@@ -3816,7 +3811,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-15 15:44 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-16 06:01 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
