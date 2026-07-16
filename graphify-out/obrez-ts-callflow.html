@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 518 nodes, 775 edges, 57 communities. Commit: f226e4d</p>
+<p class="subtitle">Generated from graphify knowledge graph: 518 nodes, 775 edges, 57 communities. Commit: cb481ed</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -118,12 +118,12 @@ flowchart LR
     class COMMUNITY_45_E4978FE7 module;
     OTHER_D0941E68("Other<br/><small>36 nodes</small>")
     class OTHER_D0941E68 module;
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x30| OUTPUTS_DOCS_ED82387C
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x26| OUTPUTS_DOCS_ED82387C
     OUTPUTS_DOCS_ED82387C -->|imports x15| SERVE_API_35EC8E86
     INGEST_CACHE_UPDATE_FF457338 -->|imports x14| SERVE_API_35EC8E86
+    OUTPUTS_DOCS_ED82387C -->|imports x12| INGEST_CACHE_UPDATE_FF457338
     SERVE_API_35EC8E86 -->|contains x11| OUTPUTS_DOCS_ED82387C
     MEDIA_PLAYER_AUDIO_4FE18149 -->|imports x10| INGEST_CACHE_UPDATE_FF457338
-    OUTPUTS_DOCS_ED82387C -->|imports x8| INGEST_CACHE_UPDATE_FF457338
     INGEST_CACHE_UPDATE_FF457338 -->|imports x7| MEDIA_PLAYER_AUDIO_4FE18149
     SERVE_API_35EC8E86 -->|contains x5| INGEST_CACHE_UPDATE_FF457338
     OUTPUTS_DOCS_ED82387C -->|imports x4| MEDIA_PLAYER_AUDIO_4FE18149
@@ -756,35 +756,35 @@ flowchart LR
         file_loader_fileloader_fileloader_ab7274c4("FileLoader()<br/><small>features/file-loader/FileLoader.tsx</small>")
     end
     subgraph outputs_docs_src_store_playerStore_ts_286f02f8["src/store/playerStore.ts"]
-        store_playerstore_useplayeractions_2de0ac0e("usePlayerActions()<br/><small>src/store/playerStore.ts</small>")
         store_playerstore_useplayerstore_5d310b80("usePlayerStore<br/><small>src/store/playerStore.ts</small>")
+        store_playerstore_useplayeractions_2de0ac0e("usePlayerActions()<br/><small>src/store/playerStore.ts</small>")
     end
     dictionary_dictionarymanager_dictionarymanagerin_b491595a("DictionaryManagerInner()<br/><small>features/dictionary/DictionaryManager.tsx</small>")
     export_exportmodal_exportbuttoninner_4a68e111("ExportButtonInner()<br/><small>features/export/ExportModal.tsx</small>")
     player_playerdisplay_96c04d4c("PlayerDisplay.tsx")
     src_export_writablebuffer_7323feaa("WritableBuffer<br/><small>src/export.ts</small>")
     hooks_usemediaplayer_usemediaplayer_659ae66d("useMediaPlayer()<br/><small>src/hooks/useMediaPlayer.ts</small>")
-    file_loader_fileloader_fileloader_ab7274c4 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
-    file_loader_fileloader_fileloader_ab7274c4 -->|calls| store_playerstore_useplayeractions_2de0ac0e
     transcription_transcriptionresults_findclosestse_3b6956a4 -->|calls| transcription_transcriptionresults_transcription_d3874bb4
     transcription_transcriptionresults_parsestage_50197875 -->|calls| transcription_transcriptionresults_transcribepro_909f732c
     transcription_transcriptionresults_transcribepro_5576f37c -->|calls| store_playerstore_useplayerstore_5d310b80
     transcription_transcriptionresults_transcription_d3874bb4 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_playerstore_useplayeractions_2de0ac0e
     transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_playerstore_useplayerstore_5d310b80
+    file_loader_fileloader_fileloader_ab7274c4 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    file_loader_fileloader_fileloader_ab7274c4 -->|calls| store_playerstore_useplayeractions_2de0ac0e
     hooks_usemediaplayer_usemediaplayer_659ae66d -->|calls| context_mediaplayercontext_mediaplayerprovider_e13e53a9
     dictionary_dictionarymanager_dictionarymanagerin_b491595a -->|calls| store_playerstore_useplayeractions_2de0ac0e
     dictionary_dictionarymanager_dictionarymanagerin_b491595a -->|calls| store_playerstore_useplayerstore_5d310b80
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
     export_exportmodal_exportbuttoninner_4a68e111 -->|calls| store_playerstore_useplayeractions_2de0ac0e
     export_exportmodal_exportbuttoninner_4a68e111 -->|calls| store_playerstore_useplayerstore_5d310b80
-    file_loader_fileloader_2e7f03ea -->|imports| context_mediaplayercontext_a34c7b7e
-    file_loader_fileloader_2e7f03ea -->|imports| context_mediaplayercontext_usemediaplayercontext_6e6b7797
-    file_loader_fileloader_2e7f03ea -->|imports| store_playerstore_useplayeractions_2de0ac0e
     transcription_transcriptionresults_9a779401 -->|imports| context_mediaplayercontext_a34c7b7e
     transcription_transcriptionresults_9a779401 -->|imports| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     transcription_transcriptionresults_9a779401 -->|imports| store_playerstore_useplayeractions_2de0ac0e
     transcription_transcriptionresults_9a779401 -->|imports| store_playerstore_useplayerstore_5d310b80
+    file_loader_fileloader_2e7f03ea -->|imports| context_mediaplayercontext_a34c7b7e
+    file_loader_fileloader_2e7f03ea -->|imports| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    file_loader_fileloader_2e7f03ea -->|imports| store_playerstore_useplayeractions_2de0ac0e
     hooks_usemediaplayer_usemediaplayer_659ae66d -->|imports| context_mediaplayercontext_a34c7b7e
     context_mediaplayercontext_a34c7b7e -->|imports| player_playerdisplay_96c04d4c
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|imports| player_playerdisplay_96c04d4c
@@ -800,8 +800,8 @@ flowchart LR
     class context_mediaplayercontext_mediaplayerprovider_e13e53a9 ui;
     class file_loader_fileloader_2e7f03ea ui;
     class file_loader_fileloader_fileloader_ab7274c4 ui;
-    class store_playerstore_useplayeractions_2de0ac0e ui;
     class store_playerstore_useplayerstore_5d310b80 ui;
+    class store_playerstore_useplayeractions_2de0ac0e ui;
     class dictionary_dictionarymanager_dictionarymanagerin_b491595a ui;
     class export_exportmodal_exportbuttoninner_4a68e111 ui;
     class player_playerdisplay_96c04d4c ui;
@@ -830,22 +830,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>Module file in features/file-loader/FileLoader.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>FileLoader() node in features/file-loader/FileLoader.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
   <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -853,7 +837,7 @@ flowchart LR
   <td>Module file in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>2</td>
   <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -861,7 +845,7 @@ flowchart LR
   <td>ChevronDownIcon() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>3</td>
   <td><code>PlusIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -869,7 +853,7 @@ flowchart LR
   <td>PlusIcon() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>4</td>
   <td><code>SegmentItem</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -877,7 +861,7 @@ flowchart LR
   <td>SegmentItem node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>5</td>
   <td><code>TranscriptionRow()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -885,7 +869,7 @@ flowchart LR
   <td>TranscriptionRow() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>6</td>
   <td><code>rowRendererDeps</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -893,7 +877,7 @@ flowchart LR
   <td>rowRendererDeps node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>7</td>
   <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -901,7 +885,7 @@ flowchart LR
   <td>findClosestSegment() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>8</td>
   <td><code>findSegmentIndex()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -909,7 +893,7 @@ flowchart LR
   <td>findSegmentIndex() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>9</td>
   <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -917,7 +901,7 @@ flowchart LR
   <td>parseStage() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>10</td>
   <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
@@ -925,7 +909,7 @@ flowchart LR
   <td>TranscribeProgressBar() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>11</td>
   <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -933,7 +917,7 @@ flowchart LR
   <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>12</td>
   <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
@@ -941,12 +925,28 @@ flowchart LR
   <td>TranscriptionResultsInner() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>13</td>
   <td><code>TranscriptionResults</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>TranscriptionResults node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>Module file in features/file-loader/FileLoader.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>FileLoader() node in features/file-loader/FileLoader.tsx.</td>
 </tr>
 <tr>
   <td>16</td>
@@ -3631,7 +3631,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-16 14:23 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-16 16:09 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

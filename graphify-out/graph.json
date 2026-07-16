@@ -82,14 +82,144 @@
   },
   "nodes": [
     {
+      "label": "TranscriptionResults.tsx",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults",
+      "community": 0,
+      "norm_label": "transcriptionresults.tsx"
+    },
+    {
+      "label": "ChevronDownIcon()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_chevrondownicon",
+      "community": 0,
+      "norm_label": "chevrondownicon()"
+    },
+    {
+      "label": "PlusIcon()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L29",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_plusicon",
+      "community": 0,
+      "norm_label": "plusicon()"
+    },
+    {
+      "label": "SegmentItem",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L37",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_segmentitem",
+      "community": 0,
+      "norm_label": "segmentitem"
+    },
+    {
+      "label": "TranscriptionRow()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L134",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_transcriptionrow",
+      "community": 0,
+      "norm_label": "transcriptionrow()"
+    },
+    {
+      "label": "rowRendererDeps",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L168",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_rowrendererdeps",
+      "community": 0,
+      "norm_label": "rowrendererdeps"
+    },
+    {
+      "label": "findClosestSegment()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L184",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_findclosestsegment",
+      "community": 0,
+      "norm_label": "findclosestsegment()"
+    },
+    {
+      "label": "findSegmentIndex()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L205",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_findsegmentindex",
+      "community": 0,
+      "norm_label": "findsegmentindex()"
+    },
+    {
+      "label": "parseStage()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L226",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_parsestage",
+      "community": 0,
+      "norm_label": "parsestage()"
+    },
+    {
+      "label": "TranscribeProgressBar()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L240",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_transcribeprogressbar",
+      "community": 0,
+      "norm_label": "transcribeprogressbar()"
+    },
+    {
+      "label": "TranscribeProgress()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L265",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_transcribeprogress",
+      "community": 0,
+      "norm_label": "transcribeprogress()"
+    },
+    {
+      "label": "TranscriptionResultsInner()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L279",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_transcriptionresultsinner",
+      "community": 0,
+      "norm_label": "transcriptionresultsinner()"
+    },
+    {
+      "label": "TranscriptionResults",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L943",
+      "_origin": "ast",
+      "id": "transcription_transcriptionresults_transcriptionresults",
+      "community": 0,
+      "norm_label": "transcriptionresults"
+    },
+    {
       "label": "login-redirect.spec.ts",
       "file_type": "code",
       "source_file": "e2e/login-redirect.spec.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "e2e_login_redirect_spec",
       "community": 30,
-      "norm_label": "login-redirect.spec.ts"
+      "norm_label": "login-redirect.spec.ts",
+      "id": "e2e_login_redirect_spec"
     },
     {
       "label": "App.tsx",
@@ -280,136 +410,6 @@
       "community": 7,
       "norm_label": "versioncontent()",
       "id": "settings_settingsmodal_versioncontent"
-    },
-    {
-      "label": "TranscriptionResults.tsx",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "transcriptionresults.tsx",
-      "id": "transcription_transcriptionresults"
-    },
-    {
-      "label": "ChevronDownIcon()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L23",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "chevrondownicon()",
-      "id": "transcription_transcriptionresults_chevrondownicon"
-    },
-    {
-      "label": "PlusIcon()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L29",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "plusicon()",
-      "id": "transcription_transcriptionresults_plusicon"
-    },
-    {
-      "label": "SegmentItem",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L37",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "segmentitem",
-      "id": "transcription_transcriptionresults_segmentitem"
-    },
-    {
-      "label": "TranscriptionRow()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L134",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "transcriptionrow()",
-      "id": "transcription_transcriptionresults_transcriptionrow"
-    },
-    {
-      "label": "rowRendererDeps",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L168",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "rowrendererdeps",
-      "id": "transcription_transcriptionresults_rowrendererdeps"
-    },
-    {
-      "label": "findClosestSegment()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L184",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "findclosestsegment()",
-      "id": "transcription_transcriptionresults_findclosestsegment"
-    },
-    {
-      "label": "findSegmentIndex()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L205",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "findsegmentindex()",
-      "id": "transcription_transcriptionresults_findsegmentindex"
-    },
-    {
-      "label": "parseStage()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L226",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "parsestage()",
-      "id": "transcription_transcriptionresults_parsestage"
-    },
-    {
-      "label": "TranscribeProgressBar()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L240",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "transcribeprogressbar()",
-      "id": "transcription_transcriptionresults_transcribeprogressbar"
-    },
-    {
-      "label": "TranscribeProgress()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L265",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "transcribeprogress()",
-      "id": "transcription_transcriptionresults_transcribeprogress"
-    },
-    {
-      "label": "TranscriptionResultsInner()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L279",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "transcriptionresultsinner()",
-      "id": "transcription_transcriptionresults_transcriptionresultsinner"
-    },
-    {
-      "label": "TranscriptionResults",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L938",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "transcriptionresults",
-      "id": "transcription_transcriptionresults_transcriptionresults"
     },
     {
       "label": "useMediaPlayer.ts",
@@ -5332,6 +5332,467 @@
       "context": "import",
       "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "transcription_transcriptionresults"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_confirmationmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_confirmationmodal_confirmationmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_loginmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_loginmodal_loginmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_topupmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "auth_topupmodal_topupmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "context_mediaplayercontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "store_authstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "store_playerstore_useplayeractions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_addwordmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_addwordmodal_addwordmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_effectmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_effectmodal_effectbadge"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_effectmodal_effectmodal"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_chevrondownicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_findclosestsegment"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L201",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_findsegmentindex"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L53",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_parsestage"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_plusicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L163",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_rowrendererdeps"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L32",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_segmentitem"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L90",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_transcribeprogress"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L65",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_transcribeprogressbar"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L552",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_transcriptionresults"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L104",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_transcriptionresultsinner"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L129",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_transcriptionresults_transcriptionrow"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "types_index"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "types_index_soundcensoringeffect"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "utils_auth"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "utils_auth_canfreetopup"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L513",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults_transcriptionresultsinner",
+      "target": "transcription_transcriptionresults_findclosestsegment"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L66",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults_transcribeprogressbar",
+      "target": "transcription_transcriptionresults_parsestage"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L91",
+      "weight": 1.0,
+      "source": "transcription_transcriptionresults_transcribeprogress",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L113",
+      "weight": 1.0,
+      "source": "transcription_transcriptionresults_transcriptionresultsinner",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L306",
+      "weight": 1.0,
+      "source": "transcription_transcriptionresults_transcriptionresultsinner",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L112",
+      "weight": 1.0,
+      "source": "transcription_transcriptionresults_transcriptionresultsinner",
+      "target": "store_playerstore_useplayeractions"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L105",
+      "weight": 1.0,
+      "source": "transcription_transcriptionresults_transcriptionresultsinner",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "transcription_transcriptionresults_transcriptionresults"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
       "source_location": "L5",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -5703,28 +6164,6 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "transcription_transcriptionresults"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "transcription_transcriptionresults_transcriptionresults"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
       "source_file": "src/main.tsx",
       "source_location": "L2",
       "weight": 1.0,
@@ -5874,17 +6313,6 @@
       "target": "auth_loginmodal"
     },
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "auth_loginmodal"
-    },
-    {
       "relation": "calls",
       "context": "call",
       "confidence": "EXTRACTED",
@@ -5904,17 +6332,6 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "settings_settingsmodal",
-      "target": "auth_loginmodal_loginmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
       "target": "auth_loginmodal_loginmodal"
     },
     {
@@ -6345,423 +6762,6 @@
       "weight": 1.0,
       "source": "settings_settingsmodal_usercontent",
       "target": "utils_auth_formatseconds"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "auth_confirmationmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "auth_confirmationmodal_confirmationmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "auth_topupmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "auth_topupmodal_topupmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "context_mediaplayercontext"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "store_authstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "store_playerstore_useplayeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_addwordmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_addwordmodal_addwordmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_effectmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_effectmodal_effectbadge"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_effectmodal_effectmodal"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_chevrondownicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_findclosestsegment"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L201",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_findsegmentindex"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L53",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_parsestage"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_plusicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L163",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_rowrendererdeps"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L32",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_segmentitem"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L90",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcribeprogress"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L65",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcribeprogressbar"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L552",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcriptionresults"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L104",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcriptionresultsinner"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L129",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_transcriptionresults_transcriptionrow"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "types_index"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "types_index_soundcensoringeffect"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "utils_auth"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "utils_auth_canfreetopup"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L513",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults_transcriptionresultsinner",
-      "target": "transcription_transcriptionresults_findclosestsegment"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L66",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults_transcribeprogressbar",
-      "target": "transcription_transcriptionresults_parsestage"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L91",
-      "weight": 1.0,
-      "source": "transcription_transcriptionresults_transcribeprogress",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L113",
-      "weight": 1.0,
-      "source": "transcription_transcriptionresults_transcriptionresultsinner",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L306",
-      "weight": 1.0,
-      "source": "transcription_transcriptionresults_transcriptionresultsinner",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L112",
-      "weight": 1.0,
-      "source": "transcription_transcriptionresults_transcriptionresultsinner",
-      "target": "store_playerstore_useplayeractions"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L105",
-      "weight": 1.0,
-      "source": "transcription_transcriptionresults_transcriptionresultsinner",
-      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "imports_from",
@@ -13483,5 +13483,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "f226e4d56e1c92c260b3120db29981188eab3bd5"
+  "built_at_commit": "cb481ed17ed3491ae87a0330ced0ad872510779d"
 }

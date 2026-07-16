@@ -25,7 +25,7 @@ function Tooltip({ text }: { text: string }) {
       <span className="text-zinc-600 text-xs select-none">ⓘ</span>
       {show && (
         <span
-          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-3 py-2 text-[11px] leading-relaxed text-zinc-200 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg z-50 pointer-events-none"
+          className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-56 px-3 py-2 text-[11px] leading-relaxed text-zinc-200 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg z-[60] pointer-events-none"
           style={{ whiteSpace: 'normal' }}
         >
           {text}
