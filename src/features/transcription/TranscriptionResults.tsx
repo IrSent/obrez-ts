@@ -299,31 +299,9 @@ const TranscriptionResultsInner = () => {
   // Add Word modal
   const [showAddWord, setShowAddWord] = useState(false);
 
- // Auth modals — one state, can't conflict
-  // Restore from sessionStorage ONLY on page reload (not on new tab) to avoid
-  // leaking authModal between tabs — sessionStorage is shared in Safari.
-  const isReload = performance.getEntriesByType('navigation')[0]?.type === 'reload';
-  const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(() => {
-    if (!isReload) {
-      // New tab — don't restore from sessionStorage (another tab might have set it)
-      return null;
-    }
-    const saved = sessionStorage.getItem('obrez_auth_modal');
-    if (!saved) return null;
-    // If we were on 'login' but already authenticated (from localStorage),
-    // skip directly to 'confirm' — no need to show LoginModal again
-    if (saved === 'login') {
-      const user = localStorage.getItem('obrez_user');
-      if (user) return 'confirm';
-    }
-    return saved as 'login' | 'topup' | 'confirm' | null;
-  });
-  // Remember if we were on an OIDC callback at mount — needed when sessionStorage
-  // is lost (Safari clears it on cross-origin redirect) and authModal falls through to null.
-  // Only used if handleTranscribe was called (obrez_transcribe_pending is set).
-  const wasOidcCallback = useRef(
-    window.location.search.includes('code=') && !!localStorage.getItem('obrez_transcribe_pending'),
-  );
+  // Auth modals — one state, can't conflict
+  // Restore from IndexedDB on mount (survives OIDC redirect)
+  const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(null);
   const [authModalError, setAuthModalError] = useState<string | null>(null);
   // Use ref for retry callback — React's setState treats functions as reducers,
   // so storing a function in state causes it to be called immediately.
@@ -335,14 +313,48 @@ const TranscriptionResultsInner = () => {
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const clearAuthError = useAuthStore((s) => s.clearError);
 
-  // Keep authModal in sessionStorage
+  // Restore session from IndexedDB on mount (OIDC callback)
   useEffect(() => {
-    if (authModal) {
-      sessionStorage.setItem('obrez_auth_modal', authModal);
-    } else {
-      sessionStorage.removeItem('obrez_auth_modal');
-    }
-  }, [authModal]);
+    const restoreSession = async () => {
+      try {
+        const { loadSession, clearSession } = await import('../../utils/idb');
+        const session = await loadSession();
+        if (!session) return;
+
+        // Restore file if present (after OIDC redirect the player is empty)
+        if (session.fileBlob && session.fileName) {
+          try {
+            const file = new File([session.fileBlob], session.fileName, {
+              type: session.fileBlob.type || 'video/mp4',
+            });
+            await initMediaPlayer(file);
+          } catch (err) {
+            console.error('Failed to restore file:', err);
+          }
+        }
+
+        if (session.authModal) {
+          setAuthModal(session.authModal);
+        }
+        // Restore transcription and effects if present
+        if (session.transcriptionResults) {
+          actions.setTranscriptionResults(session.transcriptionResults);
+        }
+        if (session.censoringEffects) {
+          actions.setCensoringEffects(session.censoringEffects as SoundCensoringEffect[]);
+        }
+        if (session.duration != null) {
+          actions.setDuration(session.duration);
+        }
+
+        // Clear IndexedDB after restore to avoid re-restoring on reload
+        await clearSession();
+      } catch (err) {
+        console.error('Failed to restore session:', err);
+      }
+    };
+    restoreSession();
+  }, []);
 
   const handleAddEffect = (effect: SoundCensoringEffect) => {
     actions.addSoundEffect(effect);
@@ -454,7 +466,7 @@ const TranscriptionResultsInner = () => {
 
       await new Promise((r) => requestAnimationFrame(r));
 
-      await new Promise((r) => setTimeout(r, 200));
+      await new Promise(r => setTimeout(r, 200));
       actions.setImportStage('Done ✓');
       setError(null);
     } catch (err) {
@@ -657,20 +669,9 @@ const TranscriptionResultsInner = () => {
     return () => clearInterval(interval);
   }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
 
-  const handleTranscribe = async () => {
-    // Flag for OIDC callback: after mobile redirect, wasOidcCallback checks this
-    // to know whether to auto-resume transcription flow.
-    // Cleared by the fallback effect after processing — NOT here, because on mobile
-    // the redirect to Telegram happens AFTER _handleTranscribe returns, so by the
-    // time finally runs the flag is gone before the callback page even loads.
-    localStorage.setItem('obrez_transcribe_pending', '1');
-    return await _handleTranscribe();
-  };
-
   const _handleTranscribe = async () => {
     // 1. Check auth against backend (needed to get fresh balance)
     // Retry up to 3 times on network errors (localtunnel can be flaky)
-    let lastErr: string | null = null;
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
         await checkAuth();
@@ -678,21 +679,20 @@ const TranscriptionResultsInner = () => {
       } catch {
         // ignore — checkAuth sets error in store
       }
-      lastErr = useAuthStore.getState().error;
+      const lastErr = useAuthStore.getState().error;
       if (!lastErr) break; // not a network error, move on
       // Brief pause before retry
       await new Promise(r => setTimeout(r, 1000));
     }
 
     const authErr = useAuthStore.getState().error;
-    const authUser = useAuthStore.getState().user;
 
     if (authErr) {
       // Backend error — show with retry
       setAuthModalError(authErr);
       authModalRetryRef.current = async () => {
         setAuthModal(null);
-        handleTranscribe();
+        _handleTranscribe();
       };
       setAuthModal('login');
       return;
@@ -700,7 +700,15 @@ const TranscriptionResultsInner = () => {
 
     const user = useAuthStore.getState().user;
     if (!user) {
-      // Truly not logged in
+      // Not logged in — save session and show login
+      const { saveSession } = await import('../../utils/idb');
+      await saveSession({
+        authModal: 'login',
+        transcriptionResults,
+        censoringEffects: censoringEffects ?? null,
+        duration,
+        wasTranscribing: transcribing,
+      });
       setAuthModalError(null);
       authModalRetryRef.current = null;
       setAuthModal('login');
@@ -723,6 +731,8 @@ const TranscriptionResultsInner = () => {
     setAuthModal('confirm');
   };
 
+  const handleTranscribe = _handleTranscribe;
+
   // React to login: when user gets authenticated, handle it
   // Guard: don't switch modals if there's an auth error — that would create a loop
   useEffect(() => {
@@ -737,31 +747,6 @@ const TranscriptionResultsInner = () => {
           setAuthModal('topup');
         } else {
           setAuthModal('confirm');
-        }
-      }
-    }
-  }, [isAuthenticated, authModal, authError]);
-
-// OIDC callback fallback: if we were on a callback page (code= in URL) but
-  // sessionStorage was lost (Safari clears it on cross-origin redirect),
-  // authModal will be null. When the user becomes authenticated, proceed
-  // to confirm/topup instead of leaving them stuck.
-  // Only fires if obrez_transcribe_pending is set (meaning handleTranscribe
-  // was called — user is not just logging in from SettingsModal).
-  useEffect(() => {
-    if (wasOidcCallback.current && isAuthenticated && authModal === null && !authError) {
-      wasOidcCallback.current = false; // only run once
-      if (localStorage.getItem('obrez_transcribe_pending')) {
-        localStorage.removeItem('obrez_transcribe_pending');
-        const user = useAuthStore.getState().user;
-        if (user) {
-          const freeAvailable = canFreeTopup(user.last_free_topup);
-          const balanceInsufficient = duration > user.remaining_seconds;
-          if (freeAvailable || balanceInsufficient) {
-            setAuthModal('topup');
-          } else {
-            setAuthModal('confirm');
-          }
         }
       }
     }
@@ -872,7 +857,7 @@ const TranscriptionResultsInner = () => {
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
       ) : transcriptionResults && transcriptionResults.length > 0 ? (
-<List
+        <List
           listRef={rwListRef}
           rowCount={filteredSegments.length}
           rowHeight={ROW_HEIGHT}

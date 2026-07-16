@@ -7,6 +7,34 @@ import { HourPackCard, HOUR_PACKS } from './HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 import { LoginModal } from '../auth/LoginModal';
 
+/**
+ * Tooltip icon — ⓘ — shows description on hover (desktop) or tap (mobile).
+ */
+function Tooltip({ text }: { text: string }) {
+  const [show, setShow] = useState(false);
+
+  return (
+    <span
+      className="relative inline-flex items-center ml-1 cursor-help"
+      onMouseEnter={() => setShow(true)}
+      onMouseLeave={() => setShow(false)}
+      onFocus={() => setShow(true)}
+      onBlur={() => setShow(false)}
+      onClick={(e) => { e.stopPropagation(); setShow((v) => !v); }}
+    >
+      <span className="text-zinc-600 text-xs select-none">ⓘ</span>
+      {show && (
+        <span
+          className="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 px-3 py-2 text-[11px] leading-relaxed text-zinc-200 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg z-50 pointer-events-none"
+          style={{ whiteSpace: 'normal' }}
+        >
+          {text}
+        </span>
+      )}
+    </span>
+  );
+}
+
 type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version';
 
 const TABS: { key: TabKey; emoji: string; tooltip: string }[] = [
@@ -150,16 +178,34 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           style={lockedHeight != null ? { height: lockedHeight, transition: 'height 300ms ease-in-out' } : undefined}
         >
           {activeTab === 'user' && (
-            <div className="p-4"><UserContent onClose={onClose} /></div>
+            <div className="p-4">
+              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                Account & Balance <Tooltip text="Manage your Telegram account, check transcription balance, and top up hours." />
+              </h3>
+              <UserContent onClose={onClose} />
+            </div>
           )}
           {activeTab === 'dictionaries' && (
-            <div className="p-4"><DictionaryManager /></div>
+            <div className="p-4">
+              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                Word Lists <Tooltip text="Choose which word lists to match against during transcription. Only active lists highlight matched words." />
+              </h3>
+              <DictionaryManager />
+            </div>
           )}
           {activeTab === 'bleep' && (
-            <div className="p-4"><BleepSoundManager /></div>
+            <div className="p-4">
+              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                Sound Effects <Tooltip text="Manage bleep and censor sounds. Upload custom audio files or use the default tone." />
+              </h3>
+              <BleepSoundManager />
+            </div>
           )}
           {activeTab === 'version' && (
             <div className="p-4">
+              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                Switch Version <Tooltip text="Switch between master (latest) and stable releases. Useful if master breaks." />
+              </h3>
               <VersionContent
                 versions={versions}
                 currentVersion={currentVersion}
@@ -256,6 +302,29 @@ function UserContent({ onClose }: UserContentProps) {
         >
           Log out
         </button>
+      </div>
+
+      {/* Play on load */}
+      <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+        <div>
+          <div className="text-sm text-zinc-200 font-medium">
+            ▶ Play on load
+            <Tooltip text="When enabled, the video starts playing automatically as soon as a file is loaded. Disable to review the timeline before playback." />
+          </div>
+          <div className="text-xs text-zinc-500 mt-0.5">Auto-play video after loading a file</div>
+        </div>
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            id="obrez-play-on-load"
+            className="sr-only peer"
+            defaultChecked={localStorage.getItem('obrez_play_on_load') === 'true'}
+            onChange={(e) => {
+              localStorage.setItem('obrez_play_on_load', e.target.checked ? 'true' : 'false');
+            }}
+          />
+          <div className="w-11 h-6 bg-zinc-600 rounded-full peer-checked:bg-purple-600 peer-focus:ring-2 peer-focus:ring-purple-500/50 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-200 peer-checked:after:translate-x-full" />
+        </label>
       </div>
 
       {/* Hour pack cards */}

@@ -22,7 +22,6 @@ import { usePlayerStore, playerActions } from '../store/playerStore';
 import {
   ALL_FORMATS,
   AudioBufferSink,
-  BlobSource,
   CanvasSink,
   EncodedAudioPacketSource,
   EncodedPacket,
@@ -32,7 +31,7 @@ import {
   Mp4OutputFormat,
   Output,
   BufferTarget,
-  UrlSource,
+  ReadableStreamSource,
   WrappedAudioBuffer,
   WrappedCanvas,
 } from 'mediabunny';
@@ -1298,8 +1297,13 @@ export function useMediaPlayer() {
       playerActions.setCensoringEffects([]);
       triggeredEffectsRef.current.clear();
 
-      const source =
-        resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
+      // Use ReadableStreamSource — streams from Blob without loading the whole file
+      // into memory. After OIDC redirect, the file stays in IndexedDB and we can
+      // create a new ReadableStreamSource on restore.
+      const source = new ReadableStreamSource(
+        (resource as Blob).stream(),
+        { maxCacheSize: 32 * 1024 * 1024 } // 32 MiB
+      );
       const input = new Input({ source, formats: ALL_FORMATS });
       inputRef.current = input;
       resourceRef.current = resource;
@@ -1664,9 +1668,12 @@ export function useMediaPlayer() {
         const resource = resourceRef.current;
         if (!resource) throw new Error('No media resource available');
 
-        const transcribeSource =
-          resource instanceof File ? new BlobSource(resource) : new UrlSource(resource);
-        const transcribeInput = new Input({ source: transcribeSource, formats: ALL_FORMATS });
+        // Use ReadableStreamSource for transcription too — streams from Blob
+          const transcribeSource = new ReadableStreamSource(
+            (resource as Blob).stream(),
+            { maxCacheSize: 32 * 1024 * 1024 }
+          );
+          const transcribeInput = new Input({ source: transcribeSource, formats: ALL_FORMATS });
         const transcribeAudioTrack = await transcribeInput.getPrimaryAudioTrack();
         if (!transcribeAudioTrack) throw new Error('No audio track found for transcription');
 

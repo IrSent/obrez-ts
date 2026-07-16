@@ -57,7 +57,7 @@ export const App = () => {
     }
   }, []);
 
-  // OIDC callback: handle Telegram auth code
+  // OIDC callback: handle Telegram auth code after redirect
   useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get('code');
@@ -66,14 +66,7 @@ export const App = () => {
     if (code && state) {
       const savedState = sessionStorage.getItem('obrez_pkce_state');
       if (savedState === state) {
-        // Popup path: send code to opener and close
-        if (window.opener) {
-          window.opener.postMessage(`obrez_auth:${code}`, window.location.origin);
-          window.close();
-          return;
-        }
-
-        // Direct path (mobile fallback or page reload): exchange code locally
+        // Exchange code for auth
         const authStore = useAuthStore.getState();
         authStore.exchangeCode(code).then(() => {
           // Clear URL params and sessionStorage
