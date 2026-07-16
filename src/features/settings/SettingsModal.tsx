@@ -28,41 +28,49 @@ interface SettingsModalProps {
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('user');
   const [versions, setVersions] = useState<VersionInfo | null>(null);
-  const [contentHeight, setContentHeight] = useState<number>(0);
+  const [lockedHeight, setLockedHeight] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const animatingRef = useRef(false);
+  const animTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const lockedHeightRef = useRef<number | null>(null);
 
   const currentVersion = typeof window !== 'undefined'
     ? window.location.pathname.split('/').filter(Boolean).pop() || 'master'
     : 'master';
 
-  // Measure initial content height after mount
+  // Measure and lock initial content height after mount
   useEffect(() => {
     requestAnimationFrame(() => {
       requestAnimationFrame(() => {
         if (contentRef.current) {
-          setContentHeight(contentRef.current.scrollHeight);
+          const h = contentRef.current.scrollHeight;
+          setLockedHeight(h);
+          lockedHeightRef.current = h;
         }
       });
     });
   }, []);
 
-  // Animate content height on tab change / versions load
+  // Animate on tab change / versions load / unlock
   useEffect(() => {
     if (animatingRef.current) return;
+
+    // On unlock: nothing to animate — container already fits content
+    if (lockedHeight === null) return;
+
     animatingRef.current = true;
+    const oldH = lockedHeightRef.current;
 
-    const oldHeight = contentHeight;
-    const newHeight = contentRef.current?.scrollHeight ?? 400;
-
-    // Set current height → animate to new height
-    setContentHeight(oldHeight);
+    setLockedHeight(oldH);
     requestAnimationFrame(() => {
-      setContentHeight(newHeight);
-      // Reset after transition ends
-      setTimeout(() => { animatingRef.current = false; }, 350);
+      const newH = contentRef.current?.scrollHeight ?? oldH;
+      setLockedHeight(newH);
+      animTimeoutRef.current = setTimeout(() => {
+        setLockedHeight(null);
+        animatingRef.current = false;
+      }, 350);
     });
-  }, [activeTab, versions]);
+  }, [activeTab, versions, lockedHeight]);
 
   useEffect(() => {
     if (activeTab !== 'version' || versions) return;
@@ -92,12 +100,12 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 overflow-y-auto"
+      className="fixed inset-0 z-50 flex bg-black/60 overflow-y-auto"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-[0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)] flex flex-col overflow-hidden">
+      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-[0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)] flex flex-col overflow-hidden min-h-0 flex-1">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-zinc-800">
+        <div className="flex items-center justify-between p-4 border-b border-zinc-800 shrink-0">
           <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
           <button
             onClick={onClose}
@@ -108,11 +116,21 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-zinc-800 px-4 pt-2 gap-2">
+        <div className="flex border-b border-zinc-800 px-4 pt-2 gap-2 shrink-0">
           {TABS.map((tab) => (
             <button
               key={tab.key}
-              onClick={() => setActiveTab(tab.key)}
+              onClick={() => {
+                if (animatingRef.current) return;
+                // Freeze current height before content swaps — so shrink animates
+                const h = contentRef.current?.scrollHeight ?? lockedHeightRef.current;
+                if (h != null) {
+                  setLockedHeight(h);
+                  lockedHeightRef.current = h;
+                }
+                if (animTimeoutRef.current) { clearTimeout(animTimeoutRef.current); animTimeoutRef.current = null; }
+                setActiveTab(tab.key);
+              }}
               title={tab.tooltip}
               className={`px-3 py-2 text-sm font-semibold rounded-t transition-colors ${
                 activeTab === tab.key
@@ -128,8 +146,8 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         {/* Content — animated height */}
         <div
           ref={contentRef}
-          className="overflow-y-auto transition-[height] duration-300 ease-in-out"
-          style={{ height: contentHeight }}
+          className="overflow-y-auto flex-1 min-h-0"
+          style={lockedHeight != null ? { height: lockedHeight, transition: 'height 300ms ease-in-out' } : undefined}
         >
           {activeTab === 'user' && (
             <div className="p-4"><UserContent onClose={onClose} /></div>
