@@ -334,7 +334,12 @@ const TranscriptionResultsInner = () => {
         }
 
         if (session.authModal) {
-          setAuthModal(session.authModal);
+          // If we're in the OIDC callback flow (code= in URL), skip the login
+          // modal — the user is about to be authenticated. Set 'confirm' directly
+          // so the authModal effect does the balance check without flickering.
+          const params = new URLSearchParams(window.location.search);
+          const isInCallback = params.has('code');
+          setAuthModal(isInCallback ? 'confirm' : session.authModal);
         }
         // Restore transcription and effects if present
         if (session.transcriptionResults) {

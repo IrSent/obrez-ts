@@ -1,16 +1,16 @@
 # Graph Report - obrez-ts  (2026-07-16)
 
 ## Corpus Check
-- 78 files · ~116,194 words
+- 81 files · ~116,970 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 512 nodes · 763 edges · 57 communities (42 shown, 15 thin omitted)
+- 522 nodes · 777 edges · 59 communities (44 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `514c5450`
+- Built from commit: `df3c64d2`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -37,9 +37,9 @@
 - [[_COMMUNITY_Main Entry|Main Entry]]
 - [[_COMMUNITY_Community 24|Community 24]]
 - [[_COMMUNITY_Community 26|Community 26]]
+- [[_COMMUNITY_Community 27|Community 27]]
 - [[_COMMUNITY_Community 28|Community 28]]
 - [[_COMMUNITY_Community 29|Community 29]]
-- [[_COMMUNITY_Community 30|Community 30]]
 - [[_COMMUNITY_Community 32|Community 32]]
 - [[_COMMUNITY_Community 33|Community 33]]
 - [[_COMMUNITY_Community 34|Community 34]]
@@ -90,11 +90,11 @@
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 - **E2E Test Fixtures (audio-only profanity test + full video AAC test)** — e2e_ru_profanity, e2e_valid_with_aac [EXTRACTED 1.00]
 
-## Communities (57 total, 15 thin omitted)
+## Communities (59 total, 15 thin omitted)
 
 ### Community 0 - "Export Modal + Context"
-Cohesion: 0.09
-Nodes (32): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner(), ExportFormat (+24 more)
+Cohesion: 0.06
+Nodes (46): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), CODEC_LABELS, ExportButton (+38 more)
 
 ### Community 1 - "Package Dependencies"
 Cohesion: 0.05
@@ -102,7 +102,7 @@ Nodes (40): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabu
 
 ### Community 2 - "Dictionary + Aho-Corasick"
 Cohesion: 0.15
-Nodes (20): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+12 more)
+Nodes (19): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+11 more)
 
 ### Community 3 - "Bleep Sounds + Icons"
 Cohesion: 0.14
@@ -121,8 +121,8 @@ Cohesion: 0.40
 Nodes (4): __dirname, handleTranscriptionRequest(), Bun TLS Server (port 3000), server
 
 ### Community 7 - "Media Player + Audio"
-Cohesion: 0.12
-Nodes (23): TopupModal(), TopupModalProps, DictionaryManager, HOUR_PACKS, HourPack, HourPackCard, HourPackCardProps, Plan (+15 more)
+Cohesion: 0.08
+Nodes (36): ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal(), LoginModalProps, TopupModal(), TopupModalProps, DebugButton() (+28 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -148,9 +148,9 @@ Nodes (4): Documentation, graphify, Key Facts, Repomix
 Cohesion: 0.24
 Nodes (8): build(), buildVersion(), clients, DIST_DIR, getVersions(), PUBLIC_DIR, server, SRC_DIR
 
-### Community 30 - "Community 30"
-Cohesion: 0.11
-Nodes (25): ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal(), LoginModalProps, DebugButton(), ErrorEntry, DEFAULT_DICTIONARIES (+17 more)
+### Community 27 - "Community 27"
+Cohesion: 0.52
+Nodes (6): clearSession(), getFromStore(), loadSession(), openDb(), saveSession(), StoredSession
 
 ### Community 34 - "Community 34"
 Cohesion: 0.50
@@ -158,7 +158,7 @@ Nodes (3): effects, transcription, version
 
 ### Community 35 - "Community 35"
 Cohesion: 0.10
-Nodes (13): AddWordModal, AddWordModalProps, EffectBadge, EffectModal, EffectModalProps, findClosestSegment(), parseStage(), rowRendererDeps (+5 more)
+Nodes (12): AddWordModal, AddWordModalProps, EffectBadge, EffectModal, EffectModalProps, findClosestSegment(), parseStage(), rowRendererDeps (+4 more)
 
 ### Community 36 - "Community 36"
 Cohesion: 0.50
@@ -193,24 +193,24 @@ Cohesion: 0.20
 Nodes (9): Console Diagnostics, Diagnostic Hooks, Playwright Config, Running Tests, Test Fixtures, Test Suite, Testing Guide, `window.__audioDiagnostic` (+1 more)
 
 ## Knowledge Gaps
-- **205 isolated node(s):** `SegmentItem`, `rowRendererDeps`, `TabKey`, `TABS`, `VersionInfo` (+200 more)
+- **206 isolated node(s):** `DEFAULT_DICTIONARIES`, `LoginModalProps`, `TabKey`, `TABS`, `VersionInfo` (+201 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `usePlayerStore` connect `Export Modal + Context` to `Dictionary + Aho-Corasick`, `Community 35`, `Bleep Sounds + Icons`, `Community 50`, `Community 30`?**
-  _High betweenness centrality (0.024) - this node is a cross-community bridge._
-- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`, `Community 30`?**
+- **Why does `usePlayerStore` connect `Export Modal + Context` to `Dictionary + Aho-Corasick`, `Community 35`, `Bleep Sounds + Icons`, `Media Player + Audio`, `Community 50`?**
+  _High betweenness centrality (0.023) - this node is a cross-community bridge._
+- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Export Modal + Context`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `SegmentItem`, `rowRendererDeps`, `TabKey` to the rest of the system?**
-  _205 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `DEFAULT_DICTIONARIES`, `LoginModalProps`, `TabKey` to the rest of the system?**
+  _206 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
-  _Cohesion score 0.0858843537414966 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.06233538191395961 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
-- **Should `Dictionary + Aho-Corasick` be split into smaller, more focused modules?**
-  _Cohesion score 0.1477832512315271 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**
   _Cohesion score 0.1396011396011396 - nodes in this community are weakly interconnected._
+- **Should `Community 4` be split into smaller, more focused modules?**
+  _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._
