@@ -130,10 +130,10 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex bg-black/60 overflow-y-auto"
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-[0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)] flex flex-col overflow-hidden min-h-0 flex-1">
+      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-[0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)] flex flex-col overflow-hidden max-h-[65vh]">
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-zinc-800 shrink-0">
           <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
