@@ -25,8 +25,8 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1784107573.976543,
-    "ast_hash": "6f682912dc2ec19a29443fc881296ec1",
+    "mtime": 1784189368.6416302,
+    "ast_hash": "1e4c0fdfd12e1a7380097c1b7cc16da0",
     "semantic_hash": ""
   },
   "src/aho-corasick.ts": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/features/file-loader/FileLoader.tsx": {
-    "mtime": 1783932131.9003663,
-    "ast_hash": "8a9723f2fc8d092fe4b52c93c5136857",
+    "mtime": 1784201686.2749467,
+    "ast_hash": "4f949e179dc42b201a2f26d52a549726",
     "semantic_hash": ""
   },
   "src/features/player/PlayerDisplay.tsx": {
@@ -90,13 +90,13 @@
     "semantic_hash": ""
   },
   "src/features/transcription/TranscriptionResults.tsx": {
-    "mtime": 1784182273.8869317,
-    "ast_hash": "6ae36496280d659a69938247c1f660d8",
+    "mtime": 1784198201.9239717,
+    "ast_hash": "17060926674d73de9c3b98f095344af9",
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
-    "mtime": 1783932796.524909,
-    "ast_hash": "8f637b9e96215f13e3cf24d55d7f977a",
+    "mtime": 1784191875.8865,
+    "ast_hash": "7da41f24dc9454130360d34cd52058de",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "src/features/auth/LoginModal.tsx": {
-    "mtime": 1784122750.482638,
-    "ast_hash": "2a0d03537f11f1881e704d5746f6767d",
+    "mtime": 1784191563.5949771,
+    "ast_hash": "ddd1682a4951bab79112220e0a20e3c7",
     "semantic_hash": ""
   },
   "src/features/auth/TopupModal.tsx": {
@@ -395,8 +395,8 @@
     "semantic_hash": ""
   },
   "src/features/settings/SettingsModal.tsx": {
-    "mtime": 1784178696.1116576,
-    "ast_hash": "9b0176dfb009d8f0f172625ba7f5e9bf",
+    "mtime": 1784199257.9251695,
+    "ast_hash": "159e39a1ff668c1758a0cffe7b176234",
     "semantic_hash": ""
   },
   "src/features/export/HeaderExportButton.tsx": {
@@ -467,6 +467,21 @@
   "src/features/settings/HourPackCard.tsx": {
     "mtime": 1784129504.5552528,
     "ast_hash": "9b448c3b08cfcaae8d8147d04fdb7bba",
+    "semantic_hash": ""
+  },
+  "e2e/login-redirect.spec.ts": {
+    "mtime": 1784192622.449246,
+    "ast_hash": "39a3f7cac26b12fe9bfbcf032bd2f689",
+    "semantic_hash": ""
+  },
+  "e2e/mobile-login.spec.ts": {
+    "mtime": 1784183436.6326892,
+    "ast_hash": "d2b2495677e7e8c61c07d5b6d326359a",
+    "semantic_hash": ""
+  },
+  "src/utils/idb.ts": {
+    "mtime": 1784186967.1437755,
+    "ast_hash": "24e44c260d692a31e34d58d875d849ad",
     "semantic_hash": ""
   }
 }
