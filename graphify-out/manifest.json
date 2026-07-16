@@ -25,8 +25,8 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1784189368.6416302,
-    "ast_hash": "1e4c0fdfd12e1a7380097c1b7cc16da0",
+    "mtime": 1784222834.4499352,
+    "ast_hash": "ff8863218f6f71599196cd2bffb9e501",
     "semantic_hash": ""
   },
   "src/aho-corasick.ts": {
@@ -345,8 +345,8 @@
     "semantic_hash": ""
   },
   "src/features/auth/LoginModal.tsx": {
-    "mtime": 1784191563.5949771,
-    "ast_hash": "ddd1682a4951bab79112220e0a20e3c7",
+    "mtime": 1784222994.9808154,
+    "ast_hash": "0ae29ef0838a1d4a1a470b03f3e463b3",
     "semantic_hash": ""
   },
   "src/features/auth/TopupModal.tsx": {
@@ -389,14 +389,9 @@
     "ast_hash": "89af900d1cfe578d3461e71ac7c638f8",
     "semantic_hash": ""
   },
-  "src/features/debug/DebugButton.tsx": {
-    "mtime": 1783932796.9149573,
-    "ast_hash": "07eeb9b060eb1768a6fb1b0c6793bd41",
-    "semantic_hash": ""
-  },
   "src/features/settings/SettingsModal.tsx": {
-    "mtime": 1784218707.371232,
-    "ast_hash": "6c6e156d0b78e7a6979655abfdd578f5",
+    "mtime": 1784223769.207859,
+    "ast_hash": "feb85d717ae62223319a4e0253d56554",
     "semantic_hash": ""
   },
   "src/features/export/HeaderExportButton.tsx": {
@@ -472,6 +467,11 @@
   "src/utils/idb.ts": {
     "mtime": 1784186967.1437755,
     "ast_hash": "24e44c260d692a31e34d58d875d849ad",
+    "semantic_hash": ""
+  },
+  "src/features/debug/DebugTab.tsx": {
+    "mtime": 1784223486.8263347,
+    "ast_hash": "3e74d5f1a4267716cccd9641aeac0c6b",
     "semantic_hash": ""
   }
 }

@@ -100,14 +100,23 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
           set({ error: 'Invalid server response' });
         }
       } else if (response.status === 401 || response.status === 403) {
-        // Session expired or not authenticated — clear, but don't set error
-        // (401 is expected when user is not logged in)
-        localStorage.removeItem('obrez_user');
-        set({
-          user: null,
-          isAuthenticated: false,
-          error: null,
-        });
+        // 401 can happen on mobile when SameSite=None cookie is blocked
+        // by the browser (cross-site: GitHub Pages → localtunnel).
+        // If we have a cached user in localStorage, keep them logged in
+        // and let the backend validate the session on the next real request
+        // (transcribe, topup). If there's no cached user, they're not logged in.
+        const cached = localStorage.getItem('obrez_user');
+        if (cached) {
+          // Keep authenticated — cookie issue, not a real logout
+          set({ error: null });
+        } else {
+          // No cached user — session expired or never logged in
+          set({
+            user: null,
+            isAuthenticated: false,
+            error: null,
+          });
+        }
       } else {
         // Other server error — keep user, show error
         const err = await response.json().catch(() => null);
