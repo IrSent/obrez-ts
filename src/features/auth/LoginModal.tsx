@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { generateCodeChallenge, generateCodeVerifier } from '../../utils/pkce-browser';
-import { DebugButton } from '../debug/DebugButton';
 
 const TELEGRAM_CLIENT_ID = '8886675841';
 
@@ -59,21 +58,18 @@ export function LoginModal({ onClose, onRetry, initialError }: LoginModalProps) 
       <div className="bg-zinc-800 rounded-xl p-6 w-full max-w-sm mx-4 shadow-2xl border border-zinc-700 max-h-[85vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold text-zinc-100">Sign in required</h2>
-          <div className="flex items-center gap-2">
-            <DebugButton />
-            {!btnDisabled && (
-            <button
-              onClick={() => {
-                signingRef.current = false;
-                setBtnDisabled(false);
-                onClose();
-              }}
-              className="text-zinc-400 hover:text-zinc-200 transition-colors"
-            >
-              ✕
-            </button>
-          )}
-          </div>
+          {!btnDisabled && (
+          <button
+            onClick={() => {
+              signingRef.current = false;
+              setBtnDisabled(false);
+              onClose();
+            }}
+            className="text-zinc-400 hover:text-zinc-200 transition-colors"
+          >
+            ✕
+          </button>
+        )}
         </div>
 
         <p className="text-sm text-zinc-400 mb-2">

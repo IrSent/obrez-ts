@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react';
 import { DictionaryManager } from '../dictionary/DictionaryManager';
 import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
+import { DebugTab } from '../debug/DebugTab';
 import { APP_VERSION } from '../../version';
 import { useAuthStore } from '../../store/authStore';
 import { HourPackCard, HOUR_PACKS } from './HourPackCard';
@@ -35,13 +36,14 @@ function Tooltip({ text }: { text: string }) {
   );
 }
 
-type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version';
+type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version' | 'debug';
 
 const TABS: { key: TabKey; emoji: string; tooltip: string }[] = [
   { key: 'user', emoji: '👤', tooltip: 'Account & Balance' },
   { key: 'dictionaries', emoji: '📚', tooltip: 'Dictionaries' },
   { key: 'bleep', emoji: '🔊', tooltip: 'Bleep Sounds' },
   { key: 'version', emoji: '🔄', tooltip: 'Version' },
+  { key: 'debug', emoji: '🐛', tooltip: 'Debug' },
 ];
 
 interface VersionInfo {
@@ -211,6 +213,14 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                 currentVersion={currentVersion}
                 onSelect={handleVersionSelect}
               />
+            </div>
+          )}
+          {activeTab === 'debug' && (
+            <div className="p-4">
+              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                Debug <Tooltip text="View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string." />
+              </h3>
+              <DebugTab />
             </div>
           )}
         </div>

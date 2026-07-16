@@ -8,7 +8,6 @@ import { ExportButton } from './features/export/ExportModal';
 import { HeaderExportButton } from './features/export/HeaderExportButton';
 import { loadBackendUrl, backendPath, backendHeaders } from './config';
 import { SettingsModal } from './features/settings/SettingsModal';
-import { DebugButton } from './features/debug/DebugButton';
 import { usePlayerStore, playerActions } from './store/playerStore';
 import { useAuthStore } from './store/authStore';
 import { FastAhoScanner } from './aho-corasick';
@@ -103,7 +102,6 @@ export const App = () => {
               </a>
               <div className="flex items-center gap-1">
                 <HeaderExportButton />
-                <DebugButton />
                 <button id="obrez-gear" onClick={() => setSettingsOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</button>
               </div>
             </div>
