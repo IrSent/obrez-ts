@@ -25,8 +25,8 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1784222834.4499352,
-    "ast_hash": "ff8863218f6f71599196cd2bffb9e501",
+    "mtime": 1784309591.0181134,
+    "ast_hash": "71352d5588d21227b03088bb029820a4",
     "semantic_hash": ""
   },
   "src/aho-corasick.ts": {
@@ -90,13 +90,13 @@
     "semantic_hash": ""
   },
   "src/features/transcription/TranscriptionResults.tsx": {
-    "mtime": 1784218079.243798,
-    "ast_hash": "f1be7f3642bc1c0cac297f11803ecdb4",
+    "mtime": 1784305367.1084611,
+    "ast_hash": "46f82d3864a47a7d544dc1d2b9e48188",
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
-    "mtime": 1784191875.8865,
-    "ast_hash": "7da41f24dc9454130360d34cd52058de",
+    "mtime": 1784274323.4597251,
+    "ast_hash": "439d754594f4ded99b0fd91770cd04f7",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -120,8 +120,8 @@
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1784129242.8680873,
-    "ast_hash": "f5773915ddf89a0d09367e1e7757355f",
+    "mtime": 1784305304.7468047,
+    "ast_hash": "4e6b24ee73c6ea1400cac031c51350ae",
     "semantic_hash": ""
   },
   "tailwind.config.js": {
@@ -390,8 +390,8 @@
     "semantic_hash": ""
   },
   "src/features/settings/SettingsModal.tsx": {
-    "mtime": 1784267078.6552248,
-    "ast_hash": "830c7b7a45d4195b2f0ac73bb77e4086",
+    "mtime": 1784287448.1077397,
+    "ast_hash": "669e44d41affcd0bf6a9b3dc44e53013",
     "semantic_hash": ""
   },
   "src/features/export/HeaderExportButton.tsx": {
@@ -472,6 +472,31 @@
   "src/features/debug/DebugTab.tsx": {
     "mtime": 1784223486.8263347,
     "ast_hash": "3e74d5f1a4267716cccd9641aeac0c6b",
+    "semantic_hash": ""
+  },
+  "src/features/player/SoundEffects.ts": {
+    "mtime": 1784308170.298835,
+    "ast_hash": "fd89981fa57c1ec23fb77899aa506b23",
+    "semantic_hash": ""
+  },
+  "src/features/transcription/useTranscribe.ts": {
+    "mtime": 1784270443.6197836,
+    "ast_hash": "3a9b44a4f7ae72eaaf8c0f69b817862d",
+    "semantic_hash": ""
+  },
+  "src/utils/audioDiagnostic.ts": {
+    "mtime": 1784269635.6621294,
+    "ast_hash": "fa65d472f1d5cad35ea1f814932154d3",
+    "semantic_hash": ""
+  },
+  "src/utils/audioMonitor.ts": {
+    "mtime": 1784272616.531103,
+    "ast_hash": "ec810d52d30653a44642e8961ea6a555",
+    "semantic_hash": ""
+  },
+  "src/features/action-buttons/ActionButtons.tsx": {
+    "mtime": 1784305295.8527687,
+    "ast_hash": "c78ca4bff9dbc3b1b57806233fcb6b6e",
     "semantic_hash": ""
   }
 }

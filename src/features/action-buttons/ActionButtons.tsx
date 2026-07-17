@@ -343,7 +343,9 @@ const ActionButtonsInner = () => {
   }, [exportFormat, fileName, originalFormat, actions, getInput, getAudioTrack, getAudioSink, getVideoTrack]);
 
   return (
-    <div className="bg-zinc-800 rounded-lg p-4 space-y-2">
+    <div className="relative bg-zinc-800 rounded-xl p-4 space-y-2 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
+      {/* 3D inner bevel highlight */}
+      <div className="absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none" />
       {/* Load File — only when no file */}
       {!hasFile && (
         <>

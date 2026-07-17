@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { useMediaPlayerContext } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
+import { PlaybackControls } from './features/player/PlaybackControls';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
 import { ActionButtons } from './features/action-buttons/ActionButtons';
@@ -147,13 +148,12 @@ export const App = () => {
           <div className="max-w-4xl mx-auto px-4 py-4">
             <ImportProgressModal />
 
-            <div className="space-y-6">
-              <div className="grid grid-cols-[1fr_1fr] lg:grid-cols-[3fr_1fr] gap-6 items-start">
-                <div className="max-h-[200%]">
-                  <PlayerDisplay />
-                </div>
+            <div className="space-y-4">
+              <div className="grid grid-cols-[1fr_1fr] lg:grid-cols-[3fr_1fr] gap-4 items-start">
+                <PlayerDisplay />
                 <ActionButtons />
               </div>
+              <PlaybackControls />
               <TranscriptionResults />
             </div>
           </div>
