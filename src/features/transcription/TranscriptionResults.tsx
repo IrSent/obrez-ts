@@ -284,7 +284,7 @@ const TranscriptionResultsInner = () => {
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
-  const { transcribe, seekToTime, getPlaybackTime, initMediaPlayer } = useMediaPlayerContext();
+  const { transcribe, seekToTime, getPlaybackTime } = useMediaPlayerContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
@@ -313,52 +313,25 @@ const TranscriptionResultsInner = () => {
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const clearAuthError = useAuthStore((s) => s.clearError);
 
-  // Restore session from IndexedDB on mount (OIDC callback)
+  // Restore authModal state from IndexedDB on mount (OIDC callback flow)
   useEffect(() => {
-    const restoreSession = async () => {
+    const restoreAuthModal = async () => {
       try {
-        const { loadSession, clearSession } = await import('../../utils/idb');
+        const { loadSession } = await import('../../utils/idb');
         const session = await loadSession();
-        if (!session) return;
+        if (!session || !session.authModal) return;
 
-        // Restore file if present (after OIDC redirect the player is empty)
-        if (session.fileBlob && session.fileName) {
-          try {
-            const file = new File([session.fileBlob], session.fileName, {
-              type: session.fileBlob.type || 'video/mp4',
-            });
-            await initMediaPlayer(file);
-          } catch (err) {
-            console.error('Failed to restore file:', err);
-          }
-        }
-
-        if (session.authModal) {
-          // If we're in the OIDC callback flow (code= in URL), skip the login
-          // modal — the user is about to be authenticated. Set 'confirm' directly
-          // so the authModal effect does the balance check without flickering.
-          const params = new URLSearchParams(window.location.search);
-          const isInCallback = params.has('code');
-          setAuthModal(isInCallback ? 'confirm' : session.authModal);
-        }
-        // Restore transcription and effects if present
-        if (session.transcriptionResults) {
-          actions.setTranscriptionResults(session.transcriptionResults);
-        }
-        if (session.censoringEffects) {
-          actions.setCensoringEffects(session.censoringEffects as SoundCensoringEffect[]);
-        }
-        if (session.duration != null) {
-          actions.setDuration(session.duration);
-        }
-
-        // Clear IndexedDB after restore to avoid re-restoring on reload
-        await clearSession();
+        // If we're in the OIDC callback flow (code= in URL), skip the login
+        // modal — the user is about to be authenticated. Set 'confirm' directly
+        // so the authModal effect does the balance check without flickering.
+        const params = new URLSearchParams(window.location.search);
+        const isInCallback = params.has('code');
+        setAuthModal(isInCallback ? 'confirm' : session.authModal);
       } catch (err) {
-        console.error('Failed to restore session:', err);
+        console.error('Failed to restore authModal:', err);
       }
     };
-    restoreSession();
+    restoreAuthModal();
   }, []);
 
   const handleAddEffect = (effect: SoundCensoringEffect) => {

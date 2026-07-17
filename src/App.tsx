@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
+import { useMediaPlayerContext } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
@@ -11,6 +12,44 @@ import { useAuthStore } from './store/authStore';
 import { FastAhoScanner } from './aho-corasick';
 
 const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
+
+/** Restore session from IndexedDB — must be inside MediaPlayerProvider */
+function SessionRestorer() {
+  const { initMediaPlayer, startRenderLoop } = useMediaPlayerContext();
+
+  useEffect(() => {
+    const restoreSession = async () => {
+      try {
+        const { loadSession } = await import('./utils/idb');
+        const session = await loadSession();
+        if (!session || !session.fileBlob || !session.fileName) return;
+
+        const file = new File([session.fileBlob], session.fileName, {
+          type: session.fileBlob.type || 'video/mp4',
+        });
+
+        await initMediaPlayer(file);
+        // Start the render loop so the video frame appears on canvas
+        startRenderLoop();
+
+        if (session.transcriptionResults) {
+          playerActions.setTranscriptionResults(session.transcriptionResults);
+        }
+        if (session.censoringEffects) {
+          playerActions.setCensoringEffects(session.censoringEffects as any);
+        }
+        if (session.duration != null) {
+          playerActions.setDuration(session.duration);
+        }
+      } catch (err) {
+        console.error('Failed to restore session:', err);
+      }
+    };
+    restoreSession();
+  }, []);
+
+  return null;
+}
 
 export const App = () => {
   // Load backend URL and default dictionaries on startup
@@ -86,6 +125,7 @@ export const App = () => {
 
   return (
     <MediaPlayerProvider>
+        <SessionRestorer />
         <div className="min-h-screen bg-zinc-900 text-zinc-100">
           {/* Sticky header — full width */}
           <header className="sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800">
