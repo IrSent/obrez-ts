@@ -1,43 +1,22 @@
 import { useCallback, useRef, useEffect } from 'react';
 
-// E2E diagnostic — exposed to window
-declare global {
-  interface Window {
-    __audioDiagnostic: {
-      concurrentSources: number;
-      actuallyPlaying: number;
-      peakPlayingSources: number;
-      hasIterator: boolean;
-      iteratorLocked: boolean;
-      playbackState: string;
-      getPlaybackTime: number;
-      analyserPeak: number;
-      analyserRms: number;
-      bypassGain: number | null;
-      stGain: number | null;
-    };
-  }
-}
+// E2E diagnostic — global type + startAudioDiagnostic
+import { startAudioDiagnostic } from '../utils/audioDiagnostic';
+import { startAudioMonitor } from '../utils/audioMonitor';
 import { usePlayerStore, playerActions } from '../store/playerStore';
+import { createSoundEffectsEngine } from '../features/player/SoundEffects';
+import { useTranscribe } from '../features/transcription/useTranscribe';
 import {
   ALL_FORMATS,
   AudioBufferSink,
   CanvasSink,
-  EncodedAudioPacketSource,
-  EncodedPacket,
-  EncodedPacketSink,
   Input,
   InputAudioTrack,
-  Mp4OutputFormat,
-  Output,
-  BufferTarget,
   ReadableStreamSource,
   WrappedAudioBuffer,
   WrappedCanvas,
 } from 'mediabunny';
 import { PhaseVocoderNode } from '@soundtouchjs/phase-vocoder-worklet';
-import { audioBuffersToWav } from '../audio';
-import { loadBackendUrl, backendPath, backendWsPath, backendHeaders } from '../config';
 
 /**
  * Хук для управления воспроизведением медиафайлов через MediaBunny.
@@ -102,8 +81,6 @@ export function useMediaPlayer() {
   //   old iterator resumes → creates nodes → overlap with new iterator.
   const audioGenerationRef = useRef<number>(0);
 
-  // Sound effect engine
-  const triggeredEffectsRef = useRef<Set<string>>(new Set());
   const playLoopRef = useRef<number>(0);
   const lastTranscribeFocusRef = useRef<number>(0);
   const lastProgressBarUpdateRef = useRef<number>(0);
@@ -321,85 +298,12 @@ export function useMediaPlayer() {
     },
   );
 
-  /**
-   * Trigger a sound effect: play the bleep sound and optionally dampen
-   * the original audio for the duration of the segment.
-   */
-  function triggerSoundEffect(
-    effect: import('../types').SoundCensoringEffect,
-    segmentEnd: number,
-  ): void {
-    const ctx = audioContextRef.current;
-    const gainNode = gainNodeRef.current;
-    if (!ctx || !gainNode) return;
-
-    const sound = usePlayerStore.getState().bleepSounds[effect.soundId];
-    if (!sound || !sound.audioBuffer) return;
-
-    const now = ctx.currentTime;
-
-    // Play the bleep sound at the configured volume and rate
-    const source = ctx.createBufferSource();
-    source.buffer = sound.audioBuffer;
-    source.playbackRate.value = effect.playbackRate;
-
-    const volGain = ctx.createGain();
-    volGain.gain.value = effect.volume ** 2; // perceptual scaling
-    source.connect(volGain);
-    volGain.connect(ctx.destination);
-    source.start(now);
-    queuedAudioNodesRef.current.add(source);
-    source.onended = () => queuedAudioNodesRef.current.delete(source);
-
-    // Dampen original audio for the full segment duration,
-    // independent of the bleep sound's playback rate.
-    if (effect.dampenOriginal) {
-      const currentGain = gainNode.gain.value;
-      const dampenedGain = currentGain * (1 - effect.dampenAmount);
-      // Convert media-time segment duration to wall-clock duration
-      const spd = usePlayerStore.getState().playbackSpeed;
-      const segmentDuration = (segmentEnd - effect.segmentStart) / spd;
-
-      if (effect.dampenType === 'sharp') {
-        // Immediate drop, hold, immediate restore at segment end
-        gainNode.gain.setValueAtTime(dampenedGain, now);
-        gainNode.gain.setValueAtTime(currentGain, now + segmentDuration);
-      } else {
-        // Parabolic: smooth dip and restore using setTargetAtTime
-        const tau = segmentDuration * 0.3;
-        gainNode.gain.setValueAtTime(dampenedGain, now);
-        gainNode.gain.setTargetAtTime(currentGain, now + tau, tau);
-        // Force-restore at segment end to avoid lingering drift
-        gainNode.gain.setValueAtTime(currentGain, now + segmentDuration);
-      }
-    }
-  }
-
-  /**
-   * Check playback time against sound effects and trigger any that haven't
-   * fired yet for the current play session.
-   */
-  function checkSoundEffects(playbackTime: number): void {
-    const { censoringEffects, transcriptionResults, censoringMode } = usePlayerStore.getState();
-    if (!censoringMode || !censoringEffects || !transcriptionResults) return;
-
-    for (const e of censoringEffects) {
-      if (e.effectType !== 'sound') continue;
-      if (triggeredEffectsRef.current.has(e.id)) continue;
-
-      // Find the segment end time from transcription results
-      const seg = transcriptionResults.find(
-        ([s]) => Math.abs(s - e.segmentStart) < 0.01,
-      );
-      if (!seg) continue;
-
-      const [start, end] = seg;
-      if (playbackTime >= start && playbackTime < end) {
-        triggeredEffectsRef.current.add(e.id);
-        triggerSoundEffect(e, end);
-      }
-    }
-  }
+  // === Sound effects engine — extracted to SoundEffects module ===
+  const soundEffects = createSoundEffectsEngine({
+    audioContextRef,
+    gainNodeRef,
+    queuedAudioNodesRef,
+  });
 
   // === updateNextFrame — как в оригинале, без мютекса ===
   const updateNextFrameRef = useRef(async () => {
@@ -527,7 +431,7 @@ export function useMediaPlayer() {
     }
 
     // Reset triggered effects so they can fire again on next play.
-    triggeredEffectsRef.current.clear();
+    soundEffects.triggeredEffectsRef.current.clear();
 
     // IMPORTANT: do NOT reset abortAudioRef here. It stays true until
     // startAudio explicitly resets it — after the new iterator is created
@@ -697,7 +601,7 @@ export function useMediaPlayer() {
         playbackTimeAtStartRef.current = seekTo;
         playerActions.setCurrentTime(seekTo);
         playerActions.setIsEnded(false);
-        triggeredEffectsRef.current.clear();
+        soundEffects.triggeredEffectsRef.current.clear();
         await startVideoIteratorRef.current();
       }
 
@@ -709,7 +613,7 @@ export function useMediaPlayer() {
           playbackTimeAtStartRef.current = 0;
           playerActions.setCurrentTime(0);
           playerActions.setIsEnded(false);
-          triggeredEffectsRef.current.clear();
+          soundEffects.triggeredEffectsRef.current.clear();
           await startVideoIteratorRef.current();
         }
 
@@ -764,7 +668,7 @@ export function useMediaPlayer() {
         utilsRef.current.updateProgressBarTime(playbackTime);
 
         // Check and trigger sound effects
-        checkSoundEffects(playbackTime);
+        soundEffects.checkSoundEffects(playbackTime);
       }
 
       playLoopRef.current = requestAnimationFrame(renderLoop);
@@ -784,7 +688,7 @@ export function useMediaPlayer() {
           void updateNextFrameRef.current();
         }
         utilsRef.current.updateProgressBarTime(playbackTime);
-        checkSoundEffects(playbackTime);
+        soundEffects.checkSoundEffects(playbackTime);
       }
     }, 500);
 
@@ -800,52 +704,20 @@ export function useMediaPlayer() {
   // === Транскрипция — отдельный setInterval, не конкурирует с rAF ===
   const transcribeIntervalRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
- // === E2E diagnostic: expose audio state to window for Playwright ===
+ // === E2E diagnostic: exposed to window for Playwright ===
   useEffect(() => {
-    const id = setInterval(() => {
-      let playing = 0;
-      for (const node of queuedAudioNodesRef.current) {
-        if (node.playbackState === 'started') playing++;
-      }
-      // Track peak: monotonically increasing maximum of concurrently playing sources
-      if (playing > peakPlayingSourcesRef.current) {
-        peakPlayingSourcesRef.current = playing;
-      }
-
-      // Read analyser data for e2e tests
-      let analyserPeak = 0;
-      let analyserRms = 0;
-      if (analyserRef.current) {
-        const dataArray = new Float32Array(analyserRef.current.frequencyBinCount);
-        analyserRef.current.getFloatTimeDomainData(dataArray);
-        let sum = 0;
-        for (let i = 0; i < dataArray.length; i++) {
-          const abs = Math.abs(dataArray[i]);
-          if (abs > analyserPeak) analyserPeak = abs;
-          sum += dataArray[i] * dataArray[i];
-        }
-        analyserRms = Math.sqrt(sum / dataArray.length);
-      }
-
-      window.__audioDiagnostic = {
-        concurrentSources: queuedAudioNodesRef.current.size,
-        actuallyPlaying: playing,
-        peakPlayingSources: peakPlayingSourcesRef.current,
-        hasIterator: !!audioBufferIteratorRef.current,
-        iteratorLocked: runAudioIteratorLockRef.current,
-        playbackState: playbackStateRef.current,
-        // Expose getPlaybackTime so e2e tests can read precise media time
-        // without going through throttled DOM updates.
-        getPlaybackTime: utilsRef.current.getPlaybackTime(),
-        // Expose analyser data for audio quality checks
-        analyserPeak,
-        analyserRms,
-        // Expose gain routing to detect dual-path overlap
-        bypassGain: bypassGainRef.current?.gain.value ?? null,
-        stGain: stGainRef.current?.gain.value ?? null,
-      };
-    }, 100);
-    return () => clearInterval(id);
+    const stop = startAudioDiagnostic({
+      queuedAudioNodesRef,
+      peakPlayingSourcesRef,
+      audioBufferIteratorRef,
+      runAudioIteratorLockRef,
+      playbackStateRef,
+      getPlaybackTime: utilsRef.current.getPlaybackTime,
+      analyserRef,
+      bypassGainRef,
+      stGainRef,
+    });
+    return stop;
   }, []);
 
   const startTranscribeFocus = useCallback(() => {
@@ -1295,7 +1167,7 @@ export function useMediaPlayer() {
       playerActions.setTranscriptionResults(null);
       playerActions.setTranscribing(false);
       playerActions.setCensoringEffects([]);
-      triggeredEffectsRef.current.clear();
+      soundEffects.triggeredEffectsRef.current.clear();
 
       // Use ReadableStreamSource — streams from Blob without loading the whole file
       // into memory. After OIDC redirect, the file stays in IndexedDB and we can
@@ -1475,136 +1347,13 @@ export function useMediaPlayer() {
         bypassGainRef.current = bypassGain;
         stGainRef.current = stGain;
 
- // Monitor for clipping + sand + output artifacts (every 50 ms)
-        const dataArray = new Float32Array(analyserRef.current.frequencyBinCount);
-        const freqData = new Uint8Array(analyserRef.current.frequencyBinCount);
-
-        // HF energy ratio: bins covering 4-8 kHz (sand lives there)
-        const binWidth = audioContextRef.current.sampleRate / analyserRef.current.fftSize;
-        const hfStart = Math.floor(4000 / binWidth);
-        const hfEnd = Math.floor(8000 / binWidth);
-
-        // Previous time-domain sample for click/rip detection
-        let prevTimeSample = 0;
-        let clickCount = 0; // clicks in last 500ms window
-        let clipCount = 0;  // clips in last 500ms window
-        // Reset counters every 500ms so "3 in 500ms" is accurate
-        setInterval(() => { clickCount = 0; clipCount = 0; }, 500);
-
-        const monitorInterval = setInterval(() => {
-          const analyser = analyserRef.current;
-          if (!analyser) {
-            clearInterval(monitorInterval);
-            return;
-          }
-
-          const speed = usePlayerStore.getState().playbackSpeed;
-
-          // ── Time-domain analysis ──
-          analyser.getFloatTimeDomainData(dataArray);
-          const peak = Math.max(...dataArray);
-          if (peak >= 0.99) {
-            clipCount++;
-            if (clipCount >= 3) {
-              console.warn(`[output-clip] ${clipCount} in 500ms peak=${peak.toFixed(3)} speed=${speed}x`);
-              clipCount = 0;
-            }
-          }
-
-          // Click detection: sudden jumps between consecutive samples
-          // (indicates buffer-boundary discontinuities / phase vocoder clicks).
-          // Thresholds are high — normal speech plosives (/p/, /t/, /k/)
-          // produce deltas > 0.3. Only flag if a significant fraction of
-          // the waveform is discontinuous.
-          let microClicks = 0; // 0.35-0.5 = subtle clicks
-          let hardClicks = 0;  // > 0.5 = hard clicks
-          for (let i = 1; i < dataArray.length; i++) {
-            const delta = Math.abs(dataArray[i] - dataArray[i-1]);
-            if (delta > 0.5) hardClicks++;
-            else if (delta > 0.35) microClicks++;
-          }
-          // Flag only if >1% of transitions are clicks — speech has <0.1%.
-          const totalPairs = dataArray.length - 1;
-          if (hardClicks >= totalPairs * 0.01 || microClicks >= totalPairs * 0.02) {
-            console.warn(`[output-click] hard=${hardClicks} micro=${microClicks} speed=${speed}x`);
-          }
-
-          // Rip detection: HF bursts (4-8kHz) that are loud and short
-          analyser.getByteFrequencyData(freqData);
-          let totalEnergy = 0;
-          for (let i = 1; i < freqData.length; i++) totalEnergy += freqData[i] * freqData[i];
-          if (totalEnergy < 10000) return; // too quiet, skip
-
-          let hfEnergy = 0;
-          for (let i = hfStart; i < hfEnd && i < freqData.length; i++) {
-            hfEnergy += freqData[i] * freqData[i];
-          }
-          const hfRatio = hfEnergy / totalEnergy;
-
-          // HF burst = rip artifact (not sand — sand is sustained HF).
-          // 0.40 threshold — normal speech sibilance (/s/, /ш/) lives at 4-8kHz.
-          // Values 0.35-0.39 are common in speech and not artifacts.
-          if (hfRatio > 0.4 && speed > 1) {
-            console.warn(`[output-rip] hfRatio=${hfRatio.toFixed(2)} speed=${speed}x`);
-          }
-
-          // Mid-range (1-4kHz): phase vocoder boundary artifacts live here.
-          // Phase vocoder can create periodic ripples at the
-          // overlap boundary — detectable as sustained mid-range energy.
-          const midStart = Math.floor(1000 / binWidth);
-          const midEnd = Math.floor(4000 / binWidth);
-          let midEnergy = 0;
-          for (let i = midStart; i < midEnd && i < freqData.length; i++) {
-            midEnergy += freqData[i] * freqData[i];
-          }
-          const midRatio = midEnergy / totalEnergy;
-
-          // Normal speech: midRatio ~0.3-0.4. Phase vocoder artifacts push it >0.55.
-          if (midRatio > 0.55 && speed > 1) {
-            console.warn(`[output-rip-mid] midRatio=${midRatio.toFixed(2)} speed=${speed}x`);
-          }
-
-          // Rate-of-change: sudden HF energy shifts between consecutive measurements
-          // indicate phase vocoder boundary artifacts (ripping). Store previous hfRatio.
-          if ((analyser as any)._prevHfRatio != null) {
-            const hfDelta = Math.abs(hfRatio - (analyser as any)._prevHfRatio);
-            if (hfDelta > 0.15 && speed > 1) {
-              console.warn(`[output-hf-jump] hfDelta=${hfDelta.toFixed(2)} prev=${(analyser as any)._prevHfRatio.toFixed(2)} now=${hfRatio.toFixed(2)} speed=${speed}x`);
-            }
-          }
-          (analyser as any)._prevHfRatio = hfRatio;
-
-          // Blub detection: LF energy spike (80-300Hz dominant)
-          const lfStart = Math.floor(80 / binWidth);
-          const lfEnd = Math.floor(300 / binWidth);
-          let lfEnergy = 0;
-          for (let i = lfStart; i < lfEnd && i < freqData.length; i++) {
-            lfEnergy += freqData[i] * freqData[i];
-          }
-          const lfRatio = lfEnergy / totalEnergy;
-          if (lfRatio > 0.6 && speed > 1) {
-            console.warn(`[output-blub] lfRatio=${lfRatio.toFixed(2)} speed=${speed}x`);
-          }
-
-          // Spectral flatness (higher = more noise-like = sand)
-          let logSum = 0;
-          let linSum = 0;
-          for (let i = 1; i < freqData.length; i++) {
-            const v = freqData[i] + 1;
-            logSum += Math.log(v);
-            linSum += v;
-          }
-          const flatness = Math.exp(logSum / (freqData.length - 1)) / (linSum / (freqData.length - 1));
-
-          if (hfRatio > 0.35 && flatness > 0.6 && speed > 1) {
-            console.warn(
-              `[sand] hfRatio=${hfRatio.toFixed(2)} flatness=${flatness.toFixed(2)} speed=${speed}x`
-            );
-          }
-        }, 50);
-
-        // Store interval id on the analyser for cleanup later
-        (analyserRef.current as any)._clipInterval = monitorInterval;
+ // Start artifact monitor — extracted to audioMonitor module
+        const stopMonitor = startAudioMonitor(
+          analyserRef.current,
+          audioContextRef.current.sampleRate,
+        );
+        // Store cleanup on analyser for cleanup() to call later
+        (analyserRef.current as any)._stopMonitor = stopMonitor;
       } else {
         // No audio — create context for timing only
         audioContextRef.current = new AudioContextClass();
@@ -1646,223 +1395,8 @@ export function useMediaPlayer() {
     }
   }, []);
 
-  const transcribe = useCallback(async () => {
-    if (!audioTrackRef.current) {
-      playerActions.setError('No audio track available for transcription');
-      return;
-    }
-
-    try {
-      playerActions.setTranscribing(true);
-      playerActions.setTranscribeStage('Collecting audio data…');
-
-      const format = usePlayerStore.getState().transcribeFormat;
-      const fileName = usePlayerStore.getState().fileName;
-
-      let audioBlob: Blob;
-      let audioFileName: string;
-
-      if (format === 'original') {
-        // Create a separate Input for transcription so we don't compete
-        // with the playback Input for audio track packets — no pause needed.
-        const resource = resourceRef.current;
-        if (!resource) throw new Error('No media resource available');
-
-        // Use ReadableStreamSource for transcription too — streams from Blob
-          const transcribeSource = new ReadableStreamSource(
-            (resource as Blob).stream(),
-            { maxCacheSize: 32 * 1024 * 1024 }
-          );
-          const transcribeInput = new Input({ source: transcribeSource, formats: ALL_FORMATS });
-        const transcribeAudioTrack = await transcribeInput.getPrimaryAudioTrack();
-        if (!transcribeAudioTrack) throw new Error('No audio track found for transcription');
-
-        const codec = await transcribeAudioTrack.getCodec();
-        if (!codec) throw new Error('Audio track codec could not be determined');
-
-        const codecParamString = await transcribeAudioTrack.getCodecParameterString();
-        const decoderConfig = await transcribeAudioTrack.getDecoderConfig();
-
-        // Streaming remux: one pass — read packet → mux to MP4.
-        // No metadata scan, no packet accumulation in memory.
-        const outputFormat = new Mp4OutputFormat();
-        const bufferTarget = new BufferTarget();
-        const output = new Output({ format: outputFormat, target: bufferTarget });
-        const encodedSource = new EncodedAudioPacketSource(codec);
-        await output.addAudioTrack(encodedSource);
-        await output.start();
-
-        // Build chunk metadata for the first add() call — required by the muxer.
-        // For AAC: provide description (AudioSpecificConfig) so the muxer doesn't
-        // try to parse ADTS headers from raw packets.
-        const chunkMeta = {
-          decoderConfig: {
-            codec: codecParamString ?? codec,
-            sampleRate: decoderConfig?.sampleRate ?? transcribeAudioTrack.sampleRate,
-            numberOfChannels:
-              decoderConfig?.numberOfChannels ?? transcribeAudioTrack.numberOfChannels,
-            description: decoderConfig?.description ?? undefined,
-          },
-        };
-
-        const encodedSink = new EncodedPacketSink(transcribeAudioTrack);
-        const YIELD_EVERY = 100;
-        let packetCount = 0;
-        let tsShift = 0;
-
-        // Read and mux in a single pass. AAC timestamps are monotonic,
-        // so the first packet gives us the tsShift (negative → shift to 0).
-        for await (const pkt of encodedSink.packets()) {
-          if (packetCount === 0) {
-            tsShift = pkt.timestamp < 0 ? -pkt.timestamp : 0;
-          }
-
-          if (tsShift > 0) {
-            await encodedSource.add(
-              new EncodedPacket(
-                pkt.data,
-                pkt.type,
-                pkt.timestamp + tsShift,
-                pkt.duration,
-              ),
-              packetCount === 0 ? chunkMeta : undefined,
-            );
-          } else {
-            await encodedSource.add(pkt, packetCount === 0 ? chunkMeta : undefined);
-          }
-          packetCount++;
-
-          // Yield to event loop so the UI stays responsive
-          if (packetCount % YIELD_EVERY === 0) {
-            playerActions.setTranscribeStage(
-              `Remuxing audio — ${packetCount} packets`
-            );
-            await new Promise((r) => setTimeout(r, 0));
-          }
-        }
-
-        playerActions.setTranscribeStage(
-          `Remuxing audio — ${packetCount} packets (finalizing…)`
-        );
-        await output.finalize();
-
-        const result = bufferTarget.buffer;
-        if (!result) {
-          throw new Error('Remux completed but no output buffer was produced');
-        }
-
-        audioBlob = new Blob([result], { type: 'video/mp4' });
-        audioFileName = `${fileName}.mp4`;
-
-        // Cleanup: dispose the transcription Input to free resources.
-        transcribeInput.dispose();
-      } else {
-        // WAV path: collect decoded buffers, encode as PCM WAV
-        if (!audioSinkRef.current) {
-          throw new Error('Audio sink not available for WAV encoding');
-        }
-
-        const chunks: AudioBuffer[] = [];
-        for await (const { buffer } of audioSinkRef.current.buffers(0)) {
-          chunks.push(buffer);
-          playerActions.setTranscribeStage(`Collecting audio data… (${chunks.length} chunks)`);
-        }
-
-        playerActions.setTranscribeStage(`Encoding WAV — ${chunks.length} chunks to process`);
-        audioBlob = await audioBuffersToWav(chunks, audioTrackRef.current.sampleRate, (stage, done, total) => {
-          const pct = Math.round((done / total) * 100);
-          playerActions.setTranscribeStage(`${stage} — ${done.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`);
-        });
-        audioFileName = `${fileName}.wav`;
-      }
-
-      playerActions.setTranscribeStage('Sending to server…');
-      await loadBackendUrl(); // ensure config loaded before backendPath()
-      const formData = new FormData();
-      formData.append('file', audioBlob, audioFileName);
-
-      const response = await fetch(backendPath('/transcribe'), {
-        headers: backendHeaders(),
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to transcribe audio');
-      }
-
-      const { task_id } = await response.json();
-
-      playerActions.setTranscribeStage('Waiting for transcription…');
-
-      // Count seconds while waiting for the server
-      const waitStart = Date.now();
-      const waitInterval = setInterval(() => {
-        const secs = Math.floor((Date.now() - waitStart) / 1000);
-        playerActions.setTranscribeStage(`Waiting for server… (${secs}s)`);
-      }, 1000);
-
-      const socket = new WebSocket(backendWsPath(`/ws/status/${task_id}`));
-
-      await new Promise((resolve, reject) => {
-        socket.onmessage = (event) => {
-          clearInterval(waitInterval);
-          const msg = JSON.parse(event.data);
-          if (msg.status === 'PROCESSING') {
-            playerActions.setTranscribing(true);
-
-            // Server may send progress info in results: { progress, segments, time, phase }
-            const prog = msg.results;
-            if (prog && typeof prog === 'object' && 'progress' in prog) {
-              const pct = prog.progress ?? 0;
-              const segs = prog.segments ?? '';
-              const time = prog.time ?? '';
-              const phase = prog.phase ?? '';
-              const validPct = isNaN(pct) ? 0 : pct;
-
-              if (phase === 'segmenting') {
-                const detail = [validPct > 0 ? validPct + '%' : '', segs].filter(Boolean).join(' · ');
-                playerActions.setTranscribeStage(`Segmenting — ${detail}`);
-              } else {
-                const detail = [validPct + '%', segs, time].filter(Boolean).join(' · ');
-                playerActions.setTranscribeStage(`Transcribing — ${detail}`);
-              }
-            } else {
-              playerActions.setTranscribeStage('Server is transcribing…');
-            }
-          } else if (msg.status === 'DONE') {
-            const resultsInSeconds = msg.results.map(
-              ([start, end, text]: [number, number, string]) => [start / 1000, end / 1000, text] as [number, number, string]
-            );
-            // Defer to macrotask: rAF render loop gets to finish the current
-            // video frame before React starts the expensive transcription render.
-            setTimeout(() => {
-              playerActions.setTranscriptionDone(resultsInSeconds);
-              socket.close();
-              resolve(true);
-            }, 0);
-          } else if (msg.status === 'ERROR') {
-            playerActions.setTranscribing(false);
-            reject(new Error(msg.results || 'Transcription error'));
-          }
-        };
-
-        socket.onerror = (error) => {
-          clearInterval(waitInterval);
-          playerActions.setTranscribing(false);
-          console.error('WebSocket error:', error);
-          playerActions.setError('Failed to connect to transcription server');
-          socket.close();
-          reject(new Error('WebSocket error'));
-        };
-      });
-    } catch (error) {
-      console.error('Transcription error:', error);
-      playerActions.setError(error instanceof Error ? error.message : 'Transcription failed');
-    }
-  }, [audioSinkRef, audioTrackRef]);
+  // === Transcription — extracted to useTranscribe hook ===
+  const transcribe = useTranscribe({ audioTrackRef, resourceRef, audioSinkRef });
 
   const cleanup = useCallback(async () => {
     playerActions.setTranscribing(false);
@@ -1884,10 +1418,10 @@ export function useMediaPlayer() {
     }
 
     if (audioContextRef.current) {
-      // Stop clipping monitor
+      // Stop artifact monitor
       const a = analyserRef.current;
-      if (a && (a as any)._clipInterval) {
-        clearInterval((a as any)._clipInterval);
+      if (a && (a as any)._stopMonitor) {
+        (a as any)._stopMonitor();
       }
       stNodeRef.current?.disconnect();
       stNodeRef.current = null;
