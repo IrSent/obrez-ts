@@ -33,7 +33,7 @@ export interface SoundEffectsEngine {
  * чтобы упростить тестирование и повторное использование.
  */
 export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEngine {
-  const triggeredEffectsRef = React.createRef<Set<string>>(new Set());
+  const triggeredEffectsRef = { current: new Set<string>() };
 
   /**
    * Запускает звуковой эффект цензуры в нужное время.
