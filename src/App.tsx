@@ -108,8 +108,10 @@ export const App = () => {
             <ImportProgressModal />
 
             <div className="space-y-6">
-              <div className="grid grid-cols-[1fr_auto] gap-6 items-start">
-                <PlayerDisplay />
+              <div className="grid grid-cols-[2fr_1fr] gap-6 items-start">
+                <div className="max-h-[200%]">
+                  <PlayerDisplay />
+                </div>
                 <ActionButtons />
               </div>
               <TranscriptionResults />
