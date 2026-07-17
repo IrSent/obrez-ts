@@ -82,14 +82,164 @@
   },
   "nodes": [
     {
+      "label": "SoundEffects.ts",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "player_soundeffects",
+      "community": 7,
+      "norm_label": "soundeffects.ts"
+    },
+    {
+      "label": "SoundEffectsDeps",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "id": "player_soundeffects_soundeffectsdeps",
+      "community": 7,
+      "norm_label": "soundeffectsdeps"
+    },
+    {
+      "label": "SoundEffectsEngine",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L19",
+      "_origin": "ast",
+      "id": "player_soundeffects_soundeffectsengine",
+      "community": 7,
+      "norm_label": "soundeffectsengine"
+    },
+    {
+      "label": "createSoundEffectsEngine()",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L35",
+      "_origin": "ast",
+      "id": "player_soundeffects_createsoundeffectsengine",
+      "community": 7,
+      "norm_label": "createsoundeffectsengine()"
+    },
+    {
+      "label": "useTranscribe.ts",
+      "file_type": "code",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "transcription_usetranscribe",
+      "community": 7,
+      "norm_label": "usetranscribe.ts"
+    },
+    {
+      "label": "TranscribeDeps",
+      "file_type": "code",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L17",
+      "_origin": "ast",
+      "id": "transcription_usetranscribe_transcribedeps",
+      "community": 7,
+      "norm_label": "transcribedeps"
+    },
+    {
+      "label": "useTranscribe()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "id": "transcription_usetranscribe_usetranscribe",
+      "community": 7,
+      "norm_label": "usetranscribe()"
+    },
+    {
+      "label": "useMediaPlayer.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "hooks_usemediaplayer",
+      "community": 7,
+      "norm_label": "usemediaplayer.ts"
+    },
+    {
+      "label": "useMediaPlayer()",
+      "file_type": "code",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L34",
+      "_origin": "ast",
+      "id": "hooks_usemediaplayer_usemediaplayer",
+      "community": 7,
+      "norm_label": "usemediaplayer()"
+    },
+    {
+      "label": "audioDiagnostic.ts",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "utils_audiodiagnostic",
+      "community": 7,
+      "norm_label": "audiodiagnostic.ts"
+    },
+    {
+      "label": "Window",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "id": "utils_audiodiagnostic_window",
+      "community": 7,
+      "norm_label": "window"
+    },
+    {
+      "label": "AudioDiagnosticDeps",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L22",
+      "_origin": "ast",
+      "id": "utils_audiodiagnostic_audiodiagnosticdeps",
+      "community": 7,
+      "norm_label": "audiodiagnosticdeps"
+    },
+    {
+      "label": "startAudioDiagnostic()",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L39",
+      "_origin": "ast",
+      "id": "utils_audiodiagnostic_startaudiodiagnostic",
+      "community": 7,
+      "norm_label": "startaudiodiagnostic()"
+    },
+    {
+      "label": "audioMonitor.ts",
+      "file_type": "code",
+      "source_file": "src/utils/audioMonitor.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "utils_audiomonitor",
+      "community": 7,
+      "norm_label": "audiomonitor.ts"
+    },
+    {
+      "label": "startAudioMonitor()",
+      "file_type": "code",
+      "source_file": "src/utils/audioMonitor.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "id": "utils_audiomonitor_startaudiomonitor",
+      "community": 7,
+      "norm_label": "startaudiomonitor()"
+    },
+    {
       "label": "ConfirmationModal.tsx",
       "file_type": "code",
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "auth_confirmationmodal",
-      "community": 35,
-      "norm_label": "confirmationmodal.tsx"
+      "community": 27,
+      "norm_label": "confirmationmodal.tsx",
+      "id": "auth_confirmationmodal"
     },
     {
       "label": "formatDuration()",
@@ -97,9 +247,9 @@
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L3",
       "_origin": "ast",
-      "id": "auth_confirmationmodal_formatduration",
-      "community": 35,
-      "norm_label": "formatduration()"
+      "community": 27,
+      "norm_label": "formatduration()",
+      "id": "auth_confirmationmodal_formatduration"
     },
     {
       "label": "ConfirmationModalProps",
@@ -107,9 +257,9 @@
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L12",
       "_origin": "ast",
-      "id": "auth_confirmationmodal_confirmationmodalprops",
-      "community": 35,
-      "norm_label": "confirmationmodalprops"
+      "community": 27,
+      "norm_label": "confirmationmodalprops",
+      "id": "auth_confirmationmodal_confirmationmodalprops"
     },
     {
       "label": "ConfirmationModal()",
@@ -117,9 +267,9 @@
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "auth_confirmationmodal_confirmationmodal",
-      "community": 35,
-      "norm_label": "confirmationmodal()"
+      "community": 27,
+      "norm_label": "confirmationmodal()",
+      "id": "auth_confirmationmodal_confirmationmodal"
     },
     {
       "label": "LoginModal.tsx",
@@ -127,9 +277,9 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "auth_loginmodal",
-      "community": 7,
-      "norm_label": "loginmodal.tsx"
+      "community": 27,
+      "norm_label": "loginmodal.tsx",
+      "id": "auth_loginmodal"
     },
     {
       "label": "LoginModalProps",
@@ -137,9 +287,9 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L6",
       "_origin": "ast",
-      "id": "auth_loginmodal_loginmodalprops",
-      "community": 7,
-      "norm_label": "loginmodalprops"
+      "community": 27,
+      "norm_label": "loginmodalprops",
+      "id": "auth_loginmodal_loginmodalprops"
     },
     {
       "label": "LoginModal()",
@@ -147,9 +297,9 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L12",
       "_origin": "ast",
-      "id": "auth_loginmodal_loginmodal",
-      "community": 35,
-      "norm_label": "loginmodal()"
+      "community": 27,
+      "norm_label": "loginmodal()",
+      "id": "auth_loginmodal_loginmodal"
     },
     {
       "label": "TopupModal.tsx",
@@ -157,9 +307,9 @@
       "source_file": "src/features/auth/TopupModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "auth_topupmodal",
       "community": 35,
-      "norm_label": "topupmodal.tsx"
+      "norm_label": "topupmodal.tsx",
+      "id": "auth_topupmodal"
     },
     {
       "label": "TopupModalProps",
@@ -167,9 +317,9 @@
       "source_file": "src/features/auth/TopupModal.tsx",
       "source_location": "L5",
       "_origin": "ast",
-      "id": "auth_topupmodal_topupmodalprops",
       "community": 35,
-      "norm_label": "topupmodalprops"
+      "norm_label": "topupmodalprops",
+      "id": "auth_topupmodal_topupmodalprops"
     },
     {
       "label": "TopupModal()",
@@ -177,9 +327,9 @@
       "source_file": "src/features/auth/TopupModal.tsx",
       "source_location": "L10",
       "_origin": "ast",
-      "id": "auth_topupmodal_topupmodal",
       "community": 35,
-      "norm_label": "topupmodal()"
+      "norm_label": "topupmodal()",
+      "id": "auth_topupmodal_topupmodal"
     },
     {
       "label": "ExportModal.tsx",
@@ -187,9 +337,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "export_exportmodal",
       "community": 0,
-      "norm_label": "exportmodal.tsx"
+      "norm_label": "exportmodal.tsx",
+      "id": "export_exportmodal"
     },
     {
       "label": "CloseIcon()",
@@ -197,9 +347,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L10",
       "_origin": "ast",
-      "id": "export_exportmodal_closeicon",
       "community": 0,
-      "norm_label": "closeicon()"
+      "norm_label": "closeicon()",
+      "id": "export_exportmodal_closeicon"
     },
     {
       "label": "DownloadIcon()",
@@ -207,9 +357,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L19",
       "_origin": "ast",
-      "id": "export_exportmodal_downloadicon",
       "community": 0,
-      "norm_label": "downloadicon()"
+      "norm_label": "downloadicon()",
+      "id": "export_exportmodal_downloadicon"
     },
     {
       "label": "PhaseIcon()",
@@ -217,9 +367,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L30",
       "_origin": "ast",
-      "id": "export_exportmodal_phaseicon",
       "community": 0,
-      "norm_label": "phaseicon()"
+      "norm_label": "phaseicon()",
+      "id": "export_exportmodal_phaseicon"
     },
     {
       "label": "ExportProgressBar()",
@@ -227,9 +377,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L56",
       "_origin": "ast",
-      "id": "export_exportmodal_exportprogressbar",
       "community": 0,
-      "norm_label": "exportprogressbar()"
+      "norm_label": "exportprogressbar()",
+      "id": "export_exportmodal_exportprogressbar"
     },
     {
       "label": "CODEC_LABELS",
@@ -237,9 +387,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L113",
       "_origin": "ast",
-      "id": "export_exportmodal_codec_labels",
       "community": 0,
-      "norm_label": "codec_labels"
+      "norm_label": "codec_labels",
+      "id": "export_exportmodal_codec_labels"
     },
     {
       "label": "codecLabel()",
@@ -247,9 +397,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L125",
       "_origin": "ast",
-      "id": "export_exportmodal_codeclabel",
       "community": 0,
-      "norm_label": "codeclabel()"
+      "norm_label": "codeclabel()",
+      "id": "export_exportmodal_codeclabel"
     },
     {
       "label": "ExportFormat",
@@ -257,9 +407,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L129",
       "_origin": "ast",
-      "id": "export_exportmodal_exportformat",
       "community": 0,
-      "norm_label": "exportformat"
+      "norm_label": "exportformat",
+      "id": "export_exportmodal_exportformat"
     },
     {
       "label": "ExportModalProps",
@@ -267,9 +417,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L136",
       "_origin": "ast",
-      "id": "export_exportmodal_exportmodalprops",
       "community": 0,
-      "norm_label": "exportmodalprops"
+      "norm_label": "exportmodalprops",
+      "id": "export_exportmodal_exportmodalprops"
     },
     {
       "label": "ExportModal",
@@ -277,9 +427,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L146",
       "_origin": "ast",
-      "id": "export_exportmodal_exportmodal",
       "community": 0,
-      "norm_label": "exportmodal"
+      "norm_label": "exportmodal",
+      "id": "export_exportmodal_exportmodal"
     },
     {
       "label": "ExportButtonInner()",
@@ -287,9 +437,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L226",
       "_origin": "ast",
-      "id": "export_exportmodal_exportbuttoninner",
       "community": 0,
-      "norm_label": "exportbuttoninner()"
+      "norm_label": "exportbuttoninner()",
+      "id": "export_exportmodal_exportbuttoninner"
     },
     {
       "label": "ExportButton",
@@ -297,9 +447,9 @@
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L335",
       "_origin": "ast",
-      "id": "export_exportmodal_exportbutton",
       "community": 0,
-      "norm_label": "exportbutton"
+      "norm_label": "exportbutton",
+      "id": "export_exportmodal_exportbutton"
     },
     {
       "label": "SettingsModal.tsx",
@@ -307,9 +457,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "settings_settingsmodal",
       "community": 35,
-      "norm_label": "settingsmodal.tsx"
+      "norm_label": "settingsmodal.tsx",
+      "id": "settings_settingsmodal"
     },
     {
       "label": "Tooltip()",
@@ -317,9 +467,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L16",
       "_origin": "ast",
-      "id": "settings_settingsmodal_tooltip",
       "community": 35,
-      "norm_label": "tooltip()"
+      "norm_label": "tooltip()",
+      "id": "settings_settingsmodal_tooltip"
     },
     {
       "label": "TabKey",
@@ -327,9 +477,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L61",
       "_origin": "ast",
-      "id": "settings_settingsmodal_tabkey",
       "community": 35,
-      "norm_label": "tabkey"
+      "norm_label": "tabkey",
+      "id": "settings_settingsmodal_tabkey"
     },
     {
       "label": "TABS",
@@ -337,9 +487,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L63",
       "_origin": "ast",
-      "id": "settings_settingsmodal_tabs",
       "community": 35,
-      "norm_label": "tabs"
+      "norm_label": "tabs",
+      "id": "settings_settingsmodal_tabs"
     },
     {
       "label": "VersionInfo",
@@ -347,9 +497,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L72",
       "_origin": "ast",
-      "id": "settings_settingsmodal_versioninfo",
       "community": 35,
-      "norm_label": "versioninfo"
+      "norm_label": "versioninfo",
+      "id": "settings_settingsmodal_versioninfo"
     },
     {
       "label": "SettingsModalProps",
@@ -357,9 +507,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L77",
       "_origin": "ast",
-      "id": "settings_settingsmodal_settingsmodalprops",
       "community": 35,
-      "norm_label": "settingsmodalprops"
+      "norm_label": "settingsmodalprops",
+      "id": "settings_settingsmodal_settingsmodalprops"
     },
     {
       "label": "SettingsModal()",
@@ -367,9 +517,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L84",
       "_origin": "ast",
-      "id": "settings_settingsmodal_settingsmodal",
       "community": 35,
-      "norm_label": "settingsmodal()"
+      "norm_label": "settingsmodal()",
+      "id": "settings_settingsmodal_settingsmodal"
     },
     {
       "label": "UserContentProps",
@@ -377,9 +527,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L272",
       "_origin": "ast",
-      "id": "settings_settingsmodal_usercontentprops",
       "community": 35,
-      "norm_label": "usercontentprops"
+      "norm_label": "usercontentprops",
+      "id": "settings_settingsmodal_usercontentprops"
     },
     {
       "label": "UserContent()",
@@ -387,9 +537,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L276",
       "_origin": "ast",
-      "id": "settings_settingsmodal_usercontent",
       "community": 35,
-      "norm_label": "usercontent()"
+      "norm_label": "usercontent()",
+      "id": "settings_settingsmodal_usercontent"
     },
     {
       "label": "PlayerContent()",
@@ -397,9 +547,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L397",
       "_origin": "ast",
-      "id": "settings_settingsmodal_playercontent",
       "community": 35,
-      "norm_label": "playercontent()"
+      "norm_label": "playercontent()",
+      "id": "settings_settingsmodal_playercontent"
     },
     {
       "label": "VersionContentProps",
@@ -407,9 +557,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L430",
       "_origin": "ast",
-      "id": "settings_settingsmodal_versioncontentprops",
       "community": 35,
-      "norm_label": "versioncontentprops"
+      "norm_label": "versioncontentprops",
+      "id": "settings_settingsmodal_versioncontentprops"
     },
     {
       "label": "VersionContent()",
@@ -417,9 +567,9 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L436",
       "_origin": "ast",
-      "id": "settings_settingsmodal_versioncontent",
       "community": 35,
-      "norm_label": "versioncontent()"
+      "norm_label": "versioncontent()",
+      "id": "settings_settingsmodal_versioncontent"
     },
     {
       "label": "EffectModal.tsx",
@@ -427,9 +577,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "transcription_effectmodal",
-      "community": 2,
-      "norm_label": "effectmodal.tsx"
+      "community": 27,
+      "norm_label": "effectmodal.tsx",
+      "id": "transcription_effectmodal"
     },
     {
       "label": "CloseIcon()",
@@ -437,9 +587,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L8",
       "_origin": "ast",
-      "id": "transcription_effectmodal_closeicon",
-      "community": 2,
-      "norm_label": "closeicon()"
+      "community": 27,
+      "norm_label": "closeicon()",
+      "id": "transcription_effectmodal_closeicon"
     },
     {
       "label": "BoltIcon()",
@@ -447,9 +597,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L17",
       "_origin": "ast",
-      "id": "transcription_effectmodal_bolticon",
-      "community": 2,
-      "norm_label": "bolticon()"
+      "community": 27,
+      "norm_label": "bolticon()",
+      "id": "transcription_effectmodal_bolticon"
     },
     {
       "label": "TrashIcon()",
@@ -457,9 +607,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L26",
       "_origin": "ast",
-      "id": "transcription_effectmodal_trashicon",
-      "community": 2,
-      "norm_label": "trashicon()"
+      "community": 27,
+      "norm_label": "trashicon()",
+      "id": "transcription_effectmodal_trashicon"
     },
     {
       "label": "EffectModalProps",
@@ -467,9 +617,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L33",
       "_origin": "ast",
-      "id": "transcription_effectmodal_effectmodalprops",
-      "community": 2,
-      "norm_label": "effectmodalprops"
+      "community": 27,
+      "norm_label": "effectmodalprops",
+      "id": "transcription_effectmodal_effectmodalprops"
     },
     {
       "label": "uid()",
@@ -477,9 +627,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L41",
       "_origin": "ast",
-      "id": "transcription_effectmodal_uid",
-      "community": 2,
-      "norm_label": "uid()"
+      "community": 27,
+      "norm_label": "uid()",
+      "id": "transcription_effectmodal_uid"
     },
     {
       "label": "EffectModal",
@@ -487,9 +637,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L45",
       "_origin": "ast",
-      "id": "transcription_effectmodal_effectmodal",
-      "community": 2,
-      "norm_label": "effectmodal"
+      "community": 27,
+      "norm_label": "effectmodal",
+      "id": "transcription_effectmodal_effectmodal"
     },
     {
       "label": "EffectBadge",
@@ -497,9 +647,9 @@
       "source_file": "src/features/transcription/EffectModal.tsx",
       "source_location": "L299",
       "_origin": "ast",
-      "id": "transcription_effectmodal_effectbadge",
-      "community": 2,
-      "norm_label": "effectbadge"
+      "community": 27,
+      "norm_label": "effectbadge",
+      "id": "transcription_effectmodal_effectbadge"
     },
     {
       "label": "App.tsx",
@@ -567,7 +717,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "transcriptionresults.tsx",
       "id": "transcription_transcriptionresults"
     },
@@ -577,7 +727,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "chevrondownicon()",
       "id": "transcription_transcriptionresults_chevrondownicon"
     },
@@ -587,7 +737,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L29",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "plusicon()",
       "id": "transcription_transcriptionresults_plusicon"
     },
@@ -597,7 +747,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "segmentitem",
       "id": "transcription_transcriptionresults_segmentitem"
     },
@@ -607,7 +757,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L134",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "transcriptionrow()",
       "id": "transcription_transcriptionresults_transcriptionrow"
     },
@@ -617,7 +767,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L168",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "rowrendererdeps",
       "id": "transcription_transcriptionresults_rowrendererdeps"
     },
@@ -627,7 +777,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L184",
       "_origin": "ast",
-      "community": 35,
+      "community": 0,
       "norm_label": "findclosestsegment()",
       "id": "transcription_transcriptionresults_findclosestsegment"
     },
@@ -637,7 +787,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L205",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "findsegmentindex()",
       "id": "transcription_transcriptionresults_findsegmentindex"
     },
@@ -647,7 +797,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L226",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "parsestage()",
       "id": "transcription_transcriptionresults_parsestage"
     },
@@ -657,7 +807,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L240",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "transcribeprogressbar()",
       "id": "transcription_transcriptionresults_transcribeprogressbar"
     },
@@ -667,7 +817,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L265",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "transcribeprogress()",
       "id": "transcription_transcriptionresults_transcribeprogress"
     },
@@ -677,7 +827,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L279",
       "_origin": "ast",
-      "community": 35,
+      "community": 0,
       "norm_label": "transcriptionresultsinner()",
       "id": "transcription_transcriptionresults_transcriptionresultsinner"
     },
@@ -687,7 +837,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L943",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "transcriptionresults",
       "id": "transcription_transcriptionresults_transcriptionresults"
     },
@@ -722,42 +872,12 @@
       "id": "file_loader_fileloader_fileloader"
     },
     {
-      "label": "useMediaPlayer.ts",
-      "file_type": "code",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "usemediaplayer.ts",
-      "id": "hooks_usemediaplayer"
-    },
-    {
-      "label": "Window",
-      "file_type": "code",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L5",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "window",
-      "id": "hooks_usemediaplayer_window"
-    },
-    {
-      "label": "useMediaPlayer()",
-      "file_type": "code",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L55",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "usemediaplayer()",
-      "id": "hooks_usemediaplayer_usemediaplayer"
-    },
-    {
       "label": "idb.ts",
       "file_type": "code",
       "source_file": "src/utils/idb.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 27,
+      "community": 0,
       "norm_label": "idb.ts",
       "id": "utils_idb"
     },
@@ -767,7 +887,7 @@
       "source_file": "src/utils/idb.ts",
       "source_location": "L13",
       "_origin": "ast",
-      "community": 27,
+      "community": 0,
       "norm_label": "storedsession",
       "id": "utils_idb_storedsession"
     },
@@ -777,7 +897,7 @@
       "source_file": "src/utils/idb.ts",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 27,
+      "community": 0,
       "norm_label": "opendb()",
       "id": "utils_idb_opendb"
     },
@@ -787,7 +907,7 @@
       "source_file": "src/utils/idb.ts",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 27,
+      "community": 0,
       "norm_label": "getfromstore()",
       "id": "utils_idb_getfromstore"
     },
@@ -797,7 +917,7 @@
       "source_file": "src/utils/idb.ts",
       "source_location": "L45",
       "_origin": "ast",
-      "community": 27,
+      "community": 0,
       "norm_label": "savesession()",
       "id": "utils_idb_savesession"
     },
@@ -807,7 +927,7 @@
       "source_file": "src/utils/idb.ts",
       "source_location": "L54",
       "_origin": "ast",
-      "community": 27,
+      "community": 0,
       "norm_label": "loadsession()",
       "id": "utils_idb_loadsession"
     },
@@ -817,7 +937,7 @@
       "source_file": "src/utils/idb.ts",
       "source_location": "L61",
       "_origin": "ast",
-      "community": 27,
+      "community": 0,
       "norm_label": "clearsession()",
       "id": "utils_idb_clearsession"
     },
@@ -1037,7 +1157,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 35,
       "norm_label": "authstore.ts",
       "id": "store_authstore"
     },
@@ -1047,7 +1167,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L5",
       "_origin": "ast",
-      "community": 7,
+      "community": 35,
       "norm_label": "authstate",
       "id": "store_authstore_authstate"
     },
@@ -1057,7 +1177,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 7,
+      "community": 35,
       "norm_label": "authactions",
       "id": "store_authstore_authactions"
     },
@@ -1067,7 +1187,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L21",
       "_origin": "ast",
-      "community": 7,
+      "community": 35,
       "norm_label": "authstore",
       "id": "store_authstore_authstore"
     },
@@ -1077,7 +1197,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "useauthstore",
       "id": "store_authstore_useauthstore"
     },
@@ -1127,7 +1247,7 @@
       "source_file": "src/types/index.ts",
       "source_location": "L55",
       "_origin": "ast",
-      "community": 2,
+      "community": 27,
       "norm_label": "soundcensoringeffect",
       "id": "types_index_soundcensoringeffect"
     },
@@ -1217,7 +1337,7 @@
       "source_file": "src/types/index.ts",
       "source_location": "L213",
       "_origin": "ast",
-      "community": 7,
+      "community": 35,
       "norm_label": "authuser",
       "id": "types_index_authuser"
     },
@@ -3099,7 +3219,7 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "addwordmodal.tsx",
       "id": "transcription_addwordmodal"
     },
@@ -3109,7 +3229,7 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "closeicon()",
       "id": "transcription_addwordmodal_closeicon"
     },
@@ -3119,7 +3239,7 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "plusicon()",
       "id": "transcription_addwordmodal_plusicon"
     },
@@ -3129,7 +3249,7 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L22",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "addwordmodalprops",
       "id": "transcription_addwordmodal_addwordmodalprops"
     },
@@ -3139,7 +3259,7 @@
       "source_file": "src/features/transcription/AddWordModal.tsx",
       "source_location": "L28",
       "_origin": "ast",
-      "community": 35,
+      "community": 27,
       "norm_label": "addwordmodal",
       "id": "transcription_addwordmodal_addwordmodal"
     },
@@ -3349,7 +3469,7 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L104",
       "_origin": "ast",
-      "community": 0,
+      "community": 7,
       "norm_label": "playeractions",
       "id": "store_playerstore_playeractions"
     },
@@ -3409,7 +3529,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 27,
       "norm_label": "pkce-browser.ts",
       "id": "utils_pkce_browser"
     },
@@ -3419,7 +3539,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 7,
+      "community": 27,
       "norm_label": "generatecodeverifier()",
       "id": "utils_pkce_browser_generatecodeverifier"
     },
@@ -3429,7 +3549,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 7,
+      "community": 27,
       "norm_label": "generatecodechallenge()",
       "id": "utils_pkce_browser_generatecodechallenge"
     },
@@ -3439,7 +3559,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 7,
+      "community": 27,
       "norm_label": "base64urlencode()",
       "id": "utils_pkce_browser_base64urlencode"
     },
@@ -5337,6 +5457,469 @@
     }
   ],
   "links": [
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "player_soundeffects",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "source": "player_soundeffects",
+      "target": "player_soundeffects_createsoundeffectsengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "source": "player_soundeffects",
+      "target": "player_soundeffects_soundeffectsdeps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "player_soundeffects",
+      "target": "player_soundeffects_soundeffectsengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "player_soundeffects",
+      "target": "store_playerstore_useplayerstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "source": "player_soundeffects",
+      "target": "types_index_soundcensoringeffect",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "player_soundeffects_createsoundeffectsengine",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L302",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer_usemediaplayer",
+      "target": "player_soundeffects_createsoundeffectsengine"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "transcription_usetranscribe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L14",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "src_audio_audiobufferstowav",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "src_config_backendheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "src_config_backendpath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "src_config_backendwspath",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L15",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "src_config_loadbackendurl",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "store_playerstore_playeractions",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "store_playerstore_useplayerstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "transcription_usetranscribe_transcribedeps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/useTranscribe.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "source": "transcription_usetranscribe",
+      "target": "transcription_usetranscribe_usetranscribe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "transcription_usetranscribe_usetranscribe",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L1399",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer_usemediaplayer",
+      "target": "transcription_usetranscribe_usetranscribe"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/context/MediaPlayerContext.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "context_mediaplayercontext",
+      "target": "hooks_usemediaplayer"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "hooks_usemediaplayer_usemediaplayer"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_audio"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_audio_audiobufferstowav"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config_backendheaders"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config_backendpath"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config_backendwspath"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config_loadbackendurl"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "store_playerstore_playeractions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiodiagnostic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiodiagnostic_startaudiodiagnostic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiomonitor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiomonitor_startaudiomonitor",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/context/MediaPlayerContext.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "context_mediaplayercontext",
+      "target": "hooks_usemediaplayer_usemediaplayer"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/context/MediaPlayerContext.tsx",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "context_mediaplayercontext_mediaplayerprovider",
+      "target": "hooks_usemediaplayer_usemediaplayer"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "source": "utils_audiodiagnostic",
+      "target": "utils_audiodiagnostic_audiodiagnosticdeps",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "source": "utils_audiodiagnostic",
+      "target": "utils_audiodiagnostic_startaudiodiagnostic",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "source": "utils_audiodiagnostic",
+      "target": "utils_audiodiagnostic_window",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioMonitor.ts",
+      "source_location": "L1",
+      "weight": 1.0,
+      "source": "utils_audiomonitor",
+      "target": "store_playerstore_useplayerstore",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioMonitor.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "source": "utils_audiomonitor",
+      "target": "utils_audiomonitor_startaudiomonitor",
+      "confidence_score": 1.0
+    },
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
@@ -7461,169 +8044,6 @@
       "weight": 1.0,
       "source": "file_loader_fileloader_fileloader",
       "target": "store_playerstore_useplayeractions"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/context/MediaPlayerContext.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "context_mediaplayercontext",
-      "target": "hooks_usemediaplayer"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "hooks_usemediaplayer_usemediaplayer"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "hooks_usemediaplayer_window"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_audio"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_audio_audiobufferstowav"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L41",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_backendheaders"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_backendpath"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_backendwspath"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L41",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_loadbackendurl"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "store_playerstore_playeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/context/MediaPlayerContext.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "context_mediaplayercontext",
-      "target": "hooks_usemediaplayer_usemediaplayer"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/context/MediaPlayerContext.tsx",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "context_mediaplayercontext_mediaplayerprovider",
-      "target": "hooks_usemediaplayer_usemediaplayer"
     },
     {
       "relation": "contains",
@@ -13437,5 +13857,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "32e14cd3efb6b95ba749f050fdeaa8fb96528b14"
+  "built_at_commit": "0fd37bca71c7504acf8d2d7bca90923c5f549937"
 }

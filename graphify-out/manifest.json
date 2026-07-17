@@ -95,8 +95,8 @@
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
-    "mtime": 1784191875.8865,
-    "ast_hash": "7da41f24dc9454130360d34cd52058de",
+    "mtime": 1784274323.4597251,
+    "ast_hash": "439d754594f4ded99b0fd91770cd04f7",
     "semantic_hash": ""
   },
   "src/main.tsx": {
@@ -472,6 +472,26 @@
   "src/features/debug/DebugTab.tsx": {
     "mtime": 1784223486.8263347,
     "ast_hash": "3e74d5f1a4267716cccd9641aeac0c6b",
+    "semantic_hash": ""
+  },
+  "src/features/player/SoundEffects.ts": {
+    "mtime": 1784269519.1343713,
+    "ast_hash": "8686be1a93479c536dadbdac007de614",
+    "semantic_hash": ""
+  },
+  "src/features/transcription/useTranscribe.ts": {
+    "mtime": 1784270443.6197836,
+    "ast_hash": "3a9b44a4f7ae72eaaf8c0f69b817862d",
+    "semantic_hash": ""
+  },
+  "src/utils/audioDiagnostic.ts": {
+    "mtime": 1784269635.6621294,
+    "ast_hash": "fa65d472f1d5cad35ea1f814932154d3",
+    "semantic_hash": ""
+  },
+  "src/utils/audioMonitor.ts": {
+    "mtime": 1784272616.531103,
+    "ast_hash": "ec810d52d30653a44642e8961ea6a555",
     "semantic_hash": ""
   }
 }
