@@ -108,7 +108,7 @@ export const App = () => {
             <ImportProgressModal />
 
             <div className="space-y-6">
-              <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-start">
+              <div className="grid grid-cols-[1fr_auto] gap-6 items-start">
                 <PlayerDisplay />
                 <ActionButtons />
               </div>
