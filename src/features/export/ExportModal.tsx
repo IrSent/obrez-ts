@@ -153,8 +153,9 @@ const ExportModal = memo(({ format, onFormatChange, onExport, onClose, videoCode
   const altAudCodec = altFormat === 'mp4' ? 'aac' : 'opus';
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50">
-      <div className="bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+      <div className="relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)] max-h-[85vh] overflow-y-auto">
+        <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]" />
         {/* Header */}
         <div className="flex items-center justify-between">
           <h3 className="text-sm font-semibold flex items-center gap-2">

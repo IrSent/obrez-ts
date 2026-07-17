@@ -1,4 +1,5 @@
 import { useState, useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { DictionaryManager } from '../dictionary/DictionaryManager';
 import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
 import { DebugTab } from '../debug/DebugTab';
@@ -10,29 +11,50 @@ import { LoginModal } from '../auth/LoginModal';
 
 /**
  * Tooltip icon — ⓘ — shows description on hover (desktop) or tap (mobile).
+ * Renders via Portal so the tooltip is never clipped by overflow-hidden containers.
  */
 function Tooltip({ text }: { text: string }) {
   const [show, setShow] = useState(false);
+  const [anchor, setAnchor] = useState<{ left: number; top: number } | null>(null);
+
+  useEffect(() => {
+    if (show) {
+      const el = document.querySelector('[data-tooltip-anchor]');
+      if (el) {
+        const r = el.getBoundingClientRect();
+        setAnchor({ left: r.left + r.width / 2, top: r.top + r.height + 6 });
+      }
+    }
+  }, [show]);
+
+  const handleClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    setShow((v) => !v);
+  };
 
   return (
-    <span
-      className="relative inline-flex items-center ml-1 cursor-help"
-      onMouseEnter={() => setShow(true)}
-      onMouseLeave={() => setShow(false)}
-      onFocus={() => setShow(true)}
-      onBlur={() => setShow(false)}
-      onClick={(e) => { e.stopPropagation(); setShow((v) => !v); }}
-    >
-      <span className="text-zinc-600 text-xs select-none">ⓘ</span>
-      {show && (
+    <>
+      <span
+        data-tooltip-anchor
+        className="relative inline-flex items-center ml-1 cursor-help"
+        onMouseEnter={() => setShow(true)}
+        onMouseLeave={() => setShow(false)}
+        onFocus={() => setShow(true)}
+        onBlur={() => setShow(false)}
+        onClick={handleClick}
+      >
+        <span className="text-zinc-600 text-xs select-none">ⓘ</span>
+      </span>
+      {show && anchor && createPortal(
         <span
-          className="absolute top-full left-1/2 -translate-x-1/2 mt-1 w-56 px-3 py-2 text-[11px] leading-relaxed text-zinc-200 bg-zinc-800 border border-zinc-700 rounded-lg shadow-lg z-[60] pointer-events-none"
-          style={{ whiteSpace: 'normal' }}
+          className="fixed z-[100] w-56 px-3 py-2 text-xs leading-relaxed text-zinc-200 bg-zinc-800 border border-zinc-700 rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.6)] whitespace-normal pointer-events-none"
+          style={{ left: anchor.left, top: anchor.top, transform: 'translateX(-50%)' }}
         >
           {text}
-        </span>
+        </span>,
+        document.body,
       )}
-    </span>
+    </>
   );
 }
 
@@ -55,6 +77,9 @@ interface VersionInfo {
 interface SettingsModalProps {
   onClose: () => void;
 }
+
+// Shared 3D shadow stack for modals
+const MODAL_SHADOW = 'shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)]';
 
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('user');
@@ -135,12 +160,12 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className="relative flex flex-col overflow-hidden mx-4 my-auto max-h-[80vh] w-full max-w-2xl rounded-xl bg-zinc-900 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)]"
+        className={`relative flex flex-col overflow-hidden mx-4 my-auto max-h-[85vh] w-full max-w-2xl rounded-xl bg-zinc-900 ${MODAL_SHADOW}`}
       >
         {/* 3D inner bevel highlight */}
         <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
         {/* Header */}
-        <div className="flex items-center justify-between p-4 border-b border-zinc-800 shrink-0">
+        <div className="relative flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0">
           <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
           <button
             onClick={onClose}
@@ -151,7 +176,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         </div>
 
         {/* Tabs */}
-        <div className="flex border-b border-zinc-800 px-4 pt-2 gap-2 shrink-0">
+        <div className="relative flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0">
           {TABS.map((tab) => (
             <button
               key={tab.key}
@@ -167,9 +192,9 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                 setActiveTab(tab.key);
               }}
               title={tab.tooltip}
-              className={`px-3 py-2 text-sm font-semibold rounded-t transition-colors ${
+              className={`px-3 py-2 text-sm font-medium rounded-t-lg transition-all ${
                 activeTab === tab.key
-                  ? 'bg-zinc-800 text-purple-400 border-b-2 border-purple-500'
+                  ? 'bg-zinc-800 text-purple-400 border-b-2 border-purple-500 shadow-[0_-2px_8px_rgba(139,92,246,0.1)]'
                   : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
               }`}
             >
@@ -185,40 +210,40 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           style={lockedHeight != null ? { height: lockedHeight, transition: 'height 300ms ease-in-out' } : undefined}
         >
           {activeTab === 'user' && (
-            <div className="p-4">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            <div className="p-5">
+              <h3 className="text-sm text-zinc-300 mb-3">
                 Account & Balance <Tooltip text="Manage your Telegram account, check transcription balance, and top up hours." />
               </h3>
               <UserContent onClose={onClose} />
             </div>
           )}
           {activeTab === 'player' && (
-            <div className="p-4">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            <div className="p-5">
+              <h3 className="text-sm text-zinc-300 mb-3">
                 Player <Tooltip text="Settings for media playback — autoplay, speed, and quality options." />
               </h3>
               <PlayerContent />
             </div>
           )}
           {activeTab === 'dictionaries' && (
-            <div className="p-4">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            <div className="p-5">
+              <h3 className="text-sm text-zinc-300 mb-3">
                 Word Lists <Tooltip text="Choose which word lists to match against during transcription. Only active lists highlight matched words." />
               </h3>
               <DictionaryManager />
             </div>
           )}
           {activeTab === 'bleep' && (
-            <div className="p-4">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            <div className="p-5">
+              <h3 className="text-sm text-zinc-300 mb-3">
                 Sound Effects <Tooltip text="Manage bleep and censor sounds. Upload custom audio files or use the default tone." />
               </h3>
               <BleepSoundManager />
             </div>
           )}
           {activeTab === 'version' && (
-            <div className="p-4">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            <div className="p-5">
+              <h3 className="text-sm text-zinc-300 mb-3">
                 Switch Version <Tooltip text="Switch between master (latest) and stable releases. Useful if master breaks." />
               </h3>
               <VersionContent
@@ -229,8 +254,8 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
             </div>
           )}
           {activeTab === 'debug' && (
-            <div className="p-4">
-              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+            <div className="p-5">
+              <h3 className="text-sm text-zinc-300 mb-3">
                 Debug <Tooltip text="View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string." />
               </h3>
               <DebugTab />
@@ -289,7 +314,7 @@ function UserContent({ onClose }: UserContentProps) {
         <p className="text-xs text-zinc-500 mt-1 mb-4">Sign in with Telegram to use transcription.</p>
         <button
           onClick={() => setShowLogin(true)}
-          className="bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium px-6 py-2 rounded-lg transition-colors text-sm"
+          className="bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium px-6 py-2 rounded-lg transition-colors text-sm shadow-[0_4px_14px_rgba(42,171,238,0.3)]"
         >
           Sign in with Telegram
         </button>
@@ -300,15 +325,19 @@ function UserContent({ onClose }: UserContentProps) {
 
   return (
     <div className="space-y-4">
-      {/* Profile */}
-      <div className="flex items-center gap-4 p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
-        {user?.photo_url ? (
-          <img src={user.photo_url} alt={user.first_name} className="w-12 h-12 rounded-full object-cover" />
-        ) : (
-          <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-lg font-semibold shrink-0">
-            {user?.first_name?.charAt(0) || '?'}
-          </div>
-        )}
+      {/* Profile card */}
+      <div className="relative flex items-center gap-4 p-5 rounded-xl border border-zinc-700 bg-zinc-800/50 shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]">
+        {/* inner bevel */}
+        <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.2)]" />
+        <div className="relative">
+          {user?.photo_url ? (
+            <img src={user.photo_url} alt={user.first_name} className="w-12 h-12 rounded-full object-cover shadow-[0_2px_10px_rgba(0,0,0,0.4)]" />
+          ) : (
+            <div className="w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-lg font-semibold shrink-0 shadow-[0_2px_10px_rgba(139,92,246,0.4)]">
+              {user?.first_name?.charAt(0) || '?'}
+            </div>
+          )}
+        </div>
         <div className="flex-1 min-w-0">
           <div className="text-zinc-100 font-medium">{user?.first_name}</div>
           {user?.username && (
@@ -352,7 +381,7 @@ function UserContent({ onClose }: UserContentProps) {
       )}
 
       {error && (
-        <div className="p-3 bg-red-900/30 border border-red-700/50 rounded-lg">
+        <div className="relative p-4 rounded-xl bg-red-900/30 border border-red-700/50 shadow-[0_4px_12px_rgba(127,29,29,0.2)]">
           <p className="text-xs text-red-400">{error}</p>
           <button onClick={clearError} className="text-xs text-red-300 underline mt-1">
             Dismiss
@@ -369,8 +398,10 @@ function PlayerContent() {
   return (
     <div className="space-y-4">
       {/* Play on load */}
-      <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
-        <div>
+      <div className="relative flex items-center justify-between p-5 rounded-xl border border-zinc-700 bg-zinc-800/50 shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]">
+        {/* inner bevel */}
+        <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.2)]" />
+        <div className="relative">
           <div className="text-sm text-zinc-200 font-medium">
             ▶ Play on load
             <Tooltip text="When enabled, the video starts playing automatically as soon as a file is loaded. Disable to review the timeline before playback." />
@@ -413,10 +444,10 @@ function VersionContent({ versions, currentVersion, onSelect }: VersionContentPr
         <button
           key={v}
           onClick={() => onSelect(v)}
-          className={`w-full flex items-center gap-3 text-xs py-3 px-4 rounded-lg transition-colors ${
+          className={`relative w-full flex items-center gap-3 text-xs py-3 px-4 rounded-lg transition-all ${
             v === currentVersion
-              ? 'bg-purple-900/30 border border-purple-700/50 text-purple-300'
-              : 'bg-zinc-700 hover:bg-zinc-600 text-zinc-200'
+              ? 'bg-purple-900/30 border border-purple-700/50 text-purple-300 shadow-[0_2px_12px_rgba(139,92,246,0.2),inset_0_1px_0_rgba(139,92,246,0.1)]'
+              : 'bg-zinc-700/80 hover:bg-zinc-600 text-zinc-200 shadow-[0_2px_8px_rgba(0,0,0,0.2)]'
           }`}
         >
           <span className={`w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${
