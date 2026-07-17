@@ -200,6 +200,9 @@ export type PlayerState = {
 
   /** Playback speed multiplier (1 = normal, 1.5 = 1.5x, etc.) */
   playbackSpeed: number;
+
+  /** Whether transcription results panel auto-scrolls on playback */
+  autoScroll: boolean;
 };
 
 /**

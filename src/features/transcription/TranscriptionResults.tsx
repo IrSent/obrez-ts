@@ -9,7 +9,7 @@ import { AddWordModal } from './AddWordModal';
 import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
-import type { SoundCensoringEffect } from '../../types';
+import type { SoundCensoringEffect, TranscriptionResultTuple } from '../../types';
 
 // Worker instances are created once and reused.
 let importWorker: Worker | null = null;
@@ -284,7 +284,7 @@ const TranscriptionResultsInner = () => {
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
-  const { transcribe, seekToTime, getPlaybackTime } = useMediaPlayerContext();
+  const { transcribe, seekToTime, getPlaybackTime, initMediaPlayer } = useMediaPlayerContext();
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
@@ -370,8 +370,8 @@ const TranscriptionResultsInner = () => {
   };
 
   const handleAddWord = (start: number, end: number, text: string) => {
-    const current = transcriptionResults ?? [];
-    const newResults = [...current, [start, end, text]];
+    const current: TranscriptionResultTuple[] = transcriptionResults ?? [];
+    const newResults: TranscriptionResultTuple[] = [...current, [start, end, text]];
     newResults.sort((a, b) => a[0] - b[0]);
     actions.setTranscriptionResults(newResults.length ? newResults : null);
   };
@@ -780,8 +780,49 @@ const TranscriptionResultsInner = () => {
 
   return (
     <div className="bg-zinc-800 rounded-lg p-4">
+      {/* Header — title + JSON actions */}
       <div className="flex items-center justify-between mb-3 gap-3">
-        <h2 className="block text-base sm:text-lg font-semibold text-zinc-300 shrink-0 w-1/2">Transcription Results</h2>
+        <h2 className="block text-base sm:text-lg font-semibold text-zinc-300 shrink-0">Transcription</h2>
+        <div className="flex items-center gap-2">
+          {/* Import JSON */}
+          <button
+            onClick={() => importJsonRef.current?.click()}
+            className="text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 flex items-center gap-1"
+            title="Import transcription + effects from JSON"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="17 8 12 3 7 8" />
+              <line x1="12" y1="3" x2="12" y2="15" />
+            </svg>
+            Import
+          </button>
+          {/* Export JSON */}
+          <button
+            onClick={handleExportJson}
+            disabled={!transcriptionResults}
+            className="text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1"
+            title="Export transcription + effects to JSON"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+              <polyline points="7 10 12 15 17 10" />
+              <line x1="12" y1="15" x2="12" y2="3" />
+            </svg>
+            Export
+          </button>
+          <input
+            ref={importJsonRef}
+            type="file"
+            accept=".json"
+            onChange={handleImportJson}
+            className="hidden"
+          />
+        </div>
+      </div>
+
+      {/* Filter row — search + matches on left, add word on right */}
+      <div className="flex items-center justify-between mb-3 gap-3">
         <div className="flex items-center gap-2">
           <input
             type="text"
@@ -797,55 +838,14 @@ const TranscriptionResultsInner = () => {
           >
             Matches only
           </button>
-          {/* Transcribe format: always original — dropdown removed */}
-          <button
-            onClick={handleTranscribe}
-            disabled={isLoading}
-            className="text-xs font-semibold px-3 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white disabled:opacity-50 transition-colors shrink-0"
-          >
-            {transcribing ? 'Transcribing...' : isLoading ? 'Loading...' : 'Transcribe'}
-          </button>
-          {/* Add Word */}
-          <button
-            onClick={() => setShowAddWord(true)}
-            className="text-xs font-semibold px-3 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 flex items-center gap-1"
-            title="Manually add a word with start, end, and text"
-          >
-            <PlusIcon /> Add Word
-          </button>
-          {/* Import JSON */}
-          <button
-            onClick={() => importJsonRef.current?.click()}
-            className="p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-300 transition-colors shrink-0"
-            title="Import transcription + effects from JSON"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
-            </svg>
-          </button>
-          {/* Export JSON */}
-          <button
-            onClick={handleExportJson}
-            disabled={!transcriptionResults}
-            className="p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-300 transition-colors shrink-0 disabled:opacity-30 disabled:cursor-not-allowed"
-            title="Export transcription + effects to JSON"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
-            </svg>
-          </button>
-          <input
-            ref={importJsonRef}
-            type="file"
-            accept=".json"
-            onChange={handleImportJson}
-            className="hidden"
-          />
         </div>
+        <button
+          onClick={() => setShowAddWord(true)}
+          className="text-xs font-semibold px-3 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 flex items-center gap-1"
+          title="Manually add a word with start, end, and text"
+        >
+          <PlusIcon /> Add Word
+        </button>
       </div>
 
       {error && (

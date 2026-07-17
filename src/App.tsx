@@ -1,11 +1,9 @@
 import { useEffect, useState } from 'react';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
-import { FileLoader } from './features/file-loader/FileLoader';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
-import { ExportButton } from './features/export/ExportModal';
-import { HeaderExportButton } from './features/export/HeaderExportButton';
+import { ActionButtons } from './features/action-buttons/ActionButtons';
 import { loadBackendUrl, backendPath, backendHeaders } from './config';
 import { SettingsModal } from './features/settings/SettingsModal';
 import { usePlayerStore, playerActions } from './store/playerStore';
@@ -101,7 +99,6 @@ export const App = () => {
                 <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez</h1>
               </a>
               <div className="flex items-center gap-1">
-                <HeaderExportButton />
                 <button id="obrez-gear" onClick={() => setSettingsOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</button>
               </div>
             </div>
@@ -110,15 +107,12 @@ export const App = () => {
           <div className="max-w-4xl mx-auto px-4 py-4">
             <ImportProgressModal />
 
-            <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6">
-              <div className="space-y-6">
-                <FileLoader />
+            <div className="space-y-6">
+              <div className="grid grid-cols-1 lg:grid-cols-[1fr_auto] gap-6 items-start">
                 <PlayerDisplay />
-                <TranscriptionResults />
+                <ActionButtons />
               </div>
-              <div className="hidden lg:flex lg:flex-col lg:gap-6">
-                <ExportButton />
-              </div>
+              <TranscriptionResults />
             </div>
           </div>
 

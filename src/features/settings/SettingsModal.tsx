@@ -84,49 +84,36 @@ const MODAL_SHADOW = 'shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0
 export function SettingsModal({ onClose }: SettingsModalProps) {
   const [activeTab, setActiveTab] = useState<TabKey>('user');
   const [versions, setVersions] = useState<VersionInfo | null>(null);
-  const [lockedHeight, setLockedHeight] = useState<number | null>(null);
+  const [frozenHeight, setFrozenHeight] = useState<number | null>(null);
   const contentRef = useRef<HTMLDivElement>(null);
   const animatingRef = useRef(false);
   const animTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  const lockedHeightRef = useRef<number | null>(null);
+  const frozenHeightRef = useRef<number | null>(null);
 
   const currentVersion = typeof window !== 'undefined'
     ? window.location.pathname.split('/').filter(Boolean).pop() || 'master'
     : 'master';
 
-  // Measure and lock initial content height after mount
-  useEffect(() => {
-    requestAnimationFrame(() => {
-      requestAnimationFrame(() => {
-        if (contentRef.current) {
-          const h = contentRef.current.scrollHeight;
-          setLockedHeight(h);
-          lockedHeightRef.current = h;
-        }
-      });
-    });
-  }, []);
-
-  // Animate on tab change / versions load / unlock
+  // Animate on tab change / versions load / unfreeze
   useEffect(() => {
     if (animatingRef.current) return;
 
-    // On unlock: nothing to animate — container already fits content
-    if (lockedHeight === null) return;
+    // On unfreeze: nothing to animate — container already fits content
+    if (frozenHeight === null) return;
 
     animatingRef.current = true;
-    const oldH = lockedHeightRef.current;
+    const oldH = frozenHeightRef.current;
 
-    setLockedHeight(oldH);
+    setFrozenHeight(oldH);
     requestAnimationFrame(() => {
       const newH = contentRef.current?.scrollHeight ?? oldH;
-      setLockedHeight(newH);
+      setFrozenHeight(newH);
       animTimeoutRef.current = setTimeout(() => {
-        setLockedHeight(null);
+        setFrozenHeight(null);
         animatingRef.current = false;
       }, 350);
     });
-  }, [activeTab, versions, lockedHeight]);
+  }, [activeTab, versions, frozenHeight]);
 
   useEffect(() => {
     if (activeTab !== 'version' || versions) return;
@@ -156,11 +143,11 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className={`relative flex flex-col overflow-hidden mx-4 mt-[-2vh] max-h-[85vh] w-full max-w-2xl rounded-xl bg-zinc-900 ${MODAL_SHADOW}`}
+        className={`relative flex flex-col overflow-hidden mx-4 mt-[-2vh] w-full max-w-2xl rounded-xl bg-zinc-900 ${MODAL_SHADOW}`}
       >
         {/* 3D inner bevel highlight */}
         <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
@@ -182,11 +169,11 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               key={tab.key}
               onClick={() => {
                 if (animatingRef.current) return;
-                // Freeze current height before content swaps — so shrink animates
-                const h = contentRef.current?.scrollHeight ?? lockedHeightRef.current;
+                // Freeze current height before content swaps — so grow/shrink animates
+                const h = contentRef.current?.scrollHeight ?? frozenHeightRef.current;
                 if (h != null) {
-                  setLockedHeight(h);
-                  lockedHeightRef.current = h;
+                  setFrozenHeight(h);
+                  frozenHeightRef.current = h;
                 }
                 if (animTimeoutRef.current) { clearTimeout(animTimeoutRef.current); animTimeoutRef.current = null; }
                 setActiveTab(tab.key);
@@ -203,11 +190,10 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           ))}
         </div>
 
-        {/* Content — animated height */}
+        {/* Content — animated height transitions, no max-height / scroll */}
         <div
           ref={contentRef}
-          className="overflow-y-auto flex-1 min-h-0"
-          style={lockedHeight != null ? { height: lockedHeight, transition: 'height 300ms ease-in-out' } : undefined}
+          style={frozenHeight != null ? { height: frozenHeight, transition: 'height 300ms ease-in-out' } : undefined}
         >
           {activeTab === 'user' && (
             <div className="p-5">
