@@ -36,10 +36,11 @@ function Tooltip({ text }: { text: string }) {
   );
 }
 
-type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version' | 'debug';
+type TabKey = 'user' | 'player' | 'dictionaries' | 'bleep' | 'version' | 'debug';
 
 const TABS: { key: TabKey; emoji: string; tooltip: string }[] = [
   { key: 'user', emoji: '👤', tooltip: 'Account & Balance' },
+  { key: 'player', emoji: '▶', tooltip: 'Player' },
   { key: 'dictionaries', emoji: '📚', tooltip: 'Dictionaries' },
   { key: 'bleep', emoji: '🔊', tooltip: 'Bleep Sounds' },
   { key: 'version', emoji: '🔄', tooltip: 'Version' },
@@ -133,7 +134,11 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
       className="fixed inset-0 z-50 flex items-center justify-center bg-black/60"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="bg-zinc-900 rounded-xl w-full max-w-2xl mx-4 shadow-[0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)] flex flex-col overflow-hidden max-h-[65vh]">
+      <div
+        className="relative flex flex-col overflow-hidden mx-4 my-auto max-h-[80vh] w-full max-w-2xl rounded-xl bg-zinc-900 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)]"
+      >
+        {/* 3D inner bevel highlight */}
+        <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
         {/* Header */}
         <div className="flex items-center justify-between p-4 border-b border-zinc-800 shrink-0">
           <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
@@ -185,6 +190,14 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                 Account & Balance <Tooltip text="Manage your Telegram account, check transcription balance, and top up hours." />
               </h3>
               <UserContent onClose={onClose} />
+            </div>
+          )}
+          {activeTab === 'player' && (
+            <div className="p-4">
+              <h3 className="text-xs font-semibold text-zinc-500 uppercase tracking-wider mb-3">
+                Player <Tooltip text="Settings for media playback — autoplay, speed, and quality options." />
+              </h3>
+              <PlayerContent />
             </div>
           )}
           {activeTab === 'dictionaries' && (
@@ -314,29 +327,6 @@ function UserContent({ onClose }: UserContentProps) {
         </button>
       </div>
 
-      {/* Play on load */}
-      <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
-        <div>
-          <div className="text-sm text-zinc-200 font-medium">
-            ▶ Play on load
-            <Tooltip text="When enabled, the video starts playing automatically as soon as a file is loaded. Disable to review the timeline before playback." />
-          </div>
-          <div className="text-xs text-zinc-500 mt-0.5">Auto-play video after loading a file</div>
-        </div>
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            id="obrez-play-on-load"
-            className="sr-only peer"
-            defaultChecked={localStorage.getItem('obrez_play_on_load') === 'true'}
-            onChange={(e) => {
-              localStorage.setItem('obrez_play_on_load', e.target.checked ? 'true' : 'false');
-            }}
-          />
-          <div className="w-11 h-6 bg-zinc-600 rounded-full peer-checked:bg-purple-600 peer-focus:ring-2 peer-focus:ring-purple-500/50 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-200 peer-checked:after:translate-x-full" />
-        </label>
-      </div>
-
       {/* Hour pack cards */}
       <div className="space-y-3">
         {HOUR_PACKS.map((pack, i) => {
@@ -369,6 +359,37 @@ function UserContent({ onClose }: UserContentProps) {
           </button>
         </div>
       )}
+    </div>
+  );
+}
+
+// ─── Player tab ───
+
+function PlayerContent() {
+  return (
+    <div className="space-y-4">
+      {/* Play on load */}
+      <div className="flex items-center justify-between p-4 bg-zinc-800/50 rounded-lg border border-zinc-700">
+        <div>
+          <div className="text-sm text-zinc-200 font-medium">
+            ▶ Play on load
+            <Tooltip text="When enabled, the video starts playing automatically as soon as a file is loaded. Disable to review the timeline before playback." />
+          </div>
+          <div className="text-xs text-zinc-500 mt-0.5">Auto-play video after loading a file</div>
+        </div>
+        <label className="relative inline-flex items-center cursor-pointer">
+          <input
+            type="checkbox"
+            id="obrez-play-on-load"
+            className="sr-only peer"
+            defaultChecked={localStorage.getItem('obrez_play_on_load') === 'true'}
+            onChange={(e) => {
+              localStorage.setItem('obrez_play_on_load', e.target.checked ? 'true' : 'false');
+            }}
+          />
+          <div className="w-11 h-6 bg-zinc-600 rounded-full peer-checked:bg-purple-600 peer-focus:ring-2 peer-focus:ring-purple-500/50 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-200 peer-checked:after:translate-x-full" />
+        </label>
+      </div>
     </div>
   );
 }
