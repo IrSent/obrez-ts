@@ -148,7 +148,7 @@ export const App = () => {
             <ImportProgressModal />
 
             <div className="space-y-6">
-              <div className="grid grid-cols-[2fr_1fr] gap-6 items-start">
+              <div className="grid grid-cols-[1fr_1fr] lg:grid-cols-[3fr_1fr] gap-6 items-start">
                 <div className="max-h-[200%]">
                   <PlayerDisplay />
                 </div>
