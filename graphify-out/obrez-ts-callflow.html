@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 542 nodes, 850 edges, 56 communities. Commit: 7318a08</p>
+<p class="subtitle">Generated from graphify knowledge graph: 542 nodes, 850 edges, 56 communities. Commit: 803c0af</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -119,10 +119,10 @@ flowchart LR
     OTHER_D0941E68("Other<br/><small>31 nodes</small>")
     class OTHER_D0941E68 module;
     INGEST_CACHE_UPDATE_FF457338 -->|imports x36| OUTPUTS_DOCS_ED82387C
-    COMMUNITY_57_508B74B3 -->|imports x23| INGEST_CACHE_UPDATE_FF457338
+    COMMUNITY_57_508B74B3 -->|imports x25| INGEST_CACHE_UPDATE_FF457338
     COMMUNITY_57_508B74B3 -->|imports x21| OUTPUTS_DOCS_ED82387C
     OUTPUTS_DOCS_ED82387C -->|imports x17| INGEST_CACHE_UPDATE_FF457338
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x14| COMMUNITY_57_508B74B3
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x12| COMMUNITY_57_508B74B3
     OUTPUTS_DOCS_ED82387C -->|imports| COMMUNITY_57_508B74B3
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -756,9 +756,9 @@ flowchart LR
     transcription_transcriptionresults_transcribepro_5576f37c("TranscribeProgress()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
     store_playerstore_useplayerstore_5d310b80("usePlayerStore<br/><small>src/store/playerStore.ts</small>")
     utils_idb_opendb_10880aed("openDb()<br/><small>src/utils/idb.ts</small>")
+    transcription_transcriptionresults_transcribepro_5576f37c -->|calls| store_playerstore_useplayerstore_5d310b80
     player_playerdisplay_playerdisplayinner_21501529 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     player_playerdisplay_playerdisplayinner_21501529 -->|calls| store_playerstore_useplayerstore_5d310b80
-    transcription_transcriptionresults_transcribepro_5576f37c -->|calls| store_playerstore_useplayerstore_5d310b80
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| file_loader_fileloader_fileloader_ab7274c4
@@ -818,6 +818,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
+  <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>2</td>
   <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -825,7 +833,7 @@ flowchart LR
   <td>Module file in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>3</td>
   <td><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -833,20 +841,12 @@ flowchart LR
   <td>PlayerDisplayInner() node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>4</td>
   <td><code>PlayerDisplay</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>PlayerDisplay node in features/player/PlayerDisplay.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
   <td>5</td>
@@ -3565,7 +3565,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-18 05:15 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-18 05:22 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

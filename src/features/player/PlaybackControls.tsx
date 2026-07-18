@@ -1,7 +1,6 @@
 import { memo, useState } from 'react';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
-import { ProgressBar } from './ProgressBar';
 import { VolumeControls } from './VolumeControls';
 import type { PlaybackSpeed } from '../../types';
 
@@ -49,8 +48,6 @@ const PlaybackControlsInner = () => {
             className="w-6 h-6"
           />
         </button>
-
-        <ProgressBar />
 
         {/* Censoring mode toggle — visible only when effects exist */}
         {censoringEffects && censoringEffects.length > 0 && (

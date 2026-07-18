@@ -1,11 +1,11 @@
 import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
+import ReactDOM from 'react-dom';
 import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
 import { useAuthStore } from '../../store/authStore';
 import { canFreeTopup } from '../../utils/auth';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { List, useListRef } from 'react-window';
 import { EffectModal, EffectBadge } from './EffectModal';
-import { AddWordModal } from './AddWordModal';
 import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
@@ -18,6 +18,19 @@ let jsonExportWorker: Worker | null = null;
 // ─── Row height for virtualization ─────────────────────────────
 const ROW_HEIGHT = 36;
 const LIST_HEIGHT = 400;
+
+// ─── Shared border + subtitle section ────────────────────────────
+const BORDERED_SECTION = 'relative border border-zinc-600 rounded-xl p-3';
+const SUBTITLE = 'absolute -top-[7px] right-3 bg-zinc-800 px-2 text-[10px] text-zinc-500 font-semibold uppercase tracking-wider';
+
+function BorderedSection({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
+  return (
+    <div className={`${BORDERED_SECTION} ${className ?? ''}`}>
+      <span className={SUBTITLE}>{title}</span>
+      {children}
+    </div>
+  );
+}
 
 // ─── Icons ─────────────────────────────────────────────────────
 const ChevronDownIcon = () => (
@@ -296,8 +309,25 @@ const TranscriptionResultsInner = () => {
   // Effect modal — edit mode
   const [editEffect, setEditEffect] = useState<SoundCensoringEffect | null>(null);
 
-  // Add Word modal
-  const [showAddWord, setShowAddWord] = useState(false);
+  // Add Word inline form
+  const [addWordStart, setAddWordStart] = useState('');
+  const [addWordEnd, setAddWordEnd] = useState('');
+  const [addWordText, setAddWordText] = useState('');
+  const [addWordError, setAddWordError] = useState<string | null>(null);
+
+  const handleAddWordSubmit = () => {
+    setAddWordError(null);
+    const s = parseFloat(addWordStart);
+    const e = parseFloat(addWordEnd);
+    if (isNaN(s) || s < 0) { setAddWordError('Invalid start time'); return; }
+    if (isNaN(e) || e <= s) { setAddWordError('End must be greater than start'); return; }
+    if (duration && e > duration) { setAddWordError('End exceeds media duration'); return; }
+    if (!addWordText.trim()) { setAddWordError('Word is required'); return; }
+    handleAddWord(s, e, addWordText.trim());
+    setAddWordStart('');
+    setAddWordEnd('');
+    setAddWordText('');
+  };
 
   // Auth modals — one state, can't conflict
   // Restore from IndexedDB on mount (survives OIDC redirect)
@@ -805,49 +835,96 @@ const TranscriptionResultsInner = () => {
         </div>
       )}
 
-      <div className="flex gap-3 items-start">
-        {/* Filters column — 90% border trick: rotated pseudo-element masks a gap */}
-        <div className="flex flex-col gap-2 shrink-0 relative border border-zinc-600 rounded-xl p-3">
-          <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Filters</span>
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search..."
-            className="text-xs bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 focus:outline-none focus:border-purple-500 w-24"
-          />
-          <button
-            onClick={() => setShowMatchesOnly((v) => !v)}
-            className={`text-xs px-2 py-1 rounded transition-colors ${showMatchesOnly ? 'bg-purple-900/50 text-purple-300' : 'text-purple-400 hover:bg-purple-900/30'}`}
-            title="Show only dictionary matches"
-          >
-            Matches only
-          </button>
-          <span className="absolute inset-0 border border-zinc-900 rounded-xl pointer-events-none rotate-[3deg]"></span>
-        </div>
+      <div className="flex gap-3 items-center mb-3">
+        <BorderedSection title="Filters">
+          <div className="flex flex-col gap-2 shrink-0">
+            <input
+              type="text"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search..."
+              className="text-xs bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 focus:outline-none focus:border-purple-500 w-24"
+            />
+            <button
+              onClick={() => setShowMatchesOnly((v) => !v)}
+              className={`text-xs px-2 py-1 rounded transition-colors ${showMatchesOnly ? 'bg-purple-900/50 text-purple-300' : 'text-purple-400 hover:bg-purple-900/30'}`}
+              title="Show only dictionary matches"
+            >
+              Matches only
+            </button>
+          </div>
+        </BorderedSection>
 
-        {/* Word list */}
-        <div className="flex-1 min-w-0">
-          {transcribing ? (
-        <TranscribeProgress />
-      ) : isLoading && !transcriptionResults ? (
-        <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
-      ) : transcriptionResults && transcriptionResults.length > 0 ? (
-        <List
-          listRef={rwListRef}
-          rowCount={filteredSegments.length}
-          rowHeight={ROW_HEIGHT}
-          // @ts-expect-error react-window v2 rowProps type inference bug
-          rowProps={{ closestStart, effectVersion: censoringEffects?.length ?? 0 }}
-          overscanCount={5}
-          style={{ height: LIST_HEIGHT, width: '100%' }}
-          rowComponent={TranscriptionRow}
-        />
-      ) : (
-        <div className="text-xs text-zinc-500 py-2">No transcription data</div>
-          )}
-        </div>
+        {/* Add Word */}
+        <BorderedSection title="Add Word" className="ml-auto shrink-0">
+          <form onSubmit={(e) => { e.preventDefault(); handleAddWordSubmit(); }} className="flex flex-col gap-1.5">
+            <div className="flex gap-1.5 items-center">
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max={duration?.toString()}
+                value={addWordStart}
+                onChange={(e) => setAddWordStart(e.target.value)}
+                placeholder="Start"
+                className="w-20 bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-purple-500"
+                required
+              />
+              <input
+                type="number"
+                step="0.1"
+                min="0"
+                max={duration?.toString()}
+                value={addWordEnd}
+                onChange={(e) => setAddWordEnd(e.target.value)}
+                placeholder="End"
+                className="w-20 bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-purple-500"
+                required
+              />
+            </div>
+            <div className="flex gap-1.5">
+              <input
+                type="text"
+                value={addWordText}
+                onChange={(e) => setAddWordText(e.target.value)}
+                placeholder="Word…"
+                className="flex-1 bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-purple-500"
+                required
+              />
+              <button
+                type="submit"
+                className="px-2 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-colors flex items-center gap-1 shrink-0"
+              >
+                <PlusIcon /> Add
+              </button>
+            </div>
+            {addWordError && (
+              <div className="text-[10px] text-red-400">{addWordError}</div>
+            )}
+          </form>
+        </BorderedSection>
       </div>
+
+      <BorderedSection title="Words">
+        {transcribing ? (
+          <TranscribeProgress />
+        ) : isLoading && !transcriptionResults ? (
+          <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
+        ) : transcriptionResults && transcriptionResults.length > 0 ? (
+          <List
+            listRef={rwListRef}
+            rowCount={filteredSegments.length}
+            rowHeight={ROW_HEIGHT}
+            // @ts-expect-error react-window v2 rowProps type inference bug
+            rowProps={{ closestStart, effectVersion: censoringEffects?.length ?? 0 }}
+            overscanCount={5}
+            style={{ height: LIST_HEIGHT, width: '100%' }}
+            rowComponent={TranscriptionRow}
+          />
+        ) : (
+          <div className="text-xs text-zinc-500 py-2">No transcription data</div>
+        )}
+      </BorderedSection>
 
       {/* Effect modal — add mode */}
       {modalSegment != null && (
@@ -869,46 +946,43 @@ const TranscriptionResultsInner = () => {
         />
       )}
 
-      {/* Add Word modal */}
-      {showAddWord && (
-        <AddWordModal
-          onClose={() => setShowAddWord(false)}
-          onAdd={handleAddWord}
-          duration={duration}
-        />
-      )}
-
-      {/* Auth modals — only one at a time */}
-      {authModal === 'login' && (
-        <LoginModal
-          onClose={() => setAuthModal(null)}
-          onRetry={authModalRetryRef.current ?? undefined}
-          initialError={authModalError}
-        />
-      )}
-      {authModal === 'topup' && (
-        <TopupModal
-          onClose={() => {
-            setAuthModal(null);
-            clearAuthError();
-          }}
-          onTopup={async () => {
-            await checkAuth();
-            setAuthModal('confirm');
-          }}
-        />
-      )}
-      {authModal === 'confirm' && (
-        <ConfirmationModal
-          videoDuration={duration}
-          onClose={() => setAuthModal(null)}
-          onConfirm={handleConfirmTranscribe}
-          onLogout={async () => {
-            await useAuthStore.getState().logout();
-            setAuthModal(null);
-          }}
-        />
-      )}
+       {/* Auth modals — only one at a time, rendered via Portal to avoid clipping */}
+      {(authModal === 'login' || authModal === 'topup' || authModal === 'confirm') &&
+        ReactDOM.createPortal(
+          <div className="relative z-[100]">
+            {authModal === 'login' && (
+              <LoginModal
+                onClose={() => setAuthModal(null)}
+                onRetry={authModalRetryRef.current ?? undefined}
+                initialError={authModalError}
+              />
+            )}
+            {authModal === 'topup' && (
+              <TopupModal
+                onClose={() => {
+                  setAuthModal(null);
+                  clearAuthError();
+                }}
+                onTopup={async () => {
+                  await checkAuth();
+                  setAuthModal('confirm');
+                }}
+              />
+            )}
+            {authModal === 'confirm' && (
+              <ConfirmationModal
+                videoDuration={duration}
+                onClose={() => setAuthModal(null)}
+                onConfirm={handleConfirmTranscribe}
+                onLogout={async () => {
+                  await useAuthStore.getState().logout();
+                  setAuthModal(null);
+                }}
+              />
+            )}
+          </div>,
+          document.body,
+        )}
     </div>
   );
 };

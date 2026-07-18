@@ -2,6 +2,7 @@ import { memo, useCallback } from 'react';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { ActionButtons } from '../action-buttons/ActionButtons';
+import { ProgressBar } from './ProgressBar';
 
 const PLAYER_SHADOW = 'shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]';
 
@@ -60,6 +61,11 @@ const PlayerDisplayInner = () => {
       {/* ActionButtons — overlay on the right side */}
       <div className="absolute right-3 top-3 z-30">
         <ActionButtons />
+      </div>
+
+      {/* Progress bar — overlay at the bottom of the player */}
+      <div className="absolute bottom-3 left-4 right-4 z-30">
+        <ProgressBar />
       </div>
     </div>
   );
