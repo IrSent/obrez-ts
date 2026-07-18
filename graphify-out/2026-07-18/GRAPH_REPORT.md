@@ -1,16 +1,16 @@
-# Graph Report - obrez-ts  (2026-07-17)
+# Graph Report - obrez-ts  (2026-07-18)
 
 ## Corpus Check
-- 85 files · ~118,645 words
+- 85 files · ~118,614 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 542 nodes · 849 edges · 56 communities (41 shown, 15 thin omitted)
+- 542 nodes · 850 edges · 56 communities (41 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3424866b`
+- Built from commit: `f36d3f2e`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -188,7 +188,7 @@ Cohesion: 0.05
 Nodes (43): ActionButtons, ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, ConfirmationModal(), ConfirmationModalProps, formatDuration() (+35 more)
 
 ## Knowledge Gaps
-- **209 isolated node(s):** `DEFAULT_DICTIONARIES`, `CODEC_LABELS`, `ExportFormat`, `SPEEDS`, `SegmentItem` (+204 more)
+- **209 isolated node(s):** `DEFAULT_DICTIONARIES`, `SegmentItem`, `rowRendererDeps`, `CODEC_LABELS`, `ExportFormat` (+204 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -199,7 +199,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Community 35`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `DEFAULT_DICTIONARIES`, `CODEC_LABELS`, `ExportFormat` to the rest of the system?**
+- **What connects `DEFAULT_DICTIONARIES`, `SegmentItem`, `rowRendererDeps` to the rest of the system?**
   _209 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
   _Cohesion score 0.07591836734693877 - nodes in this community are weakly interconnected._

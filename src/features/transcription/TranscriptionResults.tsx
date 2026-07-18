@@ -806,8 +806,9 @@ const TranscriptionResultsInner = () => {
       )}
 
       <div className="flex gap-3 items-start">
-        {/* Filters column */}
-        <div className="flex flex-col gap-2 shrink-0">
+        {/* Filters column — 90% border trick: rotated pseudo-element masks a gap */}
+        <div className="flex flex-col gap-2 shrink-0 relative border border-zinc-600 rounded-xl p-3">
+          <span className="text-[10px] text-zinc-500 font-semibold uppercase tracking-wider">Filters</span>
           <input
             type="text"
             value={searchQuery}
@@ -822,6 +823,7 @@ const TranscriptionResultsInner = () => {
           >
             Matches only
           </button>
+          <span className="absolute inset-0 border border-zinc-900 rounded-xl pointer-events-none rotate-[3deg]"></span>
         </div>
 
         {/* Word list */}
