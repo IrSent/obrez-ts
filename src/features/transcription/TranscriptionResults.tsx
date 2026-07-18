@@ -796,33 +796,6 @@ const TranscriptionResultsInner = () => {
         </div>
       </div>
 
-      {/* Filter row — search + matches on left, add word on right */}
-      <div className="flex items-center justify-between mb-3 gap-3">
-        <div className="flex items-center gap-2">
-          <input
-            type="text"
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search..."
-            className="text-xs bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 focus:outline-none focus:border-purple-500 w-32 shrink-0"
-          />
-          <button
-            onClick={() => setShowMatchesOnly((v) => !v)}
-            className={`text-xs px-2 py-1 rounded transition-colors shrink-0 ${showMatchesOnly ? 'bg-purple-900/50 text-purple-300' : 'text-purple-400 hover:bg-purple-900/30'}`}
-            title="Show only dictionary matches"
-          >
-            Matches only
-          </button>
-        </div>
-        <button
-          onClick={() => setShowAddWord(true)}
-          className="text-xs font-semibold px-3 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 flex items-center gap-1"
-          title="Manually add a word with start, end, and text"
-        >
-          <PlusIcon /> Add Word
-        </button>
-      </div>
-
       {error && (
         <div className="mb-3 text-xs text-red-400 p-3 bg-red-900/20 rounded space-y-1">
           <div className="font-semibold">{error}</div>
@@ -832,7 +805,28 @@ const TranscriptionResultsInner = () => {
         </div>
       )}
 
-      {transcribing ? (
+      <div className="flex gap-3 items-start">
+        {/* Filters column */}
+        <div className="flex flex-col gap-2 shrink-0">
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search..."
+            className="text-xs bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 focus:outline-none focus:border-purple-500 w-24"
+          />
+          <button
+            onClick={() => setShowMatchesOnly((v) => !v)}
+            className={`text-xs px-2 py-1 rounded transition-colors ${showMatchesOnly ? 'bg-purple-900/50 text-purple-300' : 'text-purple-400 hover:bg-purple-900/30'}`}
+            title="Show only dictionary matches"
+          >
+            Matches only
+          </button>
+        </div>
+
+        {/* Word list */}
+        <div className="flex-1 min-w-0">
+          {transcribing ? (
         <TranscribeProgress />
       ) : isLoading && !transcriptionResults ? (
         <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
@@ -849,7 +843,9 @@ const TranscriptionResultsInner = () => {
         />
       ) : (
         <div className="text-xs text-zinc-500 py-2">No transcription data</div>
-      )}
+          )}
+        </div>
+      </div>
 
       {/* Effect modal — add mode */}
       {modalSegment != null && (

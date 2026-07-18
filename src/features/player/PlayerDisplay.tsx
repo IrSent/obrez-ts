@@ -1,6 +1,7 @@
 import { memo, useCallback } from 'react';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
+import { ActionButtons } from '../action-buttons/ActionButtons';
 
 const PLAYER_SHADOW = 'shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]';
 
@@ -20,7 +21,7 @@ const PlayerDisplayInner = () => {
   return (
     <div
       data-testid="player-display-container"
-      className={`relative w-full max-h-[30rem] bg-zinc-900 rounded-xl overflow-hidden flex items-center justify-center ${PLAYER_SHADOW}`}
+      className={`relative w-full max-h-[33vh] bg-zinc-900 rounded-xl overflow-hidden flex items-center justify-center ${PLAYER_SHADOW}`}
     >
       {/* 3D inner bevel highlight */}
       <div className="absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none z-10" />
@@ -30,7 +31,7 @@ const PlayerDisplayInner = () => {
         ref={canvasRef}
         aria-label="Video canvas"
         role="img"
-        className="w-full max-h-[30rem] bg-zinc-800 [object-fit:contain]"
+        className="w-full max-h-[33vh] bg-zinc-800 [object-fit:contain]"
       />
 
       {!fileName && !error && (
@@ -55,6 +56,11 @@ const PlayerDisplayInner = () => {
           </button>
         </div>
       )}
+
+      {/* ActionButtons — overlay on the right side */}
+      <div className="absolute right-3 top-3 z-30">
+        <ActionButtons />
+      </div>
     </div>
   );
 };

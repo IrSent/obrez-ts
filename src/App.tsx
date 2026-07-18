@@ -5,7 +5,6 @@ import { PlayerDisplay } from './features/player/PlayerDisplay';
 import { PlaybackControls } from './features/player/PlaybackControls';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
-import { ActionButtons } from './features/action-buttons/ActionButtons';
 import { loadBackendUrl, backendPath, backendHeaders } from './config';
 import { SettingsModal } from './features/settings/SettingsModal';
 import { usePlayerStore, playerActions } from './store/playerStore';
@@ -145,17 +144,11 @@ export const App = () => {
             </div>
           </header>
 
-          <div className="max-w-4xl mx-auto px-4 py-4">
+          <div className="max-w-4xl mx-auto px-4 py-4 space-y-4">
             <ImportProgressModal />
-
-            <div className="space-y-4">
-              <div className="grid grid-cols-[1fr_1fr] lg:grid-cols-[3fr_1fr] gap-4 items-start">
-                <PlayerDisplay />
-                <ActionButtons />
-              </div>
-              <PlaybackControls />
-              <TranscriptionResults />
-            </div>
+            <PlayerDisplay />
+            <PlaybackControls />
+            <TranscriptionResults />
           </div>
 
           {/* Settings modal */}
