@@ -15,7 +15,7 @@ const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
 
 /** Restore session from IndexedDB — must be inside MediaPlayerProvider */
 function SessionRestorer() {
-  const { initMediaPlayer, startRenderLoop } = useMediaPlayerContext();
+  const { initMediaPlayer, startRenderLoop, play } = useMediaPlayerContext();
 
   useEffect(() => {
     const restoreSession = async () => {
@@ -29,8 +29,10 @@ function SessionRestorer() {
         });
 
         await initMediaPlayer(file);
-        // Start the render loop so the video frame appears on canvas
-        startRenderLoop();
+        // Start the video iterator — AudioContext may be suspended on restore
+        // so the auto-play inside initMediaPlayer didn't fire. play() resumes
+        // the context and starts the video iterator.
+        await play();
 
         if (session.transcriptionResults) {
           playerActions.setTranscriptionResults(session.transcriptionResults);
