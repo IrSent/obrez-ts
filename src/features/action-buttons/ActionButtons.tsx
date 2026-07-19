@@ -5,11 +5,12 @@ import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { exportCensoredVideo } from '../../export';
 import { canFreeTopup } from '../../utils/auth';
 import { saveSession } from '../../utils/idb';
+import { cdBtn } from '../player/cdBtn';
 import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
 
-const AUTOPLAY_KEY = 'obrez_play_on_load';
+import { AUTOPLAY_KEY } from '../../config';
 
 // ─── Icons ─────────────────────────────────────────────────────
 
@@ -46,8 +47,10 @@ const DownloadIcon = () => (
 
 const UnloadIcon = () => (
   <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-    <line x1="18" y1="6" x2="6" y2="18" />
-    <line x1="6" y1="6" x2="18" y2="18" />
+    <polyline points="3 6 5 6 21 6" />
+    <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+    <line x1="10" y1="11" x2="10" y2="17" />
+    <line x1="14" y1="11" x2="14" y2="17" />
   </svg>
 );
 
@@ -351,7 +354,7 @@ const ActionButtonsInner = () => {
         <>
           <button
             onClick={() => fileInputRef.current?.click()}
-            className="w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded transition-colors"
+            className={`${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`}
           >
             <FileIcon /> Load File
           </button>
@@ -369,7 +372,7 @@ const ActionButtonsInner = () => {
       {!hasFile && (
         <button
           onClick={handleUrlClick}
-          className="w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded transition-colors"
+          className={`${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`}
         >
           <UrlIcon /> Load URL
         </button>
@@ -379,7 +382,7 @@ const ActionButtonsInner = () => {
       {hasFile && (
         <button
           onClick={handleUnload}
-          className="w-full flex items-center gap-2 text-xs font-semibold bg-red-900/40 hover:bg-red-800/50 text-red-300 px-3 py-2 rounded transition-colors border border-red-800/30"
+          className={`${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`}
         >
           <UnloadIcon /> Unload
         </button>
@@ -389,7 +392,7 @@ const ActionButtonsInner = () => {
       {hasFile && (
         <button
           onClick={_handleTranscribe}
-          className="w-full flex items-center gap-2 text-xs font-semibold bg-purple-700 hover:bg-purple-600 text-white px-3 py-2 rounded transition-colors"
+          className={`${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`}
         >
           <TranscribeIcon /> Transcribe
         </button>
@@ -402,7 +405,7 @@ const ActionButtonsInner = () => {
             setExportError(null);
             setShowExportModal(true);
           }}
-          className="w-full flex items-center gap-2 text-xs font-semibold bg-green-700 hover:bg-green-600 text-white px-3 py-2 rounded transition-colors"
+          className={`${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`}
         >
           <DownloadIcon /> Export
         </button>
@@ -488,7 +491,7 @@ const ActionButtonsInner = () => {
               <h3 className="text-sm font-semibold flex items-center gap-2">
                 <DownloadIcon /> Export Video
               </h3>
-              <button onClick={() => setShowExportModal(false)} className="p-1 rounded hover:bg-zinc-600 text-zinc-400">
+              <button onClick={() => setShowExportModal(false)} className={`${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`}>
                 <CloseIcon />
               </button>
             </div>
@@ -498,8 +501,8 @@ const ActionButtonsInner = () => {
                 <button
                   type="button"
                   onClick={() => setExportFormat('same')}
-                  className={`flex-1 text-xs py-2 px-2 rounded font-semibold transition-colors ${
-                    exportFormat === 'same' ? 'bg-green-600 text-white' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                  className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
+                    exportFormat === 'same' ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
                   }`}
                 >
                   {videoCodec && audioCodec
@@ -509,8 +512,8 @@ const ActionButtonsInner = () => {
                 <button
                   type="button"
                   onClick={() => setExportFormat(altFormat)}
-                  className={`flex-1 text-xs py-2 px-2 rounded font-semibold transition-colors ${
-                    exportFormat === altFormat ? 'bg-green-600 text-white' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                  className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
+                    exportFormat === altFormat ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
                   }`}
                 >
                   <span>.{altFormat.toUpperCase()}</span>
@@ -520,7 +523,7 @@ const ActionButtonsInner = () => {
             </div>
             <button
               onClick={() => { handleExport(); setShowExportModal(false); }}
-              className="w-full bg-green-600 hover:bg-green-500 text-white text-xs font-semibold py-2 rounded transition-colors flex items-center justify-center gap-2"
+              className={`${cdBtn} w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
             >
               <DownloadIcon /> Export
             </button>

@@ -10,6 +10,8 @@ import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
 import type { SoundCensoringEffect, TranscriptionResultTuple } from '../../types';
+import { cdBtn, cdInset } from '../player/cdBtn';
+import { ShieldButton } from '../player/ShieldButton';
 
 // Worker instances are created once and reused.
 let importWorker: Worker | null = null;
@@ -792,7 +794,7 @@ const TranscriptionResultsInner = () => {
           {/* Import JSON */}
           <button
             onClick={() => importJsonRef.current?.click()}
-            className="text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 flex items-center gap-1"
+            className={`${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 flex items-center gap-1`}
             title="Import transcription + effects from JSON"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -806,7 +808,7 @@ const TranscriptionResultsInner = () => {
           <button
             onClick={handleExportJson}
             disabled={!transcriptionResults}
-            className="text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1"
+            className={`${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1`}
             title="Export transcription + effects to JSON"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
@@ -835,28 +837,39 @@ const TranscriptionResultsInner = () => {
         </div>
       )}
 
-      <div className="flex gap-3 items-center mb-3">
+      <div className="mb-3">
         <BorderedSection title="Filters">
-          <div className="flex flex-col gap-2 shrink-0">
-            <input
-              type="text"
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search..."
-              className="text-xs bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 focus:outline-none focus:border-purple-500 w-24"
-            />
-            <button
+          <div className="flex items-center gap-2 shrink-0">
+            <div className="relative flex items-center">
+              <input
+                type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Search..."
+                className={`${cdInset} text-xs bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1.5 focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500 w-28`}
+              />
+              <span className={`absolute right-2 w-1.5 h-1.5 rounded-full ${
+                searchQuery ? 'bg-green-400 shadow-[0_0_4px_1px_rgba(74,222,128,0.7)]' : 'bg-red-800 shadow-none'
+              }`} />
+            </div>
+            <ShieldButton
+              active={showMatchesOnly}
               onClick={() => setShowMatchesOnly((v) => !v)}
-              className={`text-xs px-2 py-1 rounded transition-colors ${showMatchesOnly ? 'bg-purple-900/50 text-purple-300' : 'text-purple-400 hover:bg-purple-900/30'}`}
+              className="text-xs px-3 py-1.5"
               title="Show only dictionary matches"
             >
               Matches only
-            </button>
+              <span className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1.5 ${
+                showMatchesOnly ? 'bg-green-400 shadow-[0_0_4px_1px_rgba(74,222,128,0.7)]' : 'bg-red-800 shadow-none'
+              }`} />
+            </ShieldButton>
           </div>
         </BorderedSection>
+      </div>
 
+      <div className="mb-3 flex justify-end">
         {/* Add Word */}
-        <BorderedSection title="Add Word" className="ml-auto shrink-0">
+        <BorderedSection title="Add Word" className="shrink-0 max-w-xs">
           <form onSubmit={(e) => { e.preventDefault(); handleAddWordSubmit(); }} className="flex flex-col gap-1.5">
             <div className="flex gap-1.5 items-center">
               <input
@@ -867,7 +880,7 @@ const TranscriptionResultsInner = () => {
                 value={addWordStart}
                 onChange={(e) => setAddWordStart(e.target.value)}
                 placeholder="Start"
-                className="w-20 bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-purple-500"
+                className={`${cdInset} w-20 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
                 required
               />
               <input
@@ -878,7 +891,7 @@ const TranscriptionResultsInner = () => {
                 value={addWordEnd}
                 onChange={(e) => setAddWordEnd(e.target.value)}
                 placeholder="End"
-                className="w-20 bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-purple-500"
+                className={`${cdInset} w-20 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
                 required
               />
             </div>
@@ -888,12 +901,12 @@ const TranscriptionResultsInner = () => {
                 value={addWordText}
                 onChange={(e) => setAddWordText(e.target.value)}
                 placeholder="Word…"
-                className="flex-1 bg-zinc-700 text-zinc-200 placeholder-zinc-500 border border-zinc-600 rounded px-2 py-1 text-xs focus:outline-none focus:border-purple-500"
+                className={`${cdInset} flex-1 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
                 required
               />
               <button
                 type="submit"
-                className="px-2 py-1 rounded bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold transition-colors flex items-center gap-1 shrink-0"
+                className={`${cdBtn} px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold flex items-center gap-1 shrink-0`}
               >
                 <PlusIcon /> Add
               </button>

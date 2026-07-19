@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { AUTOPLAY_KEY } from './config';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { useMediaPlayerContext } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
@@ -29,10 +30,14 @@ function SessionRestorer() {
         });
 
         await initMediaPlayer(file);
-        // Start the video iterator — AudioContext may be suspended on restore
-        // so the auto-play inside initMediaPlayer didn't fire. play() resumes
-        // the context and starts the video iterator.
-        await play();
+        // After reload, initMediaPlayer may have already started playing
+        // (AudioContext running) or may be suspended (needs user gesture).
+        // Only call play() if not already playing — avoids "transitioning" reject.
+        // Respect the "play on load" setting.
+        const isPlaying = usePlayerStore.getState().isPlaying;
+        if (!isPlaying && localStorage.getItem(AUTOPLAY_KEY) === 'true') {
+          await play();
+        }
 
         if (session.transcriptionResults) {
           playerActions.setTranscriptionResults(session.transcriptionResults);

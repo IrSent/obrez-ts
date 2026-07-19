@@ -25,8 +25,8 @@
     "semantic_hash": "435dc01c68d3e27e781f6ae4e96a9c35"
   },
   "src/App.tsx": {
-    "mtime": 1784351170.6257718,
-    "ast_hash": "6358d75d085436b3a51786afc1cfc39f",
+    "mtime": 1784473941.0695179,
+    "ast_hash": "3dd417c8e1bbd0f562dc2fced0b28de8",
     "semantic_hash": ""
   },
   "src/aho-corasick.ts": {
@@ -70,8 +70,8 @@
     "semantic_hash": ""
   },
   "src/features/player/PlayerDisplay.tsx": {
-    "mtime": 1784316567.0920095,
-    "ast_hash": "951fe16a72dd330f70e8b60ab97ff1c6",
+    "mtime": 1784354723.8641248,
+    "ast_hash": "82d69023e6f497e55a7a911465c77f87",
     "semantic_hash": ""
   },
   "src/features/player/ProgressBar.tsx": {
@@ -90,8 +90,8 @@
     "semantic_hash": ""
   },
   "src/features/transcription/TranscriptionResults.tsx": {
-    "mtime": 1784352113.239175,
-    "ast_hash": "107ea61b17fdd5703d1122cd3771a91b",
+    "mtime": 1784473764.2360876,
+    "ast_hash": "947a4bbd5e7b179e7359aaf21e0d278d",
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
@@ -228,11 +228,6 @@
     "mtime": 1783932093.367,
     "ast_hash": "e08414f5decff0e2b0dea044ff68ce66",
     "semantic_hash": "e08414f5decff0e2b0dea044ff68ce66"
-  },
-  "src/features/transcription/AddWordModal.tsx": {
-    "mtime": 1783932131.7394435,
-    "ast_hash": "f856e7f0575de67009fb01af12f1502e",
-    "semantic_hash": "f856e7f0575de67009fb01af12f1502e"
   },
   "src/version.ts": {
     "mtime": 1783932673.646076,
@@ -495,13 +490,23 @@
     "semantic_hash": ""
   },
   "src/features/action-buttons/ActionButtons.tsx": {
-    "mtime": 1784315505.6897972,
-    "ast_hash": "a7f098bd26a6d7e1ab43d0aaae59fda0",
+    "mtime": 1784468903.2950594,
+    "ast_hash": "30597f6922609bd3db75a18194d74cee",
     "semantic_hash": ""
   },
   "src/features/player/PlaybackControls.tsx": {
-    "mtime": 1784314143.6273818,
-    "ast_hash": "092e5070ed53e0e2709bc92346f510a6",
+    "mtime": 1784469091.4619079,
+    "ast_hash": "83b5a45f014e27b0c83718032bd1af51",
+    "semantic_hash": ""
+  },
+  "src/features/player/ShieldButton.tsx": {
+    "mtime": 1784475631.369725,
+    "ast_hash": "c35ce2ce83d6bfdd37f2e1fabf9d7488",
+    "semantic_hash": ""
+  },
+  "src/features/player/cdBtn.ts": {
+    "mtime": 1784471776.0993326,
+    "ast_hash": "47cd5beb23ad0e05bef29bd0347b814f",
     "semantic_hash": ""
   }
 }

@@ -2,6 +2,7 @@ import { memo, useState } from 'react';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { VolumeControls } from './VolumeControls';
+import { cdBtn } from './cdBtn';
 import type { PlaybackSpeed } from '../../types';
 
 const SPEEDS: PlaybackSpeed[] = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
@@ -17,6 +18,19 @@ const ChevronDownIcon = () => (
   </svg>
 );
 
+/**
+ * Tiny LED indicator — green glow when on, dim red when off.
+ */
+const LedIndicator = ({ on }: { on: boolean }) => (
+  <span
+    className={`inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1 ${
+      on
+        ? 'bg-green-400 shadow-[0_0_4px_1px_rgba(74,222,128,0.7)]'
+        : 'bg-red-800 shadow-none'
+    }`}
+  />
+);
+
 const PlaybackControlsInner = () => {
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const censoringMode = usePlayerStore((state) => state.censoringMode);
@@ -28,18 +42,18 @@ const PlaybackControlsInner = () => {
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
 
   return (
-    <div className={`bg-zinc-800 rounded-xl p-4 ${MODAL_SHADOW}`}>
+    <div className={`relative bg-zinc-800 rounded-xl p-4 ${MODAL_SHADOW}`}>
       {/* 3D inner bevel highlight */}
       <div className="absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none" />
 
-      <div className="flex items-center gap-4">
-        {/* Play/Pause */}
+      <div className="flex items-center gap-3">
+        {/* Play/Pause — CD-style button */}
         <button
           onClick={() => {
             if (isPlaying) void pause();
             else void play();
           }}
-          className="p-2 rounded-md hover:bg-zinc-700 transition-colors flex-shrink-0"
+          className={`${cdBtn} p-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0`}
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           <img
@@ -53,14 +67,14 @@ const PlaybackControlsInner = () => {
         {censoringEffects && censoringEffects.length > 0 && (
           <button
             onClick={() => playerActions.setCensoringMode(!censoringMode)}
-            className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors flex-shrink-0 ${
+            className={`${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex-shrink-0 ${
               censoringMode
-                ? 'bg-red-600 text-white hover:bg-red-500'
-                : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                ? 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900 border-t-red-400 border-l-red-400 border-b-red-950 border-r-red-950 active:border-t-red-950 active:border-l-red-950 active:border-b-red-400 active:border-r-red-400'
+                : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
             }`}
             title={censoringMode ? 'Censoring ON — click to play original audio' : 'Censoring OFF — click to play with effects'}
           >
-            {censoringMode ? '⚡ CENSORED' : '🔊 ORIGINAL'}
+            {censoringMode ? '⚡ CENSORED' : '🔊 ORIGINAL'} <LedIndicator on={censoringMode} />
           </button>
         )}
 
@@ -68,10 +82,10 @@ const PlaybackControlsInner = () => {
         {transcriptionResults && transcriptionResults.length > 0 && (
           <button
             onClick={() => playerActions.toggleAutoScroll()}
-            className={`p-1 rounded transition-colors flex-shrink-0 ${
+            className={`${cdBtn} p-1 rounded flex-shrink-0 ${
               autoScroll
-                ? 'text-purple-400 bg-purple-900/30'
-                : 'text-zinc-400 hover:bg-zinc-600 hover:text-zinc-200'
+                ? 'text-purple-300 bg-purple-900/50 hover:bg-purple-800/50 active:bg-purple-950/50 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 active:border-t-purple-950 active:border-l-purple-950 active:border-b-purple-400 active:border-r-purple-400'
+                : 'bg-zinc-700 text-zinc-400 hover:bg-zinc-600 active:bg-zinc-600'
             }`}
             title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
           >
@@ -80,19 +94,18 @@ const PlaybackControlsInner = () => {
               <line x1="12" y1="10" x2="12" y2="16" />
               <polyline points="9 13 12 16 15 13" />
             </svg>
+            <LedIndicator on={autoScroll} />
           </button>
         )}
 
         <VolumeControls />
 
-        {/* Playback speed selector */}
+        {/* Playback speed selector — CD-style button */}
         <div className="relative flex-shrink-0">
           <button
             onClick={() => setShowSpeedMenu((v) => !v)}
-            className={`px-2 py-1 rounded text-[11px] font-semibold transition-colors flex items-center gap-1 ${
-              playbackSpeed === 1
-                ? 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-                : 'bg-purple-900/50 text-purple-300 hover:bg-purple-800/50'
+            className={`${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex items-center gap-1 bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600 ${
+              playbackSpeed !== 1 ? 'bg-purple-900/50 text-purple-300 border-t-purple-500 border-l-purple-500 border-b-purple-950 border-r-purple-950' : ''
             }`}
             title={`Playback speed: ${playbackSpeed}x`}
           >

@@ -1087,6 +1087,22 @@ export function useMediaPlayer() {
         return;
       }
 
+      // If a transition is already in progress (e.g. initMediaPlayer auto-play),
+      // wait for it to finish instead of rejecting immediately.
+      while (playbackStateRef.current === 'transitioning') {
+        await new Promise(r => setTimeout(r, 50));
+      }
+
+      // After the transition finishes we may already be playing — no-op.
+      if (playbackStateRef.current === 'playing') return;
+
+      // Ensure the video iterator is running. After page reload the AudioContext
+      // may have been 'suspended', so initMediaPlayer's auto-play skipped the
+      // video iterator. Without it, the canvas never gets frames.
+      if (!videoFrameIteratorRef.current && videoSinkRef.current) {
+        await startVideoIteratorRef.current();
+      }
+
       await transitionRef.current('playing');
     } catch (error) {
       console.error('Playback error:', error);
