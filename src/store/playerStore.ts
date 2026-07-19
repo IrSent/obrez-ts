@@ -2,6 +2,7 @@ import { create } from 'zustand';
 import type { PlayerState, Dictionary, BleepSound, CensoringEffect, SoundCensoringEffect, PlaybackSpeed, ExportProgress } from '../types';
 import { FastAhoScanner } from '../aho-corasick';
 import { getAllBleepRecords, putBleepRecord, deleteBleepRecord, updateBleepLabel as dbUpdateLabel, upsertBleepData, dbUpdateUrl } from './bleepDb';
+import { saveSession } from '../utils/idb';
 
 /**
  * Convert IndexedDB records to BleepSound map.
@@ -127,15 +128,31 @@ export const playerActions = {
   },
   /**
    * Set transcription results + transcribing=false + clear stage in one setState.
+   * Also persists to IndexedDB (fire-and-forget).
    */
-  setTranscriptionDone: (results: Array<[number, number, string]>) =>
+  setTranscriptionDone: (results: Array<[number, number, string]>) => {
     usePlayerStore.setState({
       transcriptionResults: results,
       transcribing: false,
       transcribeStage: null,
-    }),
-  setCensoringEffects: (effects: CensoringEffect[]) =>
-    usePlayerStore.setState({ censoringEffects: effects }),
+    });
+    // Persist to IndexedDB
+    const state = usePlayerStore.getState();
+    if (state.fileName) {
+      saveSession({
+        transcriptionResults: results,
+        duration: state.duration || null,
+      }).catch((err) => console.error('Failed to save session (transcription):', err));
+    }
+  },
+  setCensoringEffects: (effects: CensoringEffect[]) => {
+    usePlayerStore.setState({ censoringEffects: effects });
+    // Persist to IndexedDB
+    const state = usePlayerStore.getState();
+    if (state.fileName && effects.length > 0) {
+      saveSession({ censoringEffects: effects }).catch((err) => console.error('Failed to save session (effects):', err));
+    }
+  },
 
   // Sound effect actions
 

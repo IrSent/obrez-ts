@@ -806,6 +806,7 @@ const TranscriptionResultsInner = () => {
           </button>
           {/* Export JSON */}
           <button
+            data-testid="export-json"
             onClick={handleExportJson}
             disabled={!transcriptionResults}
             className={`${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1`}

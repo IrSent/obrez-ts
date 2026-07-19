@@ -81,7 +81,7 @@ const ActionButtonsInner = () => {
   const duration = usePlayerStore((state) => state.duration);
   const transcribing = usePlayerStore((state) => state.transcribing);
   const actions = playerActions;
-  const { initMediaPlayer, play, transcribe, getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
+  const { initMediaPlayer, play, pause, transcribe, getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasFile = !!fileName;
@@ -165,6 +165,17 @@ const ActionButtonsInner = () => {
   // ─── Unload ──────────────────────────────────────────────────
 
   const handleUnload = async () => {
+    // Ask to export JSON if there's transcription data
+    if (hasTranscription && !confirm('Unload? Transcription saved to IndexedDB. Want to export JSON first?')) {
+      // Cancelled → trigger JSON export from TranscriptionResults
+      const exportBtn = document.querySelector('[data-testid="export-json"]');
+      if (exportBtn) (exportBtn as HTMLElement).click();
+      return;
+    }
+
+    // Stop playback before tearing down
+    await pause();
+
     actions.setFileName('');
     actions.setError(null);
     actions.setWarning(null);
@@ -177,7 +188,9 @@ const ActionButtonsInner = () => {
     try {
       const { clearSession } = await import('../../utils/idb');
       await clearSession();
-    } catch {}
+    } catch (err) {
+      console.error('Failed to clear session:', err);
+    }
 
     const canvas = document.getElementById('videoCanvas') as HTMLCanvasElement;
     if (canvas) {

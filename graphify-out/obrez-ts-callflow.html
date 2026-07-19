@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 544 nodes, 863 edges, 58 communities. Commit: b51374a</p>
+<p class="subtitle">Generated from graphify knowledge graph: 544 nodes, 864 edges, 57 communities. Commit: 17d295c</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -72,12 +72,12 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
     <a href="#serve-api">Serving API</a>
     <a href="#tests-fixtures">Tests &amp; Fixtures</a>
     <a href="#community-57">Community 57</a>
-    <a href="#community-7">Community 7</a>
     <a href="#community-52">Community 52</a>
     <a href="#community-26">Community 26</a>
     <a href="#community-27">Community 27</a>
     <a href="#readme">README</a>
     <a href="#community-31">Community 31</a>
+    <a href="#community-45">Community 45</a>
     <a href="#other">Other</a>
 </div>
 
@@ -98,14 +98,12 @@ flowchart LR
     class CLI_SKILLS_9964CBB8 module;
     INGEST_CACHE_UPDATE_FF457338("Ingestion &amp; Updates<br/><small>96 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("Serving API<br/><small>59 nodes</small>")
+    SERVE_API_35EC8E86("Serving API<br/><small>68 nodes</small>")
     class SERVE_API_35EC8E86 module;
     TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>12 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
-    COMMUNITY_57_508B74B3("Community 57<br/><small>53 nodes</small>")
+    COMMUNITY_57_508B74B3("Community 57<br/><small>72 nodes</small>")
     class COMMUNITY_57_508B74B3 module;
-    COMMUNITY_7_989501FC("Community 7<br/><small>28 nodes</small>")
-    class COMMUNITY_7_989501FC module;
     COMMUNITY_52_19459BA9("Community 52<br/><small>12 nodes</small>")
     class COMMUNITY_52_19459BA9 module;
     COMMUNITY_26_029F571A("Community 26<br/><small>10 nodes</small>")
@@ -116,20 +114,22 @@ flowchart LR
     class README_F78A71AF module;
     COMMUNITY_31_2075BEB2("Community 31<br/><small>5 nodes</small>")
     class COMMUNITY_31_2075BEB2 module;
-    OTHER_D0941E68("Other<br/><small>41 nodes</small>")
+    COMMUNITY_45_E4978FE7("Community 45<br/><small>5 nodes</small>")
+    class COMMUNITY_45_E4978FE7 module;
+    OTHER_D0941E68("Other<br/><small>36 nodes</small>")
     class OTHER_D0941E68 module;
-    OUTPUTS_DOCS_ED82387C -->|imports x19| SERVE_API_35EC8E86
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x14| SERVE_API_35EC8E86
-    OUTPUTS_DOCS_ED82387C -->|imports x12| COMMUNITY_57_508B74B3
-    OUTPUTS_DOCS_ED82387C -->|imports x12| INGEST_CACHE_UPDATE_FF457338
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x12| OUTPUTS_DOCS_ED82387C
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x9| COMMUNITY_57_508B74B3
-    OUTPUTS_DOCS_ED82387C -->|imports x7| COMMUNITY_7_989501FC
-    COMMUNITY_57_508B74B3 -->|imports x7| OUTPUTS_DOCS_ED82387C
-    COMMUNITY_57_508B74B3 -->|imports x7| COMMUNITY_7_989501FC
-    COMMUNITY_57_508B74B3 -->|imports x6| INGEST_CACHE_UPDATE_FF457338
-    COMMUNITY_7_989501FC -->|imports x6| OUTPUTS_DOCS_ED82387C
-    SERVE_API_35EC8E86 -->|contains x6| OUTPUTS_DOCS_ED82387C
+    COMMUNITY_57_508B74B3 -->|imports x21| OUTPUTS_DOCS_ED82387C
+    OUTPUTS_DOCS_ED82387C -->|imports x20| SERVE_API_35EC8E86
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x15| OUTPUTS_DOCS_ED82387C
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x15| SERVE_API_35EC8E86
+    COMMUNITY_57_508B74B3 -->|imports x11| SERVE_API_35EC8E86
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x10| COMMUNITY_57_508B74B3
+    OUTPUTS_DOCS_ED82387C -->|imports x9| COMMUNITY_57_508B74B3
+    OUTPUTS_DOCS_ED82387C -->|imports x9| INGEST_CACHE_UPDATE_FF457338
+    COMMUNITY_57_508B74B3 -->|imports x7| INGEST_CACHE_UPDATE_FF457338
+    SERVE_API_35EC8E86 -->|contains x7| OUTPUTS_DOCS_ED82387C
+    SERVE_API_35EC8E86 -->|imports x4| INGEST_CACHE_UPDATE_FF457338
+    COMMUNITY_57_508B74B3 -->|imports x3| COMMUNITY_27_99AD9ED4
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,19 +146,19 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Graph Build</td><td>90</td><td><code>1, 5, 53, 34, 36, 56, 16, 32, 44, 46, 47</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>16</td><td><code>51</code></td></tr><tr><td>Outputs &amp; Docs</td><td>104</td><td><code>0, 50, 49, 9, 17, 18, 19, 42</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>6</td><td><code>24, 21</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>96</td><td><code>35, 4, 3, 10, 33, 38, 39</code></td></tr><tr><td>Serving API</td><td>59</td><td><code>2, 12, 14</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>12</td><td><code>54, 29</code></td></tr><tr><td>Community 57</td><td>53</td><td><code>57</code></td></tr><tr><td>Community 7</td><td>28</td><td><code>7</code></td></tr><tr><td>Community 52</td><td>12</td><td><code>52</code></td></tr><tr><td>Community 26</td><td>10</td><td><code>26</code></td></tr><tr><td>Community 27</td><td>7</td><td><code>27</code></td></tr><tr><td>README</td><td>5</td><td><code>13</code></td></tr><tr><td>Community 31</td><td>5</td><td><code>31</code></td></tr><tr><td>Other</td><td>41</td><td><code>45, 6, 8, 41, 48, 28, 15, 20, 40, 55, 11, 22, 23, 25, 30, 37, 43</code></td></tr>
+      <tr><td>Graph Build</td><td>90</td><td><code>1, 5, 53, 34, 36, 56, 16, 32, 44, 46, 47</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>16</td><td><code>51</code></td></tr><tr><td>Outputs &amp; Docs</td><td>104</td><td><code>0, 50, 49, 9, 17, 18, 19, 42</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>6</td><td><code>24, 21</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>96</td><td><code>35, 4, 3, 10, 33, 38, 39</code></td></tr><tr><td>Serving API</td><td>68</td><td><code>2, 12, 14</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>12</td><td><code>54, 29</code></td></tr><tr><td>Community 57</td><td>72</td><td><code>57</code></td></tr><tr><td>Community 52</td><td>12</td><td><code>52</code></td></tr><tr><td>Community 26</td><td>10</td><td><code>26</code></td></tr><tr><td>Community 27</td><td>7</td><td><code>27</code></td></tr><tr><td>README</td><td>5</td><td><code>13</code></td></tr><tr><td>Community 31</td><td>5</td><td><code>31</code></td></tr><tr><td>Community 45</td><td>5</td><td><code>45</code></td></tr><tr><td>Other</td><td>36</td><td><code>6, 8, 41, 48, 28, 15, 20, 40, 55, 11, 22, 23, 25, 30, 37, 43</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Core Flow</h4>
-    <div class="arrow-chain">Graph Build -&gt; Analysis &amp; Clustering -&gt; Outputs &amp; Docs -&gt; Serving API -&gt; Ingestion &amp; Updates -&gt; Community 57 -&gt; Community 7</div>
+    <div class="arrow-chain">Graph Build -&gt; Analysis &amp; Clustering -&gt; Outputs &amp; Docs -&gt; Serving API -&gt; Ingestion &amp; Updates -&gt; Community 57 -&gt; Community 27</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>544 nodes · 863 edges · 58 communities (43 shown, 15 thin omitted)</li>
+      <li>544 nodes · 864 edges · 57 communities (42 shown, 15 thin omitted)</li>
       <li>Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `usePlayerStore` - 35 edges</li>
@@ -744,11 +744,10 @@ flowchart LR
         src_export_makeinitialphases_6b4a2237("makeInitialPhases()<br/><small>src/export.ts</small>")
         src_export_initprogress_edcd6bab("initProgress()<br/><small>src/export.ts</small>")
         src_export_updatephase_c6e0f7ba("updatePhase()<br/><small>src/export.ts</small>")
-        src_export_exportcensoredvideo_797af8f9("exportCensoredVideo()<br/><small>src/export.ts</small>")
     end
-    subgraph outputs_docs_features_player_PlayerDisplay_tsx_94127006["features/player/PlayerDisplay.tsx"]
-        player_playerdisplay_96c04d4c("PlayerDisplay.tsx")
-        player_playerdisplay_playerdisplayinner_21501529("PlayerDisplayInner()<br/><small>features/player/PlayerDisplay.tsx</small>")
+    subgraph outputs_docs_features_player_PlaybackControls_ts_15117ad6["features/player/PlaybackControls.tsx"]
+        player_playbackcontrols_d4b6c667("PlaybackControls.tsx")
+        player_playbackcontrols_playbackcontrolsinner_de05d3dd("PlaybackControlsInner()<br/><small>features/player/PlaybackControls.tsx</small>")
     end
     subgraph outputs_docs_src_App_tsx_50672f8c["src/App.tsx"]
         src_app_46efd68e("App.tsx")
@@ -761,35 +760,42 @@ flowchart LR
     export_exportmodal_exportbuttoninner_4a68e111("ExportButtonInner()<br/><small>features/export/ExportModal.tsx</small>")
     export_headerexportbutton_headerexportbuttoninne_d5e26d52("HeaderExportButtonInner()<br/><small>features/export/HeaderExportButton.tsx</small>")
     file_loader_fileloader_fileloader_ab7274c4("FileLoader()<br/><small>features/file-loader/FileLoader.tsx</small>")
-    player_playbackcontrols_playbackcontrolsinner_de05d3dd("PlaybackControlsInner()<br/><small>features/player/PlaybackControls.tsx</small>")
+    player_playerdisplay_playerdisplayinner_21501529("PlayerDisplayInner()<br/><small>features/player/PlayerDisplay.tsx</small>")
     player_progressbar_progressbarinner_03464bbb("ProgressBarInner()<br/><small>features/player/ProgressBar.tsx</small>")
     player_volumecontrols_volumecontrolsinner_305102a4("VolumeControlsInner()<br/><small>features/player/VolumeControls.tsx</small>")
+    store_playerstore_useplayerstore_5d310b80("usePlayerStore<br/><small>src/store/playerStore.ts</small>")
     src_app_sessionrestorer_2dba85a1 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    player_playbackcontrols_playbackcontrolsinner_de05d3dd -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    player_playbackcontrols_playbackcontrolsinner_de05d3dd -->|calls| store_playerstore_useplayerstore_5d310b80
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| file_loader_fileloader_fileloader_ab7274c4
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_playbackcontrols_playbackcontrolsinner_de05d3dd
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_playerdisplay_playerdisplayinner_21501529
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_progressbar_progressbarinner_03464bbb
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_volumecontrols_volumecontrolsinner_305102a4
     src_export_makeinitialphases_6b4a2237 -->|calls| src_export_initprogress_edcd6bab
-    src_export_updatephase_c6e0f7ba -->|calls| src_export_exportcensoredvideo_797af8f9
-    src_export_initprogress_edcd6bab -->|calls| src_export_exportcensoredvideo_797af8f9
+    export_exportmodal_exportbuttoninner_4a68e111 -->|calls| store_playerstore_useplayerstore_5d310b80
+    export_headerexportbutton_headerexportbuttoninne_d5e26d52 -->|calls| store_playerstore_useplayerstore_5d310b80
+    player_playerdisplay_playerdisplayinner_21501529 -->|calls| store_playerstore_useplayerstore_5d310b80
+    player_progressbar_progressbarinner_03464bbb -->|calls| store_playerstore_useplayerstore_5d310b80
+    player_volumecontrols_volumecontrolsinner_305102a4 -->|calls| store_playerstore_useplayerstore_5d310b80
     src_app_46efd68e -->|imports| context_mediaplayercontext_a34c7b7e
     src_app_46efd68e -->|imports| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     src_app_46efd68e -->|imports| file_loader_fileloader_fileloader_ab7274c4
-    src_app_46efd68e -->|imports| player_playerdisplay_96c04d4c
-    context_mediaplayercontext_a34c7b7e -->|imports| player_playerdisplay_96c04d4c
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|imports| player_playerdisplay_96c04d4c
+    src_app_46efd68e -->|imports| player_playbackcontrols_d4b6c667
+    src_app_46efd68e -->|imports| store_playerstore_useplayerstore_5d310b80
+    player_playbackcontrols_d4b6c667 -->|imports| context_mediaplayercontext_a34c7b7e
+    player_playbackcontrols_d4b6c667 -->|imports| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    player_playbackcontrols_d4b6c667 -->|imports| store_playerstore_useplayerstore_5d310b80
+    src_export_c368fe7e -->|imports| store_playerstore_useplayerstore_5d310b80
     %% Omitted for readability: 86 nodes, 0 edges
     class src_export_writablebuffer_7323feaa klass;
     class src_export_c368fe7e module;
     class src_export_makeinitialphases_6b4a2237 function;
     class src_export_initprogress_edcd6bab function;
     class src_export_updatephase_c6e0f7ba function;
-    class src_export_exportcensoredvideo_797af8f9 function;
-    class player_playerdisplay_96c04d4c ui;
-    class player_playerdisplay_playerdisplayinner_21501529 ui;
+    class player_playbackcontrols_d4b6c667 ui;
+    class player_playbackcontrols_playbackcontrolsinner_de05d3dd ui;
     class src_app_46efd68e ui;
     class src_app_sessionrestorer_2dba85a1 ui;
     class context_mediaplayercontext_usemediaplayercontext_6e6b7797 ui;
@@ -797,9 +803,10 @@ flowchart LR
     class export_exportmodal_exportbuttoninner_4a68e111 ui;
     class export_headerexportbutton_headerexportbuttoninne_d5e26d52 ui;
     class file_loader_fileloader_fileloader_ab7274c4 ui;
-    class player_playbackcontrols_playbackcontrolsinner_de05d3dd ui;
+    class player_playerdisplay_playerdisplayinner_21501529 ui;
     class player_progressbar_progressbarinner_03464bbb ui;
     class player_volumecontrols_volumecontrolsinner_305102a4 ui;
+    class store_playerstore_useplayerstore_5d310b80 ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -855,38 +862,6 @@ flowchart LR
 </tr>
 <tr>
   <td>5</td>
-  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br><code>HeaderExportButton.tsx</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small><br>+4 more</td>
-  <td>Module file in src/context/MediaPlayerContext.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>MediaPlayerContext</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>MediaPlayerContext node in src/context/MediaPlayerContext.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>MediaPlayerProvider()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>MediaPlayerProvider() node in src/context/MediaPlayerContext.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>SessionRestorer()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+11 more</td>
-  <td>useMediaPlayerContext() node in src/context/MediaPlayerContext.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
   <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -894,7 +869,87 @@ flowchart LR
   <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
+  <td>6</td>
+  <td><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>playerActions</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br>+5 more</td>
+  <td>Module file in features/player/PlaybackControls.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>SPEEDS</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>SPEEDS node in features/player/PlaybackControls.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ChevronDownIcon() node in features/player/PlaybackControls.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>LedIndicator()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>LedIndicator() node in features/player/PlaybackControls.tsx.</td>
+</tr>
+<tr>
   <td>10</td>
+  <td><code>PlaybackControlsInner()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>PlaybackControlsInner() node in features/player/PlaybackControls.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>PlaybackControls</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>PlaybackControls node in features/player/PlaybackControls.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br><code>HeaderExportButton.tsx</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small><br>+3 more</td>
+  <td>Module file in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>MediaPlayerContext</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>MediaPlayerContext node in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>MediaPlayerProvider()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>MediaPlayerProvider() node in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small><br><code>PlaybackControlsInner()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small><br>+1 more</td>
+  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+9 more</td>
+  <td>useMediaPlayerContext() node in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
   <td><code>DictionaryManagerInner()</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -902,7 +957,7 @@ flowchart LR
   <td>DictionaryManagerInner() node in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>17</td>
   <td><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>export.ts</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small><br>+2 more</td>
@@ -910,7 +965,7 @@ flowchart LR
   <td>Module file in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>18</td>
   <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -918,7 +973,7 @@ flowchart LR
   <td>CloseIcon() node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>19</td>
   <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -926,7 +981,7 @@ flowchart LR
   <td>DownloadIcon() node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>20</td>
   <td><code>PhaseIcon()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -934,7 +989,7 @@ flowchart LR
   <td>PhaseIcon() node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>21</td>
   <td><code>ExportProgressBar()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -942,7 +997,7 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>22</td>
   <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -950,7 +1005,7 @@ flowchart LR
   <td>CODEC_LABELS node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>23</td>
   <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -958,7 +1013,7 @@ flowchart LR
   <td>codecLabel() node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>24</td>
   <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -966,7 +1021,7 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>25</td>
   <td><code>ExportModalProps</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -974,7 +1029,7 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>26</td>
   <td><code>ExportModal</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -982,7 +1037,7 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>27</td>
   <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
@@ -990,7 +1045,7 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>28</td>
   <td><code>ExportButton</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -998,7 +1053,7 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>29</td>
   <td><code>HeaderExportButton.tsx</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>export.ts</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small><br>+2 more</td>
@@ -1006,60 +1061,12 @@ flowchart LR
   <td>Module file in features/export/HeaderExportButton.tsx.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>30</td>
   <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>DownloadIcon() node in features/export/HeaderExportButton.tsx.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>HeaderExportButtonInner()</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>HeaderExportButton</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>HeaderExportProgress()</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>PhaseIcon()</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>PhaseIcon() node in features/export/HeaderExportButton.tsx.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>Module file in features/file-loader/FileLoader.tsx.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>FileLoader() node in features/file-loader/FileLoader.tsx.</td>
 </tr>
 </table>
 
@@ -1208,9 +1215,9 @@ flowchart LR
     %% Section: Ingestion &amp; Updates (96 nodes, 138 edges)
     subgraph ingest_cache_update_features_bleep_sounds_BleepS_943b41d6["features/bleep-sounds/BleepSoundManager.tsx"]
         bleep_sounds_bleepsoundmanager_ce67c1cd("BleepSoundManager.tsx")
-        bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004("BleepSoundManagerInner()<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
         bleep_sounds_bleepsoundmanager_addmodal_95ad1869("AddModal<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
         bleep_sounds_bleepsoundmanager_soundrow_28f1f91f("SoundRow<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
+        bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004("BleepSoundManagerInner()<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
     end
     subgraph ingest_cache_update_src_config_ts_28a660d5["src/config.ts"]
         src_config_f55793b8("config.ts")
@@ -1227,31 +1234,35 @@ flowchart LR
         bleep_sounds_bleep_audio_isremoteurl_a835d72c("isRemoteUrl()<br/><small>features/bleep-sounds/bleep-audio.ts</small>")
         bleep_sounds_bleep_audio_decodeaudio_dffa99f0("decodeAudio()<br/><small>features/bleep-sounds/bleep-audio.ts</small>")
     end
-    subgraph ingest_cache_update_features_bleep_sounds_bleep_b7750c38["features/bleep-sounds/bleep-sqlite.ts"]
-        bleep_sounds_bleep_sqlite_exportbleepsounds_a7d83ee8("exportBleepSounds()<br/><small>features/bleep-sounds/bleep-sqlite.ts</small>")
-        bleep_sounds_bleep_sqlite_importbleepsounds_5b1427be("importBleepSounds()<br/><small>features/bleep-sounds/bleep-sqlite.ts</small>")
+    subgraph ingest_cache_update_src_hooks_useMediaPlayer_ts_92a42b6f["src/hooks/useMediaPlayer.ts"]
+        hooks_usemediaplayer_07b7c638("useMediaPlayer.ts")
+        hooks_usemediaplayer_usemediaplayer_659ae66d("useMediaPlayer()<br/><small>src/hooks/useMediaPlayer.ts</small>")
     end
     player_soundeffects_createsoundeffectsengine_c28732af("createSoundEffectsEngine()<br/><small>features/player/SoundEffects.ts</small>")
-    hooks_usemediaplayer_usemediaplayer_659ae66d("useMediaPlayer()<br/><small>src/hooks/useMediaPlayer.ts</small>")
+    transcription_usetranscribe_usetranscribe_366b18b5("useTranscribe()<br/><small>features/transcription/useTranscribe.ts</small>")
     utils_uid_uid_c33be6df("uid()<br/><small>src/utils/uid.ts</small>")
+    hooks_usemediaplayer_usemediaplayer_659ae66d -->|calls| player_soundeffects_createsoundeffectsengine_c28732af
+    hooks_usemediaplayer_usemediaplayer_659ae66d -->|calls| transcription_usetranscribe_usetranscribe_366b18b5
     src_audio_writestring_5a146658 -->|calls| src_audio_audiobufferstowav_9999abcc
     src_audio_yieldtoeventloop_8d893174 -->|calls| src_audio_audiobufferstowav_9999abcc
     bleep_sounds_bleepsoundmanager_addmodal_95ad1869 -->|calls| utils_uid_uid_c33be6df
     bleep_sounds_bleepsoundmanager_soundrow_28f1f91f -->|calls| bleep_sounds_bleep_audio_isremoteurl_a835d72c
     bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 -->|calls| bleep_sounds_bleep_audio_decodeaudio_dffa99f0
-    bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 -->|calls| bleep_sounds_bleep_sqlite_exportbleepsounds_a7d83ee8
-    bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 -->|calls| bleep_sounds_bleep_sqlite_importbleepsounds_5b1427be
-    player_soundeffects_createsoundeffectsengine_c28732af -->|calls| hooks_usemediaplayer_usemediaplayer_659ae66d
+    src_config_f55793b8 -->|imports| hooks_usemediaplayer_07b7c638
+    src_config_loadbackendurl_3b6835f4 -->|imports| hooks_usemediaplayer_07b7c638
+    src_config_backendpath_d9def98d -->|imports| hooks_usemediaplayer_07b7c638
+    src_config_backendheaders_fa10039f -->|imports| hooks_usemediaplayer_07b7c638
+    hooks_usemediaplayer_07b7c638 -->|imports| player_soundeffects_createsoundeffectsengine_c28732af
+    hooks_usemediaplayer_07b7c638 -->|imports| src_audio_audiobufferstowav_9999abcc
+    hooks_usemediaplayer_07b7c638 -->|imports| transcription_usetranscribe_usetranscribe_366b18b5
     bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_audio_decodeaudio_dffa99f0
     bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_audio_isremoteurl_a835d72c
-    bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_sqlite_exportbleepsounds_a7d83ee8
-    bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_sqlite_importbleepsounds_5b1427be
     bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| utils_uid_uid_c33be6df
     %% Omitted for readability: 78 nodes, 0 edges
     class bleep_sounds_bleepsoundmanager_ce67c1cd ui;
-    class bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 ui;
     class bleep_sounds_bleepsoundmanager_addmodal_95ad1869 ui;
     class bleep_sounds_bleepsoundmanager_soundrow_28f1f91f ui;
+    class bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 ui;
     class src_config_f55793b8 module;
     class src_config_backendheaders_fa10039f function;
     class src_config_backendpath_d9def98d function;
@@ -1261,10 +1272,10 @@ flowchart LR
     class src_audio_yieldtoeventloop_8d893174 function;
     class bleep_sounds_bleep_audio_isremoteurl_a835d72c function;
     class bleep_sounds_bleep_audio_decodeaudio_dffa99f0 function;
-    class bleep_sounds_bleep_sqlite_exportbleepsounds_a7d83ee8 function;
-    class bleep_sounds_bleep_sqlite_importbleepsounds_5b1427be function;
-    class player_soundeffects_createsoundeffectsengine_c28732af function;
+    class hooks_usemediaplayer_07b7c638 ui;
     class hooks_usemediaplayer_usemediaplayer_659ae66d ui;
+    class player_soundeffects_createsoundeffectsengine_c28732af function;
+    class transcription_usetranscribe_usetranscribe_366b18b5 ui;
     class utils_uid_uid_c33be6df function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -1289,46 +1300,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
-  <td>Module file in src/audio.ts.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>writeString()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td>Verifies imports, entry points, or version behavior.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>yieldToEventLoop()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td>yieldToEventLoop() node in src/audio.ts.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>WavProgress</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>WavProgress node in src/audio.ts.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>writeString()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>yieldToEventLoop()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
-  <td>audioBuffersToWav() node in src/audio.ts.</td>
-</tr>
-<tr>
-  <td>6</td>
   <td><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
@@ -1336,7 +1307,7 @@ flowchart LR
   <td>Module file in src/config.ts.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>2</td>
   <td><code>loadBackendUrl()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1344,7 +1315,7 @@ flowchart LR
   <td>loadBackendUrl() node in src/config.ts.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>3</td>
   <td><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1352,7 +1323,7 @@ flowchart LR
   <td>backendPath() node in src/config.ts.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>4</td>
   <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1360,7 +1331,7 @@ flowchart LR
   <td>backendHeaders() node in src/config.ts.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>5</td>
   <td><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1368,7 +1339,63 @@ flowchart LR
   <td>backendWsPath() node in src/config.ts.</td>
 </tr>
 <tr>
+  <td>6</td>
+  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+2 more</td>
+  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioDiagnostic.ts</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small><br>+7 more</td>
+  <td>Module file in src/hooks/useMediaPlayer.ts.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>createSoundEffectsEngine()</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small><br><code>useTranscribe()</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td>useMediaPlayer() node in src/hooks/useMediaPlayer.ts.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td>Module file in src/audio.ts.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>writeString()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td>Verifies imports, entry points, or version behavior.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>yieldToEventLoop()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td>yieldToEventLoop() node in src/audio.ts.</td>
+</tr>
+<tr>
   <td>11</td>
+  <td><code>WavProgress</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>WavProgress node in src/audio.ts.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>writeString()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>yieldToEventLoop()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td>audioBuffersToWav() node in src/audio.ts.</td>
+</tr>
+<tr>
+  <td>13</td>
   <td><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br>+1 more</td>
@@ -1376,7 +1403,7 @@ flowchart LR
   <td>Module file in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>14</td>
   <td><code>DEFAULT_DICTIONARIES</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -1384,15 +1411,15 @@ flowchart LR
   <td>DEFAULT_DICTIONARIES node in features/dictionary/DictionaryManager.tsx.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>15</td>
   <td><code>SoundEffects.ts</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
   <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td>No direct outbound edge</td>
   <td>Module file in features/player/SoundEffects.ts.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>16</td>
   <td><code>SoundEffectsDeps</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1400,7 +1427,7 @@ flowchart LR
   <td>SoundEffectsDeps node in features/player/SoundEffects.ts.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>17</td>
   <td><code>SoundEffectsEngine</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1408,23 +1435,23 @@ flowchart LR
   <td>SoundEffectsEngine node in features/player/SoundEffects.ts.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>18</td>
   <td><code>createSoundEffectsEngine()</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
   <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td>No direct outbound edge</td>
   <td>createSoundEffectsEngine() node in features/player/SoundEffects.ts.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>19</td>
   <td><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+4 more</td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+5 more</td>
+  <td>No direct outbound edge</td>
   <td>Module file in features/transcription/useTranscribe.ts.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>20</td>
   <td><code>TranscribeDeps</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1432,28 +1459,12 @@ flowchart LR
   <td>TranscribeDeps node in features/transcription/useTranscribe.ts.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>21</td>
   <td><code>useTranscribe()</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
   <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>useTranscribe() node in features/transcription/useTranscribe.ts.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+8 more</td>
-  <td><code>audioDiagnostic.ts</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small><br><code>audioMonitor.ts</code><br><small style="color:var(--muted)">src/utils/audioMonitor.ts</small><br><code>startAudioDiagnostic()</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small><br>+1 more</td>
-  <td>Module file in src/hooks/useMediaPlayer.ts.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>createSoundEffectsEngine()</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small><br><code>useTranscribe()</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
   <td>No direct outbound edge</td>
-  <td>useMediaPlayer() node in src/hooks/useMediaPlayer.ts.</td>
+  <td>useTranscribe() node in features/transcription/useTranscribe.ts.</td>
 </tr>
 <tr>
   <td>22</td>
@@ -1553,22 +1564,12 @@ flowchart LR
 
 <!-- ====== 7. Serving API ====== -->
 <h2 id="serve-api">7. Serving API</h2>
-<p>Serving API groups implementation around api, referencemd, docs, store, mostly in docs/api-reference.md, src/types/index.ts, src/store/bleepDb.ts. This section covers 59 nodes and 89 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Serving API groups implementation around api, referencemd, docs, store, mostly in docs/api-reference.md, src/types/index.ts, src/store/bleepDb.ts. This section covers 68 nodes and 102 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Serving API (59 nodes, 89 edges)
-    subgraph serve_api_src_store_bleepDb_ts_f8cf739c["src/store/bleepDb.ts"]
-        store_bleepdb_opendb_e0eeb76b("openDb()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_getallbleeprecords_805d5f7d("getAllBleepRecords()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_b27820e7("bleepDb.ts")
-        store_bleepdb_dbupdateurl_1c5e715d("dbUpdateUrl()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_deletebleeprecord_cfd695e8("deleteBleepRecord()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_putbleeprecord_5be2dcdf("putBleepRecord()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_updatebleeplabel_74bf3c03("updateBleepLabel()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_upsertbleepdata_1b27eac6("upsertBleepData()<br/><small>src/store/bleepDb.ts</small>")
-    end
+    %% Section: Serving API (68 nodes, 102 edges)
     subgraph serve_api_src_aho_corasick_ts_862030a9["src/aho-corasick.ts"]
         src_aho_corasick_fastahoscanner_fd14c0f9("FastAhoScanner<br/><small>src/aho-corasick.ts</small>")
         src_aho_corasick_566889b6("aho-corasick.ts")
@@ -1578,10 +1579,20 @@ flowchart LR
         src_aho_corasick_fastahoscanner_getfailid_749f94d8("getFailId()<br/><small>src/aho-corasick.ts</small>")
         src_aho_corasick_fastahoscanner_isterminal_3023e66b("isTerminal()<br/><small>src/aho-corasick.ts</small>")
     end
+    subgraph serve_api_src_store_bleepDb_ts_f8cf739c["src/store/bleepDb.ts"]
+        store_bleepdb_opendb_e0eeb76b("openDb()<br/><small>src/store/bleepDb.ts</small>")
+        store_bleepdb_getallbleeprecords_805d5f7d("getAllBleepRecords()<br/><small>src/store/bleepDb.ts</small>")
+        store_bleepdb_dbupdateurl_1c5e715d("dbUpdateUrl()<br/><small>src/store/bleepDb.ts</small>")
+        store_bleepdb_deletebleeprecord_cfd695e8("deleteBleepRecord()<br/><small>src/store/bleepDb.ts</small>")
+        store_bleepdb_putbleeprecord_5be2dcdf("putBleepRecord()<br/><small>src/store/bleepDb.ts</small>")
+        store_bleepdb_updatebleeplabel_74bf3c03("updateBleepLabel()<br/><small>src/store/bleepDb.ts</small>")
+        store_bleepdb_upsertbleepdata_1b27eac6("upsertBleepData()<br/><small>src/store/bleepDb.ts</small>")
+    end
     subgraph serve_api_src_store_playerStore_ts_1b71190f["src/store/playerStore.ts"]
         store_playerstore_hydratebleepsounds_1f09b1fb("hydrateBleepSounds()<br/><small>src/store/playerStore.ts</small>")
         store_playerstore_recordstosounds_03aafac8("recordsToSounds()<br/><small>src/store/playerStore.ts</small>")
     end
+    transcription_effectmodal_5a588a15("EffectModal.tsx")
     search_worker_onmessage_15dc8b8d("Worker message handler<br/><small>src/search.worker.ts</small>")
     src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_constructor_08313838
     src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_findmatches_3a953abd
@@ -1598,15 +1609,7 @@ flowchart LR
     store_bleepdb_getallbleeprecords_805d5f7d -->|calls| store_playerstore_hydratebleepsounds_1f09b1fb
     store_playerstore_recordstosounds_03aafac8 -->|calls| store_playerstore_hydratebleepsounds_1f09b1fb
     aho_corasick_fastahoscanner_c2d2696f -->|calls| search_worker_onmessage_15dc8b8d
-    %% Omitted for readability: 41 nodes, 0 edges
-    class store_bleepdb_opendb_e0eeb76b function;
-    class store_bleepdb_getallbleeprecords_805d5f7d function;
-    class store_bleepdb_b27820e7 module;
-    class store_bleepdb_dbupdateurl_1c5e715d function;
-    class store_bleepdb_deletebleeprecord_cfd695e8 function;
-    class store_bleepdb_putbleeprecord_5be2dcdf function;
-    class store_bleepdb_updatebleeplabel_74bf3c03 function;
-    class store_bleepdb_upsertbleepdata_1b27eac6 function;
+    %% Omitted for readability: 50 nodes, 0 edges
     class src_aho_corasick_fastahoscanner_fd14c0f9 klass;
     class src_aho_corasick_566889b6 module;
     class aho_corasick_fastahoscanner_c2d2696f klass;
@@ -1614,8 +1617,16 @@ flowchart LR
     class src_aho_corasick_fastahoscanner_findmatches_3a953abd function;
     class src_aho_corasick_fastahoscanner_getfailid_749f94d8 function;
     class src_aho_corasick_fastahoscanner_isterminal_3023e66b function;
+    class store_bleepdb_opendb_e0eeb76b function;
+    class store_bleepdb_getallbleeprecords_805d5f7d function;
+    class store_bleepdb_dbupdateurl_1c5e715d function;
+    class store_bleepdb_deletebleeprecord_cfd695e8 function;
+    class store_bleepdb_putbleeprecord_5be2dcdf function;
+    class store_bleepdb_updatebleeplabel_74bf3c03 function;
+    class store_bleepdb_upsertbleepdata_1b27eac6 function;
     class store_playerstore_hydratebleepsounds_1f09b1fb function;
     class store_playerstore_recordstosounds_03aafac8 function;
+    class transcription_effectmodal_5a588a15 ui;
     class search_worker_onmessage_15dc8b8d klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -1688,6 +1699,70 @@ flowchart LR
 </tr>
 <tr>
   <td>7</td>
+  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td>Module file in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CloseIcon() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>BoltIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>BoltIcon() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>TrashIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TrashIcon() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>EffectModalProps</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>EffectModalProps node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>uid()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>uid() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>EffectModal</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>EffectModal node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>EffectBadge</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>EffectBadge node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
   <td><code>search.worker.ts</code><br><small style="color:var(--muted)">src/search.worker.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
@@ -1695,7 +1770,7 @@ flowchart LR
   <td>Module file in src/search.worker.ts.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>16</td>
   <td><code>bleepDb.ts</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
@@ -1703,7 +1778,7 @@ flowchart LR
   <td>Module file in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>17</td>
   <td><code>DbRecord</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1711,7 +1786,7 @@ flowchart LR
   <td>DbRecord node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>18</td>
   <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1719,7 +1794,7 @@ flowchart LR
   <td>openDb() node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>19</td>
   <td><code>getAllBleepRecords()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
@@ -1727,7 +1802,7 @@ flowchart LR
   <td>getAllBleepRecords() node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>20</td>
   <td><code>putBleepRecord()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
@@ -1735,7 +1810,7 @@ flowchart LR
   <td>putBleepRecord() node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>21</td>
   <td><code>deleteBleepRecord()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
@@ -1743,7 +1818,7 @@ flowchart LR
   <td>deleteBleepRecord() node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>22</td>
   <td><code>updateBleepLabel()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
@@ -1751,7 +1826,7 @@ flowchart LR
   <td>updateBleepLabel() node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>23</td>
   <td><code>dbUpdateUrl()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
@@ -1759,7 +1834,7 @@ flowchart LR
   <td>dbUpdateUrl() node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>24</td>
   <td><code>upsertBleepData()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
@@ -1767,15 +1842,15 @@ flowchart LR
   <td>upsertBleepData() node in src/store/bleepDb.ts.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>25</td>
   <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>bleepDb.ts</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>dbUpdateUrl()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br>+6 more</td>
-  <td><code>BleepSound</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>CensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>Dictionary</code><br><small style="color:var(--muted)">src/types/index.ts</small><br>+3 more</td>
+  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>bleepDb.ts</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>dbUpdateUrl()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br>+7 more</td>
+  <td><code>BleepSound</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>CensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>Dictionary</code><br><small style="color:var(--muted)">src/types/index.ts</small><br>+4 more</td>
   <td>Module file in src/store/playerStore.ts.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>26</td>
   <td><code>recordsToSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1783,7 +1858,7 @@ flowchart LR
   <td>recordsToSounds() node in src/store/playerStore.ts.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>27</td>
   <td><code>hydrateBleepSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td><code>getAllBleepRecords()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>recordsToSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
@@ -1791,15 +1866,15 @@ flowchart LR
   <td>hydrateBleepSounds() node in src/store/playerStore.ts.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>28</td>
   <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
-  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br>+1 more</td>
   <td>No direct outbound edge</td>
   <td>Module file in src/types/index.ts.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>29</td>
   <td><code>TranscriptionWord</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1807,76 +1882,12 @@ flowchart LR
   <td>TranscriptionWord node in src/types/index.ts.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>30</td>
   <td><code>Dictionary</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td>No direct outbound edge</td>
   <td>Dictionary node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>BasicCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>BasicCensoringEffect node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>CensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>CensoringEffect node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>TranscriptionResultTuple</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TranscriptionResultTuple node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>BleepSound</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>BleepSound node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>ExportPhase</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>ExportProgress</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>PlayerState</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>PlayerState node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>api-reference.md</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing api-reference.md.</td>
 </tr>
 </table>
 
@@ -1886,8 +1897,9 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>docs/api-reference.md</code></td><td>28 nodes</td></tr>
-<tr><td><code>src/types/index.ts</code></td><td>10 nodes</td></tr>
+<tr><td><code>src/types/index.ts</code></td><td>11 nodes</td></tr>
 <tr><td><code>src/store/bleepDb.ts</code></td><td>9 nodes</td></tr>
+<tr><td><code>features/transcription/EffectModal.tsx</code></td><td>8 nodes</td></tr>
 <tr><td><code>src/aho-corasick.ts</code></td><td>7 nodes</td></tr>
 <tr><td><code>src/store/playerStore.ts</code></td><td>3 nodes</td></tr>
 <tr><td><code>src/search.worker.ts</code></td><td>2 nodes</td></tr>
@@ -1895,7 +1907,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x47, imports x14, calls x11, references x7. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x55, imports x16, calls x11, references x8. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -2082,21 +2094,23 @@ flowchart LR
 
 <!-- ====== 9. Community 57 ====== -->
 <h2 id="community-57">9. Community 57</h2>
-<p>Community 57 groups implementation around features, settings, settingsmodaltsx, actionbuttonstsx, mostly in features/settings/SettingsModal.tsx, features/action-buttons/ActionButtons.tsx, features/settings/HourPackCard.tsx. This section covers 53 nodes and 96 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Community 57 groups implementation around features, settings, transcriptionresultstsx, transcription, mostly in features/transcription/TranscriptionResults.tsx, features/settings/SettingsModal.tsx, features/action-buttons/ActionButtons.tsx. This section covers 72 nodes and 129 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Community 57 (53 nodes, 96 edges)
+    %% Section: Community 57 (72 nodes, 129 edges)
+    subgraph community_57_features_transcription_Transcriptio_807f29e9["features/transcription/TranscriptionResults.tsx"]
+        transcription_transcriptionresults_9a779401("TranscriptionResults.tsx")
+        transcription_transcriptionresults_findclosestse_3b6956a4("findClosestSegment()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
+        transcription_transcriptionresults_transcription_d3874bb4("TranscriptionResultsInner()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
+        transcription_transcriptionresults_parsestage_50197875("parseStage()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
+        transcription_transcriptionresults_transcribepro_909f732c("TranscribeProgressBar()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
+    end
     subgraph community_57_features_action_buttons_ActionButto_6b916237["features/action-buttons/ActionButtons.tsx"]
         action_buttons_actionbuttons_78ab3197("ActionButtons.tsx")
         action_buttons_actionbuttons_codeclabel_52e9a5e9("codecLabel()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
         action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6("ActionButtonsInner()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
-    end
-    subgraph community_57_src_utils_auth_ts_e2a0a667["src/utils/auth.ts"]
-        utils_auth_canfreetopup_e6832bc1("canFreeTopup()<br/><small>src/utils/auth.ts</small>")
-        utils_auth_daysuntilfreetopup_c93d63d8("daysUntilFreeTopup()<br/><small>src/utils/auth.ts</small>")
-        utils_auth_formatseconds_cdef2b69("formatSeconds()<br/><small>src/utils/auth.ts</small>")
     end
     subgraph community_57_features_auth_ConfirmationModal_tsx_361d8ead["features/auth/ConfirmationModal.tsx"]
         auth_confirmationmodal_formatduration_1ba061e3("formatDuration()<br/><small>features/auth/ConfirmationModal.tsx</small>")
@@ -2110,32 +2124,27 @@ flowchart LR
         auth_topupmodal_5fbdbcde("TopupModal.tsx")
         auth_topupmodal_topupmodal_4bc16812("TopupModal()<br/><small>features/auth/TopupModal.tsx</small>")
     end
-    subgraph community_57_features_debug_DebugTab_tsx_9d6a960e["features/debug/DebugTab.tsx"]
-        debug_debugtab_74df40a0("DebugTab.tsx")
-        debug_debugtab_debugtab_ba9945b9("DebugTab()<br/><small>features/debug/DebugTab.tsx</small>")
-    end
-    subgraph community_57_src_utils_pkce_browser_ts_b3924fda["src/utils/pkce-browser.ts"]
-        utils_pkce_browser_generatecodechallenge_6cf9cdc6("generateCodeChallenge()<br/><small>src/utils/pkce-browser.ts</small>")
-        utils_pkce_browser_base64urlencode_c1ec60dd("base64urlEncode()<br/><small>src/utils/pkce-browser.ts</small>")
+    subgraph community_57_src_utils_auth_ts_e2a0a667["src/utils/auth.ts"]
+        utils_auth_canfreetopup_e6832bc1("canFreeTopup()<br/><small>src/utils/auth.ts</small>")
+        utils_auth_daysuntilfreetopup_c93d63d8("daysUntilFreeTopup()<br/><small>src/utils/auth.ts</small>")
     end
     settings_settingsmodal_usercontent_d2a4d459("UserContent()<br/><small>features/settings/SettingsModal.tsx</small>")
     store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
     action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
     action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| store_authstore_useauthstore_4a03c2d9
     action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_auth_canfreetopup_e6832bc1
+    transcription_transcriptionresults_findclosestse_3b6956a4 -->|calls| transcription_transcriptionresults_transcription_d3874bb4
+    transcription_transcriptionresults_parsestage_50197875 -->|calls| transcription_transcriptionresults_transcribepro_909f732c
+    transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
     auth_confirmationmodal_confirmationmodal_8b7e668a -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_loginmodal_loginmodal_992d0af3 -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_topupmodal_4bc16812 -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_formatseconds_cdef2b69
-    debug_debugtab_debugtab_ba9945b9 -->|calls| store_authstore_useauthstore_4a03c2d9
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| store_authstore_useauthstore_4a03c2d9
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
-    settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_formatseconds_cdef2b69
-    utils_pkce_browser_generatecodechallenge_6cf9cdc6 -->|calls| utils_pkce_browser_base64urlencode_c1ec60dd
     action_buttons_actionbuttons_78ab3197 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
     action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_55c21e7a
     action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_loginmodal_992d0af3
@@ -2143,24 +2152,25 @@ flowchart LR
     action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_topupmodal_4bc16812
     action_buttons_actionbuttons_78ab3197 -->|imports| store_authstore_useauthstore_4a03c2d9
     action_buttons_actionbuttons_78ab3197 -->|imports| utils_auth_canfreetopup_e6832bc1
-    auth_loginmodal_55c21e7a -->|imports| store_authstore_useauthstore_4a03c2d9
-    %% Omitted for readability: 35 nodes, 6 edges
+    transcription_transcriptionresults_9a779401 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
+    transcription_transcriptionresults_9a779401 -->|imports| auth_loginmodal_55c21e7a
+    %% Omitted for readability: 54 nodes, 9 edges
+    class transcription_transcriptionresults_9a779401 ui;
+    class transcription_transcriptionresults_findclosestse_3b6956a4 ui;
+    class transcription_transcriptionresults_transcription_d3874bb4 ui;
+    class transcription_transcriptionresults_parsestage_50197875 ui;
+    class transcription_transcriptionresults_transcribepro_909f732c ui;
     class action_buttons_actionbuttons_78ab3197 ui;
     class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
     class action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 ui;
-    class utils_auth_canfreetopup_e6832bc1 function;
-    class utils_auth_daysuntilfreetopup_c93d63d8 function;
-    class utils_auth_formatseconds_cdef2b69 function;
     class auth_confirmationmodal_formatduration_1ba061e3 ui;
     class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
     class auth_loginmodal_55c21e7a ui;
     class auth_loginmodal_loginmodal_992d0af3 ui;
     class auth_topupmodal_5fbdbcde ui;
     class auth_topupmodal_topupmodal_4bc16812 ui;
-    class debug_debugtab_74df40a0 ui;
-    class debug_debugtab_debugtab_ba9945b9 ui;
-    class utils_pkce_browser_generatecodechallenge_6cf9cdc6 function;
-    class utils_pkce_browser_base64urlencode_c1ec60dd function;
+    class utils_auth_canfreetopup_e6832bc1 function;
+    class utils_auth_daysuntilfreetopup_c93d63d8 function;
     class settings_settingsmodal_usercontent_d2a4d459 ui;
     class store_authstore_useauthstore_4a03c2d9 ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -2189,7 +2199,7 @@ flowchart LR
   <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br>+6 more</td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small><br>+7 more</td>
   <td>Module file in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
@@ -2274,265 +2284,6 @@ flowchart LR
 </tr>
 <tr>
   <td>12</td>
-  <td><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>Module file in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td>formatDuration() node in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>ConfirmationModalProps</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ConfirmationModalProps node in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
-  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>ConfirmationModal() node in features/auth/ConfirmationModal.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>generateCodeChallenge()</code><br><small style="color:var(--muted)">src/utils/pkce-browser.ts</small><br><code>generateCodeVerifier()</code><br><small style="color:var(--muted)">src/utils/pkce-browser.ts</small><br><code>pkce-browser.ts</code><br><small style="color:var(--muted)">src/utils/pkce-browser.ts</small><br>+2 more</td>
-  <td>Module file in features/auth/LoginModal.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>LoginModalProps</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>LoginModalProps node in features/auth/LoginModal.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+5 more</td>
-  <td>Module file in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+1 more</td>
-  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>DebugTab.tsx</code><br><small style="color:var(--muted)">features/debug/DebugTab.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>Module file in features/debug/DebugTab.tsx.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>ErrorEntry</code><br><small style="color:var(--muted)">features/debug/DebugTab.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ErrorEntry node in features/debug/DebugTab.tsx.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>DebugTab()</code><br><small style="color:var(--muted)">features/debug/DebugTab.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>DebugTab() node in features/debug/DebugTab.tsx.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>DictionaryManager</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>DictionaryManager node in features/dictionary/DictionaryManager.tsx.</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>HourPackCard.tsx</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>Module file in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>HourPack</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>HourPack node in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>HOUR_PACKS</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>HOUR_PACKS node in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>HourPackCardProps</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>HourPackCardProps node in features/settings/HourPackCard.tsx.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>HourPackCard</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td>HourPackCard node in features/settings/HourPackCard.tsx.</td>
-</tr>
-</table>
-
-<div class="grid">
-  <div class="card">
-    <h4>Key Files</h4>
-    <table style="width:100%;font-size:0.85rem;">
-      <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>features/settings/SettingsModal.tsx</code></td><td>12 nodes</td></tr>
-<tr><td><code>features/action-buttons/ActionButtons.tsx</code></td><td>11 nodes</td></tr>
-<tr><td><code>features/settings/HourPackCard.tsx</code></td><td>5 nodes</td></tr>
-<tr><td><code>features/auth/ConfirmationModal.tsx</code></td><td>4 nodes</td></tr>
-<tr><td><code>src/utils/auth.ts</code></td><td>4 nodes</td></tr>
-<tr><td><code>src/utils/pkce-browser.ts</code></td><td>4 nodes</td></tr>
-<tr><td><code>features/auth/LoginModal.tsx</code></td><td>3 nodes</td></tr>
-<tr><td><code>features/auth/TopupModal.tsx</code></td><td>3 nodes</td></tr>
-    </table>
-  </div>
-  <div class="card">
-    <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x40, imports x26, calls x16, imports x12. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
-  </div>
-</div>
-<hr>
-
-<!-- ====== 10. Community 7 ====== -->
-<h2 id="community-7">10. Community 7</h2>
-<p>Community 7 groups implementation around features, transcription, transcriptionresultstsx, effectmodaltsx, mostly in features/transcription/TranscriptionResults.tsx, features/transcription/EffectModal.tsx, features/player/ShieldButton.tsx. This section covers 28 nodes and 35 internal edges; the diagram shows only representative relationships to stay readable.</p>
-
-<div class="mermaid">
-%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
-flowchart LR
-    %% Section: Community 7 (28 nodes, 35 edges)
-    subgraph community_7_features_transcription_EffectModal_t_43142f0d["features/transcription/EffectModal.tsx"]
-        transcription_effectmodal_5a588a15("EffectModal.tsx")
-        transcription_effectmodal_effectbadge_f29a394c("EffectBadge<br/><small>features/transcription/EffectModal.tsx</small>")
-        transcription_effectmodal_effectmodal_75dfcab3("EffectModal<br/><small>features/transcription/EffectModal.tsx</small>")
-        transcription_effectmodal_bolticon_6ab0b088("BoltIcon()<br/><small>features/transcription/EffectModal.tsx</small>")
-        transcription_effectmodal_closeicon_80412e67("CloseIcon()<br/><small>features/transcription/EffectModal.tsx</small>")
-        transcription_effectmodal_effectmodalprops_d5b8f7f1("EffectModalProps<br/><small>features/transcription/EffectModal.tsx</small>")
-        transcription_effectmodal_trashicon_3e066ff3("TrashIcon()<br/><small>features/transcription/EffectModal.tsx</small>")
-    end
-    subgraph community_7_features_transcription_Transcription_5eff7b30["features/transcription/TranscriptionResults.tsx"]
-        transcription_transcriptionresults_findclosestse_3b6956a4("findClosestSegment()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
-        transcription_transcriptionresults_transcription_d3874bb4("TranscriptionResultsInner()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
-        transcription_transcriptionresults_parsestage_50197875("parseStage()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
-        transcription_transcriptionresults_transcribepro_909f732c("TranscribeProgressBar()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
-        transcription_transcriptionresults_9a779401("TranscriptionResults.tsx")
-    end
-    subgraph community_7_features_player_ShieldButton_tsx_f092354e["features/player/ShieldButton.tsx"]
-        player_shieldbutton_efb5f4ae("ShieldButton.tsx")
-        player_shieldbutton_shieldbutton_5f37186c("ShieldButton<br/><small>features/player/ShieldButton.tsx</small>")
-        player_shieldbutton_shieldbuttoninner_a7b1a30e("ShieldButtonInner()<br/><small>features/player/ShieldButton.tsx</small>")
-        player_shieldbutton_shieldbuttonprops_e4cebe41("ShieldButtonProps<br/><small>features/player/ShieldButton.tsx</small>")
-    end
-    player_cdbtn_e24f936e("cdBtn.ts")
-    types_index_soundcensoringeffect_753def75("SoundCensoringEffect<br/><small>src/types/index.ts</small>")
-    transcription_transcriptionresults_findclosestse_3b6956a4 -->|calls| transcription_transcriptionresults_transcription_d3874bb4
-    transcription_transcriptionresults_parsestage_50197875 -->|calls| transcription_transcriptionresults_transcribepro_909f732c
-    player_shieldbutton_efb5f4ae -->|imports| player_cdbtn_e24f936e
-    player_shieldbutton_efb5f4ae -->|imports| transcription_transcriptionresults_9a779401
-    player_shieldbutton_shieldbutton_5f37186c -->|imports| transcription_transcriptionresults_9a779401
-    player_cdbtn_e24f936e -->|imports| transcription_transcriptionresults_9a779401
-    transcription_effectmodal_5a588a15 -->|imports| types_index_soundcensoringeffect_753def75
-    transcription_effectmodal_5a588a15 -->|imports| transcription_transcriptionresults_9a779401
-    transcription_effectmodal_effectmodal_75dfcab3 -->|imports| transcription_transcriptionresults_9a779401
-    transcription_effectmodal_effectbadge_f29a394c -->|imports| transcription_transcriptionresults_9a779401
-    transcription_transcriptionresults_9a779401 -->|imports| types_index_soundcensoringeffect_753def75
-    %% Omitted for readability: 10 nodes, 0 edges
-    class transcription_effectmodal_5a588a15 ui;
-    class transcription_effectmodal_effectbadge_f29a394c ui;
-    class transcription_effectmodal_effectmodal_75dfcab3 ui;
-    class transcription_effectmodal_bolticon_6ab0b088 ui;
-    class transcription_effectmodal_closeicon_80412e67 ui;
-    class transcription_effectmodal_effectmodalprops_d5b8f7f1 ui;
-    class transcription_effectmodal_trashicon_3e066ff3 ui;
-    class transcription_transcriptionresults_findclosestse_3b6956a4 ui;
-    class transcription_transcriptionresults_transcription_d3874bb4 ui;
-    class transcription_transcriptionresults_parsestage_50197875 ui;
-    class transcription_transcriptionresults_transcribepro_909f732c ui;
-    class transcription_transcriptionresults_9a779401 ui;
-    class player_shieldbutton_efb5f4ae ui;
-    class player_shieldbutton_shieldbutton_5f37186c ui;
-    class player_shieldbutton_shieldbuttoninner_a7b1a30e ui;
-    class player_shieldbutton_shieldbuttonprops_e4cebe41 ui;
-    class player_cdbtn_e24f936e module;
-    class types_index_soundcensoringeffect_753def75 klass;
-    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
-    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
-    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
-    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
-    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
-    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
-    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
-    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
-    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
-</div>
-
-<h3>Call Details</h3>
-<table class="call-table">
-<tr>
-  <th style="width:5%">#</th>
-  <th style="width:28%">Node</th>
-  <th style="width:10%">Type</th>
-  <th style="width:17%">Caller</th>
-  <th style="width:20%">Callees</th>
-  <th style="width:20%">Description</th>
-</tr>
-<tr>
-  <td>1</td>
   <td><code>ShieldButton.tsx</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2540,7 +2291,7 @@ flowchart LR
   <td>Module file in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>13</td>
   <td><code>ShieldButtonProps</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2548,7 +2299,7 @@ flowchart LR
   <td>ShieldButtonProps node in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>14</td>
   <td><code>ShieldButtonInner()</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2556,7 +2307,7 @@ flowchart LR
   <td>ShieldButtonInner() node in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>15</td>
   <td><code>ShieldButton</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2564,87 +2315,23 @@ flowchart LR
   <td>ShieldButton node in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>16</td>
   <td><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
-  <td><code>ShieldButton.tsx</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>ShieldButton.tsx</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td>Module file in features/player/cdBtn.ts.</td>
 </tr>
 <tr>
-  <td>6</td>
-  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>Module file in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CloseIcon() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>BoltIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>BoltIcon() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>TrashIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TrashIcon() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>EffectModalProps</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>EffectModalProps node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>uid()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>uid() node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>EffectModal</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>EffectModal node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>EffectBadge</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>EffectBadge node in features/transcription/EffectModal.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
+  <td>17</td>
   <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small><br><code>EffectBadge</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br><code>EffectModal</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br>+3 more</td>
-  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small><br><code>ShieldButton</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small><br><code>ShieldButton.tsx</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br>+6 more</td>
   <td>Module file in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>18</td>
   <td><code>BorderedSection()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2652,7 +2339,7 @@ flowchart LR
   <td>BorderedSection() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>19</td>
   <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2660,7 +2347,7 @@ flowchart LR
   <td>ChevronDownIcon() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>20</td>
   <td><code>PlusIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2668,7 +2355,7 @@ flowchart LR
   <td>PlusIcon() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>21</td>
   <td><code>SegmentItem</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2676,7 +2363,7 @@ flowchart LR
   <td>SegmentItem node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>22</td>
   <td><code>TranscriptionRow()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2684,7 +2371,7 @@ flowchart LR
   <td>TranscriptionRow() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>23</td>
   <td><code>rowRendererDeps</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2692,7 +2379,7 @@ flowchart LR
   <td>rowRendererDeps node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>24</td>
   <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2700,7 +2387,7 @@ flowchart LR
   <td>findClosestSegment() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>25</td>
   <td><code>findSegmentIndex()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2708,7 +2395,7 @@ flowchart LR
   <td>findSegmentIndex() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>26</td>
   <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2716,7 +2403,7 @@ flowchart LR
   <td>parseStage() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>27</td>
   <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
@@ -2724,7 +2411,7 @@ flowchart LR
   <td>TranscribeProgressBar() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>28</td>
   <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2732,28 +2419,20 @@ flowchart LR
   <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>29</td>
   <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>No direct outbound edge</td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
   <td>TranscriptionResultsInner() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>30</td>
   <td><code>TranscriptionResults</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>TranscriptionResults node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>SoundCensoringEffect node in src/types/index.ts.</td>
 </tr>
 </table>
 
@@ -2763,21 +2442,24 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>features/transcription/TranscriptionResults.tsx</code></td><td>14 nodes</td></tr>
-<tr><td><code>features/transcription/EffectModal.tsx</code></td><td>8 nodes</td></tr>
+<tr><td><code>features/settings/SettingsModal.tsx</code></td><td>12 nodes</td></tr>
+<tr><td><code>features/action-buttons/ActionButtons.tsx</code></td><td>11 nodes</td></tr>
+<tr><td><code>features/settings/HourPackCard.tsx</code></td><td>5 nodes</td></tr>
+<tr><td><code>features/auth/ConfirmationModal.tsx</code></td><td>4 nodes</td></tr>
 <tr><td><code>features/player/ShieldButton.tsx</code></td><td>4 nodes</td></tr>
-<tr><td><code>features/player/cdBtn.ts</code></td><td>1 nodes</td></tr>
-<tr><td><code>src/types/index.ts</code></td><td>1 nodes</td></tr>
+<tr><td><code>src/utils/auth.ts</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/utils/pkce-browser.ts</code></td><td>4 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x23, imports x5, imports x4, calls x2. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x56, imports x32, imports x20, calls x19. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
-<!-- ====== 11. Community 52 ====== -->
-<h2 id="community-52">11. Community 52</h2>
+<!-- ====== 10. Community 52 ====== -->
+<h2 id="community-52">10. Community 52</h2>
 <p>Community 52 groups implementation around transcriptionmd, docs, wav, mode, mostly in docs/transcription.md. This section covers 12 nodes and 11 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -2953,8 +2635,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 12. Community 26 ====== -->
-<h2 id="community-26">12. Community 26</h2>
+<!-- ====== 11. Community 26 ====== -->
+<h2 id="community-26">11. Community 26</h2>
 <p>Community 26 groups implementation around devts, dir, dist, public, mostly in dev.ts. This section covers 10 nodes and 11 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3101,8 +2783,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 13. Community 27 ====== -->
-<h2 id="community-27">13. Community 27</h2>
+<!-- ====== 12. Community 27 ====== -->
+<h2 id="community-27">12. Community 27</h2>
 <p>Community 27 groups implementation around idbts, utils, storedsession, opendb, mostly in src/utils/idb.ts. This section covers 7 nodes and 11 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3222,8 +2904,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 14. README ====== -->
-<h2 id="readme">14. README</h2>
+<!-- ====== 13. README ====== -->
+<h2 id="readme">13. README</h2>
 <p>README groups implementation around readmemd, bun, obrez, install, mostly in README.md. This section covers 5 nodes and 5 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3323,8 +3005,8 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 15. Community 31 ====== -->
-<h2 id="community-31">15. Community 31</h2>
+<!-- ====== 14. Community 31 ====== -->
+<h2 id="community-31">14. Community 31</h2>
 <p>Community 31 groups implementation around multi, segment, racespects, e2e, mostly in e2e/multi-segment-race.spec.ts. This section covers 5 nodes and 4 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
@@ -3423,67 +3105,25 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 16. Other ====== -->
-<h2 id="other">16. Other</h2>
-<p>Other groups implementation around e2e, sequential, playbackspects, pause, mostly in e2e/pause-play-diagnostic.spec.ts, server.ts, e2e/sequential-playback.spec.ts. This section covers 41 nodes and 27 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 15. Community 45 ====== -->
+<h2 id="community-45">15. Community 45</h2>
+<p>Community 45 groups implementation around pause, play, diagnosticspects, e2e, mostly in e2e/pause-play-diagnostic.spec.ts. This section covers 5 nodes and 5 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Other (41 nodes, 27 edges)
-    subgraph other_e2e_pause_play_diagnostic_spec_ts_8160306f["e2e/pause-play-diagnostic.spec.ts"]
-        e2e_pause_play_diagnostic_spec_waitfordiagnostic_ce2c3204("waitForDiagnostic()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
-        e2e_pause_play_diagnostic_spec_loadfile_046487ee("loadFile()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
-        e2e_pause_play_diagnostic_spec_checknomultiplest_eb41d277("checkNoMultipleStreams()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
-        e2e_pause_play_diagnostic_spec_parsetime_fd2a2f12("parseTime()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
-        e2e_pause_play_diagnostic_spec_aff1a568("pause-play-diagnostic.spec.ts")
-    end
-    subgraph other_deploy_sh_f96331fb["deploy.sh"]
-        home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66("deploy.sh script<br/><small>deploy.sh</small>")
-        deploy_build_version_93a58c4f("build_version()<br/><small>deploy.sh</small>")
-        deploy_b0d51b9f("deploy.sh")
-    end
-    subgraph other_e2e_playback_spec_ts_7b9f76c4["e2e/playback.spec.ts"]
-        e2e_playback_spec_parsetime_6cc5d75c("parseTime()<br/><small>e2e/playback.spec.ts</small>")
-        e2e_playback_spec_80b327fb("playback.spec.ts")
-    end
-    subgraph other_e2e_sequential_operations_spec_ts_9bfb25fc["e2e/sequential-operations.spec.ts"]
-        e2e_sequential_operations_spec_checknomultiplest_74687c57("checkNoMultipleStreams()<br/><small>e2e/sequential-operations.spec.ts</small>")
-        e2e_sequential_operations_spec_loadfile_ba66268b("loadFile()<br/><small>e2e/sequential-operations.spec.ts</small>")
-    end
-    subgraph other_server_ts_86d1375c["server.ts"]
-        server_handletranscriptionrequest_ff2e5f6f("handleTranscriptionRequest()<br/><small>server.ts</small>")
-        server_serve_466028ec("Bun TLS Server (port 3000)<br/><small>server.ts</small>")
-    end
-    subgraph other_src_censor_worker_ts_9d4675e8["src/censor-worker.ts"]
-        src_censor_worker_decodebleep_79a6d5a0("decodeBleep()<br/><small>src/censor-worker.ts</small>")
-        src_censor_worker_rendercensored_a4655dfa("renderCensored()<br/><small>src/censor-worker.ts</small>")
-    end
-    e2e_click_1x_ru_profanity3_spec_595353a1("click-1x-ru-profanity3.spec.ts")
-    e2e_login_redirect_spec_88b485c2("login-redirect.spec.ts")
-    home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 -->|calls| deploy_build_version_93a58c4f
+    %% Section: Community 45 (5 nodes, 5 edges)
+    e2e_pause_play_diagnostic_spec_waitfordiagnostic_ce2c3204("waitForDiagnostic()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
+    e2e_pause_play_diagnostic_spec_loadfile_046487ee("loadFile()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
+    e2e_pause_play_diagnostic_spec_checknomultiplest_eb41d277("checkNoMultipleStreams()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
+    e2e_pause_play_diagnostic_spec_parsetime_fd2a2f12("parseTime()<br/><small>e2e/pause-play-diagnostic.spec.ts</small>")
+    e2e_pause_play_diagnostic_spec_aff1a568("pause-play-diagnostic.spec.ts")
     e2e_pause_play_diagnostic_spec_waitfordiagnostic_ce2c3204 -->|calls| e2e_pause_play_diagnostic_spec_loadfile_046487ee
-    server_handletranscriptionrequest_ff2e5f6f -->|calls| server_serve_466028ec
-    src_censor_worker_decodebleep_79a6d5a0 -->|calls| src_censor_worker_rendercensored_a4655dfa
-    %% Omitted for readability: 23 nodes, 0 edges
     class e2e_pause_play_diagnostic_spec_waitfordiagnostic_ce2c3204 test;
     class e2e_pause_play_diagnostic_spec_loadfile_046487ee test;
     class e2e_pause_play_diagnostic_spec_checknomultiplest_eb41d277 test;
     class e2e_pause_play_diagnostic_spec_parsetime_fd2a2f12 test;
     class e2e_pause_play_diagnostic_spec_aff1a568 test;
-    class home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 function;
-    class deploy_build_version_93a58c4f function;
-    class deploy_b0d51b9f function;
-    class e2e_playback_spec_parsetime_6cc5d75c test;
-    class e2e_playback_spec_80b327fb test;
-    class e2e_sequential_operations_spec_checknomultiplest_74687c57 test;
-    class e2e_sequential_operations_spec_loadfile_ba66268b test;
-    class server_handletranscriptionrequest_ff2e5f6f function;
-    class server_serve_466028ec klass;
-    class src_censor_worker_decodebleep_79a6d5a0 function;
-    class src_censor_worker_rendercensored_a4655dfa function;
-    class e2e_click_1x_ru_profanity3_spec_595353a1 test;
-    class e2e_login_redirect_spec_88b485c2 test;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -3545,206 +3185,6 @@ flowchart LR
   <td>No direct outbound edge</td>
   <td>loadFile() node in e2e/pause-play-diagnostic.spec.ts.</td>
 </tr>
-<tr>
-  <td>6</td>
-  <td><code>server.ts</code><br><small style="color:var(--muted)">server.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in server.ts.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>__dirname</code><br><small style="color:var(--muted)">server.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>__dirname node in server.ts.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>server</code><br><small style="color:var(--muted)">server.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>server node in server.ts.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>handleTranscriptionRequest()</code><br><small style="color:var(--muted)">server.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>Bun TLS Server (port 3000)</code><br><small style="color:var(--muted)">server.ts</small></td>
-  <td>handleTranscriptionRequest() node in server.ts.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>Bun TLS Server (port 3000)</code><br><small style="color:var(--muted)">server.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>handleTranscriptionRequest()</code><br><small style="color:var(--muted)">server.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>Bun TLS Server (port 3000) node in server.ts.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>sequential-playback.spec.ts</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in e2e/sequential-playback.spec.ts.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>parseTime() node in e2e/sequential-playback.spec.ts.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>loadFile()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>loadFile() node in e2e/sequential-playback.spec.ts.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>waitForDiagnostic()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>waitForDiagnostic() node in e2e/sequential-playback.spec.ts.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>collectSamples()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>collectSamples() node in e2e/sequential-playback.spec.ts.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>censor-worker.ts</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in src/censor-worker.ts.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>BleepData</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>BleepData node in src/censor-worker.ts.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>decodeBleep()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>renderCensored()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
-  <td>decodeBleep() node in src/censor-worker.ts.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>renderCensored()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>decodeBleep()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>renderCensored() node in src/censor-worker.ts.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>sequential-operations.spec.ts</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in e2e/sequential-operations.spec.ts.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>parseTime() node in e2e/sequential-operations.spec.ts.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>checkNoMultipleStreams()</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>checkNoMultipleStreams() node in e2e/sequential-operations.spec.ts.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>loadFile()</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>loadFile() node in e2e/sequential-operations.spec.ts.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>deploy.sh</code><br><small style="color:var(--muted)">deploy.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>deploy.sh node in deploy.sh.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>deploy.sh script</code><br><small style="color:var(--muted)">deploy.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>build_version()</code><br><small style="color:var(--muted)">deploy.sh</small></td>
-  <td>deploy.sh script node in deploy.sh.</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>build_version()</code><br><small style="color:var(--muted)">deploy.sh</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>deploy.sh script</code><br><small style="color:var(--muted)">deploy.sh</small></td>
-  <td>No direct outbound edge</td>
-  <td>build_version() node in deploy.sh.</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>OBRΞZ Brand Logo</code><br><small style="color:var(--muted)">public/assets/obrez-logo.png</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>OBRΞZ Brand Logo node in public/assets/obrez-logo.png.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>OBRΞZ Brand Identity</code><br><small style="color:var(--muted)">public/assets/obrez-logo.png</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>OBRΞZ Brand Identity node in public/assets/obrez-logo.png.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>playback.spec.ts</code><br><small style="color:var(--muted)">e2e/playback.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Module file in e2e/playback.spec.ts.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/playback.spec.ts</small></td>
-  <td><span class="tag tag-func">Test</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>parseTime() node in e2e/playback.spec.ts.</td>
-</tr>
 </table>
 
 <div class="grid">
@@ -3753,18 +3193,356 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>e2e/pause-play-diagnostic.spec.ts</code></td><td>5 nodes</td></tr>
-<tr><td><code>e2e/sequential-playback.spec.ts</code></td><td>5 nodes</td></tr>
+    </table>
+  </div>
+  <div class="card">
+    <h4>Design Notes</h4>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x4, calls x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+  </div>
+</div>
+<hr>
+
+<!-- ====== 16. Other ====== -->
+<h2 id="other">16. Other</h2>
+<p>Other groups implementation around e2e, sequential, playbackspects, serverts, mostly in server.ts, e2e/sequential-playback.spec.ts, src/censor-worker.ts. This section covers 36 nodes and 22 internal edges; the diagram shows only representative relationships to stay readable.</p>
+
+<div class="mermaid">
+%%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
+flowchart LR
+    %% Section: Other (36 nodes, 22 edges)
+    subgraph other_e2e_sequential_operations_spec_ts_9bfb25fc["e2e/sequential-operations.spec.ts"]
+        e2e_sequential_operations_spec_checknomultiplest_74687c57("checkNoMultipleStreams()<br/><small>e2e/sequential-operations.spec.ts</small>")
+        e2e_sequential_operations_spec_loadfile_ba66268b("loadFile()<br/><small>e2e/sequential-operations.spec.ts</small>")
+        e2e_sequential_operations_spec_parsetime_cbaa92e7("parseTime()<br/><small>e2e/sequential-operations.spec.ts</small>")
+        e2e_sequential_operations_spec_53ab6fbc("sequential-operations.spec.ts")
+    end
+    subgraph other_deploy_sh_f96331fb["deploy.sh"]
+        home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66("deploy.sh script<br/><small>deploy.sh</small>")
+        deploy_build_version_93a58c4f("build_version()<br/><small>deploy.sh</small>")
+        deploy_b0d51b9f("deploy.sh")
+    end
+    subgraph other_e2e_sequential_playback_spec_ts_420384b4["e2e/sequential-playback.spec.ts"]
+        e2e_sequential_playback_spec_collectsamples_42675b53("collectSamples()<br/><small>e2e/sequential-playback.spec.ts</small>")
+        e2e_sequential_playback_spec_loadfile_85ac5f6e("loadFile()<br/><small>e2e/sequential-playback.spec.ts</small>")
+        e2e_sequential_playback_spec_parsetime_1c8bcd01("parseTime()<br/><small>e2e/sequential-playback.spec.ts</small>")
+    end
+    subgraph other_e2e_playback_spec_ts_7b9f76c4["e2e/playback.spec.ts"]
+        e2e_playback_spec_parsetime_6cc5d75c("parseTime()<br/><small>e2e/playback.spec.ts</small>")
+        e2e_playback_spec_80b327fb("playback.spec.ts")
+    end
+    subgraph other_server_ts_86d1375c["server.ts"]
+        server_handletranscriptionrequest_ff2e5f6f("handleTranscriptionRequest()<br/><small>server.ts</small>")
+        server_serve_466028ec("Bun TLS Server (port 3000)<br/><small>server.ts</small>")
+    end
+    subgraph other_src_censor_worker_ts_9d4675e8["src/censor-worker.ts"]
+        src_censor_worker_decodebleep_79a6d5a0("decodeBleep()<br/><small>src/censor-worker.ts</small>")
+        src_censor_worker_rendercensored_a4655dfa("renderCensored()<br/><small>src/censor-worker.ts</small>")
+    end
+    e2e_click_1x_ru_profanity3_spec_595353a1("click-1x-ru-profanity3.spec.ts")
+    e2e_login_redirect_spec_88b485c2("login-redirect.spec.ts")
+    home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 -->|calls| deploy_build_version_93a58c4f
+    server_handletranscriptionrequest_ff2e5f6f -->|calls| server_serve_466028ec
+    src_censor_worker_decodebleep_79a6d5a0 -->|calls| src_censor_worker_rendercensored_a4655dfa
+    %% Omitted for readability: 18 nodes, 0 edges
+    class e2e_sequential_operations_spec_checknomultiplest_74687c57 test;
+    class e2e_sequential_operations_spec_loadfile_ba66268b test;
+    class e2e_sequential_operations_spec_parsetime_cbaa92e7 test;
+    class e2e_sequential_operations_spec_53ab6fbc test;
+    class home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 function;
+    class deploy_build_version_93a58c4f function;
+    class deploy_b0d51b9f function;
+    class e2e_sequential_playback_spec_collectsamples_42675b53 test;
+    class e2e_sequential_playback_spec_loadfile_85ac5f6e test;
+    class e2e_sequential_playback_spec_parsetime_1c8bcd01 test;
+    class e2e_playback_spec_parsetime_6cc5d75c test;
+    class e2e_playback_spec_80b327fb test;
+    class server_handletranscriptionrequest_ff2e5f6f function;
+    class server_serve_466028ec klass;
+    class src_censor_worker_decodebleep_79a6d5a0 function;
+    class src_censor_worker_rendercensored_a4655dfa function;
+    class e2e_click_1x_ru_profanity3_spec_595353a1 test;
+    class e2e_login_redirect_spec_88b485c2 test;
+    classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
+    classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
+    classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
+    classDef klass fill:#064e3b,stroke:#34d399,color:#d1fae5,stroke-width:1px;
+    classDef ui fill:#831843,stroke:#f472b6,color:#fce7f3,stroke-width:1px;
+    classDef module fill:#172554,stroke:#60a5fa,color:#dbeafe,stroke-width:1px;
+    classDef test fill:#3f3f46,stroke:#a1a1aa,color:#f4f4f5,stroke-width:1px;
+    classDef concept fill:#292524,stroke:#a8a29e,color:#fafaf9,stroke-dasharray:4 3;
+    classDef function fill:#0f172a,stroke:#38bdf8,color:#e0f2fe,stroke-width:1px;
+</div>
+
+<h3>Call Details</h3>
+<table class="call-table">
+<tr>
+  <th style="width:5%">#</th>
+  <th style="width:28%">Node</th>
+  <th style="width:10%">Type</th>
+  <th style="width:17%">Caller</th>
+  <th style="width:20%">Callees</th>
+  <th style="width:20%">Description</th>
+</tr>
+<tr>
+  <td>1</td>
+  <td><code>server.ts</code><br><small style="color:var(--muted)">server.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in server.ts.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>__dirname</code><br><small style="color:var(--muted)">server.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>__dirname node in server.ts.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>server</code><br><small style="color:var(--muted)">server.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>server node in server.ts.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>handleTranscriptionRequest()</code><br><small style="color:var(--muted)">server.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>Bun TLS Server (port 3000)</code><br><small style="color:var(--muted)">server.ts</small></td>
+  <td>handleTranscriptionRequest() node in server.ts.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>Bun TLS Server (port 3000)</code><br><small style="color:var(--muted)">server.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>handleTranscriptionRequest()</code><br><small style="color:var(--muted)">server.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>Bun TLS Server (port 3000) node in server.ts.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>sequential-playback.spec.ts</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in e2e/sequential-playback.spec.ts.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>parseTime() node in e2e/sequential-playback.spec.ts.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>loadFile()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>loadFile() node in e2e/sequential-playback.spec.ts.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>waitForDiagnostic()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>waitForDiagnostic() node in e2e/sequential-playback.spec.ts.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>collectSamples()</code><br><small style="color:var(--muted)">e2e/sequential-playback.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>collectSamples() node in e2e/sequential-playback.spec.ts.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>censor-worker.ts</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/censor-worker.ts.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>BleepData</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>BleepData node in src/censor-worker.ts.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>decodeBleep()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>renderCensored()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
+  <td>decodeBleep() node in src/censor-worker.ts.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>renderCensored()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>decodeBleep()</code><br><small style="color:var(--muted)">src/censor-worker.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>renderCensored() node in src/censor-worker.ts.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>sequential-operations.spec.ts</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in e2e/sequential-operations.spec.ts.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>parseTime() node in e2e/sequential-operations.spec.ts.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>checkNoMultipleStreams()</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>checkNoMultipleStreams() node in e2e/sequential-operations.spec.ts.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>loadFile()</code><br><small style="color:var(--muted)">e2e/sequential-operations.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>loadFile() node in e2e/sequential-operations.spec.ts.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>deploy.sh</code><br><small style="color:var(--muted)">deploy.sh</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>deploy.sh node in deploy.sh.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>deploy.sh script</code><br><small style="color:var(--muted)">deploy.sh</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>build_version()</code><br><small style="color:var(--muted)">deploy.sh</small></td>
+  <td>deploy.sh script node in deploy.sh.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>build_version()</code><br><small style="color:var(--muted)">deploy.sh</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>deploy.sh script</code><br><small style="color:var(--muted)">deploy.sh</small></td>
+  <td>No direct outbound edge</td>
+  <td>build_version() node in deploy.sh.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>OBRΞZ Brand Logo</code><br><small style="color:var(--muted)">public/assets/obrez-logo.png</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>OBRΞZ Brand Logo node in public/assets/obrez-logo.png.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>OBRΞZ Brand Identity</code><br><small style="color:var(--muted)">public/assets/obrez-logo.png</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>OBRΞZ Brand Identity node in public/assets/obrez-logo.png.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>playback.spec.ts</code><br><small style="color:var(--muted)">e2e/playback.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in e2e/playback.spec.ts.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/playback.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>parseTime() node in e2e/playback.spec.ts.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>settings-early.js</code><br><small style="color:var(--muted)">public/settings-early.js</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>settings-early.js node in public/settings-early.js.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>parseStack()</code><br><small style="color:var(--muted)">public/settings-early.js</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>parseStack() node in public/settings-early.js.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>README.md</code><br><small style="color:var(--muted)">docs/README.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing README.md.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>Obrez — Documentation</code><br><small style="color:var(--muted)">docs/README.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Obrez — Documentation.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>TailwindConfig</code><br><small style="color:var(--muted)">tailwind.config.js</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Reads, resolves, or persists project configuration.</td>
+</tr>
+</table>
+
+<div class="grid">
+  <div class="card">
+    <h4>Key Files</h4>
+    <table style="width:100%;font-size:0.85rem;">
+      <tr><th>File</th><th>Coverage</th></tr>
+      <tr><td><code>e2e/sequential-playback.spec.ts</code></td><td>5 nodes</td></tr>
 <tr><td><code>server.ts</code></td><td>5 nodes</td></tr>
 <tr><td><code>e2e/sequential-operations.spec.ts</code></td><td>4 nodes</td></tr>
 <tr><td><code>src/censor-worker.ts</code></td><td>4 nodes</td></tr>
 <tr><td><code>deploy.sh</code></td><td>3 nodes</td></tr>
 <tr><td><code>docs/README.md</code></td><td>2 nodes</td></tr>
 <tr><td><code>e2e/playback.spec.ts</code></td><td>2 nodes</td></tr>
+<tr><td><code>public/assets/obrez-logo.png</code></td><td>2 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x21, calls x4, defines x1, implements x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x17, calls x3, defines x1, implements x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -3832,16 +3610,16 @@ flowchart LR
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><td>Nodes</td><td>544</td></tr>
-      <tr><td>Edges</td><td>863</td></tr>
+      <tr><td>Edges</td><td>864</td></tr>
       <tr><td>Hyperedges</td><td>5</td></tr>
-      <tr><td>Communities</td><td>58</td></tr>
+      <tr><td>Communities</td><td>57</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>852</td></tr>
+      <tr><td>EXTRACTED</td><td>853</td></tr>
       <tr><td>INFERRED</td><td>11</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -3850,7 +3628,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-19 16:02 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-19 18:54 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
