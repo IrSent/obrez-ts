@@ -9,10 +9,10 @@ import { useTranscribe } from '../features/transcription/useTranscribe';
 import {
   ALL_FORMATS,
   AudioBufferSink,
+  BlobSource,
   CanvasSink,
   Input,
   InputAudioTrack,
-  ReadableStreamSource,
   WrappedAudioBuffer,
   WrappedCanvas,
 } from 'mediabunny';
@@ -52,6 +52,8 @@ export function useMediaPlayer() {
 
   const audioContextStartTimeRef = useRef<number | null>(null);
   const playbackTimeAtStartRef = useRef<number>(0);
+  // Fallback timer when AudioContext is suspended (no user gesture on reload)
+  const fallbackStartTimeRef = useRef<number | null>(null);
   const playbackSpeedRef = useRef<number>(1); // mirrors store, used in hot loops
   const sampleRateRef = useRef<number>(48000); // actual AudioContext sampleRate
   const videoFrameIteratorRef = useRef<AsyncGenerator<WrappedCanvas, void, unknown> | null>(null);
@@ -114,8 +116,16 @@ export function useMediaPlayer() {
       // - Speed change: stopAudio already captured the right time; during
       //   bootstrap wait the display is frozen briefly — acceptable (quality > speed).
       // - Seek: playbackTimeAtStartRef is set to the seek target before transitioning.
-      if (state === 'playing' && audioContextRef.current && audioContextStartTimeRef.current != null) {
-        return (audioContextRef.current.currentTime - audioContextStartTimeRef.current) * speed + playbackTimeAtStartRef.current;
+      if (state === 'playing') {
+        // Primary: use AudioContext.currentTime for accurate timing.
+        if (audioContextRef.current && audioContextStartTimeRef.current != null) {
+          return (audioContextRef.current.currentTime - audioContextStartTimeRef.current) * speed + playbackTimeAtStartRef.current;
+        }
+        // Fallback: AudioContext is suspended (no user gesture on reload).
+        // Use performance.now() to advance video time independently.
+        if (fallbackStartTimeRef.current != null) {
+          return (performance.now() - fallbackStartTimeRef.current) / 1000 * speed + playbackTimeAtStartRef.current;
+        }
       }
       return playbackTimeAtStartRef.current;
     },
@@ -371,6 +381,7 @@ export function useMediaPlayer() {
       : playbackTimeAtStartRef.current;
 
     playbackTimeAtStartRef.current = currentTime;
+    fallbackStartTimeRef.current = null; // reset fallback timer
 
     // IMMEDIATE ABORT — set before anything else so runAudioIterator
     // sees it on the very next iteration check, before creating new nodes.
@@ -624,14 +635,36 @@ export function useMediaPlayer() {
           beforeStartAudio();
         }
 
+        let audioStarted = true;
         if (audioContextRef.current?.state === 'suspended') {
-          await audioContextRef.current.resume();
+          try {
+            await audioContextRef.current.resume();
+          } catch (e) {
+            console.warn('[audio] AudioContext resume blocked (no user gesture):', e);
+          }
+          // resume() may resolve but context stays suspended (no user gesture).
+          // If still suspended, video will play using fallback timer; audio stays silent.
+          if (audioContextRef.current?.state === 'suspended') {
+            console.warn('[audio] AudioContext still suspended after resume() — video will play without audio');
+            audioStarted = false;
+          }
         }
         // startAudio() waits for PhaseVocoderNode FIFO to be ready at >1x.
         // After it resolves, audio is quality — safe to start video + time.
-        await startAudioRef.current();
+        if (audioStarted) {
+          fallbackStartTimeRef.current = null;
+        } else {
+          // Fallback timer for video-only playback without AudioContext
+          fallbackStartTimeRef.current = performance.now();
+        }
+        // Set 'playing' BEFORE startAudio so rAF loop can use fallback timer.
+        // startAudio waits up to 1s for firstBufferReady — without this, video
+        // is frozen during that wait.
         playbackStateRef.current = 'playing';
         playerActions.setIsPlaying(true);
+        if (audioStarted) {
+          await startAudioRef.current();
+        }
       } else {
         playbackStateRef.current = 'paused';
       }
@@ -1185,13 +1218,10 @@ export function useMediaPlayer() {
       playerActions.setCensoringEffects([]);
       soundEffects.triggeredEffectsRef.current.clear();
 
-      // Use ReadableStreamSource — streams from Blob without loading the whole file
-      // into memory. After OIDC redirect, the file stays in IndexedDB and we can
-      // create a new ReadableStreamSource on restore.
-      const source = new ReadableStreamSource(
-        (resource as Blob).stream(),
-        { maxCacheSize: 32 * 1024 * 1024 } // 32 MiB
-      );
+      // Use BlobSource — reads via Blob.slice() with random access.
+      // No sliding-cache problem: canDecode() can seek back freely.
+      // Memory: ReadOrchestrator caches only what's actively read (32 MiB max).
+      const source = new BlobSource(resource as Blob, { maxCacheSize: 32 * 1024 * 1024 });
       const input = new Input({ source, formats: ALL_FORMATS });
       inputRef.current = input;
       resourceRef.current = resource;
@@ -1236,10 +1266,12 @@ export function useMediaPlayer() {
         playerActions.setWarning(problemMessage);
       }
 
+      // Get sampleRate before creating AudioContext (needed for matching sampleRate)
+      const sampleRate = audioTrack ? await audioTrack.getSampleRate() : 48000;
+
       // Create AudioContext with matching sampleRate — КРИТИЧНО для правильного звука!
       const AudioContextClass = window.AudioContext || (window as any).webkitAudioContext;
       if (audioTrack) {
-        const sampleRate = await audioTrack.getSampleRate();
         audioContextRef.current = new AudioContextClass({ sampleRate });
 
        // Register and create PhaseVocoderNode for pitch-preserving time-stretch
@@ -1398,11 +1430,15 @@ export function useMediaPlayer() {
         canvasCtxRef.current = canvasRef.current.getContext('2d');
       }
 
-      // Auto-play on init: start video iterator, then use transitionRef
-      // for audio — the single-gate prevents the speed subscriber from
-      // firing its own transition concurrently.
-      if (audioContextRef.current?.state === 'running') {
+      // Always start video iterator — draws first frame as preview.
+      // Audio only starts if AudioContext is running (autoplay policy).
+      if (videoSinkRef.current) {
         await startVideoIteratorRef.current();
+      }
+      // Auto-play audio if permitted by browser (AudioContext running).
+      // The single-gate prevents the speed subscriber from firing its own
+      // transition concurrently.
+      if (audioContextRef.current?.state === 'running') {
         await transitionRef.current('playing');
       }
     } catch (error) {

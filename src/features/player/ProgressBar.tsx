@@ -5,7 +5,7 @@ import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 const ProgressBarInner = () => {
   const duration = usePlayerStore((state) => state.duration);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
-  const { seekToTime, formatSeconds, getPlaybackTime, pause } = useMediaPlayerContext();
+  const { seekToTime, formatSeconds, getPlaybackTime, pause, play } = useMediaPlayerContext();
   const isDraggingRef = useRef(false);
   const wasPlayingRef = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
@@ -71,7 +71,11 @@ const ProgressBarInner = () => {
     if (!isDraggingRef.current) return;
     isDraggingRef.current = false;
     seekFromX(clientX);
-  }, [seekFromX]);
+    // Restore playback if it was playing before the drag
+    if (wasPlayingRef.current) {
+      void play();
+    }
+  }, [seekFromX, play]);
 
   const handleDragVisualMouse = useCallback((e: MouseEvent) => {
     if (!isDraggingRef.current) return;

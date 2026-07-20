@@ -183,6 +183,7 @@ const ActionButtonsInner = () => {
     actions.setTranscriptionResults(null);
     actions.setTranscribing(false);
     actions.setCensoringEffects([]);
+    actions.setCurrentTime(0);
     actions.setDuration(0);
 
     try {
