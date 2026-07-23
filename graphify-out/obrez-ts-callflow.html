@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 544 nodes, 865 edges, 57 communities. Commit: 8e82594</p>
+<p class="subtitle">Generated from graphify knowledge graph: 546 nodes, 867 edges, 58 communities. Commit: 5382e08</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -71,7 +71,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
     <a href="#ingest-cache-update">Ingestion &amp; Updates</a>
     <a href="#serve-api">Serving API</a>
     <a href="#tests-fixtures">Tests &amp; Fixtures</a>
-    <a href="#community-57">Community 57</a>
+    <a href="#community-7">Community 7</a>
     <a href="#community-52">Community 52</a>
     <a href="#community-26">Community 26</a>
     <a href="#community-27">Community 27</a>
@@ -92,18 +92,18 @@ flowchart LR
     class BUILD_GRAPH_321CBB04 module;
     ANALYSIS_CLUSTERING_C79796DA("Analysis &amp; Clustering<br/><small>16 nodes</small>")
     class ANALYSIS_CLUSTERING_C79796DA module;
-    OUTPUTS_DOCS_ED82387C("Outputs &amp; Docs<br/><small>104 nodes</small>")
+    OUTPUTS_DOCS_ED82387C("Outputs &amp; Docs<br/><small>67 nodes</small>")
     class OUTPUTS_DOCS_ED82387C module;
-    CLI_SKILLS_9964CBB8("CLI &amp; Skill Installers<br/><small>6 nodes</small>")
+    CLI_SKILLS_9964CBB8("CLI &amp; Skill Installers<br/><small>77 nodes</small>")
     class CLI_SKILLS_9964CBB8 module;
-    INGEST_CACHE_UPDATE_FF457338("Ingestion &amp; Updates<br/><small>96 nodes</small>")
+    INGEST_CACHE_UPDATE_FF457338("Ingestion &amp; Updates<br/><small>145 nodes</small>")
     class INGEST_CACHE_UPDATE_FF457338 module;
-    SERVE_API_35EC8E86("Serving API<br/><small>68 nodes</small>")
+    SERVE_API_35EC8E86("Serving API<br/><small>30 nodes</small>")
     class SERVE_API_35EC8E86 module;
     TESTS_FIXTURES_B84B1DCC("Tests &amp; Fixtures<br/><small>12 nodes</small>")
     class TESTS_FIXTURES_B84B1DCC module;
-    COMMUNITY_57_508B74B3("Community 57<br/><small>72 nodes</small>")
-    class COMMUNITY_57_508B74B3 module;
+    COMMUNITY_7_989501FC("Community 7<br/><small>26 nodes</small>")
+    class COMMUNITY_7_989501FC module;
     COMMUNITY_52_19459BA9("Community 52<br/><small>12 nodes</small>")
     class COMMUNITY_52_19459BA9 module;
     COMMUNITY_26_029F571A("Community 26<br/><small>10 nodes</small>")
@@ -116,20 +116,20 @@ flowchart LR
     class COMMUNITY_31_2075BEB2 module;
     COMMUNITY_45_E4978FE7("Community 45<br/><small>5 nodes</small>")
     class COMMUNITY_45_E4978FE7 module;
-    OTHER_D0941E68("Other<br/><small>36 nodes</small>")
+    OTHER_D0941E68("Other<br/><small>39 nodes</small>")
     class OTHER_D0941E68 module;
-    COMMUNITY_57_508B74B3 -->|imports x22| OUTPUTS_DOCS_ED82387C
-    OUTPUTS_DOCS_ED82387C -->|imports x20| INGEST_CACHE_UPDATE_FF457338
-    SERVE_API_35EC8E86 -->|imports x16| OUTPUTS_DOCS_ED82387C
-    OUTPUTS_DOCS_ED82387C -->|imports x11| SERVE_API_35EC8E86
-    COMMUNITY_57_508B74B3 -->|imports x10| SERVE_API_35EC8E86
-    SERVE_API_35EC8E86 -->|imports x10| INGEST_CACHE_UPDATE_FF457338
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x9| COMMUNITY_57_508B74B3
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x9| SERVE_API_35EC8E86
-    COMMUNITY_57_508B74B3 -->|imports x8| INGEST_CACHE_UPDATE_FF457338
-    OUTPUTS_DOCS_ED82387C -->|imports x8| COMMUNITY_57_508B74B3
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x4| OUTPUTS_DOCS_ED82387C
-    COMMUNITY_57_508B74B3 -->|imports x3| COMMUNITY_27_99AD9ED4
+    CLI_SKILLS_9964CBB8 -->|imports x45| INGEST_CACHE_UPDATE_FF457338
+    OUTPUTS_DOCS_ED82387C -->|imports x17| INGEST_CACHE_UPDATE_FF457338
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x13| CLI_SKILLS_9964CBB8
+    COMMUNITY_7_989501FC -->|imports x10| INGEST_CACHE_UPDATE_FF457338
+    CLI_SKILLS_9964CBB8 -->|imports x9| COMMUNITY_7_989501FC
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x7| COMMUNITY_7_989501FC
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x6| OUTPUTS_DOCS_ED82387C
+    CLI_SKILLS_9964CBB8 -->|imports x4| OUTPUTS_DOCS_ED82387C
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x4| COMMUNITY_27_99AD9ED4
+    COMMUNITY_7_989501FC -->|imports x4| CLI_SKILLS_9964CBB8
+    OUTPUTS_DOCS_ED82387C -->|imports x3| CLI_SKILLS_9964CBB8
+    CLI_SKILLS_9964CBB8 -->|imports x3| COMMUNITY_27_99AD9ED4
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -146,19 +146,19 @@ flowchart LR
     <h4>Architecture Layers</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>Layer</th><th>Nodes</th><th>Communities</th></tr>
-      <tr><td>Graph Build</td><td>90</td><td><code>1, 5, 53, 34, 36, 56, 16, 32, 44, 46, 47</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>16</td><td><code>51</code></td></tr><tr><td>Outputs &amp; Docs</td><td>104</td><td><code>0, 50, 49, 9, 17, 18, 19, 42</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>6</td><td><code>24, 21</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>96</td><td><code>35, 4, 3, 10, 33, 38, 39</code></td></tr><tr><td>Serving API</td><td>68</td><td><code>2, 12, 14</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>12</td><td><code>54, 29</code></td></tr><tr><td>Community 57</td><td>72</td><td><code>57</code></td></tr><tr><td>Community 52</td><td>12</td><td><code>52</code></td></tr><tr><td>Community 26</td><td>10</td><td><code>26</code></td></tr><tr><td>Community 27</td><td>7</td><td><code>27</code></td></tr><tr><td>README</td><td>5</td><td><code>13</code></td></tr><tr><td>Community 31</td><td>5</td><td><code>31</code></td></tr><tr><td>Community 45</td><td>5</td><td><code>45</code></td></tr><tr><td>Other</td><td>36</td><td><code>6, 8, 41, 48, 28, 15, 20, 40, 55, 11, 22, 23, 25, 30, 37, 43</code></td></tr>
+      <tr><td>Graph Build</td><td>90</td><td><code>1, 5, 53, 34, 36, 56, 16, 32, 44, 46, 47</code></td></tr><tr><td>Analysis &amp; Clustering</td><td>16</td><td><code>51</code></td></tr><tr><td>Outputs &amp; Docs</td><td>67</td><td><code>50, 49, 9, 17, 18, 19, 42</code></td></tr><tr><td>CLI &amp; Skill Installers</td><td>77</td><td><code>57, 24, 21</code></td></tr><tr><td>Ingestion &amp; Updates</td><td>145</td><td><code>0, 4, 2, 3, 10, 33, 38, 39</code></td></tr><tr><td>Serving API</td><td>30</td><td><code>12, 14</code></td></tr><tr><td>Tests &amp; Fixtures</td><td>12</td><td><code>54, 29</code></td></tr><tr><td>Community 7</td><td>26</td><td><code>7</code></td></tr><tr><td>Community 52</td><td>12</td><td><code>52</code></td></tr><tr><td>Community 26</td><td>10</td><td><code>26</code></td></tr><tr><td>Community 27</td><td>7</td><td><code>27</code></td></tr><tr><td>README</td><td>5</td><td><code>13</code></td></tr><tr><td>Community 31</td><td>5</td><td><code>31</code></td></tr><tr><td>Community 45</td><td>5</td><td><code>45</code></td></tr><tr><td>Other</td><td>39</td><td><code>6, 8, 41, 48, 28, 35, 15, 20, 40, 55, 11, 22, 23, 25, 30, 37, 43</code></td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Core Flow</h4>
-    <div class="arrow-chain">Graph Build -&gt; Analysis &amp; Clustering -&gt; Outputs &amp; Docs -&gt; Ingestion &amp; Updates -&gt; Serving API -&gt; Community 57 -&gt; Community 27</div>
+    <div class="arrow-chain">Graph Build -&gt; Analysis &amp; Clustering -&gt; Outputs &amp; Docs -&gt; Ingestion &amp; Updates -&gt; CLI &amp; Skill Installers -&gt; Community 7 -&gt; Serving API</div>
   </div>
 </div>
 <div class="grid">
   <div class="card">
     <h4>Graph Report Highlights</h4>
     <ul>
-      <li>544 nodes · 865 edges · 57 communities (42 shown, 15 thin omitted)</li>
+      <li>546 nodes · 867 edges · 58 communities (43 shown, 15 thin omitted)</li>
       <li>Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)</li>
       <li>Token cost: 0 input · 0 output</li>
       <li>1. `usePlayerStore` - 35 edges</li>
@@ -732,81 +732,66 @@ flowchart LR
 
 <!-- ====== 4. Outputs & Docs ====== -->
 <h2 id="outputs-docs">4. Outputs &amp; Docs</h2>
-<p>Outputs &amp; Docs groups implementation around features, export, exportts, pipelinemd, mostly in src/export.ts, docs/export-pipeline.md, features/export/ExportModal.tsx. This section covers 104 nodes and 182 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Outputs &amp; Docs groups implementation around export, exportts, pipelinemd, docs, mostly in src/export.ts, docs/export-pipeline.md, features/export/ExportModal.tsx. This section covers 67 nodes and 78 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Outputs &amp; Docs (104 nodes, 182 edges)
-    subgraph outputs_docs_src_store_playerStore_ts_286f02f8["src/store/playerStore.ts"]
-        store_playerstore_useplayerstore_5d310b80("usePlayerStore<br/><small>src/store/playerStore.ts</small>")
-        store_playerstore_useplayeractions_2de0ac0e("usePlayerActions()<br/><small>src/store/playerStore.ts</small>")
-        store_playerstore_playeractions_14a8a298("playerActions<br/><small>src/store/playerStore.ts</small>")
-    end
-    subgraph outputs_docs_features_export_ExportModal_tsx_738013d9["features/export/ExportModal.tsx"]
-        export_exportmodal_exportbuttoninner_4a68e111("ExportButtonInner()<br/><small>features/export/ExportModal.tsx</small>")
-        export_exportmodal_exportprogressbar_da29b745("ExportProgressBar()<br/><small>features/export/ExportModal.tsx</small>")
-    end
-    subgraph outputs_docs_features_export_HeaderExportButton_4cdc8e7f["features/export/HeaderExportButton.tsx"]
-        export_headerexportbutton_headerexportbuttoninne_d5e26d52("HeaderExportButtonInner()<br/><small>features/export/HeaderExportButton.tsx</small>")
-        export_headerexportbutton_headerexportprogress_6e8c2d41("HeaderExportProgress()<br/><small>features/export/HeaderExportButton.tsx</small>")
-    end
-    subgraph outputs_docs_src_App_tsx_50672f8c["src/App.tsx"]
-        src_app_46efd68e("App.tsx")
-        src_app_sessionrestorer_2dba85a1("SessionRestorer()<br/><small>src/App.tsx</small>")
-    end
-    dictionary_dictionarymanager_dictionarymanagerin_b491595a("DictionaryManagerInner()<br/><small>features/dictionary/DictionaryManager.tsx</small>")
-    file_loader_fileloader_fileloader_ab7274c4("FileLoader()<br/><small>features/file-loader/FileLoader.tsx</small>")
-    player_playbackcontrols_playbackcontrolsinner_de05d3dd("PlaybackControlsInner()<br/><small>features/player/PlaybackControls.tsx</small>")
-    player_playerdisplay_playerdisplayinner_21501529("PlayerDisplayInner()<br/><small>features/player/PlayerDisplay.tsx</small>")
-    player_progressbar_progressbarinner_03464bbb("ProgressBarInner()<br/><small>features/player/ProgressBar.tsx</small>")
-    player_volumecontrols_volumecontrolsinner_305102a4("VolumeControlsInner()<br/><small>features/player/VolumeControls.tsx</small>")
-    transcription_importprogressmodal_importprogress_f1022770("ImportProgressModalInner()<br/><small>features/transcription/ImportProgressModal.tsx</small>")
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797("useMediaPlayerContext()<br/><small>src/context/MediaPlayerContext.tsx</small>")
+    %% Section: Outputs &amp; Docs (67 nodes, 78 edges)
     src_export_writablebuffer_7323feaa("WritableBuffer<br/><small>src/export.ts</small>")
-    store_playerstore_useplayerstore_5d310b80 -->|calls| dictionary_dictionarymanager_dictionarymanagerin_b491595a
-    store_playerstore_useplayerstore_5d310b80 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
-    store_playerstore_useplayerstore_5d310b80 -->|calls| export_exportmodal_exportprogressbar_da29b745
-    store_playerstore_useplayerstore_5d310b80 -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
-    store_playerstore_useplayerstore_5d310b80 -->|calls| export_headerexportbutton_headerexportprogress_6e8c2d41
-    store_playerstore_useplayerstore_5d310b80 -->|calls| player_playbackcontrols_playbackcontrolsinner_de05d3dd
-    store_playerstore_useplayerstore_5d310b80 -->|calls| player_playerdisplay_playerdisplayinner_21501529
-    store_playerstore_useplayerstore_5d310b80 -->|calls| player_progressbar_progressbarinner_03464bbb
-    store_playerstore_useplayerstore_5d310b80 -->|calls| player_volumecontrols_volumecontrolsinner_305102a4
-    store_playerstore_useplayerstore_5d310b80 -->|calls| transcription_importprogressmodal_importprogress_f1022770
-    store_playerstore_useplayeractions_2de0ac0e -->|calls| dictionary_dictionarymanager_dictionarymanagerin_b491595a
-    store_playerstore_useplayeractions_2de0ac0e -->|calls| export_exportmodal_exportbuttoninner_4a68e111
-    store_playerstore_useplayeractions_2de0ac0e -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
-    store_playerstore_useplayeractions_2de0ac0e -->|calls| file_loader_fileloader_fileloader_ab7274c4
-    src_app_sessionrestorer_2dba85a1 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
-    player_playbackcontrols_playbackcontrolsinner_de05d3dd -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| file_loader_fileloader_fileloader_ab7274c4
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_playerdisplay_playerdisplayinner_21501529
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_progressbar_progressbarinner_03464bbb
-    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| player_volumecontrols_volumecontrolsinner_305102a4
-    store_playerstore_useplayerstore_5d310b80 -->|imports| src_app_46efd68e
-    store_playerstore_playeractions_14a8a298 -->|imports| src_app_46efd68e
-    %% Omitted for readability: 86 nodes, 2 edges
-    class store_playerstore_useplayerstore_5d310b80 ui;
-    class store_playerstore_useplayeractions_2de0ac0e ui;
-    class store_playerstore_playeractions_14a8a298 function;
-    class export_exportmodal_exportbuttoninner_4a68e111 ui;
-    class export_exportmodal_exportprogressbar_da29b745 ui;
-    class export_headerexportbutton_headerexportbuttoninne_d5e26d52 ui;
-    class export_headerexportbutton_headerexportprogress_6e8c2d41 ui;
-    class src_app_46efd68e ui;
-    class src_app_sessionrestorer_2dba85a1 ui;
-    class dictionary_dictionarymanager_dictionarymanagerin_b491595a ui;
-    class file_loader_fileloader_fileloader_ab7274c4 ui;
-    class player_playbackcontrols_playbackcontrolsinner_de05d3dd ui;
-    class player_playerdisplay_playerdisplayinner_21501529 ui;
-    class player_progressbar_progressbarinner_03464bbb ui;
-    class player_volumecontrols_volumecontrolsinner_305102a4 ui;
-    class transcription_importprogressmodal_importprogress_f1022770 ui;
-    class context_mediaplayercontext_usemediaplayercontext_6e6b7797 ui;
+    src_export_c368fe7e("export.ts")
+    src_export_updatephase_c6e0f7ba("updatePhase()<br/><small>src/export.ts</small>")
+    src_export_computesegmentboundaries_d502f2ef("computeSegmentBoundaries()<br/><small>src/export.ts</small>")
+    src_export_ensurebleepdecoded_9eba25a0("ensureBleepDecoded()<br/><small>src/export.ts</small>")
+    src_export_getsoundeffects_50277d47("getSoundEffects()<br/><small>src/export.ts</small>")
+    src_export_makeinitialphases_6b4a2237("makeInitialPhases()<br/><small>src/export.ts</small>")
+    src_export_initprogress_edcd6bab("initProgress()<br/><small>src/export.ts</small>")
+    src_export_exportcensoredvideo_797af8f9("exportCensoredVideo()<br/><small>src/export.ts</small>")
+    src_export_writablebuffer_write_1d582991("write()<br/><small>src/export.ts</small>")
+    src_export_setelapsed_38eca117("setElapsed()<br/><small>src/export.ts</small>")
+    src_export_pickvideocodec_929c49ac("pickVideoCodec()<br/><small>src/export.ts</small>")
+    src_export_pickaudiocodec_0fc22cac("pickAudioCodec()<br/><small>src/export.ts</small>")
+    src_export_writablebuffer_collectedframescount_782c9507("collectedFramesCount()<br/><small>src/export.ts</small>")
+    src_export_writablebuffer_constructor_90673721("constructor()<br/><small>src/export.ts</small>")
+    src_export_writablebuffer_ensure_0125810b("ensure()<br/><small>src/export.ts</small>")
+    src_export_writablebuffer_finalize_3ecbb291("finalize()<br/><small>src/export.ts</small>")
+    src_export_writablebuffer_getchannel_319db124("getChannel()<br/><small>src/export.ts</small>")
+    src_export_makeinitialphases_6b4a2237 -->|calls| src_export_initprogress_edcd6bab
+    src_export_updatephase_c6e0f7ba -->|calls| src_export_exportcensoredvideo_797af8f9
+    src_export_updatephase_c6e0f7ba -->|calls| src_export_writablebuffer_write_1d582991
+    src_export_setelapsed_38eca117 -->|calls| src_export_writablebuffer_write_1d582991
+    src_export_initprogress_edcd6bab -->|calls| src_export_exportcensoredvideo_797af8f9
+    src_export_ensurebleepdecoded_9eba25a0 -->|calls| src_export_exportcensoredvideo_797af8f9
+    src_export_getsoundeffects_50277d47 -->|calls| src_export_exportcensoredvideo_797af8f9
+    src_export_computesegmentboundaries_d502f2ef -->|calls| src_export_exportcensoredvideo_797af8f9
+    src_export_pickvideocodec_929c49ac -->|calls| src_export_exportcensoredvideo_797af8f9
+    src_export_pickaudiocodec_0fc22cac -->|calls| src_export_exportcensoredvideo_797af8f9
+    src_export_writablebuffer_7323feaa -->|method| src_export_writablebuffer_collectedframescount_782c9507
+    src_export_writablebuffer_7323feaa -->|method| src_export_writablebuffer_constructor_90673721
+    src_export_writablebuffer_7323feaa -->|method| src_export_writablebuffer_ensure_0125810b
+    src_export_writablebuffer_7323feaa -->|method| src_export_writablebuffer_finalize_3ecbb291
+    src_export_writablebuffer_7323feaa -->|method| src_export_writablebuffer_getchannel_319db124
+    src_export_writablebuffer_7323feaa -->|method| src_export_writablebuffer_write_1d582991
+    src_export_writablebuffer_ensure_0125810b -->|calls| src_export_writablebuffer_write_1d582991
+    %% Omitted for readability: 49 nodes, 0 edges
     class src_export_writablebuffer_7323feaa klass;
+    class src_export_c368fe7e module;
+    class src_export_updatephase_c6e0f7ba function;
+    class src_export_computesegmentboundaries_d502f2ef function;
+    class src_export_ensurebleepdecoded_9eba25a0 function;
+    class src_export_getsoundeffects_50277d47 function;
+    class src_export_makeinitialphases_6b4a2237 function;
+    class src_export_initprogress_edcd6bab function;
+    class src_export_exportcensoredvideo_797af8f9 function;
+    class src_export_writablebuffer_write_1d582991 function;
+    class src_export_setelapsed_38eca117 function;
+    class src_export_pickvideocodec_929c49ac function;
+    class src_export_pickaudiocodec_0fc22cac function;
+    class src_export_writablebuffer_collectedframescount_782c9507 function;
+    class src_export_writablebuffer_constructor_90673721 function;
+    class src_export_writablebuffer_ensure_0125810b function;
+    class src_export_writablebuffer_finalize_3ecbb291 function;
+    class src_export_writablebuffer_getchannel_319db124 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -830,166 +815,198 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>export.ts</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
+  <td><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportPhase</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>HeaderExportButton.tsx</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small><br>+1 more</td>
+  <td>Module file in src/export.ts.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>makeInitialPhases()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>DictionaryManagerInner()</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>export.ts</code><br><small style="color:var(--muted)">src/export.ts</small><br>+16 more</td>
-  <td>usePlayerStore node in src/store/playerStore.ts.</td>
+  <td><code>initProgress()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>makeInitialPhases() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>playerActions</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>updatePhase()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>export.ts</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small><br>+2 more</td>
-  <td>playerActions node in src/store/playerStore.ts.</td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>write()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>updatePhase() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>setElapsed()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>DictionaryManagerInner()</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br>+4 more</td>
-  <td>usePlayerActions() node in src/store/playerStore.ts.</td>
+  <td><code>write()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>setElapsed() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>playerActions</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><code>ExportButton</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+13 more</td>
-  <td>Module file in src/App.tsx.</td>
+  <td><code>initProgress()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>makeInitialPhases()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>initProgress() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>DEFAULT_DICTIONARIES</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ensureBleepDecoded()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>DEFAULT_DICTIONARIES node in src/App.tsx.</td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>ensureBleepDecoded() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>SessionRestorer()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>getSoundEffects()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td>SessionRestorer() node in src/App.tsx.</td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>getSoundEffects() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>App()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>computeSegmentBoundaries()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>main.tsx</code><br><small style="color:var(--muted)">src/main.tsx</small></td>
-  <td>App() node in src/App.tsx.</td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>computeSegmentBoundaries() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>playerActions</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>ProgressBar</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small><br>+3 more</td>
-  <td>Module file in features/player/PlaybackControls.tsx.</td>
+  <td><code>effectsForSegment()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>effectsForSegment() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>SPEEDS</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>renderSegment()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>SPEEDS node in features/player/PlaybackControls.tsx.</td>
+  <td>renderSegment() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>pickVideoCodec()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ChevronDownIcon() node in features/player/PlaybackControls.tsx.</td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>pickVideoCodec() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>LedIndicator()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>pickAudioCodec()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>LedIndicator() node in features/player/PlaybackControls.tsx.</td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>pickAudioCodec() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>PlaybackControlsInner()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td>PlaybackControlsInner() node in features/player/PlaybackControls.tsx.</td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>collectedFramesCount()</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>constructor()</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>ensure()</code><br><small style="color:var(--muted)">src/export.ts</small><br>+6 more</td>
+  <td>WritableBuffer node in src/export.ts.</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>PlaybackControls</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>.constructor()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
   <td>No direct outbound edge</td>
-  <td>PlaybackControls node in features/player/PlaybackControls.tsx.</td>
+  <td>.constructor() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
-  <td><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br><code>HeaderExportButton.tsx</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small><br>+3 more</td>
-  <td>Module file in src/context/MediaPlayerContext.tsx.</td>
+  <td><code>.getChannel()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>.getChannel() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>MediaPlayerContext</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>.collectedFramesCount()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
   <td>No direct outbound edge</td>
-  <td>MediaPlayerContext node in src/context/MediaPlayerContext.tsx.</td>
+  <td>.collectedFramesCount() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>MediaPlayerProvider()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>.init()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
   <td>No direct outbound edge</td>
-  <td>MediaPlayerProvider() node in src/context/MediaPlayerContext.tsx.</td>
+  <td>.init() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small><br><code>PlaybackControlsInner()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small><br>+1 more</td>
-  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+9 more</td>
-  <td>useMediaPlayerContext() node in src/context/MediaPlayerContext.tsx.</td>
+  <td><code>.ensure()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><code>write()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>.ensure() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>DictionaryManagerInner()</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>.write()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ensure()</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>setElapsed()</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>updatePhase()</code><br><small style="color:var(--muted)">src/export.ts</small><br>+1 more</td>
   <td>No direct outbound edge</td>
-  <td>DictionaryManagerInner() node in features/dictionary/DictionaryManager.tsx.</td>
+  <td>.write() node in src/export.ts.</td>
 </tr>
 <tr>
   <td>20</td>
+  <td><code>.wait()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>.wait() node in src/export.ts.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>.markDone()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>.markDone() node in src/export.ts.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>.finalize()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>WritableBuffer</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>.finalize() node in src/export.ts.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>computeSegmentBoundaries()</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>ensureBleepDecoded()</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>getSoundEffects()</code><br><small style="color:var(--muted)">src/export.ts</small><br>+4 more</td>
+  <td><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>HeaderExportButton.tsx</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
+  <td>Exports documentation data to a target format.</td>
+</tr>
+<tr>
+  <td>24</td>
   <td><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>export.ts</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small><br>+4 more</td>
+  <td><code>export.ts</code><br><small style="color:var(--muted)">src/export.ts</small><br><code>exportCensoredVideo()</code><br><small style="color:var(--muted)">src/export.ts</small></td>
   <td><code>PhaseStatus</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
   <td>Module file in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>25</td>
   <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -997,7 +1014,7 @@ flowchart LR
   <td>CloseIcon() node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>26</td>
   <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -1005,7 +1022,7 @@ flowchart LR
   <td>DownloadIcon() node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>27</td>
   <td><code>PhaseIcon()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -1013,40 +1030,8 @@ flowchart LR
   <td>PhaseIcon() node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
-  <td>24</td>
-  <td><code>ExportProgressBar()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CODEC_LABELS node in features/export/ExportModal.tsx.</td>
-</tr>
-<tr>
-  <td>26</td>
-  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>codecLabel() node in features/export/ExportModal.tsx.</td>
-</tr>
-<tr>
-  <td>27</td>
-  <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
   <td>28</td>
-  <td><code>ExportModalProps</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
+  <td><code>ExportProgressBar()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
@@ -1054,19 +1039,19 @@ flowchart LR
 </tr>
 <tr>
   <td>29</td>
-  <td><code>ExportModal</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
+  <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
+  <td>CODEC_LABELS node in features/export/ExportModal.tsx.</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
+  <td>codecLabel() node in features/export/ExportModal.tsx.</td>
 </tr>
 </table>
 
@@ -1077,47 +1062,100 @@ flowchart LR
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>src/export.ts</code></td><td>23 nodes</td></tr>
 <tr><td><code>docs/export-pipeline.md</code></td><td>18 nodes</td></tr>
-<tr><td><code>features/export/ExportModal.tsx</code></td><td>12 nodes</td></tr>
-<tr><td><code>features/export/HeaderExportButton.tsx</code></td><td>6 nodes</td></tr>
-<tr><td><code>features/player/PlaybackControls.tsx</code></td><td>6 nodes</td></tr>
-<tr><td><code>src/App.tsx</code></td><td>4 nodes</td></tr>
-<tr><td><code>src/context/MediaPlayerContext.tsx</code></td><td>4 nodes</td></tr>
-<tr><td><code>features/player/PlayerDisplay.tsx</code></td><td>3 nodes</td></tr>
+<tr><td><code>features/export/ExportModal.tsx</code></td><td>11 nodes</td></tr>
+<tr><td><code>features/export/HeaderExportButton.tsx</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/types/index.ts</code></td><td>2 nodes</td></tr>
+<tr><td><code>e2e/censor-export.spec.ts</code></td><td>1 nodes</td></tr>
+<tr><td><code>public/assets/pause-icon.svg</code></td><td>1 nodes</td></tr>
+<tr><td><code>public/assets/play-icon.svg</code></td><td>1 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x66, imports x45, calls x33, imports x20. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x43, calls x11, method x9, semantically similar to x8. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 5. CLI & Skill Installers ====== -->
 <h2 id="cli-skills">5. CLI &amp; Skill Installers</h2>
-<p>CLI &amp; Skill Installers groups implementation around claudemd, key, facts, documentation, mostly in CLAUDE.md, src/main.tsx. This section covers 6 nodes and 4 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>CLI &amp; Skill Installers groups implementation around features, settings, actionbuttonstsx, settingsmodaltsx, mostly in features/action-buttons/ActionButtons.tsx, features/settings/SettingsModal.tsx, src/config.ts. This section covers 77 nodes and 156 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: CLI &amp; Skill Installers (6 nodes, 4 edges)
-    subgraph cli_skills_CLAUDE_md_27387765["CLAUDE.md"]
-        claude_f1dda22f("CLAUDE.md")
-        claude_documentation_e44b31c4("Documentation<br/><small>CLAUDE.md</small>")
-        claude_graphify_a0b0e4f3("graphify<br/><small>CLAUDE.md</small>")
-        claude_key_facts_b9274b8e("Key Facts<br/><small>CLAUDE.md</small>")
-        claude_repomix_023edf57("Repomix<br/><small>CLAUDE.md</small>")
+    %% Section: CLI &amp; Skill Installers (77 nodes, 156 edges)
+    subgraph cli_skills_features_action_buttons_ActionButtons_b3901384["features/action-buttons/ActionButtons.tsx"]
+        action_buttons_actionbuttons_78ab3197("ActionButtons.tsx")
+        action_buttons_actionbuttons_codeclabel_52e9a5e9("codecLabel()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
+        action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6("ActionButtonsInner()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
     end
-    main_main_4d9daec5("React root entry<br/><small>src/main.tsx</small>")
-    claude_f1dda22f -->|contains| claude_documentation_e44b31c4
-    claude_f1dda22f -->|contains| claude_graphify_a0b0e4f3
-    claude_f1dda22f -->|contains| claude_key_facts_b9274b8e
-    claude_f1dda22f -->|contains| claude_repomix_023edf57
-    class claude_f1dda22f concept;
-    class claude_documentation_e44b31c4 concept;
-    class claude_graphify_a0b0e4f3 concept;
-    class claude_key_facts_b9274b8e concept;
-    class claude_repomix_023edf57 concept;
-    class main_main_4d9daec5 ui;
+    subgraph cli_skills_src_utils_auth_ts_4c2a87c0["src/utils/auth.ts"]
+        utils_auth_canfreetopup_e6832bc1("canFreeTopup()<br/><small>src/utils/auth.ts</small>")
+        utils_auth_daysuntilfreetopup_c93d63d8("daysUntilFreeTopup()<br/><small>src/utils/auth.ts</small>")
+        utils_auth_formatseconds_cdef2b69("formatSeconds()<br/><small>src/utils/auth.ts</small>")
+    end
+    subgraph cli_skills_features_auth_ConfirmationModal_tsx_fb3b36f0["features/auth/ConfirmationModal.tsx"]
+        auth_confirmationmodal_formatduration_1ba061e3("formatDuration()<br/><small>features/auth/ConfirmationModal.tsx</small>")
+        auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
+    end
+    subgraph cli_skills_features_auth_LoginModal_tsx_128f6e7a["features/auth/LoginModal.tsx"]
+        auth_loginmodal_55c21e7a("LoginModal.tsx")
+        auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
+    end
+    subgraph cli_skills_features_auth_TopupModal_tsx_33f7c779["features/auth/TopupModal.tsx"]
+        auth_topupmodal_5fbdbcde("TopupModal.tsx")
+        auth_topupmodal_topupmodal_4bc16812("TopupModal()<br/><small>features/auth/TopupModal.tsx</small>")
+    end
+    debug_debugtab_debugtab_ba9945b9("DebugTab()<br/><small>features/debug/DebugTab.tsx</small>")
+    settings_settingsmodal_usercontent_d2a4d459("UserContent()<br/><small>features/settings/SettingsModal.tsx</small>")
+    src_app_46efd68e("App.tsx")
+    src_config_f55793b8("config.ts")
+    store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
+    utils_pkce_browser_generatecodechallenge_6cf9cdc6("generateCodeChallenge()<br/><small>src/utils/pkce-browser.ts</small>")
+    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
+    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| store_authstore_useauthstore_4a03c2d9
+    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_auth_canfreetopup_e6832bc1
+    auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
+    auth_confirmationmodal_confirmationmodal_8b7e668a -->|calls| store_authstore_useauthstore_4a03c2d9
+    auth_loginmodal_loginmodal_992d0af3 -->|calls| store_authstore_useauthstore_4a03c2d9
+    auth_topupmodal_topupmodal_4bc16812 -->|calls| store_authstore_useauthstore_4a03c2d9
+    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
+    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
+    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_formatseconds_cdef2b69
+    debug_debugtab_debugtab_ba9945b9 -->|calls| store_authstore_useauthstore_4a03c2d9
+    settings_settingsmodal_usercontent_d2a4d459 -->|calls| store_authstore_useauthstore_4a03c2d9
+    settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
+    settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
+    settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_formatseconds_cdef2b69
+    src_app_46efd68e -->|imports| action_buttons_actionbuttons_78ab3197
+    src_app_46efd68e -->|imports| src_config_f55793b8
+    src_app_46efd68e -->|imports| store_authstore_useauthstore_4a03c2d9
+    src_config_f55793b8 -->|imports| action_buttons_actionbuttons_78ab3197
+    src_config_f55793b8 -->|imports| auth_loginmodal_55c21e7a
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_55c21e7a
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_loginmodal_992d0af3
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_5fbdbcde
+    %% Omitted for readability: 59 nodes, 9 edges
+    class action_buttons_actionbuttons_78ab3197 ui;
+    class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
+    class action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 ui;
+    class utils_auth_canfreetopup_e6832bc1 function;
+    class utils_auth_daysuntilfreetopup_c93d63d8 function;
+    class utils_auth_formatseconds_cdef2b69 function;
+    class auth_confirmationmodal_formatduration_1ba061e3 ui;
+    class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
+    class auth_loginmodal_55c21e7a ui;
+    class auth_loginmodal_loginmodal_992d0af3 ui;
+    class auth_topupmodal_5fbdbcde ui;
+    class auth_topupmodal_topupmodal_4bc16812 ui;
+    class debug_debugtab_debugtab_ba9945b9 ui;
+    class settings_settingsmodal_usercontent_d2a4d459 ui;
+    class src_app_46efd68e ui;
+    class src_config_f55793b8 module;
+    class store_authstore_useauthstore_4a03c2d9 ui;
+    class utils_pkce_browser_generatecodechallenge_6cf9cdc6 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1141,51 +1179,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>CLAUDE.md</code><br><small style="color:var(--muted)">CLAUDE.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing CLAUDE.md.</td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+11 more</td>
+  <td>Module file in src/App.tsx.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>Key Facts</code><br><small style="color:var(--muted)">CLAUDE.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing Key Facts.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>Documentation</code><br><small style="color:var(--muted)">CLAUDE.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing Documentation.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>Repomix</code><br><small style="color:var(--muted)">CLAUDE.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing Repomix.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>graphify</code><br><small style="color:var(--muted)">CLAUDE.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing graphify.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>React root entry</code><br><small style="color:var(--muted)">src/main.tsx</small></td>
+  <td><code>DEFAULT_DICTIONARIES</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>React root entry node in src/main.tsx.</td>
+  <td>DEFAULT_DICTIONARIES node in src/App.tsx.</td>
+</tr>
+<tr>
+  <td>3</td>
+  <td><code>App()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>main.tsx</code><br><small style="color:var(--muted)">src/main.tsx</small></td>
+  <td>App() node in src/App.tsx.</td>
+</tr>
+<tr>
+  <td>4</td>
+  <td><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br>+2 more</td>
+  <td>Module file in src/config.ts.</td>
+</tr>
+<tr>
+  <td>5</td>
+  <td><code>loadBackendUrl()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small><br>+1 more</td>
+  <td>loadBackendUrl() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td>backendPath() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td>backendHeaders() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td>backendWsPath() node in src/config.ts.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
+  <td>Module file in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>FileIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FileIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>UrlIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>UrlIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>TranscribeIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TranscribeIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>DownloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>UnloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>UnloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CloseIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CODEC_LABELS node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td>codecLabel() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Exports documentation data to a target format.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>ActionButtonsInner() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>Module file in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td>formatDuration() node in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>ConfirmationModalProps</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ConfirmationModalProps node in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>formatDuration()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small></td>
+  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>ConfirmationModal() node in features/auth/ConfirmationModal.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>LoginModal.tsx</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>loadBackendUrl()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>generateCodeChallenge()</code><br><small style="color:var(--muted)">src/utils/pkce-browser.ts</small><br><code>generateCodeVerifier()</code><br><small style="color:var(--muted)">src/utils/pkce-browser.ts</small><br>+3 more</td>
+  <td>Module file in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>LoginModalProps</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>LoginModalProps node in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>LoginModal()</code><br><small style="color:var(--muted)">features/auth/LoginModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>LoginModal() node in features/auth/LoginModal.tsx.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+6 more</td>
+  <td>Module file in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+1 more</td>
+  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>BleepSoundManager</code><br><small style="color:var(--muted)">features/bleep-sounds/BleepSoundManager.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td>BleepSoundManager node in features/bleep-sounds/BleepSoundManager.tsx.</td>
 </tr>
 </table>
 
@@ -1194,89 +1424,91 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>CLAUDE.md</code></td><td>5 nodes</td></tr>
-<tr><td><code>src/main.tsx</code></td><td>1 nodes</td></tr>
+      <tr><td><code>features/action-buttons/ActionButtons.tsx</code></td><td>11 nodes</td></tr>
+<tr><td><code>features/settings/SettingsModal.tsx</code></td><td>11 nodes</td></tr>
+<tr><td><code>CLAUDE.md</code></td><td>5 nodes</td></tr>
+<tr><td><code>src/config.ts</code></td><td>5 nodes</td></tr>
+<tr><td><code>features/settings/HourPackCard.tsx</code></td><td>5 nodes</td></tr>
+<tr><td><code>src/store/authStore.ts</code></td><td>5 nodes</td></tr>
+<tr><td><code>features/auth/ConfirmationModal.tsx</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/utils/auth.ts</code></td><td>4 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x4. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x56, imports x48, imports x31, calls x16. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 6. Ingestion & Updates ====== -->
 <h2 id="ingest-cache-update">6. Ingestion &amp; Updates</h2>
-<p>Ingestion &amp; Updates groups implementation around bleep, audio, features, enginemd, mostly in docs/audio-engine.md, features/bleep-sounds/bleep-icons.tsx, src/audio.ts. This section covers 96 nodes and 138 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Ingestion &amp; Updates groups implementation around features, bleep, audio, enginemd, mostly in docs/audio-engine.md, features/bleep-sounds/bleep-icons.tsx, src/audio.ts. This section covers 145 nodes and 270 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Ingestion &amp; Updates (96 nodes, 138 edges)
-    subgraph ingest_cache_update_features_bleep_sounds_BleepS_943b41d6["features/bleep-sounds/BleepSoundManager.tsx"]
-        bleep_sounds_bleepsoundmanager_ce67c1cd("BleepSoundManager.tsx")
-        bleep_sounds_bleepsoundmanager_addmodal_95ad1869("AddModal<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
-        bleep_sounds_bleepsoundmanager_soundrow_28f1f91f("SoundRow<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
-        bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004("BleepSoundManagerInner()<br/><small>features/bleep-sounds/BleepSoundManager.tsx</small>")
-    end
-    subgraph ingest_cache_update_src_config_ts_28a660d5["src/config.ts"]
-        src_config_f55793b8("config.ts")
-        src_config_backendheaders_fa10039f("backendHeaders()<br/><small>src/config.ts</small>")
-        src_config_backendpath_d9def98d("backendPath()<br/><small>src/config.ts</small>")
-        src_config_loadbackendurl_3b6835f4("loadBackendUrl()<br/><small>src/config.ts</small>")
+    %% Section: Ingestion &amp; Updates (145 nodes, 270 edges)
+    subgraph ingest_cache_update_src_aho_corasick_ts_eb8179ba["src/aho-corasick.ts"]
+        src_aho_corasick_fastahoscanner_fd14c0f9("FastAhoScanner<br/><small>src/aho-corasick.ts</small>")
+        src_aho_corasick_fastahoscanner_constructor_08313838("constructor()<br/><small>src/aho-corasick.ts</small>")
+        src_aho_corasick_fastahoscanner_findmatches_3a953abd("findMatches()<br/><small>src/aho-corasick.ts</small>")
+        src_aho_corasick_fastahoscanner_getfailid_749f94d8("getFailId()<br/><small>src/aho-corasick.ts</small>")
+        src_aho_corasick_fastahoscanner_isterminal_3023e66b("isTerminal()<br/><small>src/aho-corasick.ts</small>")
     end
     subgraph ingest_cache_update_src_audio_ts_0fb70127["src/audio.ts"]
         src_audio_writestring_5a146658("writeString()<br/><small>src/audio.ts</small>")
         src_audio_audiobufferstowav_9999abcc("audioBuffersToWav()<br/><small>src/audio.ts</small>")
         src_audio_yieldtoeventloop_8d893174("yieldToEventLoop()<br/><small>src/audio.ts</small>")
     end
-    subgraph ingest_cache_update_features_bleep_sounds_bleep_32d32f75["features/bleep-sounds/bleep-audio.ts"]
-        bleep_sounds_bleep_audio_isremoteurl_a835d72c("isRemoteUrl()<br/><small>features/bleep-sounds/bleep-audio.ts</small>")
-        bleep_sounds_bleep_audio_decodeaudio_dffa99f0("decodeAudio()<br/><small>features/bleep-sounds/bleep-audio.ts</small>")
+    subgraph ingest_cache_update_src_context_MediaPlayerConte_8d11f693["src/context/MediaPlayerContext.tsx"]
+        context_mediaplayercontext_usemediaplayercontext_6e6b7797("useMediaPlayerContext()<br/><small>src/context/MediaPlayerContext.tsx</small>")
+        context_mediaplayercontext_a34c7b7e("MediaPlayerContext.tsx")
+        context_mediaplayercontext_mediaplayerprovider_e13e53a9("MediaPlayerProvider()<br/><small>src/context/MediaPlayerContext.tsx</small>")
     end
-    subgraph ingest_cache_update_src_hooks_useMediaPlayer_ts_92a42b6f["src/hooks/useMediaPlayer.ts"]
-        hooks_usemediaplayer_07b7c638("useMediaPlayer.ts")
-        hooks_usemediaplayer_usemediaplayer_659ae66d("useMediaPlayer()<br/><small>src/hooks/useMediaPlayer.ts</small>")
-    end
-    player_soundeffects_createsoundeffectsengine_c28732af("createSoundEffectsEngine()<br/><small>features/player/SoundEffects.ts</small>")
-    transcription_usetranscribe_usetranscribe_366b18b5("useTranscribe()<br/><small>features/transcription/useTranscribe.ts</small>")
-    utils_uid_uid_c33be6df("uid()<br/><small>src/utils/uid.ts</small>")
-    hooks_usemediaplayer_usemediaplayer_659ae66d -->|calls| player_soundeffects_createsoundeffectsengine_c28732af
-    hooks_usemediaplayer_usemediaplayer_659ae66d -->|calls| transcription_usetranscribe_usetranscribe_366b18b5
+    bleep_sounds_bleepsoundmanager_ce67c1cd("BleepSoundManager.tsx")
+    export_exportmodal_exportbuttoninner_4a68e111("ExportButtonInner()<br/><small>features/export/ExportModal.tsx</small>")
+    export_headerexportbutton_headerexportbuttoninne_d5e26d52("HeaderExportButtonInner()<br/><small>features/export/HeaderExportButton.tsx</small>")
+    player_playbackcontrols_d4b6c667("PlaybackControls.tsx")
+    player_playerdisplay_96c04d4c("PlayerDisplay.tsx")
+    src_app_sessionrestorer_2dba85a1("SessionRestorer()<br/><small>src/App.tsx</small>")
+    hooks_usemediaplayer_usemediaplayer_659ae66d("useMediaPlayer()<br/><small>src/hooks/useMediaPlayer.ts</small>")
+    src_app_sessionrestorer_2dba85a1 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_constructor_08313838
+    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_findmatches_3a953abd
+    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_getfailid_749f94d8
+    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_isterminal_3023e66b
+    src_aho_corasick_fastahoscanner_getfailid_749f94d8 -->|calls| src_aho_corasick_fastahoscanner_findmatches_3a953abd
+    src_aho_corasick_fastahoscanner_isterminal_3023e66b -->|calls| src_aho_corasick_fastahoscanner_findmatches_3a953abd
     src_audio_writestring_5a146658 -->|calls| src_audio_audiobufferstowav_9999abcc
     src_audio_yieldtoeventloop_8d893174 -->|calls| src_audio_audiobufferstowav_9999abcc
-    bleep_sounds_bleepsoundmanager_addmodal_95ad1869 -->|calls| utils_uid_uid_c33be6df
-    bleep_sounds_bleepsoundmanager_soundrow_28f1f91f -->|calls| bleep_sounds_bleep_audio_isremoteurl_a835d72c
-    bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 -->|calls| bleep_sounds_bleep_audio_decodeaudio_dffa99f0
-    src_config_f55793b8 -->|imports| hooks_usemediaplayer_07b7c638
-    src_config_loadbackendurl_3b6835f4 -->|imports| hooks_usemediaplayer_07b7c638
-    src_config_backendpath_d9def98d -->|imports| hooks_usemediaplayer_07b7c638
-    src_config_backendheaders_fa10039f -->|imports| hooks_usemediaplayer_07b7c638
-    hooks_usemediaplayer_07b7c638 -->|imports| player_soundeffects_createsoundeffectsengine_c28732af
-    hooks_usemediaplayer_07b7c638 -->|imports| src_audio_audiobufferstowav_9999abcc
-    hooks_usemediaplayer_07b7c638 -->|imports| transcription_usetranscribe_usetranscribe_366b18b5
-    bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_audio_decodeaudio_dffa99f0
-    bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| bleep_sounds_bleep_audio_isremoteurl_a835d72c
-    bleep_sounds_bleepsoundmanager_ce67c1cd -->|imports| utils_uid_uid_c33be6df
-    %% Omitted for readability: 78 nodes, 0 edges
-    class bleep_sounds_bleepsoundmanager_ce67c1cd ui;
-    class bleep_sounds_bleepsoundmanager_addmodal_95ad1869 ui;
-    class bleep_sounds_bleepsoundmanager_soundrow_28f1f91f ui;
-    class bleep_sounds_bleepsoundmanager_bleepsoundmanager_8b978004 ui;
-    class src_config_f55793b8 module;
-    class src_config_backendheaders_fa10039f function;
-    class src_config_backendpath_d9def98d function;
-    class src_config_loadbackendurl_3b6835f4 function;
+    context_mediaplayercontext_mediaplayerprovider_e13e53a9 -->|calls| hooks_usemediaplayer_usemediaplayer_659ae66d
+    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
+    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
+    context_mediaplayercontext_a34c7b7e -->|imports| hooks_usemediaplayer_usemediaplayer_659ae66d
+    context_mediaplayercontext_a34c7b7e -->|imports| player_playbackcontrols_d4b6c667
+    context_mediaplayercontext_a34c7b7e -->|imports| player_playerdisplay_96c04d4c
+    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|imports| player_playbackcontrols_d4b6c667
+    context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|imports| player_playerdisplay_96c04d4c
+    %% Omitted for readability: 127 nodes, 0 edges
+    class src_aho_corasick_fastahoscanner_fd14c0f9 klass;
+    class src_aho_corasick_fastahoscanner_constructor_08313838 function;
+    class src_aho_corasick_fastahoscanner_findmatches_3a953abd function;
+    class src_aho_corasick_fastahoscanner_getfailid_749f94d8 function;
+    class src_aho_corasick_fastahoscanner_isterminal_3023e66b function;
     class src_audio_writestring_5a146658 function;
     class src_audio_audiobufferstowav_9999abcc function;
     class src_audio_yieldtoeventloop_8d893174 function;
-    class bleep_sounds_bleep_audio_isremoteurl_a835d72c function;
-    class bleep_sounds_bleep_audio_decodeaudio_dffa99f0 function;
-    class hooks_usemediaplayer_07b7c638 ui;
+    class context_mediaplayercontext_usemediaplayercontext_6e6b7797 ui;
+    class context_mediaplayercontext_a34c7b7e ui;
+    class context_mediaplayercontext_mediaplayerprovider_e13e53a9 ui;
+    class bleep_sounds_bleepsoundmanager_ce67c1cd ui;
+    class export_exportmodal_exportbuttoninner_4a68e111 ui;
+    class export_headerexportbutton_headerexportbuttoninne_d5e26d52 ui;
+    class player_playbackcontrols_d4b6c667 ui;
+    class player_playerdisplay_96c04d4c ui;
+    class src_app_sessionrestorer_2dba85a1 ui;
     class hooks_usemediaplayer_usemediaplayer_659ae66d ui;
-    class player_soundeffects_createsoundeffectsengine_c28732af function;
-    class transcription_usetranscribe_usetranscribe_366b18b5 ui;
-    class utils_uid_uid_c33be6df function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1300,70 +1532,22 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
+  <td><code>SessionRestorer()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br>+1 more</td>
-  <td>Module file in src/config.ts.</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td>SessionRestorer() node in src/App.tsx.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>loadBackendUrl()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br>+1 more</td>
-  <td>loadBackendUrl() node in src/config.ts.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br>+1 more</td>
-  <td>backendPath() node in src/config.ts.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br>+1 more</td>
-  <td>backendHeaders() node in src/config.ts.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
-  <td>backendWsPath() node in src/config.ts.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendWsPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+2 more</td>
-  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioDiagnostic.ts</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small><br>+7 more</td>
-  <td>Module file in src/hooks/useMediaPlayer.ts.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>createSoundEffectsEngine()</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small><br><code>useTranscribe()</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
-  <td>useMediaPlayer() node in src/hooks/useMediaPlayer.ts.</td>
-</tr>
-<tr>
-  <td>8</td>
   <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
+  <td>External entry / no inbound edge</td>
   <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
   <td>Module file in src/audio.ts.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>3</td>
   <td><code>writeString()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1371,7 +1555,7 @@ flowchart LR
   <td>Verifies imports, entry points, or version behavior.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>4</td>
   <td><code>yieldToEventLoop()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
@@ -1379,7 +1563,7 @@ flowchart LR
   <td>yieldToEventLoop() node in src/audio.ts.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>5</td>
   <td><code>WavProgress</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -1387,156 +1571,204 @@ flowchart LR
   <td>WavProgress node in src/audio.ts.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>6</td>
   <td><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
   <td><span class="tag tag-func">Function</span></td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>writeString()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>yieldToEventLoop()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
-  <td><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td><code>writeString()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>yieldToEventLoop()</code><br><small style="color:var(--muted)">src/audio.ts</small></td>
+  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
   <td>audioBuffersToWav() node in src/audio.ts.</td>
 </tr>
 <tr>
-  <td>13</td>
-  <td><code>DictionaryManager.tsx</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
+  <td>7</td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br>+1 more</td>
+  <td>External entry / no inbound edge</td>
+  <td><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br>+4 more</td>
+  <td>Module file in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>MediaPlayerContext</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in features/dictionary/DictionaryManager.tsx.</td>
+  <td>MediaPlayerContext node in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>MediaPlayerProvider()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td>MediaPlayerProvider() node in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>SessionRestorer()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+10 more</td>
+  <td>useMediaPlayerContext() node in src/context/MediaPlayerContext.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>DictionaryManagerInner()</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>DictionaryManagerInner() node in features/dictionary/DictionaryManager.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>DEFAULT_DICTIONARIES</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small></td>
+  <td><code>HeaderExportButtonInner()</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>DEFAULT_DICTIONARIES node in features/dictionary/DictionaryManager.tsx.</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>SoundEffects.ts</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>Module file in features/player/SoundEffects.ts.</td>
+  <td><code>HeaderExportProgress()</code><br><small style="color:var(--muted)">features/export/HeaderExportButton.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>SoundEffectsDeps</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>SoundEffectsDeps node in features/player/SoundEffects.ts.</td>
+  <td><code>FileLoader.tsx</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>Module file in features/file-loader/FileLoader.tsx.</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>SoundEffectsEngine</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>SoundEffectsEngine node in features/player/SoundEffects.ts.</td>
+  <td><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>FileLoader() node in features/file-loader/FileLoader.tsx.</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>createSoundEffectsEngine()</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>createSoundEffectsEngine() node in features/player/SoundEffects.ts.</td>
+  <td><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>playerActions</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br>+5 more</td>
+  <td>Module file in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>useTranscribe.ts</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td><code>SPEEDS</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>audio.ts</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>audioBuffersToWav()</code><br><small style="color:var(--muted)">src/audio.ts</small><br><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br>+5 more</td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in features/transcription/useTranscribe.ts.</td>
+  <td>SPEEDS node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>TranscribeDeps</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
+  <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>TranscribeDeps node in features/transcription/useTranscribe.ts.</td>
+  <td>ChevronDownIcon() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>useTranscribe()</code><br><small style="color:var(--muted)">features/transcription/useTranscribe.ts</small></td>
+  <td><code>LedIndicator()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>useMediaPlayer()</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>useTranscribe() node in features/transcription/useTranscribe.ts.</td>
+  <td>LedIndicator() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>PlaybackControlsInner()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>backendHeaders()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>backendPath()</code><br><small style="color:var(--muted)">src/config.ts</small><br><code>config.ts</code><br><small style="color:var(--muted)">src/config.ts</small><br>+1 more</td>
-  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td>Module file in src/store/authStore.ts.</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>PlaybackControlsInner() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>AuthState</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AuthState node in src/store/authStore.ts.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>AuthActions</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AuthActions node in src/store/authStore.ts.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>AuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>PlaybackControls</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>AuthStore node in src/store/authStore.ts.</td>
+  <td>PlaybackControls node in features/player/PlaybackControls.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>playerActions</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br>+6 more</td>
+  <td>Module file in features/player/PlayerDisplay.tsx.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>PlayerDisplayInner() node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><code>PlayerDisplay</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>AuthUser node in src/types/index.ts.</td>
+  <td>PlayerDisplay node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>audioDiagnostic.ts</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>Module file in src/utils/audioDiagnostic.ts.</td>
+  <td><code>ProgressBar.tsx</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>playerActions</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>Module file in features/player/ProgressBar.tsx.</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>Window</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Window node in src/utils/audioDiagnostic.ts.</td>
+  <td><code>ProgressBarInner()</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
+  <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>ProgressBarInner() node in features/player/ProgressBar.tsx.</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>AudioDiagnosticDeps</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
+  <td><code>ProgressBar</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td>No direct outbound edge</td>
-  <td>AudioDiagnosticDeps node in src/utils/audioDiagnostic.ts.</td>
+  <td>ProgressBar node in features/player/ProgressBar.tsx.</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>startAudioDiagnostic()</code><br><small style="color:var(--muted)">src/utils/audioDiagnostic.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>startAudioDiagnostic() node in src/utils/audioDiagnostic.ts.</td>
+  <td><code>SoundEffects.ts</code><br><small style="color:var(--muted)">features/player/SoundEffects.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>useMediaPlayer.ts</code><br><small style="color:var(--muted)">src/hooks/useMediaPlayer.ts</small><br>+1 more</td>
+  <td>Module file in features/player/SoundEffects.ts.</td>
 </tr>
 </table>
 
@@ -1548,94 +1780,68 @@ flowchart LR
       <tr><td><code>docs/audio-engine.md</code></td><td>30 nodes</td></tr>
 <tr><td><code>features/bleep-sounds/bleep-icons.tsx</code></td><td>11 nodes</td></tr>
 <tr><td><code>src/audio.ts</code></td><td>9 nodes</td></tr>
-<tr><td><code>features/bleep-sounds/BleepSoundManager.tsx</code></td><td>7 nodes</td></tr>
-<tr><td><code>src/config.ts</code></td><td>5 nodes</td></tr>
-<tr><td><code>features/player/SoundEffects.ts</code></td><td>4 nodes</td></tr>
-<tr><td><code>src/store/authStore.ts</code></td><td>4 nodes</td></tr>
-<tr><td><code>src/utils/audioDiagnostic.ts</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/store/bleepDb.ts</code></td><td>9 nodes</td></tr>
+<tr><td><code>src/types/index.ts</code></td><td>9 nodes</td></tr>
+<tr><td><code>src/aho-corasick.ts</code></td><td>6 nodes</td></tr>
+<tr><td><code>features/bleep-sounds/BleepSoundManager.tsx</code></td><td>6 nodes</td></tr>
+<tr><td><code>features/player/PlaybackControls.tsx</code></td><td>6 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x73, imports x36, imports x14, calls x11. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x101, imports x67, calls x50, imports x38. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
 
 <!-- ====== 7. Serving API ====== -->
 <h2 id="serve-api">7. Serving API</h2>
-<p>Serving API groups implementation around api, referencemd, docs, store, mostly in docs/api-reference.md, src/types/index.ts, src/store/bleepDb.ts. This section covers 68 nodes and 102 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Serving API groups implementation around api, referencemd, docs, bleep, mostly in docs/api-reference.md, src/aho-corasick.ts, src/search.worker.ts. This section covers 30 nodes and 28 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Serving API (68 nodes, 102 edges)
-    subgraph serve_api_src_aho_corasick_ts_862030a9["src/aho-corasick.ts"]
-        src_aho_corasick_fastahoscanner_fd14c0f9("FastAhoScanner<br/><small>src/aho-corasick.ts</small>")
-        src_aho_corasick_566889b6("aho-corasick.ts")
-        aho_corasick_fastahoscanner_c2d2696f("FastAhoScanner class<br/><small>src/aho-corasick.ts</small>")
-        src_aho_corasick_fastahoscanner_constructor_08313838("constructor()<br/><small>src/aho-corasick.ts</small>")
-        src_aho_corasick_fastahoscanner_findmatches_3a953abd("findMatches()<br/><small>src/aho-corasick.ts</small>")
-        src_aho_corasick_fastahoscanner_getfailid_749f94d8("getFailId()<br/><small>src/aho-corasick.ts</small>")
-        src_aho_corasick_fastahoscanner_isterminal_3023e66b("isTerminal()<br/><small>src/aho-corasick.ts</small>")
+    %% Section: Serving API (30 nodes, 28 edges)
+    subgraph serve_api_docs_api_reference_md_05dada7d["docs/api-reference.md"]
+        docs_api_reference_api_reference_b5f63ac9("API Reference<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_actions_699f69b3("Actions<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_audio_utilities_src_audio_ts_7eebbf19("Audio Utilities (src/audio.ts)<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_auth_7bbb9abe("Auth<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_auth_utilities_src_utils_auth_09661315("Auth Utilities (src/utils/auth.ts)<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_bleep_sound_i_o_src_features_805815fb("Bleep Sound I/O (src/features/bleep-so...<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_bleep_sound_persistence_src_s_b85586e8("Bleep Sound Persistence (src/store/ble...<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_bleep_sounds_93b24550("Bleep Sounds<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_censoring_effects_49b3c16d("Censoring Effects<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_config_src_config_ts_70d5e5be("Config (src/config.ts)<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_context_e6ebf4cf("Context<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_core_types_f4c2760c("Core Types<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_dictionaries_d8972afa("Dictionaries<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_export_src_export_ts_4ab026b2("Export (src/export.ts)<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_export_progress_756ffbdb("Export Progress<br/><small>docs/api-reference.md</small>")
+        docs_api_reference_fastahoscanner_src_aho_corasi_3bf5a5a3("FastAhoScanner (src/aho-corasick.ts)<br/><small>docs/api-reference.md</small>")
     end
-    subgraph serve_api_src_store_bleepDb_ts_f8cf739c["src/store/bleepDb.ts"]
-        store_bleepdb_opendb_e0eeb76b("openDb()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_getallbleeprecords_805d5f7d("getAllBleepRecords()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_dbupdateurl_1c5e715d("dbUpdateUrl()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_deletebleeprecord_cfd695e8("deleteBleepRecord()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_putbleeprecord_5be2dcdf("putBleepRecord()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_updatebleeplabel_74bf3c03("updateBleepLabel()<br/><small>src/store/bleepDb.ts</small>")
-        store_bleepdb_upsertbleepdata_1b27eac6("upsertBleepData()<br/><small>src/store/bleepDb.ts</small>")
-    end
-    subgraph serve_api_src_store_playerStore_ts_1b71190f["src/store/playerStore.ts"]
-        store_playerstore_c38d1395("playerStore.ts")
-        store_playerstore_recordstosounds_03aafac8("recordsToSounds()<br/><small>src/store/playerStore.ts</small>")
-        store_playerstore_hydratebleepsounds_1f09b1fb("hydrateBleepSounds()<br/><small>src/store/playerStore.ts</small>")
-    end
-    transcription_effectmodal_5a588a15("EffectModal.tsx")
-    store_playerstore_recordstosounds_03aafac8 -->|calls| store_playerstore_hydratebleepsounds_1f09b1fb
-    store_playerstore_hydratebleepsounds_1f09b1fb -->|calls| store_bleepdb_getallbleeprecords_805d5f7d
-    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_constructor_08313838
-    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_findmatches_3a953abd
-    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_getfailid_749f94d8
-    src_aho_corasick_fastahoscanner_fd14c0f9 -->|method| src_aho_corasick_fastahoscanner_isterminal_3023e66b
-    src_aho_corasick_fastahoscanner_getfailid_749f94d8 -->|calls| src_aho_corasick_fastahoscanner_findmatches_3a953abd
-    src_aho_corasick_fastahoscanner_isterminal_3023e66b -->|calls| src_aho_corasick_fastahoscanner_findmatches_3a953abd
-    store_bleepdb_opendb_e0eeb76b -->|calls| store_bleepdb_dbupdateurl_1c5e715d
-    store_bleepdb_opendb_e0eeb76b -->|calls| store_bleepdb_deletebleeprecord_cfd695e8
-    store_bleepdb_opendb_e0eeb76b -->|calls| store_bleepdb_getallbleeprecords_805d5f7d
-    store_bleepdb_opendb_e0eeb76b -->|calls| store_bleepdb_putbleeprecord_5be2dcdf
-    store_bleepdb_opendb_e0eeb76b -->|calls| store_bleepdb_updatebleeplabel_74bf3c03
-    store_bleepdb_opendb_e0eeb76b -->|calls| store_bleepdb_upsertbleepdata_1b27eac6
-    store_playerstore_c38d1395 -->|imports| src_aho_corasick_566889b6
-    store_playerstore_c38d1395 -->|imports| src_aho_corasick_fastahoscanner_fd14c0f9
-    store_playerstore_c38d1395 -->|imports| store_bleepdb_dbupdateurl_1c5e715d
-    store_playerstore_c38d1395 -->|imports| store_bleepdb_deletebleeprecord_cfd695e8
-    store_playerstore_c38d1395 -->|imports| store_bleepdb_getallbleeprecords_805d5f7d
-    store_playerstore_c38d1395 -->|imports| store_bleepdb_putbleeprecord_5be2dcdf
-    store_playerstore_c38d1395 -->|imports| store_bleepdb_updatebleeplabel_74bf3c03
-    store_playerstore_c38d1395 -->|imports| store_bleepdb_upsertbleepdata_1b27eac6
-    store_playerstore_c38d1395 -->|imports| transcription_effectmodal_5a588a15
-    %% Omitted for readability: 50 nodes, 0 edges
-    class src_aho_corasick_fastahoscanner_fd14c0f9 klass;
-    class src_aho_corasick_566889b6 module;
+    aho_corasick_fastahoscanner_c2d2696f("FastAhoScanner class<br/><small>src/aho-corasick.ts</small>")
+    search_worker_onmessage_15dc8b8d("Worker message handler<br/><small>src/search.worker.ts</small>")
+    aho_corasick_fastahoscanner_c2d2696f -->|calls| search_worker_onmessage_15dc8b8d
+    %% Omitted for readability: 12 nodes, 0 edges
+    class docs_api_reference_api_reference_b5f63ac9 concept;
+    class docs_api_reference_actions_699f69b3 concept;
+    class docs_api_reference_audio_utilities_src_audio_ts_7eebbf19 concept;
+    class docs_api_reference_auth_7bbb9abe concept;
+    class docs_api_reference_auth_utilities_src_utils_auth_09661315 concept;
+    class docs_api_reference_bleep_sound_i_o_src_features_805815fb concept;
+    class docs_api_reference_bleep_sound_persistence_src_s_b85586e8 concept;
+    class docs_api_reference_bleep_sounds_93b24550 concept;
+    class docs_api_reference_censoring_effects_49b3c16d concept;
+    class docs_api_reference_config_src_config_ts_70d5e5be concept;
+    class docs_api_reference_context_e6ebf4cf concept;
+    class docs_api_reference_core_types_f4c2760c concept;
+    class docs_api_reference_dictionaries_d8972afa concept;
+    class docs_api_reference_export_src_export_ts_4ab026b2 concept;
+    class docs_api_reference_export_progress_756ffbdb concept;
+    class docs_api_reference_fastahoscanner_src_aho_corasi_3bf5a5a3 concept;
     class aho_corasick_fastahoscanner_c2d2696f klass;
-    class src_aho_corasick_fastahoscanner_constructor_08313838 function;
-    class src_aho_corasick_fastahoscanner_findmatches_3a953abd function;
-    class src_aho_corasick_fastahoscanner_getfailid_749f94d8 function;
-    class src_aho_corasick_fastahoscanner_isterminal_3023e66b function;
-    class store_bleepdb_opendb_e0eeb76b function;
-    class store_bleepdb_getallbleeprecords_805d5f7d function;
-    class store_bleepdb_dbupdateurl_1c5e715d function;
-    class store_bleepdb_deletebleeprecord_cfd695e8 function;
-    class store_bleepdb_putbleeprecord_5be2dcdf function;
-    class store_bleepdb_updatebleeplabel_74bf3c03 function;
-    class store_bleepdb_upsertbleepdata_1b27eac6 function;
-    class store_playerstore_c38d1395 ui;
-    class store_playerstore_recordstosounds_03aafac8 function;
-    class store_playerstore_hydratebleepsounds_1f09b1fb function;
-    class transcription_effectmodal_5a588a15 ui;
+    class search_worker_onmessage_15dc8b8d klass;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -1659,243 +1865,243 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>api-reference.md</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>bleepDb.ts</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>BleepSound</code><br><small style="color:var(--muted)">src/types/index.ts</small><br>+14 more</td>
-  <td>Module file in src/store/playerStore.ts.</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing api-reference.md.</td>
 </tr>
 <tr>
   <td>2</td>
-  <td><code>recordsToSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>API Reference</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>hydrateBleepSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>recordsToSounds() node in src/store/playerStore.ts.</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing API Reference.</td>
 </tr>
 <tr>
   <td>3</td>
-  <td><code>hydrateBleepSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>recordsToSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><code>getAllBleepRecords()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td>hydrateBleepSounds() node in src/store/playerStore.ts.</td>
+  <td><code>Types (`src/types/index.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Types (`src/types/index.ts`).</td>
 </tr>
 <tr>
   <td>4</td>
-  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>search.worker.ts</code><br><small style="color:var(--muted)">src/search.worker.ts</small></td>
-  <td>Module file in src/aho-corasick.ts.</td>
+  <td><code>Core Types</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Core Types.</td>
 </tr>
 <tr>
   <td>5</td>
-  <td><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><code>constructor()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>findMatches()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>getFailId()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br>+3 more</td>
-  <td>Starts scanning or handles scan status.</td>
+  <td><code>Transcription</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Transcription.</td>
 </tr>
 <tr>
   <td>6</td>
-  <td><code>.constructor()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
+  <td><code>Dictionaries</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>.constructor() node in src/aho-corasick.ts.</td>
+  <td>Documentation node describing Dictionaries.</td>
 </tr>
 <tr>
   <td>7</td>
-  <td><code>.getFailId()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><code>findMatches()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td>.getFailId() node in src/aho-corasick.ts.</td>
+  <td><code>Censoring Effects</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Censoring Effects.</td>
 </tr>
 <tr>
   <td>8</td>
-  <td><code>.isTerminal()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><code>findMatches()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td>.isTerminal() node in src/aho-corasick.ts.</td>
+  <td><code>Bleep Sounds</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Bleep Sounds.</td>
 </tr>
 <tr>
   <td>9</td>
-  <td><code>.findMatches()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>getFailId()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>isTerminal()</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
+  <td><code>Export Progress</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>.findMatches() node in src/aho-corasick.ts.</td>
+  <td>Documentation node describing Export Progress.</td>
 </tr>
 <tr>
   <td>10</td>
-  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td>Module file in features/transcription/EffectModal.tsx.</td>
+  <td><code>Player State</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Player State.</td>
 </tr>
 <tr>
   <td>11</td>
-  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>Auth</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>CloseIcon() node in features/transcription/EffectModal.tsx.</td>
+  <td>Documentation node describing Auth.</td>
 </tr>
 <tr>
   <td>12</td>
-  <td><code>BoltIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>Stores</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>BoltIcon() node in features/transcription/EffectModal.tsx.</td>
+  <td>Documentation node describing Stores.</td>
 </tr>
 <tr>
   <td>13</td>
-  <td><code>TrashIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>playerStore (`src/store/playerStore.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>TrashIcon() node in features/transcription/EffectModal.tsx.</td>
+  <td>Documentation node describing playerStore (`src/store/playerStore.ts`).</td>
 </tr>
 <tr>
   <td>14</td>
-  <td><code>EffectModalProps</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>State Access</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>EffectModalProps node in features/transcription/EffectModal.tsx.</td>
+  <td>Documentation node describing State Access.</td>
 </tr>
 <tr>
   <td>15</td>
-  <td><code>uid()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>Actions</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>uid() node in features/transcription/EffectModal.tsx.</td>
+  <td>Documentation node describing Actions.</td>
 </tr>
 <tr>
   <td>16</td>
-  <td><code>EffectModal</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>Hydration</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>EffectModal node in features/transcription/EffectModal.tsx.</td>
+  <td>Documentation node describing Hydration.</td>
 </tr>
 <tr>
   <td>17</td>
-  <td><code>EffectBadge</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>authStore (`src/store/authStore.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>EffectBadge node in features/transcription/EffectModal.tsx.</td>
+  <td>Documentation node describing authStore (`src/store/authStore.ts`).</td>
 </tr>
 <tr>
   <td>18</td>
-  <td><code>search.worker.ts</code><br><small style="color:var(--muted)">src/search.worker.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
+  <td><code>Hooks</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in src/search.worker.ts.</td>
+  <td>Documentation node describing Hooks.</td>
 </tr>
 <tr>
   <td>19</td>
-  <td><code>bleepDb.ts</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>useMediaPlayer (`src/hooks/useMediaPlayer.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing useMediaPlayer (`src/hooks/useMediaPlayer.ts`).</td>
 </tr>
 <tr>
   <td>20</td>
-  <td><code>DbRecord</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
+  <td><code>Context</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>DbRecord node in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing Context.</td>
 </tr>
 <tr>
   <td>21</td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
+  <td><code>Config (`src/config.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>dbUpdateUrl()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>deleteBleepRecord()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>getAllBleepRecords()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br>+3 more</td>
-  <td>openDb() node in src/store/bleepDb.ts.</td>
+  <td>No direct outbound edge</td>
+  <td>Documentation node describing Config (`src/config.ts`).</td>
 </tr>
 <tr>
   <td>22</td>
-  <td><code>getAllBleepRecords()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>hydrateBleepSounds()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>Audio Utilities (`src/audio.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>getAllBleepRecords() node in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing Audio Utilities (`src/audio.ts`).</td>
 </tr>
 <tr>
   <td>23</td>
-  <td><code>putBleepRecord()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>FastAhoScanner (`src/aho-corasick.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>putBleepRecord() node in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing FastAhoScanner (`src/aho-corasick.ts`).</td>
 </tr>
 <tr>
   <td>24</td>
-  <td><code>deleteBleepRecord()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>Export (`src/export.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>deleteBleepRecord() node in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing Export (`src/export.ts`).</td>
 </tr>
 <tr>
   <td>25</td>
-  <td><code>updateBleepLabel()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>Bleep Sound Persistence (`src/store/bleepDb.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>updateBleepLabel() node in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing Bleep Sound Persistence (`src/store/bleepDb.ts`).</td>
 </tr>
 <tr>
   <td>26</td>
-  <td><code>dbUpdateUrl()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>Bleep Sound I/O (`src/features/bleep-sounds/bleep-sqlite.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>dbUpdateUrl() node in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing Bleep Sound I/O (`src/features/bleep-sounds/bleep-sqlite.ts`).</td>
 </tr>
 <tr>
   <td>27</td>
-  <td><code>upsertBleepData()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/store/bleepDb.ts</small><br><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>Auth Utilities (`src/utils/auth.ts`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>upsertBleepData() node in src/store/bleepDb.ts.</td>
+  <td>Documentation node describing Auth Utilities (`src/utils/auth.ts`).</td>
 </tr>
 <tr>
   <td>28</td>
-  <td><code>index.ts</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td><code>aho-corasick.ts</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br><code>FastAhoScanner</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small><br>+1 more</td>
+  <td><code>PlanCard (`src/features/settings/PlanCard.tsx`)</code><br><small style="color:var(--muted)">docs/api-reference.md</small></td>
+  <td><span class="tag tag-func">Concept</span></td>
+  <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
-  <td>Module file in src/types/index.ts.</td>
+  <td>Documentation node describing PlanCard (`src/features/settings/PlanCard.tsx`).</td>
 </tr>
 <tr>
   <td>29</td>
-  <td><code>TranscriptionWord</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td><code>FastAhoScanner class</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TranscriptionWord node in src/types/index.ts.</td>
+  <td><code>Worker message handler</code><br><small style="color:var(--muted)">src/search.worker.ts</small></td>
+  <td>Starts scanning or handles scan status.</td>
 </tr>
 <tr>
   <td>30</td>
-  <td><code>Dictionary</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td><code>Worker message handler</code><br><small style="color:var(--muted)">src/search.worker.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
-  <td><code>playerStore.ts</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td><code>FastAhoScanner class</code><br><small style="color:var(--muted)">src/aho-corasick.ts</small></td>
   <td>No direct outbound edge</td>
-  <td>Dictionary node in src/types/index.ts.</td>
+  <td>Worker message handler node in src/search.worker.ts.</td>
 </tr>
 </table>
 
@@ -1905,17 +2111,13 @@ flowchart LR
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
       <tr><td><code>docs/api-reference.md</code></td><td>28 nodes</td></tr>
-<tr><td><code>src/types/index.ts</code></td><td>11 nodes</td></tr>
-<tr><td><code>src/store/bleepDb.ts</code></td><td>9 nodes</td></tr>
-<tr><td><code>features/transcription/EffectModal.tsx</code></td><td>8 nodes</td></tr>
-<tr><td><code>src/aho-corasick.ts</code></td><td>7 nodes</td></tr>
-<tr><td><code>src/store/playerStore.ts</code></td><td>3 nodes</td></tr>
-<tr><td><code>src/search.worker.ts</code></td><td>2 nodes</td></tr>
+<tr><td><code>src/aho-corasick.ts</code></td><td>1 nodes</td></tr>
+<tr><td><code>src/search.worker.ts</code></td><td>1 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x55, imports x16, calls x11, references x8. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x27, calls x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -2100,87 +2302,70 @@ flowchart LR
 </div>
 <hr>
 
-<!-- ====== 9. Community 57 ====== -->
-<h2 id="community-57">9. Community 57</h2>
-<p>Community 57 groups implementation around features, settings, transcriptionresultstsx, transcription, mostly in features/transcription/TranscriptionResults.tsx, features/settings/SettingsModal.tsx, features/action-buttons/ActionButtons.tsx. This section covers 72 nodes and 129 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<!-- ====== 9. Community 7 ====== -->
+<h2 id="community-7">9. Community 7</h2>
+<p>Community 7 groups implementation around features, transcription, transcriptionresultstsx, effectmodaltsx, mostly in features/transcription/TranscriptionResults.tsx, features/transcription/EffectModal.tsx, features/player/ShieldButton.tsx. This section covers 26 nodes and 32 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Community 57 (72 nodes, 129 edges)
-    subgraph community_57_features_transcription_Transcriptio_807f29e9["features/transcription/TranscriptionResults.tsx"]
-        transcription_transcriptionresults_9a779401("TranscriptionResults.tsx")
-        transcription_transcriptionresults_findclosestse_3b6956a4("findClosestSegment()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
-        transcription_transcriptionresults_transcription_d3874bb4("TranscriptionResultsInner()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
+    %% Section: Community 7 (26 nodes, 32 edges)
+    subgraph community_7_features_transcription_EffectModal_t_43142f0d["features/transcription/EffectModal.tsx"]
+        transcription_effectmodal_5a588a15("EffectModal.tsx")
+        transcription_effectmodal_effectbadge_f29a394c("EffectBadge<br/><small>features/transcription/EffectModal.tsx</small>")
+        transcription_effectmodal_effectmodal_75dfcab3("EffectModal<br/><small>features/transcription/EffectModal.tsx</small>")
+        transcription_effectmodal_bolticon_6ab0b088("BoltIcon()<br/><small>features/transcription/EffectModal.tsx</small>")
+        transcription_effectmodal_closeicon_80412e67("CloseIcon()<br/><small>features/transcription/EffectModal.tsx</small>")
+        transcription_effectmodal_effectmodalprops_d5b8f7f1("EffectModalProps<br/><small>features/transcription/EffectModal.tsx</small>")
+        transcription_effectmodal_trashicon_3e066ff3("TrashIcon()<br/><small>features/transcription/EffectModal.tsx</small>")
+        transcription_effectmodal_uid_e9ac5013("uid()<br/><small>features/transcription/EffectModal.tsx</small>")
+    end
+    subgraph community_7_features_player_ShieldButton_tsx_f092354e["features/player/ShieldButton.tsx"]
+        player_shieldbutton_efb5f4ae("ShieldButton.tsx")
+        player_shieldbutton_shieldbutton_5f37186c("ShieldButton<br/><small>features/player/ShieldButton.tsx</small>")
+        player_shieldbutton_shieldbuttoninner_a7b1a30e("ShieldButtonInner()<br/><small>features/player/ShieldButton.tsx</small>")
+        player_shieldbutton_shieldbuttonprops_e4cebe41("ShieldButtonProps<br/><small>features/player/ShieldButton.tsx</small>")
+    end
+    subgraph community_7_features_transcription_Transcription_5eff7b30["features/transcription/TranscriptionResults.tsx"]
         transcription_transcriptionresults_parsestage_50197875("parseStage()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
         transcription_transcriptionresults_transcribepro_909f732c("TranscribeProgressBar()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
+        transcription_transcriptionresults_9a779401("TranscriptionResults.tsx")
     end
-    subgraph community_57_features_action_buttons_ActionButto_6b916237["features/action-buttons/ActionButtons.tsx"]
-        action_buttons_actionbuttons_78ab3197("ActionButtons.tsx")
-        action_buttons_actionbuttons_codeclabel_52e9a5e9("codecLabel()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
-        action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6("ActionButtonsInner()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
+    subgraph community_7_src_types_index_ts_d1eef1ea["src/types/index.ts"]
+        types_index_soundcensoringeffect_753def75("SoundCensoringEffect<br/><small>src/types/index.ts</small>")
+        types_index_transcriptionresulttuple_8b1f2bec("TranscriptionResultTuple<br/><small>src/types/index.ts</small>")
     end
-    subgraph community_57_features_auth_ConfirmationModal_tsx_361d8ead["features/auth/ConfirmationModal.tsx"]
-        auth_confirmationmodal_formatduration_1ba061e3("formatDuration()<br/><small>features/auth/ConfirmationModal.tsx</small>")
-        auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
-    end
-    subgraph community_57_features_auth_LoginModal_tsx_b23bd528["features/auth/LoginModal.tsx"]
-        auth_loginmodal_55c21e7a("LoginModal.tsx")
-        auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
-    end
-    subgraph community_57_features_auth_TopupModal_tsx_54269f56["features/auth/TopupModal.tsx"]
-        auth_topupmodal_5fbdbcde("TopupModal.tsx")
-        auth_topupmodal_topupmodal_4bc16812("TopupModal()<br/><small>features/auth/TopupModal.tsx</small>")
-    end
-    subgraph community_57_src_utils_auth_ts_e2a0a667["src/utils/auth.ts"]
-        utils_auth_canfreetopup_e6832bc1("canFreeTopup()<br/><small>src/utils/auth.ts</small>")
-        utils_auth_daysuntilfreetopup_c93d63d8("daysUntilFreeTopup()<br/><small>src/utils/auth.ts</small>")
-    end
-    settings_settingsmodal_usercontent_d2a4d459("UserContent()<br/><small>features/settings/SettingsModal.tsx</small>")
-    store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
-    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
-    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| store_authstore_useauthstore_4a03c2d9
-    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_auth_canfreetopup_e6832bc1
-    transcription_transcriptionresults_findclosestse_3b6956a4 -->|calls| transcription_transcriptionresults_transcription_d3874bb4
+    player_cdbtn_e24f936e("cdBtn.ts")
     transcription_transcriptionresults_parsestage_50197875 -->|calls| transcription_transcriptionresults_transcribepro_909f732c
-    transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_authstore_useauthstore_4a03c2d9
-    auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
-    auth_confirmationmodal_confirmationmodal_8b7e668a -->|calls| store_authstore_useauthstore_4a03c2d9
-    auth_loginmodal_loginmodal_992d0af3 -->|calls| store_authstore_useauthstore_4a03c2d9
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| store_authstore_useauthstore_4a03c2d9
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
-    auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
-    settings_settingsmodal_usercontent_d2a4d459 -->|calls| store_authstore_useauthstore_4a03c2d9
-    settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
-    settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_55c21e7a
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_loginmodal_992d0af3
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_5fbdbcde
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_topupmodal_4bc16812
-    action_buttons_actionbuttons_78ab3197 -->|imports| store_authstore_useauthstore_4a03c2d9
-    action_buttons_actionbuttons_78ab3197 -->|imports| utils_auth_canfreetopup_e6832bc1
-    transcription_transcriptionresults_9a779401 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
-    transcription_transcriptionresults_9a779401 -->|imports| auth_loginmodal_55c21e7a
-    %% Omitted for readability: 54 nodes, 9 edges
-    class transcription_transcriptionresults_9a779401 ui;
-    class transcription_transcriptionresults_findclosestse_3b6956a4 ui;
-    class transcription_transcriptionresults_transcription_d3874bb4 ui;
+    player_shieldbutton_efb5f4ae -->|imports| player_cdbtn_e24f936e
+    player_shieldbutton_efb5f4ae -->|imports| transcription_transcriptionresults_9a779401
+    player_shieldbutton_shieldbutton_5f37186c -->|imports| transcription_transcriptionresults_9a779401
+    player_cdbtn_e24f936e -->|imports| transcription_transcriptionresults_9a779401
+    transcription_effectmodal_5a588a15 -->|imports| types_index_soundcensoringeffect_753def75
+    transcription_effectmodal_5a588a15 -->|imports| transcription_transcriptionresults_9a779401
+    transcription_effectmodal_effectmodal_75dfcab3 -->|imports| transcription_transcriptionresults_9a779401
+    transcription_effectmodal_effectbadge_f29a394c -->|imports| transcription_transcriptionresults_9a779401
+    transcription_transcriptionresults_9a779401 -->|imports| types_index_soundcensoringeffect_753def75
+    transcription_transcriptionresults_9a779401 -->|imports| types_index_transcriptionresulttuple_8b1f2bec
+    %% Omitted for readability: 8 nodes, 0 edges
+    class transcription_effectmodal_5a588a15 ui;
+    class transcription_effectmodal_effectbadge_f29a394c ui;
+    class transcription_effectmodal_effectmodal_75dfcab3 ui;
+    class transcription_effectmodal_bolticon_6ab0b088 ui;
+    class transcription_effectmodal_closeicon_80412e67 ui;
+    class transcription_effectmodal_effectmodalprops_d5b8f7f1 ui;
+    class transcription_effectmodal_trashicon_3e066ff3 ui;
+    class transcription_effectmodal_uid_e9ac5013 ui;
+    class player_shieldbutton_efb5f4ae ui;
+    class player_shieldbutton_shieldbutton_5f37186c ui;
+    class player_shieldbutton_shieldbuttoninner_a7b1a30e ui;
+    class player_shieldbutton_shieldbuttonprops_e4cebe41 ui;
     class transcription_transcriptionresults_parsestage_50197875 ui;
     class transcription_transcriptionresults_transcribepro_909f732c ui;
-    class action_buttons_actionbuttons_78ab3197 ui;
-    class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
-    class action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 ui;
-    class auth_confirmationmodal_formatduration_1ba061e3 ui;
-    class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
-    class auth_loginmodal_55c21e7a ui;
-    class auth_loginmodal_loginmodal_992d0af3 ui;
-    class auth_topupmodal_5fbdbcde ui;
-    class auth_topupmodal_topupmodal_4bc16812 ui;
-    class utils_auth_canfreetopup_e6832bc1 function;
-    class utils_auth_daysuntilfreetopup_c93d63d8 function;
-    class settings_settingsmodal_usercontent_d2a4d459 ui;
-    class store_authstore_useauthstore_4a03c2d9 ui;
+    class transcription_transcriptionresults_9a779401 ui;
+    class types_index_soundcensoringeffect_753def75 klass;
+    class types_index_transcriptionresulttuple_8b1f2bec klass;
+    class player_cdbtn_e24f936e module;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2204,214 +2389,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small><br>+7 more</td>
-  <td>Module file in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>FileIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>FileIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>UrlIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>UrlIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>TranscribeIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TranscribeIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>DownloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>UnloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>UnloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CloseIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CODEC_LABELS node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td>codecLabel() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>ActionButtonsInner() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small><br>+9 more</td>
-  <td>Module file in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>BorderedSection()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>BorderedSection() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ChevronDownIcon() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>PlusIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>PlusIcon() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>SegmentItem</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>SegmentItem node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>TranscriptionRow()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TranscriptionRow() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>rowRendererDeps</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>rowRendererDeps node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>findClosestSegment() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>findSegmentIndex()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>findSegmentIndex() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>parseStage() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>TranscribeProgressBar() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>TranscriptionResultsInner() node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>25</td>
-  <td><code>TranscriptionResults</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TranscriptionResults node in features/transcription/TranscriptionResults.tsx.</td>
-</tr>
-<tr>
-  <td>26</td>
   <td><code>ShieldButton.tsx</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td>Module file in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>2</td>
   <td><code>ShieldButtonProps</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2419,7 +2404,7 @@ flowchart LR
   <td>ShieldButtonProps node in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>3</td>
   <td><code>ShieldButtonInner()</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2427,20 +2412,188 @@ flowchart LR
   <td>ShieldButtonInner() node in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>4</td>
   <td><code>ShieldButton</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
   <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>No direct outbound edge</td>
   <td>ShieldButton node in features/player/ShieldButton.tsx.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>5</td>
   <td><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small></td>
   <td><span class="tag tag-class">Module</span></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>ShieldButton.tsx</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
-  <td>No direct outbound edge</td>
+  <td><code>ShieldButton.tsx</code><br><small style="color:var(--muted)">features/player/ShieldButton.tsx</small></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td>Module file in features/player/cdBtn.ts.</td>
+</tr>
+<tr>
+  <td>6</td>
+  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>Module file in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CloseIcon() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>BoltIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>BoltIcon() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>TrashIcon()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TrashIcon() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>EffectModalProps</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>EffectModalProps node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>uid()</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>uid() node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>EffectModal</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>EffectModal node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>EffectBadge</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>EffectBadge node in features/transcription/EffectModal.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>cdBtn.ts</code><br><small style="color:var(--muted)">features/player/cdBtn.ts</small><br><code>EffectBadge</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br><code>EffectModal</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br>+3 more</td>
+  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>TranscriptionResultTuple</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td>Module file in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>BorderedSection()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>BorderedSection() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ChevronDownIcon() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>PlusIcon()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>PlusIcon() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>SegmentItem</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>SegmentItem node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>TranscriptionRow()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TranscriptionRow() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>rowRendererDeps</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>rowRendererDeps node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>findSegmentIndex()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>findSegmentIndex() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>parseStage() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>TranscribeProgressBar()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>parseStage()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>TranscribeProgressBar() node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>TranscriptionResults</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TranscriptionResults node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>SoundCensoringEffect</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>EffectModal.tsx</code><br><small style="color:var(--muted)">features/transcription/EffectModal.tsx</small><br><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>SoundCensoringEffect node in src/types/index.ts.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>TranscriptionResultTuple</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>TranscriptionResults.tsx</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>TranscriptionResultTuple node in src/types/index.ts.</td>
 </tr>
 </table>
 
@@ -2449,19 +2602,16 @@ flowchart LR
     <h4>Key Files</h4>
     <table style="width:100%;font-size:0.85rem;">
       <tr><th>File</th><th>Coverage</th></tr>
-      <tr><td><code>features/transcription/TranscriptionResults.tsx</code></td><td>14 nodes</td></tr>
-<tr><td><code>features/settings/SettingsModal.tsx</code></td><td>12 nodes</td></tr>
-<tr><td><code>features/action-buttons/ActionButtons.tsx</code></td><td>11 nodes</td></tr>
-<tr><td><code>features/settings/HourPackCard.tsx</code></td><td>5 nodes</td></tr>
-<tr><td><code>features/auth/ConfirmationModal.tsx</code></td><td>4 nodes</td></tr>
+      <tr><td><code>features/transcription/TranscriptionResults.tsx</code></td><td>11 nodes</td></tr>
+<tr><td><code>features/transcription/EffectModal.tsx</code></td><td>8 nodes</td></tr>
 <tr><td><code>features/player/ShieldButton.tsx</code></td><td>4 nodes</td></tr>
-<tr><td><code>src/utils/auth.ts</code></td><td>4 nodes</td></tr>
-<tr><td><code>src/utils/pkce-browser.ts</code></td><td>4 nodes</td></tr>
+<tr><td><code>src/types/index.ts</code></td><td>2 nodes</td></tr>
+<tr><td><code>features/player/cdBtn.ts</code></td><td>1 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x56, imports x32, imports x20, calls x19. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x20, imports x6, imports x4, references x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -3212,12 +3362,12 @@ flowchart LR
 
 <!-- ====== 16. Other ====== -->
 <h2 id="other">16. Other</h2>
-<p>Other groups implementation around e2e, sequential, playbackspects, serverts, mostly in server.ts, e2e/sequential-playback.spec.ts, src/censor-worker.ts. This section covers 36 nodes and 22 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Other groups implementation around e2e, sequential, playbackspects, serverts, mostly in server.ts, e2e/sequential-playback.spec.ts, src/censor-worker.ts. This section covers 39 nodes and 24 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
-    %% Section: Other (36 nodes, 22 edges)
+    %% Section: Other (39 nodes, 24 edges)
     subgraph other_e2e_sequential_operations_spec_ts_9bfb25fc["e2e/sequential-operations.spec.ts"]
         e2e_sequential_operations_spec_checknomultiplest_74687c57("checkNoMultipleStreams()<br/><small>e2e/sequential-operations.spec.ts</small>")
         e2e_sequential_operations_spec_loadfile_ba66268b("loadFile()<br/><small>e2e/sequential-operations.spec.ts</small>")
@@ -3229,10 +3379,10 @@ flowchart LR
         deploy_build_version_93a58c4f("build_version()<br/><small>deploy.sh</small>")
         deploy_b0d51b9f("deploy.sh")
     end
-    subgraph other_e2e_sequential_playback_spec_ts_420384b4["e2e/sequential-playback.spec.ts"]
-        e2e_sequential_playback_spec_collectsamples_42675b53("collectSamples()<br/><small>e2e/sequential-playback.spec.ts</small>")
-        e2e_sequential_playback_spec_loadfile_85ac5f6e("loadFile()<br/><small>e2e/sequential-playback.spec.ts</small>")
-        e2e_sequential_playback_spec_parsetime_1c8bcd01("parseTime()<br/><small>e2e/sequential-playback.spec.ts</small>")
+    subgraph other_e2e_reload_session_spec_ts_8fa4190d["e2e/reload-session.spec.ts"]
+        e2e_reload_session_spec_loadfile_5e5a801c("loadFile()<br/><small>e2e/reload-session.spec.ts</small>")
+        e2e_reload_session_spec_parsetime_09bceff1("parseTime()<br/><small>e2e/reload-session.spec.ts</small>")
+        e2e_reload_session_spec_c640668f("reload-session.spec.ts")
     end
     subgraph other_e2e_playback_spec_ts_7b9f76c4["e2e/playback.spec.ts"]
         e2e_playback_spec_parsetime_6cc5d75c("parseTime()<br/><small>e2e/playback.spec.ts</small>")
@@ -3251,7 +3401,7 @@ flowchart LR
     home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 -->|calls| deploy_build_version_93a58c4f
     server_handletranscriptionrequest_ff2e5f6f -->|calls| server_serve_466028ec
     src_censor_worker_decodebleep_79a6d5a0 -->|calls| src_censor_worker_rendercensored_a4655dfa
-    %% Omitted for readability: 18 nodes, 0 edges
+    %% Omitted for readability: 21 nodes, 0 edges
     class e2e_sequential_operations_spec_checknomultiplest_74687c57 test;
     class e2e_sequential_operations_spec_loadfile_ba66268b test;
     class e2e_sequential_operations_spec_parsetime_cbaa92e7 test;
@@ -3259,9 +3409,9 @@ flowchart LR
     class home_irsent_gh_obrez_ts_deploy_sh_entry_85d47c66 function;
     class deploy_build_version_93a58c4f function;
     class deploy_b0d51b9f function;
-    class e2e_sequential_playback_spec_collectsamples_42675b53 test;
-    class e2e_sequential_playback_spec_loadfile_85ac5f6e test;
-    class e2e_sequential_playback_spec_parsetime_1c8bcd01 test;
+    class e2e_reload_session_spec_loadfile_5e5a801c test;
+    class e2e_reload_session_spec_parsetime_09bceff1 test;
+    class e2e_reload_session_spec_c640668f test;
     class e2e_playback_spec_parsetime_6cc5d75c test;
     class e2e_playback_spec_80b327fb test;
     class server_handletranscriptionrequest_ff2e5f6f function;
@@ -3461,6 +3611,30 @@ flowchart LR
 </tr>
 <tr>
   <td>22</td>
+  <td><code>reload-session.spec.ts</code><br><small style="color:var(--muted)">e2e/reload-session.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Module file in e2e/reload-session.spec.ts.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/reload-session.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>parseTime() node in e2e/reload-session.spec.ts.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>loadFile()</code><br><small style="color:var(--muted)">e2e/reload-session.spec.ts</small></td>
+  <td><span class="tag tag-func">Test</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>loadFile() node in e2e/reload-session.spec.ts.</td>
+</tr>
+<tr>
+  <td>25</td>
   <td><code>OBRΞZ Brand Logo</code><br><small style="color:var(--muted)">public/assets/obrez-logo.png</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3468,7 +3642,7 @@ flowchart LR
   <td>OBRΞZ Brand Logo node in public/assets/obrez-logo.png.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>26</td>
   <td><code>OBRΞZ Brand Identity</code><br><small style="color:var(--muted)">public/assets/obrez-logo.png</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -3476,7 +3650,7 @@ flowchart LR
   <td>OBRΞZ Brand Identity node in public/assets/obrez-logo.png.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>27</td>
   <td><code>playback.spec.ts</code><br><small style="color:var(--muted)">e2e/playback.spec.ts</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -3484,7 +3658,7 @@ flowchart LR
   <td>Module file in e2e/playback.spec.ts.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>28</td>
   <td><code>parseTime()</code><br><small style="color:var(--muted)">e2e/playback.spec.ts</small></td>
   <td><span class="tag tag-func">Test</span></td>
   <td>External entry / no inbound edge</td>
@@ -3492,7 +3666,7 @@ flowchart LR
   <td>parseTime() node in e2e/playback.spec.ts.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>29</td>
   <td><code>settings-early.js</code><br><small style="color:var(--muted)">public/settings-early.js</small></td>
   <td><span class="tag tag-class">Module</span></td>
   <td>External entry / no inbound edge</td>
@@ -3500,36 +3674,12 @@ flowchart LR
   <td>settings-early.js node in public/settings-early.js.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>30</td>
   <td><code>parseStack()</code><br><small style="color:var(--muted)">public/settings-early.js</small></td>
   <td><span class="tag tag-func">Function</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>parseStack() node in public/settings-early.js.</td>
-</tr>
-<tr>
-  <td>28</td>
-  <td><code>README.md</code><br><small style="color:var(--muted)">docs/README.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing README.md.</td>
-</tr>
-<tr>
-  <td>29</td>
-  <td><code>Obrez — Documentation</code><br><small style="color:var(--muted)">docs/README.md</small></td>
-  <td><span class="tag tag-func">Concept</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Documentation node describing Obrez — Documentation.</td>
-</tr>
-<tr>
-  <td>30</td>
-  <td><code>TailwindConfig</code><br><small style="color:var(--muted)">tailwind.config.js</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Reads, resolves, or persists project configuration.</td>
 </tr>
 </table>
 
@@ -3543,14 +3693,14 @@ flowchart LR
 <tr><td><code>e2e/sequential-operations.spec.ts</code></td><td>4 nodes</td></tr>
 <tr><td><code>src/censor-worker.ts</code></td><td>4 nodes</td></tr>
 <tr><td><code>deploy.sh</code></td><td>3 nodes</td></tr>
+<tr><td><code>e2e/reload-session.spec.ts</code></td><td>3 nodes</td></tr>
 <tr><td><code>docs/README.md</code></td><td>2 nodes</td></tr>
 <tr><td><code>e2e/playback.spec.ts</code></td><td>2 nodes</td></tr>
-<tr><td><code>public/assets/obrez-logo.png</code></td><td>2 nodes</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Design Notes</h4>
-    <p>This section comes from graphify community clustering. Relationship summary: contains x17, calls x3, defines x1, implements x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
+    <p>This section comes from graphify community clustering. Relationship summary: contains x19, calls x3, defines x1, implements x1. The diagram prioritizes high-confidence calls or usage relationships; the table keeps the broader node inventory.</p>
   </div>
 </div>
 <hr>
@@ -3617,17 +3767,17 @@ flowchart LR
   <div class="card">
     <h4>Graph</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>Nodes</td><td>544</td></tr>
-      <tr><td>Edges</td><td>865</td></tr>
+      <tr><td>Nodes</td><td>546</td></tr>
+      <tr><td>Edges</td><td>867</td></tr>
       <tr><td>Hyperedges</td><td>5</td></tr>
-      <tr><td>Communities</td><td>57</td></tr>
+      <tr><td>Communities</td><td>58</td></tr>
       <tr><td>Documented Sections</td><td>15</td></tr>
     </table>
   </div>
   <div class="card">
     <h4>Edge Confidence</h4>
     <table style="width:100%;font-size:0.85rem;">
-      <tr><td>EXTRACTED</td><td>854</td></tr>
+      <tr><td>EXTRACTED</td><td>856</td></tr>
       <tr><td>INFERRED</td><td>11</td></tr>
       <tr><td>AMBIGUOUS</td><td>0</td></tr>
     </table>
@@ -3636,7 +3786,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-19 20:49 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-23 11:58 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
