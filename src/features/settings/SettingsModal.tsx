@@ -58,12 +58,11 @@ function Tooltip({ text }: { text: string }) {
   );
 }
 
-type TabKey = 'user' | 'player' | 'dictionaries' | 'bleep' | 'version' | 'debug';
+type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version' | 'debug';
 
 const TABS: { key: TabKey; emoji: string; tooltip: string }[] = [
   { key: 'user', emoji: '👤', tooltip: 'Account & Balance' },
-  { key: 'player', emoji: '▶', tooltip: 'Player' },
-  { key: 'dictionaries', emoji: '📚', tooltip: 'Dictionaries' },
+    { key: 'dictionaries', emoji: '📚', tooltip: 'Dictionaries' },
   { key: 'bleep', emoji: '🔊', tooltip: 'Bleep Sounds' },
   { key: 'version', emoji: '🔄', tooltip: 'Version' },
   { key: 'debug', emoji: '🐛', tooltip: 'Debug' },
@@ -374,39 +373,6 @@ function UserContent({ onClose }: UserContentProps) {
           </button>
         </div>
       )}
-    </div>
-  );
-}
-
-// ─── Player tab ───
-
-function PlayerContent() {
-  return (
-    <div className="space-y-4">
-      {/* Play on load */}
-      <div className="relative flex items-center justify-between p-5 rounded-xl border border-zinc-700 bg-zinc-800/50 shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]">
-        {/* inner bevel */}
-        <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.2)]" />
-        <div className="relative">
-          <div className="text-sm text-zinc-200 font-medium">
-            ▶ Play on load
-            <Tooltip text="When enabled, the video starts playing automatically as soon as a file is loaded. Disable to review the timeline before playback." />
-          </div>
-          <div className="text-xs text-zinc-500 mt-0.5">Auto-play video after loading a file</div>
-        </div>
-        <label className="relative inline-flex items-center cursor-pointer">
-          <input
-            type="checkbox"
-            id="obrez-play-on-load"
-            className="sr-only peer"
-            defaultChecked={localStorage.getItem('obrez_play_on_load') === 'true'}
-            onChange={(e) => {
-              localStorage.setItem('obrez_play_on_load', e.target.checked ? 'true' : 'false');
-            }}
-          />
-          <div className="w-11 h-6 bg-zinc-600 rounded-full peer-checked:bg-purple-600 peer-focus:ring-2 peer-focus:ring-purple-500/50 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-200 peer-checked:after:translate-x-full" />
-        </label>
-      </div>
     </div>
   );
 }

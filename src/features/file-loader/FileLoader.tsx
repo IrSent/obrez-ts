@@ -3,15 +3,11 @@ import { usePlayerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { saveSession } from '../../utils/idb';
 
-const AUTOPLAY_KEY = 'obrez_play_on_load';
-
 export const FileLoader = () => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const urlInputRef = useRef<HTMLInputElement>(null);
   const actions = usePlayerActions();
   const { initMediaPlayer, play } = useMediaPlayerContext();
-
-  const shouldAutoplay = () => localStorage.getItem(AUTOPLAY_KEY) === 'true';
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -37,11 +33,6 @@ export const FileLoader = () => {
 
     try {
       await initMediaPlayer(file);
-      if (shouldAutoplay()) {
-        // Brief pause for audio context warmup after init
-        await new Promise((r) => setTimeout(r, 1000));
-        await play();
-      }
     } catch (error) {
       console.error('Error loading file:', error);
       actions.setError('Failed to load file: ' + (error as Error).message);
@@ -80,10 +71,6 @@ export const FileLoader = () => {
         wasTranscribing: false,
       });
       await initMediaPlayer(blob);
-      if (shouldAutoplay()) {
-        await new Promise((r) => setTimeout(r, 1000));
-        await play();
-      }
     } catch (error) {
       saveSession({ fileBlob: null });
       console.error('Error loading URL:', error);

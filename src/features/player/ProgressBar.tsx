@@ -62,7 +62,7 @@ const ProgressBarInner = () => {
   const handleDragStart = (e: React.MouseEvent) => {
     e.preventDefault();
     wasPlayingRef.current = isPlaying;
-    if (isPlaying) void pause();
+    if (isPlaying) pause().catch(err => console.error('ProgressBar pause error:', err));
     isDraggingRef.current = true;
     updateDragVisual(e.clientX);
   };
@@ -90,7 +90,7 @@ const ProgressBarInner = () => {
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
     wasPlayingRef.current = isPlaying;
-    if (isPlaying) void pause();
+    if (isPlaying) pause().catch(err => console.error('ProgressBar pause error:', err));
     isDraggingRef.current = true;
     updateDragVisual(touch.clientX);
   }, [isPlaying, pause, updateDragVisual]);

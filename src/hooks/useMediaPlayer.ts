@@ -52,8 +52,6 @@ export function useMediaPlayer() {
 
   const audioContextStartTimeRef = useRef<number | null>(null);
   const playbackTimeAtStartRef = useRef<number>(0);
-  // Fallback timer when AudioContext is suspended (no user gesture on reload)
-  const fallbackStartTimeRef = useRef<number | null>(null);
   const playbackSpeedRef = useRef<number>(1); // mirrors store, used in hot loops
   const sampleRateRef = useRef<number>(48000); // actual AudioContext sampleRate
   const videoFrameIteratorRef = useRef<AsyncGenerator<WrappedCanvas, void, unknown> | null>(null);
@@ -117,14 +115,8 @@ export function useMediaPlayer() {
       //   bootstrap wait the display is frozen briefly — acceptable (quality > speed).
       // - Seek: playbackTimeAtStartRef is set to the seek target before transitioning.
       if (state === 'playing') {
-        // Primary: use AudioContext.currentTime for accurate timing.
         if (audioContextRef.current && audioContextStartTimeRef.current != null) {
           return (audioContextRef.current.currentTime - audioContextStartTimeRef.current) * speed + playbackTimeAtStartRef.current;
-        }
-        // Fallback: AudioContext is suspended (no user gesture on reload).
-        // Use performance.now() to advance video time independently.
-        if (fallbackStartTimeRef.current != null) {
-          return (performance.now() - fallbackStartTimeRef.current) / 1000 * speed + playbackTimeAtStartRef.current;
         }
       }
       return playbackTimeAtStartRef.current;
@@ -328,6 +320,10 @@ export function useMediaPlayer() {
 
       if (currentAsyncId !== asyncIdRef.current) break;
 
+      // Don't draw frames during 'transitioning' — audio isn't ready yet,
+      // so drawing would make video get ahead of audio (seek lag).
+      if (playbackStateRef.current === 'transitioning') break;
+
       const playbackTime = utilsRef.current.getPlaybackTime();
       if (newNextFrame.timestamp <= playbackTime) {
         utilsRef.current.drawFrame(newNextFrame);
@@ -350,10 +346,18 @@ export function useMediaPlayer() {
     const firstFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
     const secondFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
 
-    nextFrameRef.current = secondFrame;
-
-    if (firstFrame) {
-      utilsRef.current.drawFrame(firstFrame);
+    // Don't draw during 'transitioning' — audio isn't ready yet,
+    // so drawing would make video get ahead of audio (seek lag).
+    // The rAF loop will draw these frames once state becomes 'playing'.
+    if (playbackStateRef.current !== 'transitioning') {
+      nextFrameRef.current = secondFrame;
+      if (firstFrame) {
+        utilsRef.current.drawFrame(firstFrame);
+      }
+    } else {
+      // During transitioning, put first frame as nextFrame so the rAF
+      // loop can draw it at the right time once audio is ready.
+      nextFrameRef.current = firstFrame ?? secondFrame;
     }
   });
 
@@ -380,8 +384,15 @@ export function useMediaPlayer() {
       ? (ctx.currentTime - audioContextStartTimeRef.current) * playbackSpeedRef.current + playbackTimeAtStartRef.current
       : playbackTimeAtStartRef.current;
 
+   // Recalibrate audioContextStartTimeRef so getPlaybackTime() is accurate
+    // from the moment audio resumes after the transition.
+    // Without this: during startAudio() wait, ctx.currentTime advances but
+    // audioContextStartTimeRef still points to the old epoch → getPlaybackTime()
+    // returns a time way ahead of the actual audio → video races ahead of audio.
+    if (ctx && audioContextStartTimeRef.current != null) {
+      audioContextStartTimeRef.current = ctx.currentTime;
+    }
     playbackTimeAtStartRef.current = currentTime;
-    fallbackStartTimeRef.current = null; // reset fallback timer
 
     // IMMEDIATE ABORT — set before anything else so runAudioIterator
     // sees it on the very next iteration check, before creating new nodes.
@@ -581,11 +592,23 @@ export function useMediaPlayer() {
   >(null!);
 
   transitionRef.current = async (target, seekTo, beforeStartAudio) => {
-    // If a transition is already in progress, reject — prevents concurrent
-    // stopAudio/startAudio calls that create multiple audio iterators.
+    // If a transition is already in progress, wait for it to complete
+    // rather than rejecting. This prevents race conditions where e.g.
+    // pause→seek→play fires before pause completes, causing the seek
+    // to be silently dropped.
     if (playbackStateRef.current === 'transitioning') {
-      console.log('[audio] transition rejected: already transitioning, target=', target);
-      return;
+      console.log('[audio] transition queued: already transitioning, waiting for target=', target, seekTo != null ? `(seek ${seekTo})` : '');
+      const deadline = Date.now() + 5000;
+      while (playbackStateRef.current === 'transitioning') {
+        if (Date.now() > deadline) {
+          console.warn('[audio] transition queued: timeout waiting for prior transition');
+          break;
+        }
+        await new Promise(r => setTimeout(r, 20));
+      }
+      // Re-evaluate after the prior transition completes.
+      // The prior transition may have put us in the target state already,
+      // so re-check the no-op conditions below.
     }
 
     // If already in the target state AND not seeking, no-op.
@@ -643,27 +666,44 @@ export function useMediaPlayer() {
             console.warn('[audio] AudioContext resume blocked (no user gesture):', e);
           }
           // resume() may resolve but context stays suspended (no user gesture).
-          // If still suspended, video will play using fallback timer; audio stays silent.
+          // If still suspended, we CANNOT start audio — and we should NOT
+          // set isPlaying=true because the UI would show a pause button.
+          // The user clicking pause would stop playback, but clicking play
+          // (which they need to resume AudioContext) would be a no-op because
+          // playbackState is 'playing'. Instead, stay paused and let the user's
+          // click on the play button resume AudioContext with a real gesture.
           if (audioContextRef.current?.state === 'suspended') {
-            console.warn('[audio] AudioContext still suspended after resume() — video will play without audio');
+            console.warn('[audio] AudioContext still suspended after resume() — playback paused, waiting for user gesture');
             audioStarted = false;
           }
         }
         // startAudio() waits for PhaseVocoderNode FIFO to be ready at >1x.
         // After it resolves, audio is quality — safe to start video + time.
         if (audioStarted) {
-          fallbackStartTimeRef.current = null;
+          // Set 'playing' AFTER startAudio so getPlaybackTime() stays frozen
+          // (at playbackTimeAtStartRef) until audio is actually ready.
+          //
+          // Without this: stopAudio recalibrates audioContextStartTimeRef to
+          // ctx.currentTime. Then 'playing' is set → rAF advances. Then
+          // startAudio calls buffers(getPlaybackTime()) which reads a time
+          // ahead of the seek target (e.g. 50.1s instead of 50.0s). Audio
+          // skips the first ~100ms → sound lags behind video.
+
+          // Add a timeout to startAudio — if it hangs (e.g. firstBufferReady
+          // doesn't resolve), we don't want the transition to hang forever.
+          const startAudioPromise = startAudioRef.current();
+          const startAudioTimeout = new Promise(r => setTimeout(r, 3000));
+          await Promise.race([startAudioPromise, startAudioTimeout]);
+
+          playbackStateRef.current = 'playing';
+          playerActions.setIsPlaying(true);
         } else {
-          // Fallback timer for video-only playback without AudioContext
-          fallbackStartTimeRef.current = performance.now();
-        }
-        // Set 'playing' BEFORE startAudio so rAF loop can use fallback timer.
-        // startAudio waits up to 1s for firstBufferReady — without this, video
-        // is frozen during that wait.
-        playbackStateRef.current = 'playing';
-        playerActions.setIsPlaying(true);
-        if (audioStarted) {
-          await startAudioRef.current();
+          // AudioContext is suspended and resume() failed (no user gesture).
+          // Stay paused — set audioLocked so the UI shows a "click to unlock"
+          // overlay. When the user clicks it, the gesture resumes AudioContext.
+          playbackStateRef.current = 'paused';
+          playerActions.setIsPlaying(false);
+          playerActions.setAudioLocked(true);
         }
       } else {
         playbackStateRef.current = 'paused';
@@ -671,6 +711,7 @@ export function useMediaPlayer() {
     } finally {
       // If something went wrong and state is still 'transitioning', reset to paused.
       if (playbackStateRef.current === 'transitioning') {
+        console.warn('[audio] transition failed: state is still transitioning, resetting to paused');
         playbackStateRef.current = 'paused';
         playerActions.setIsPlaying(false);
       }
@@ -692,7 +733,11 @@ export function useMediaPlayer() {
           playerActions.setIsEnded(true);
         }
 
-        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+        // Don't draw video during 'transitioning' — audio isn't ready yet.
+        // Without this guard, the first frame at the seek target is drawn
+        // immediately while audio is still starting up → video ahead of audio.
+        const isTransitioning = playbackStateRef.current === 'transitioning';
+        if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
           utilsRef.current.drawFrame(nextFrameRef.current);
           nextFrameRef.current = null;
           void updateNextFrameRef.current();
@@ -715,7 +760,8 @@ export function useMediaPlayer() {
       const state = usePlayerStore.getState();
       if (state.fileName) {
         const playbackTime = utilsRef.current.getPlaybackTime();
-        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+        const isTransitioning = playbackStateRef.current === 'transitioning';
+        if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
           utilsRef.current.drawFrame(nextFrameRef.current);
           nextFrameRef.current = null;
           void updateNextFrameRef.current();
@@ -1122,7 +1168,14 @@ export function useMediaPlayer() {
 
       // If a transition is already in progress (e.g. initMediaPlayer auto-play),
       // wait for it to finish instead of rejecting immediately.
+      // Add a timeout to prevent deadlocks: if SessionRestorer calls play()
+      // while initMediaPlayer is still transitioning, we'd wait forever.
+      const deadline = Date.now() + 5000;
       while (playbackStateRef.current === 'transitioning') {
+        if (Date.now() > deadline) {
+          console.warn('[audio] play(): transition timeout — giving up');
+          return;
+        }
         await new Promise(r => setTimeout(r, 50));
       }
 
@@ -1157,8 +1210,13 @@ export function useMediaPlayer() {
   }, [pause, play]);
 
   const seekToTime = useCallback(async (seconds: number) => {
-    const wasPlaying = playbackStateRef.current === 'playing';
-    await transitionRef.current(wasPlaying ? 'playing' : 'paused', seconds);
+    try {
+      const wasPlaying = playbackStateRef.current === 'playing';
+      await transitionRef.current(wasPlaying ? 'playing' : 'paused', seconds);
+    } catch (error) {
+      console.error('Seek error:', error);
+      playerActions.setError(error instanceof Error ? error.message : 'Seek failed');
+    }
   }, []);
 
   const setVolume = useCallback((volume: number) => {
@@ -1192,6 +1250,7 @@ export function useMediaPlayer() {
   }, []);
 
   const initMediaPlayer = useCallback(async (resource: File | string) => {
+    console.log('[initMediaPlayer] called with', resource instanceof File ? resource.name : resource);
     try {
       // Stop any current playback before reinitializing.
       if (stopAudioRef.current) {
@@ -1199,6 +1258,8 @@ export function useMediaPlayer() {
       }
       playbackStateRef.current = 'idle';
       peakPlayingSourcesRef.current = 0;
+      // Reset audio-locked state — new file means fresh AudioContext
+      playerActions.setAudioLocked(false);
 
       // Close old audio context if any (sampleRate may differ for new file)
       if (audioContextRef.current) {
@@ -1453,9 +1514,7 @@ export function useMediaPlayer() {
   const cleanup = useCallback(async () => {
     playerActions.setTranscribing(false);
     playerActions.setIsEnded(false);
-    stopRenderLoop();
     stopTranscribeFocus();
-    speedUnsub();
 
     // Stop audio — same as transition to paused, but we're tearing down everything.
     await stopAudioRef.current();
