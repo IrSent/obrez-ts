@@ -67,6 +67,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   // Censoring mode
   censoringMode: false,
 
+  // Audio locked — AudioContext suspended after reload, needs user gesture
+  audioLocked: false,
+
   // Export state
   exporting: false,
   exportProgress: null,
@@ -112,6 +115,7 @@ export const playerActions = {
   setError: (error: string | null) => usePlayerStore.setState({ error }),
   setWarning: (warning: string | null) => usePlayerStore.setState({ warning }),
   setIsEnded: (isEnded: boolean) => usePlayerStore.setState({ isEnded }),
+  setAudioLocked: (locked: boolean) => usePlayerStore.setState({ audioLocked: locked }),
   setTranscriptionResults: (results: Array<[number, number, string]> | null) =>
     usePlayerStore.setState({ transcriptionResults: results }),
   setTranscribing: (transcribing: boolean) =>

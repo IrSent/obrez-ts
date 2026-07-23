@@ -183,6 +183,9 @@ export type PlayerState = {
   /** Whether censoring effects are active during playback */
   censoringMode: boolean;
 
+  /** AudioContext is suspended after reload — playback locked, user gesture needed */
+  audioLocked: boolean;
+
   /** Whether video export is in progress */
   exporting: boolean;
 
