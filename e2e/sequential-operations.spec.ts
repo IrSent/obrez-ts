@@ -90,15 +90,12 @@ test.describe('Sequential operations', () => {
 
     const timeBeforeSeek = parseTime(await page.locator('span.text-xs.opacity-60').first().textContent());
 
-    // Seek to 25%
-    await page.evaluate(() => {
-      const bar = document.querySelector('[role="progressbar"]') as HTMLElement;
-      if (!bar) return;
-      const rect = bar.getBoundingClientRect();
-      bar.dispatchEvent(new MouseEvent('click', {
-        clientX: rect.left + rect.width * 0.25, clientY: rect.top + rect.height / 2, bubbles: true
-      }));
-    });
+    // Seek to 25% — use page.mouse.click to trigger mousedown/mouseup handlers
+    // (raw MouseEvent 'click' doesn't fire React's onMouseDown/onMouseUp)
+    const progressBar = page.locator('[role="progressbar"]');
+    const rect = await progressBar.boundingBox();
+    if (!rect) throw new Error('progress bar not found');
+    await page.mouse.click(rect.x + rect.width * 0.25, rect.y + rect.height / 2);
     await page.waitForTimeout(1500);
 
     const duration = await page.locator('[data-testid="duration"]').getAttribute('data-seconds');

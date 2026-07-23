@@ -1,8 +1,5 @@
 let _backendUrl: string | null = null;
 
-/** localStorage key for the "Play on load" setting */
-export const AUTOPLAY_KEY = 'obrez_play_on_load';
-
 /**
  * Load backend URL from runtime config (backend-url.json).
  * Throws if the file is missing or unreadable — no fallback.

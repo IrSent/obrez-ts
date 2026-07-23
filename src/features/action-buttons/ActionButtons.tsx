@@ -10,8 +10,6 @@ import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
 
-import { AUTOPLAY_KEY } from '../../config';
-
 // ─── Icons ─────────────────────────────────────────────────────
 
 const FileIcon = () => (
@@ -81,15 +79,13 @@ const ActionButtonsInner = () => {
   const duration = usePlayerStore((state) => state.duration);
   const transcribing = usePlayerStore((state) => state.transcribing);
   const actions = playerActions;
-  const { initMediaPlayer, play, pause, transcribe, getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
+  const { initMediaPlayer, play, pause, cleanup, transcribe, getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
 
   const fileInputRef = useRef<HTMLInputElement>(null);
   const hasFile = !!fileName;
   const hasTranscription = !!(transcriptionResults && transcriptionResults.length > 0);
 
   // ─── File loading ────────────────────────────────────────────
-
-  const shouldAutoplay = () => localStorage.getItem(AUTOPLAY_KEY) === 'true';
 
   const handleFileChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -114,10 +110,6 @@ const ActionButtonsInner = () => {
 
     try {
       await initMediaPlayer(file);
-      if (shouldAutoplay()) {
-        await new Promise((r) => setTimeout(r, 1000));
-        await play();
-      }
     } catch (error) {
       actions.setError('Failed to load file: ' + (error as Error).message);
     }
@@ -152,10 +144,6 @@ const ActionButtonsInner = () => {
       });
       const file = new File([blob], url.split('/').pop() || 'video', { type: blob.type });
       await initMediaPlayer(file);
-      if (shouldAutoplay()) {
-        await new Promise((r) => setTimeout(r, 1000));
-        await play();
-      }
     } catch (error) {
       saveSession({ fileBlob: null });
       actions.setError('Failed to load URL: ' + (error as Error).message);
@@ -173,9 +161,10 @@ const ActionButtonsInner = () => {
       return;
     }
 
-    // Stop playback before tearing down
-    await pause();
-
+    // Clear fileName BEFORE cleanup — the fallback interval (setInterval 500ms)
+    // checks fileName to decide whether to draw frames. If we clear it after
+    // cleanup (and clearRect), a fallback tick between clearRect and setFileName('')
+    // draws a lingering frame.
     actions.setFileName('');
     actions.setError(null);
     actions.setWarning(null);
@@ -186,17 +175,16 @@ const ActionButtonsInner = () => {
     actions.setCurrentTime(0);
     actions.setDuration(0);
 
+    // Full teardown: close AudioContext, reset state machine to 'idle',
+    // clear all refs — so the next initMediaPlayer starts from scratch
+    // with no desync between Zustand store and internal state.
+    await cleanup();
+
     try {
       const { clearSession } = await import('../../utils/idb');
       await clearSession();
     } catch (err) {
       console.error('Failed to clear session:', err);
-    }
-
-    const canvas = document.getElementById('videoCanvas') as HTMLCanvasElement;
-    if (canvas) {
-      const ctx = canvas.getContext('2d');
-      if (ctx) ctx.clearRect(0, 0, canvas.width, canvas.height);
     }
   };
 

@@ -1,5 +1,4 @@
-import { useEffect, useState } from 'react';
-import { AUTOPLAY_KEY } from './config';
+import { useEffect, useState, useRef } from 'react';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { useMediaPlayerContext } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
@@ -17,8 +16,14 @@ const DEFAULT_DICTIONARIES = ['ru-profanity', 'ru-stopwords', 'ru-youtube'];
 /** Restore session from IndexedDB — must be inside MediaPlayerProvider */
 function SessionRestorer() {
   const { initMediaPlayer, startRenderLoop, play } = useMediaPlayerContext();
+  const restoreRef = useRef(false);
 
   useEffect(() => {
+    // Guard BEFORE any async — prevents React Strict Mode from running restore twice
+    if (restoreRef.current) return;
+    restoreRef.current = true;
+    console.log('[SessionRestorer] restoring session (first call)');
+
     const restoreSession = async () => {
       try {
         const { loadSession } = await import('./utils/idb');
@@ -30,14 +35,6 @@ function SessionRestorer() {
         });
 
         await initMediaPlayer(file);
-        // After reload, initMediaPlayer may have already started playing
-        // (AudioContext running) or may be suspended (needs user gesture).
-        // Only call play() if not already playing — avoids "transitioning" reject.
-        // Respect the "play on load" setting.
-        const isPlaying = usePlayerStore.getState().isPlaying;
-        if (!isPlaying && localStorage.getItem(AUTOPLAY_KEY) === 'true') {
-          await play();
-        }
 
         if (session.transcriptionResults) {
           playerActions.setTranscriptionResults(session.transcriptionResults);
