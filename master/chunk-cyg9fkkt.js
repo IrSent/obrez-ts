@@ -51752,7 +51752,6 @@ var useAuthStore = create((set, get) => ({
         set({
           user: { ...get().user || {}, ...data.user },
           paymentStatus: "paid",
-          activeInvoice: null,
           error: null
         });
       }
@@ -52712,6 +52711,7 @@ function PaymentModal({ invoice, onPaid, onClose }) {
             }, undefined, false, undefined, this),
             /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("button", {
               onClick: onClose,
+              "aria-label": "Close",
               className: "text-zinc-400 hover:text-zinc-200 transition-colors",
               children: "✕"
             }, undefined, false, undefined, this)
@@ -52796,11 +52796,23 @@ function TopupModal({ onClose, onTopup }) {
   const activeInvoice = useAuthStore((s) => s.activeInvoice);
   const clearActiveInvoice = useAuthStore((s) => s.clearActiveInvoice);
   const [selectedCurrency, setSelectedCurrency] = import_react8.useState("USD");
+  const [topupSuccess, setTopupSuccess] = import_react8.useState(null);
   const handleTopup = async (pkgType) => {
     await topup(pkgType, selectedCurrency);
+    const err = useAuthStore.getState().error;
+    const inv = useAuthStore.getState().activeInvoice;
+    if (!err && !inv) {
+      const hours = pkgType === "free" ? 5 : "?";
+      setTopupSuccess(`+${hours} hours added!`);
+      setTimeout(() => setTopupSuccess(null), 3000);
+    }
   };
   const handlePaymentPaid = () => {
-    onTopup();
+    setTopupSuccess("Payment received! Your balance has been updated.");
+    setTimeout(() => {
+      clearActiveInvoice();
+      onTopup();
+    }, 2000);
   };
   const handlePaymentClose = () => {
     clearActiveInvoice();
@@ -52922,7 +52934,17 @@ function TopupModal({ onClose, onTopup }) {
               children: "Dismiss"
             }, undefined, false, undefined, this)
           ]
-        }, undefined, true, undefined, this)
+        }, undefined, true, undefined, this),
+        topupSuccess && /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+          className: "mt-4 p-3 bg-green-900/30 border border-green-700/50 rounded-lg",
+          children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
+            className: "text-xs text-green-400",
+            children: [
+              "✓ ",
+              topupSuccess
+            ]
+          }, undefined, true, undefined, this)
+        }, undefined, false, undefined, this)
       ]
     }, undefined, true, undefined, this)
   }, undefined, false, undefined, this);
@@ -57158,7 +57180,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "182";
+var BUILD_NUM = "183";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57414,6 +57436,7 @@ function UserContent({ onClose }) {
   const paymentStatus = useAuthStore((s) => s.paymentStatus);
   const [showLogin, setShowLogin] = import_react22.useState(false);
   const [selectedCurrency, setSelectedCurrency] = import_react22.useState("USD");
+  const [topupSuccess, setTopupSuccess] = import_react22.useState(null);
   import_react22.useEffect(() => {
     if (isAuthenticated && showLogin) {
       setShowLogin(false);
@@ -57431,11 +57454,17 @@ function UserContent({ onClose }) {
     const err = useAuthStore.getState().error;
     const inv = useAuthStore.getState().activeInvoice;
     if (!err && !inv) {
-      onClose();
+      const pack = HOUR_PACKS.find((p) => p.type === pkgType);
+      setTopupSuccess(`+${pack?.hours || "?"} hours added!`);
+      setTimeout(() => setTopupSuccess(null), 3000);
     }
   };
   const handlePaymentPaid = () => {
-    onClose();
+    setTopupSuccess("Payment received! Your balance has been updated.");
+    setTimeout(() => {
+      useAuthStore.getState().clearActiveInvoice();
+      onClose();
+    }, 2000);
   };
   const handlePaymentClose = () => {
     useAuthStore.getState().clearActiveInvoice();
@@ -57573,7 +57602,17 @@ function UserContent({ onClose }) {
             children: "Dismiss"
           }, undefined, false, undefined, this)
         ]
-      }, undefined, true, undefined, this)
+      }, undefined, true, undefined, this),
+      topupSuccess && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
+        className: "relative p-4 rounded-xl bg-green-900/30 border border-green-700/50 shadow-[0_4px_12px_rgba(22,101,52,0.2)]",
+        children: /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("p", {
+          className: "text-xs text-green-400",
+          children: [
+            "✓ ",
+            topupSuccess
+          ]
+        }, undefined, true, undefined, this)
+      }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 }
@@ -57771,4 +57810,4 @@ var jsx_dev_runtime22 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=FC746BC0F577D34464756E2164756E21
+//# debugId=D0F5573F3BCC820264756E2164756E21
