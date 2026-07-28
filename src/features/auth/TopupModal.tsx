@@ -1,6 +1,9 @@
+import { useState } from 'react';
 import { useAuthStore } from '../../store/authStore';
-import { HourPackCard, HOUR_PACKS } from '../settings/HourPackCard';
+import { HourPackCard, HOUR_PACKS, CurrencySelector } from '../settings/HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
+import { PaymentModal } from './PaymentModal';
+import type { HourPackType, FiatCurrency } from '../../types';
 
 interface TopupModalProps {
   onClose: () => void;
@@ -8,21 +11,44 @@ interface TopupModalProps {
 }
 
 export function TopupModal({ onClose, onTopup }: TopupModalProps) {
-  const user = useAuthStore((s: ReturnType<typeof useAuthStore>) => s.user);
-  const topup = useAuthStore((s: ReturnType<typeof useAuthStore>) => s.topup);
-  const isLoading = useAuthStore((s: ReturnType<typeof useAuthStore>) => s.isLoading);
-  const error = useAuthStore((s: ReturnType<typeof useAuthStore>) => s.error);
-  const clearError = useAuthStore((s: ReturnType<typeof useAuthStore>) => s.clearError);
+  const user = useAuthStore((s) => s.user);
+  const topup = useAuthStore((s) => s.topup);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const error = useAuthStore((s) => s.error);
+  const clearError = useAuthStore((s) => s.clearError);
+  const activeInvoice = useAuthStore((s) => s.activeInvoice);
+  const clearActiveInvoice = useAuthStore((s) => s.clearActiveInvoice);
 
-  const handleTopup = async (pkgType: string) => {
-    await topup(pkgType as Parameters<typeof topup>[0]);
-    if (!useAuthStore.getState().error) {
-      onTopup();
-    }
+  const [selectedCurrency, setSelectedCurrency] = useState<FiatCurrency>('USD');
+
+  const handleTopup = async (pkgType: HourPackType) => {
+    await topup(pkgType, selectedCurrency);
+    // If free, onTopup will be called after invoice check below
+  };
+
+  const handlePaymentPaid = () => {
+    onTopup();
+  };
+
+  const handlePaymentClose = () => {
+    clearActiveInvoice();
+    // Re-check auth to get fresh balance
+    useAuthStore.getState().checkAuth();
   };
 
   const freeAvailable = user ? canFreeTopup(user.last_free_topup) : false;
   const daysLeft = user ? daysUntilFreeTopup(user.last_free_topup) : null;
+
+  // If there's an active invoice, show the payment modal instead
+  if (activeInvoice) {
+    return (
+      <PaymentModal
+        invoice={activeInvoice}
+        onPaid={handlePaymentPaid}
+        onClose={handlePaymentClose}
+      />
+    );
+  }
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
@@ -62,6 +88,12 @@ export function TopupModal({ onClose, onTopup }: TopupModalProps) {
         <p className="text-xs text-zinc-500 mb-3">
           +5 hours every 30 days free. Add more hours below.
         </p>
+
+        {/* Currency selector */}
+        <div className="mb-3">
+          <div className="text-xs text-zinc-400 mb-1.5">Currency</div>
+          <CurrencySelector value={selectedCurrency} onChange={setSelectedCurrency} />
+        </div>
 
         {daysLeft !== null && daysLeft > 0 && (
           <p className="text-xs text-yellow-400 mb-3">
