@@ -5,9 +5,11 @@ import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
 import { DebugTab } from '../debug/DebugTab';
 import { APP_VERSION } from '../../version';
 import { useAuthStore } from '../../store/authStore';
-import { HourPackCard, HOUR_PACKS } from './HourPackCard';
+import { HourPackCard, HOUR_PACKS, CurrencySelector } from './HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 import { LoginModal } from '../auth/LoginModal';
+import { PaymentModal } from '../auth/PaymentModal';
+import type { HourPackType, FiatCurrency } from '../../types';
 
 /**
  * Tooltip icon — ⓘ — shows description on hover (desktop) or tap (mobile).
@@ -92,6 +94,16 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   const currentVersion = typeof window !== 'undefined'
     ? window.location.pathname.split('/').filter(Boolean).pop() || 'master'
     : 'master';
+
+  // Check for OIDC callback — if we just returned from Telegram auth,
+  // close any open modals and refresh
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has('code')) {
+      // OIDC callback — let App.tsx handle it
+      onClose();
+    }
+  }, [onClose]);
 
   // Animate on tab change / versions load / unfreeze
   useEffect(() => {
@@ -202,15 +214,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               <UserContent onClose={onClose} />
             </div>
           )}
-          {activeTab === 'player' && (
-            <div className="p-5">
-              <h3 className="text-sm text-zinc-300 mb-3">
-                Player <Tooltip text="Settings for media playback — autoplay, speed, and quality options." />
-              </h3>
-              <PlayerContent />
-            </div>
-          )}
-          {activeTab === 'dictionaries' && (
+ {activeTab === 'dictionaries' && (
             <div className="p-5">
               <h3 className="text-sm text-zinc-300 mb-3">
                 Word Lists <Tooltip text="Choose which word lists to match against during transcription. Only active lists highlight matched words." />
@@ -266,7 +270,10 @@ function UserContent({ onClose }: UserContentProps) {
   const isLoading = useAuthStore((s) => s.isLoading);
   const error = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
+  const activeInvoice = useAuthStore((s) => s.activeInvoice);
+  const paymentStatus = useAuthStore((s) => s.paymentStatus);
   const [showLogin, setShowLogin] = useState(false);
+  const [selectedCurrency, setSelectedCurrency] = useState<FiatCurrency>('USD');
 
   // After successful login, close LoginModal and refresh user data
   useEffect(() => {
@@ -284,11 +291,23 @@ function UserContent({ onClose }: UserContentProps) {
     onClose();
   };
 
-  const handleTopup = async (pkgType: string) => {
-    await topup(pkgType as Parameters<typeof topup>[0]);
-    if (!useAuthStore.getState().error) {
+  const handleTopup = async (pkgType: HourPackType) => {
+    await topup(pkgType, selectedCurrency);
+    // Free pack: close on success
+    const err = useAuthStore.getState().error;
+    const inv = useAuthStore.getState().activeInvoice;
+    if (!err && !inv) {
       onClose();
     }
+  };
+
+  const handlePaymentPaid = () => {
+    onClose();
+  };
+
+  const handlePaymentClose = () => {
+    useAuthStore.getState().clearActiveInvoice();
+    useAuthStore.getState().checkAuth();
   };
 
   if (!isAuthenticated) {
@@ -341,6 +360,12 @@ function UserContent({ onClose }: UserContentProps) {
         </button>
       </div>
 
+      {/* Currency selector */}
+      <div className="mb-3">
+        <div className="text-xs text-zinc-400 mb-1.5">Currency</div>
+        <CurrencySelector value={selectedCurrency} onChange={setSelectedCurrency} />
+      </div>
+
       {/* Hour pack cards */}
       <div className="space-y-3">
         {HOUR_PACKS.map((pack, i) => {
@@ -358,6 +383,15 @@ function UserContent({ onClose }: UserContentProps) {
           );
         })}
       </div>
+
+      {/* Payment modal for active invoice */}
+      {activeInvoice && (
+        <PaymentModal
+          invoice={activeInvoice}
+          onPaid={handlePaymentPaid}
+          onClose={handlePaymentClose}
+        />
+      )}
 
       {daysLeft !== null && daysLeft > 0 && (
         <p className="text-xs text-yellow-400 text-center">

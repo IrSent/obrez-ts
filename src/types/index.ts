@@ -230,3 +230,20 @@ export interface AuthUser {
  * Hour pack types for topping up transcription hours
  */
 export type HourPackType = 'free' | 'basic' | 'pro';
+
+/**
+ * Supported fiat currencies for CryptoBot invoices
+ */
+export type FiatCurrency = 'USD' | 'RUB' | 'EUR';
+
+/**
+ * Payment invoice returned by the backend
+ */
+export interface PaymentInvoice {
+  invoice_id: number;
+  web_app_invoice_url: string;
+  bot_invoice_url: string;
+  amount: string;
+  currency: string;
+  status: string;
+}

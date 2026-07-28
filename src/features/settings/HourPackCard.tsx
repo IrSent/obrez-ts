@@ -1,5 +1,5 @@
 import { memo } from 'react';
-import type { HourPackType } from '../../types';
+import type { HourPackType, FiatCurrency } from '../../types';
 
 // ─── Hour pack data ───
 
@@ -50,6 +50,33 @@ export const HOUR_PACKS: HourPack[] = [
     textGlow: '0 0 12px rgba(245,158,11,0.4)',
   },
 ];
+
+// ─── Currency selector ───
+
+const FIAT_OPTIONS: { code: FiatCurrency; flag: string }[] = [
+  { code: 'USD', flag: '🇺🇸' },
+  { code: 'RUB', flag: '🇷🇺' },
+  { code: 'EUR', flag: '🇪🇺' },
+];
+
+export const CurrencySelector = memo(({ value, onChange }: { value: FiatCurrency; onChange: (c: FiatCurrency) => void }) => (
+  <div className="flex gap-2">
+    {FIAT_OPTIONS.map((opt) => (
+      <button
+        key={opt.code}
+        onClick={() => onChange(opt.code)}
+        className={`flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${
+          value === opt.code
+            ? 'bg-purple-700 text-white'
+            : 'bg-zinc-700 text-zinc-400 hover:bg-zinc-600'
+        }`}
+      >
+        <span>{opt.flag}</span>
+        <span>{opt.code}</span>
+      </button>
+    ))}
+  </div>
+));
 
 // ─── Card ───
 
@@ -113,8 +140,9 @@ export const HourPackCard = memo(({ pack, disabled, isLoading, onSelect, delay }
           </div>
 
           {pack.type !== 'free' && (
-            <div className="text-center text-[10px] text-zinc-500 italic">
-              Payments coming soon
+            <div className="text-center text-[10px] text-zinc-600 flex items-center justify-center gap-1">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor"><path d="M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.214-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.333-.373-.121l-6.861 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.83.945z"/></svg>
+              Pay via Telegram CryptoBot
             </div>
           )}
         </div>

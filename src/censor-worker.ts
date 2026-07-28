@@ -74,7 +74,7 @@ async function renderCensored(
   try {
     const totalFrames = audioChunks.reduce((sum, buf) => sum + buf.length, 0);
     const totalDuration = totalFrames / sampleRate;
-    const rmsMap = new Map(rmsMapData);
+    const rmsMap = new Map<number, number>(rmsMapData as [number, number][]);
 
     const ctx = new OfflineAudioContext(numChannels, totalFrames, sampleRate);
 
@@ -90,7 +90,7 @@ async function renderCensored(
       if (!e.dampenOriginal) continue;
 
       const seg = transcriptionResults.find(
-        ([s]: number) => Math.abs(s - e.segmentStart) < 0.01,
+        ([s]) => Math.abs(s - e.segmentStart) < 0.01,
       );
       if (!seg) continue;
       const [start, end] = seg;
@@ -130,7 +130,7 @@ async function renderCensored(
       const e = effect as any;
 
       const seg = transcriptionResults.find(
-        ([s]: number) => Math.abs(s - e.segmentStart) < 0.01,
+        ([s]) => Math.abs(s - e.segmentStart) < 0.01,
       );
       if (!seg) continue;
 
@@ -155,9 +155,9 @@ async function renderCensored(
       bleepScheduled++;
     }
 
-    // Progress callback
+    // Progress callback — onrenderprogress is Bun-specific, not in TS types yet
     let lastRenderPct = -2;
-    ctx.onrenderprogress = () => {
+    (ctx as any).onrenderprogress = () => {
       const done = ctx.currentTime;
       const pct = Math.round((done / totalDuration) * 100);
       if (Math.abs(pct - lastRenderPct) < 2) return;
@@ -169,13 +169,11 @@ async function renderCensored(
     };
 
     const result = await ctx.startRendering();
-    ctx.onrenderprogress = null;
+    (ctx as any).onrenderprogress = null;
 
-    // Transfer the result back to main thread
-    self.postMessage(
-      { type: 'RENDER_READY', payload: result },
-      [result],
-    );
+    // Transfer the result back to main thread — AudioBuffer is a Transferable
+    const msg = { type: 'RENDER_READY' as const, payload: result };
+    (self as unknown as { postMessage: (msg: any, transfer: Transferable[]) => void }).postMessage(msg, [result]);
   } catch (err) {
     self.postMessage({
       type: 'ERROR',

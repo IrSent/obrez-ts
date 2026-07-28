@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { AuthUser, HourPackType } from '../types';
+import type { AuthUser, HourPackType, PaymentInvoice, FiatCurrency } from '../types';
 import { loadBackendUrl, backendHeaders } from '../config';
 
 interface AuthState {
@@ -7,15 +7,20 @@ interface AuthState {
   isAuthenticated: boolean;
   isLoading: boolean;
   error: string | null;
+  // Active payment flow
+  activeInvoice: PaymentInvoice | null;
+  paymentStatus: 'idle' | 'polling' | 'paid' | 'failed';
 }
 
 interface AuthActions {
   setUser: (user: AuthUser | null) => void;
   logout: () => Promise<void>;
-  topup: (hourPackType: HourPackType) => Promise<void>;
+  topup: (hourPackType: HourPackType, fiat?: FiatCurrency) => Promise<void>;
+  pollPaymentStatus: (invoiceId: number) => Promise<void>;
   checkAuth: () => Promise<void>;
   exchangeCode: (code: string) => Promise<void>;
   clearError: () => void;
+  clearActiveInvoice: () => void;
 }
 
 export type AuthStore = AuthState & AuthActions;
@@ -26,11 +31,15 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  activeInvoice: null,
+  paymentStatus: 'idle',
 
   // Actions
   setUser: (user) => set({ user, isAuthenticated: !!user, error: null }),
 
   clearError: () => set({ error: null }),
+
+  clearActiveInvoice: () => set({ activeInvoice: null, paymentStatus: 'idle' }),
 
   exchangeCode: async (code: string) => {
     try {
@@ -145,12 +154,12 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
     set({ user: null, isAuthenticated: false });
   },
 
-  topup: async (hourPackType: HourPackType) => {
+  topup: async (hourPackType: HourPackType, fiat: FiatCurrency = 'USD') => {
     set({ isLoading: true, error: null });
     try {
       const url = await loadBackendUrl();
       const response = await fetch(
-        `${url}/api/hours/topup?hour_pack_type=${hourPackType}`,
+        `${url}/api/hours/topup?hour_pack_type=${hourPackType}&fiat=${fiat}`,
         { method: 'POST', credentials: 'include', headers: backendHeaders() },
       );
       if (!response.ok) {
@@ -158,15 +167,49 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         throw new Error(err.detail || 'Failed to top up');
       }
       const data = await response.json();
-      set({
-        user: { ...(get().user || {}), ...data.user },
-        isLoading: false,
-      });
+
+      if (data.invoice) {
+        // Paid pack — we have a CryptoBot invoice to pay
+        set({
+          activeInvoice: data.invoice,
+          paymentStatus: 'polling',
+          isLoading: false,
+        });
+      } else {
+        // Free pack — credited directly
+        set({
+          user: { ...(get().user || {}), ...data.user },
+          isLoading: false,
+        });
+      }
     } catch (err) {
       set({
         error: (err as Error).message,
         isLoading: false,
       });
+    }
+  },
+
+  pollPaymentStatus: async (invoiceId: number) => {
+    try {
+      const url = await loadBackendUrl();
+      const response = await fetch(
+        `${url}/api/payments/status?invoice_id=${invoiceId}`,
+        { credentials: 'include', headers: backendHeaders() },
+      );
+      if (!response.ok) return;
+
+      const data = await response.json();
+      if (data.status === 'credited') {
+        set({
+          user: { ...(get().user || {}), ...data.user },
+          paymentStatus: 'paid',
+          activeInvoice: null,
+          error: null,
+        });
+      }
+    } catch {
+      // ignore — keep polling
     }
   },
 }));
