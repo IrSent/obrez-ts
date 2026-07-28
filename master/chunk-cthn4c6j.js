@@ -19709,39 +19709,7 @@ var require_sql_wasm = __commonJS((exports, module) => {
 var import_client = __toESM(require_client(), 1);
 
 // src/App.tsx
-var import_react21 = __toESM(require_react(), 1);
-
-// src/config.ts
-var _backendUrl = null;
-var AUTOPLAY_KEY = "obrez_play_on_load";
-async function loadBackendUrl() {
-  if (_backendUrl)
-    return _backendUrl;
-  const resp = await fetch("../backend-url.json");
-  if (!resp.ok) {
-    throw new Error(`Failed to load backend URL (HTTP ${resp.status})`);
-  }
-  const data = await resp.json();
-  if (!data?.url) {
-    throw new Error('backend-url.json is missing a valid "url" field');
-  }
-  _backendUrl = data.url;
-  return _backendUrl;
-}
-function backendPath(path) {
-  if (!_backendUrl)
-    throw new Error("Backend URL not loaded. Call loadBackendUrl() first.");
-  return `${_backendUrl}${path}`;
-}
-function backendHeaders() {
-  return { "bypass-tunnel-reminder": "true" };
-}
-function backendWsPath(path) {
-  if (!_backendUrl)
-    throw new Error("Backend URL not loaded. Call loadBackendUrl() first.");
-  const scheme = _backendUrl.startsWith("https") ? "wss://" : "ws://";
-  return `${scheme}${_backendUrl.split("://")[1]}${path}`;
-}
+var import_react23 = __toESM(require_react(), 1);
 
 // src/context/MediaPlayerContext.tsx
 var import_react4 = __toESM(require_react(), 1);
@@ -20018,6 +19986,7 @@ var usePlayerStore = create((set) => ({
   activeDictionaries: new Set,
   bleepSounds: {},
   censoringMode: false,
+  audioLocked: false,
   exporting: false,
   exportProgress: null,
   importing: false,
@@ -20045,6 +20014,7 @@ var playerActions = {
   setError: (error) => usePlayerStore.setState({ error }),
   setWarning: (warning) => usePlayerStore.setState({ warning }),
   setIsEnded: (isEnded) => usePlayerStore.setState({ isEnded }),
+  setAudioLocked: (locked) => usePlayerStore.setState({ audioLocked: locked }),
   setTranscriptionResults: (results) => usePlayerStore.setState({ transcriptionResults: results }),
   setTranscribing: (transcribing) => usePlayerStore.setState({ transcribing }),
   setTranscribeStage: (stage) => usePlayerStore.setState({ transcribeStage: stage }),
@@ -50432,6 +50402,37 @@ async function audioBuffersToWav(chunks, sampleRate, onProgress) {
   return new Blob([buffer], { type: "audio/wav" });
 }
 
+// src/config.ts
+var _backendUrl = null;
+async function loadBackendUrl() {
+  if (_backendUrl)
+    return _backendUrl;
+  const resp = await fetch("../backend-url.json");
+  if (!resp.ok) {
+    throw new Error(`Failed to load backend URL (HTTP ${resp.status})`);
+  }
+  const data = await resp.json();
+  if (!data?.url) {
+    throw new Error('backend-url.json is missing a valid "url" field');
+  }
+  _backendUrl = data.url;
+  return _backendUrl;
+}
+function backendPath(path) {
+  if (!_backendUrl)
+    throw new Error("Backend URL not loaded. Call loadBackendUrl() first.");
+  return `${_backendUrl}${path}`;
+}
+function backendHeaders() {
+  return { "bypass-tunnel-reminder": "true" };
+}
+function backendWsPath(path) {
+  if (!_backendUrl)
+    throw new Error("Backend URL not loaded. Call loadBackendUrl() first.");
+  const scheme = _backendUrl.startsWith("https") ? "wss://" : "ws://";
+  return `${scheme}${_backendUrl.split("://")[1]}${path}`;
+}
+
 // src/features/transcription/useTranscribe.ts
 function useTranscribe(deps) {
   const { audioTrackRef, resourceRef, audioSinkRef } = deps;
@@ -50686,7 +50687,6 @@ function useMediaPlayer() {
   const audioSinkRef = import_react3.useRef(null);
   const audioContextStartTimeRef = import_react3.useRef(null);
   const playbackTimeAtStartRef = import_react3.useRef(0);
-  const fallbackStartTimeRef = import_react3.useRef(null);
   const playbackSpeedRef = import_react3.useRef(1);
   const sampleRateRef = import_react3.useRef(48000);
   const videoFrameIteratorRef = import_react3.useRef(null);
@@ -50711,9 +50711,6 @@ function useMediaPlayer() {
       if (state === "playing") {
         if (audioContextRef.current && audioContextStartTimeRef.current != null) {
           return (audioContextRef.current.currentTime - audioContextStartTimeRef.current) * speed + playbackTimeAtStartRef.current;
-        }
-        if (fallbackStartTimeRef.current != null) {
-          return (performance.now() - fallbackStartTimeRef.current) / 1000 * speed + playbackTimeAtStartRef.current;
         }
       }
       return playbackTimeAtStartRef.current;
@@ -50837,6 +50834,8 @@ function useMediaPlayer() {
         break;
       if (currentAsyncId !== asyncIdRef.current)
         break;
+      if (playbackStateRef.current === "transitioning")
+        break;
       const playbackTime = utilsRef.current.getPlaybackTime();
       if (newNextFrame.timestamp <= playbackTime) {
         utilsRef.current.drawFrame(newNextFrame);
@@ -50854,9 +50853,13 @@ function useMediaPlayer() {
     videoFrameIteratorRef.current = videoSinkRef.current.canvases(utilsRef.current.getPlaybackTime());
     const firstFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
     const secondFrame = (await videoFrameIteratorRef.current.next()).value ?? null;
-    nextFrameRef.current = secondFrame;
-    if (firstFrame) {
-      utilsRef.current.drawFrame(firstFrame);
+    if (playbackStateRef.current !== "transitioning") {
+      nextFrameRef.current = secondFrame;
+      if (firstFrame) {
+        utilsRef.current.drawFrame(firstFrame);
+      }
+    } else {
+      nextFrameRef.current = firstFrame ?? secondFrame;
     }
   });
   const stopAudioRef = import_react3.useRef(null);
@@ -50865,8 +50868,10 @@ function useMediaPlayer() {
     console.log("[audio] stopAudio start, state=", playbackStateRef.current);
     const ctx = audioContextRef.current;
     const currentTime = ctx && audioContextStartTimeRef.current != null ? (ctx.currentTime - audioContextStartTimeRef.current) * playbackSpeedRef.current + playbackTimeAtStartRef.current : playbackTimeAtStartRef.current;
+    if (ctx && audioContextStartTimeRef.current != null) {
+      audioContextStartTimeRef.current = ctx.currentTime;
+    }
     playbackTimeAtStartRef.current = currentTime;
-    fallbackStartTimeRef.current = null;
     abortAudioRef.current = true;
     playerActions.setCurrentTime(currentTime);
     playerActions.setIsPlaying(false);
@@ -50962,8 +50967,15 @@ function useMediaPlayer() {
   const transitionRef = import_react3.useRef(null);
   transitionRef.current = async (target, seekTo, beforeStartAudio) => {
     if (playbackStateRef.current === "transitioning") {
-      console.log("[audio] transition rejected: already transitioning, target=", target);
-      return;
+      console.log("[audio] transition queued: already transitioning, waiting for target=", target, seekTo != null ? `(seek ${seekTo})` : "");
+      const deadline = Date.now() + 5000;
+      while (playbackStateRef.current === "transitioning") {
+        if (Date.now() > deadline) {
+          console.warn("[audio] transition queued: timeout waiting for prior transition");
+          break;
+        }
+        await new Promise((r) => setTimeout(r, 20));
+      }
     }
     if (seekTo == null && target === "playing" && playbackStateRef.current === "playing")
       return;
@@ -51003,25 +51015,27 @@ function useMediaPlayer() {
             console.warn("[audio] AudioContext resume blocked (no user gesture):", e);
           }
           if (audioContextRef.current?.state === "suspended") {
-            console.warn("[audio] AudioContext still suspended after resume() — video will play without audio");
+            console.warn("[audio] AudioContext still suspended after resume() — playback paused, waiting for user gesture");
             audioStarted = false;
           }
         }
         if (audioStarted) {
-          fallbackStartTimeRef.current = null;
+          const startAudioPromise = startAudioRef.current();
+          const startAudioTimeout = new Promise((r) => setTimeout(r, 3000));
+          await Promise.race([startAudioPromise, startAudioTimeout]);
+          playbackStateRef.current = "playing";
+          playerActions.setIsPlaying(true);
         } else {
-          fallbackStartTimeRef.current = performance.now();
-        }
-        playbackStateRef.current = "playing";
-        playerActions.setIsPlaying(true);
-        if (audioStarted) {
-          await startAudioRef.current();
+          playbackStateRef.current = "paused";
+          playerActions.setIsPlaying(false);
+          playerActions.setAudioLocked(true);
         }
       } else {
         playbackStateRef.current = "paused";
       }
     } finally {
       if (playbackStateRef.current === "transitioning") {
+        console.warn("[audio] transition failed: state is still transitioning, resetting to paused");
         playbackStateRef.current = "paused";
         playerActions.setIsPlaying(false);
       }
@@ -51037,7 +51051,8 @@ function useMediaPlayer() {
           playbackTimeAtStartRef.current = state.duration;
           playerActions.setIsEnded(true);
         }
-        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+        const isTransitioning = playbackStateRef.current === "transitioning";
+        if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
           utilsRef.current.drawFrame(nextFrameRef.current);
           nextFrameRef.current = null;
           updateNextFrameRef.current();
@@ -51052,7 +51067,8 @@ function useMediaPlayer() {
       const state = usePlayerStore.getState();
       if (state.fileName) {
         const playbackTime = utilsRef.current.getPlaybackTime();
-        if (nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+        const isTransitioning = playbackStateRef.current === "transitioning";
+        if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
           utilsRef.current.drawFrame(nextFrameRef.current);
           nextFrameRef.current = null;
           updateNextFrameRef.current();
@@ -51276,7 +51292,12 @@ function useMediaPlayer() {
         playerActions.setError("Audio system not available");
         return;
       }
+      const deadline = Date.now() + 5000;
       while (playbackStateRef.current === "transitioning") {
+        if (Date.now() > deadline) {
+          console.warn("[audio] play(): transition timeout — giving up");
+          return;
+        }
         await new Promise((r) => setTimeout(r, 50));
       }
       if (playbackStateRef.current === "playing")
@@ -51301,8 +51322,13 @@ function useMediaPlayer() {
     }
   }, [pause, play]);
   const seekToTime = import_react3.useCallback(async (seconds) => {
-    const wasPlaying = playbackStateRef.current === "playing";
-    await transitionRef.current(wasPlaying ? "playing" : "paused", seconds);
+    try {
+      const wasPlaying = playbackStateRef.current === "playing";
+      await transitionRef.current(wasPlaying ? "playing" : "paused", seconds);
+    } catch (error) {
+      console.error("Seek error:", error);
+      playerActions.setError(error instanceof Error ? error.message : "Seek failed");
+    }
   }, []);
   const setVolume = import_react3.useCallback((volume) => {
     if (gainNodeRef.current) {
@@ -51329,12 +51355,14 @@ function useMediaPlayer() {
     playerActions.setIsMuted(!currentlyMuted);
   }, []);
   const initMediaPlayer = import_react3.useCallback(async (resource) => {
+    console.log("[initMediaPlayer] called with", resource instanceof File ? resource.name : resource);
     try {
       if (stopAudioRef.current) {
         await stopAudioRef.current();
       }
       playbackStateRef.current = "idle";
       peakPlayingSourcesRef.current = 0;
+      playerActions.setAudioLocked(false);
       if (audioContextRef.current) {
         stNodeRef.current?.disconnect();
         await audioContextRef.current.close();
@@ -51501,9 +51529,7 @@ function useMediaPlayer() {
   const cleanup = import_react3.useCallback(async () => {
     playerActions.setTranscribing(false);
     playerActions.setIsEnded(false);
-    stopRenderLoop();
     stopTranscribeFocus();
-    speedUnsub();
     await stopAudioRef.current();
     playbackStateRef.current = "idle";
     videoFrameIteratorRef.current?.return();
@@ -51574,10 +51600,10 @@ var useMediaPlayerContext = () => {
 };
 
 // src/features/player/PlayerDisplay.tsx
-var import_react9 = __toESM(require_react(), 1);
+var import_react11 = __toESM(require_react(), 1);
 
 // src/features/action-buttons/ActionButtons.tsx
-var import_react7 = __toESM(require_react(), 1);
+var import_react9 = __toESM(require_react(), 1);
 
 // src/store/authStore.ts
 var useAuthStore = create((set, get) => ({
@@ -51585,8 +51611,11 @@ var useAuthStore = create((set, get) => ({
   isAuthenticated: false,
   isLoading: false,
   error: null,
+  activeInvoice: null,
+  paymentStatus: "idle",
   setUser: (user) => set({ user, isAuthenticated: !!user, error: null }),
   clearError: () => set({ error: null }),
+  clearActiveInvoice: () => set({ activeInvoice: null, paymentStatus: "idle" }),
   exchangeCode: async (code) => {
     try {
       await loadBackendUrl();
@@ -51683,26 +51712,51 @@ var useAuthStore = create((set, get) => ({
     } catch {}
     set({ user: null, isAuthenticated: false });
   },
-  topup: async (hourPackType) => {
+  topup: async (hourPackType, fiat = "USD") => {
     set({ isLoading: true, error: null });
     try {
       const url2 = await loadBackendUrl();
-      const response = await fetch(`${url2}/api/hours/topup?hour_pack_type=${hourPackType}`, { method: "POST", credentials: "include", headers: backendHeaders() });
+      const response = await fetch(`${url2}/api/hours/topup?hour_pack_type=${hourPackType}&fiat=${fiat}`, { method: "POST", credentials: "include", headers: backendHeaders() });
       if (!response.ok) {
         const err = await response.json().catch(() => ({ detail: "Unknown error" }));
         throw new Error(err.detail || "Failed to top up");
       }
       const data = await response.json();
-      set({
-        user: { ...get().user || {}, ...data.user },
-        isLoading: false
-      });
+      if (data.invoice) {
+        set({
+          activeInvoice: data.invoice,
+          paymentStatus: "polling",
+          isLoading: false
+        });
+      } else {
+        set({
+          user: { ...get().user || {}, ...data.user },
+          isLoading: false
+        });
+      }
     } catch (err) {
       set({
         error: err.message,
         isLoading: false
       });
     }
+  },
+  pollPaymentStatus: async (invoiceId) => {
+    try {
+      const url2 = await loadBackendUrl();
+      const response = await fetch(`${url2}/api/payments/status?invoice_id=${invoiceId}`, { credentials: "include", headers: backendHeaders() });
+      if (!response.ok)
+        return;
+      const data = await response.json();
+      if (data.status === "credited") {
+        set({
+          user: { ...get().user || {}, ...data.user },
+          paymentStatus: "paid",
+          activeInvoice: null,
+          error: null
+        });
+      }
+    } catch {}
   }
 }));
 
@@ -52420,6 +52474,9 @@ function LoginModal({ onClose, onRetry, initialError }) {
   }, undefined, false, undefined, this);
 }
 
+// src/features/auth/TopupModal.tsx
+var import_react8 = __toESM(require_react(), 1);
+
 // src/features/settings/HourPackCard.tsx
 var import_react6 = __toESM(require_react(), 1);
 var jsx_dev_runtime3 = __toESM(require_jsx_dev_runtime(), 1);
@@ -52458,6 +52515,26 @@ var HOUR_PACKS = [
     textGlow: "0 0 12px rgba(245,158,11,0.4)"
   }
 ];
+var FIAT_OPTIONS = [
+  { code: "USD", flag: "\uD83C\uDDFA\uD83C\uDDF8" },
+  { code: "RUB", flag: "\uD83C\uDDF7\uD83C\uDDFA" },
+  { code: "EUR", flag: "\uD83C\uDDEA\uD83C\uDDFA" }
+];
+var CurrencySelector = import_react6.memo(({ value, onChange }) => /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
+  className: "flex gap-2",
+  children: FIAT_OPTIONS.map((opt) => /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("button", {
+    onClick: () => onChange(opt.code),
+    className: `flex items-center gap-1 text-xs px-2 py-1 rounded transition-colors ${value === opt.code ? "bg-purple-700 text-white" : "bg-zinc-700 text-zinc-400 hover:bg-zinc-600"}`,
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("span", {
+        children: opt.flag
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("span", {
+        children: opt.code
+      }, undefined, false, undefined, this)
+    ]
+  }, opt.code, true, undefined, this))
+}, undefined, false, undefined, this));
 var HourPackCard = import_react6.memo(({ pack, disabled, isLoading, onSelect, delay }) => {
   const isFree = pack.type === "free";
   const priceColor = isFree ? "text-green-400" : pack.type === "pro" ? "text-amber-400" : "text-purple-400";
@@ -52533,9 +52610,20 @@ var HourPackCard = import_react6.memo(({ pack, disabled, isLoading, onSelect, de
                   ]
                 }, undefined, true, undefined, this),
                 pack.type !== "free" && /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
-                  className: "text-center text-[10px] text-zinc-500 italic",
-                  children: "Payments coming soon"
-                }, undefined, false, undefined, this)
+                  className: "text-center text-[10px] text-zinc-600 flex items-center justify-center gap-1",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("svg", {
+                      width: "10",
+                      height: "10",
+                      viewBox: "0 0 24 24",
+                      fill: "currentColor",
+                      children: /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("path", {
+                        d: "M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.214-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.333-.373-.121l-6.861 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.83.945z"
+                      }, undefined, false, undefined, this)
+                    }, undefined, false, undefined, this),
+                    "Pay via Telegram CryptoBot"
+                  ]
+                }, undefined, true, undefined, this)
               ]
             }, undefined, true, undefined, this),
             /* @__PURE__ */ jsx_dev_runtime3.jsxDEV("div", {
@@ -52579,26 +52667,38 @@ var HourPackCard = import_react6.memo(({ pack, disabled, isLoading, onSelect, de
   }, undefined, false, undefined, this);
 });
 
-// src/features/auth/TopupModal.tsx
+// src/features/auth/PaymentModal.tsx
+var import_react7 = __toESM(require_react(), 1);
 var jsx_dev_runtime4 = __toESM(require_jsx_dev_runtime(), 1);
-function TopupModal({ onClose, onTopup }) {
-  const user = useAuthStore((s) => s.user);
-  const topup = useAuthStore((s) => s.topup);
-  const isLoading = useAuthStore((s) => s.isLoading);
-  const error = useAuthStore((s) => s.error);
-  const clearError = useAuthStore((s) => s.clearError);
-  const handleTopup = async (pkgType) => {
-    await topup(pkgType);
-    if (!useAuthStore.getState().error) {
-      onTopup();
+function PaymentModal({ invoice, onPaid, onClose }) {
+  const pollRef = import_react7.useRef(null);
+  const paymentStatus = useAuthStore((s) => s.paymentStatus);
+  const pollPaymentStatus = useAuthStore((s) => s.pollPaymentStatus);
+  const startPolling = import_react7.useCallback(() => {
+    pollRef.current = setInterval(async () => {
+      await pollPaymentStatus(invoice.invoice_id);
+    }, 3000);
+  }, [invoice.invoice_id, pollPaymentStatus]);
+  import_react7.useEffect(() => {
+    startPolling();
+    return () => {
+      if (pollRef.current)
+        clearInterval(pollRef.current);
+    };
+  }, [startPolling]);
+  import_react7.useEffect(() => {
+    if (paymentStatus === "paid") {
+      onPaid();
     }
+  }, [paymentStatus, onPaid]);
+  const openPayment = () => {
+    window.open(invoice.bot_invoice_url, "_blank", "width=400,height=600");
   };
-  const freeAvailable = user ? canFreeTopup(user.last_free_topup) : false;
-  const daysLeft = user ? daysUntilFreeTopup(user.last_free_topup) : null;
+  const amountDisplay = `${invoice.amount} ${invoice.currency}`;
   return /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
     children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
-      className: "relative bg-zinc-800 rounded-xl p-6 w-full max-w-md mx-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)] max-h-[85vh] overflow-y-auto",
+      className: "relative bg-zinc-800 rounded-xl p-6 w-full max-w-sm mx-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]",
       children: [
         /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
           className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
@@ -52608,7 +52708,7 @@ function TopupModal({ onClose, onTopup }) {
           children: [
             /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("h2", {
               className: "text-lg font-semibold text-zinc-100",
-              children: "Transcription Balance"
+              children: "Complete Payment"
             }, undefined, false, undefined, this),
             /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("button", {
               onClick: onClose,
@@ -52617,29 +52717,149 @@ function TopupModal({ onClose, onTopup }) {
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("p", {
+          className: "text-sm text-zinc-400 mb-4",
+          children: "Pay via Telegram CryptoBot. Click the button below to open Telegram."
+        }, undefined, false, undefined, this),
         /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+          className: "flex items-center justify-center gap-4 py-6 mb-4 bg-zinc-900/50 rounded-xl border border-zinc-700",
+          children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+            className: "text-center",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+                className: "text-3xl font-bold text-purple-400",
+                children: amountDisplay
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+                className: "text-xs text-zinc-500 mt-1",
+                children: "CryptoBot"
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this)
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("button", {
+          onClick: openPayment,
+          className: "w-full bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium py-3 px-4 rounded-lg transition-colors flex items-center justify-center gap-3 shadow-[0_4px_14px_rgba(42,171,238,0.3)] mb-3",
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("svg", {
+              width: "22",
+              height: "22",
+              viewBox: "0 0 24 24",
+              fill: "currentColor",
+              children: /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("path", {
+                d: "M12 0C5.373 0 0 5.373 0 12s5.373 12 12 12 12-5.373 12-12S18.627 0 12 0zm5.894 8.221l-1.97 9.28c-.145.658-.537.818-1.084.508l-3-2.214-1.447 1.394c-.16.16-.295.295-.605.295l.213-3.054 5.56-5.022c.242-.213-.054-.333-.373-.121l-6.861 4.326-2.96-.924c-.64-.203-.658-.64.135-.954l11.566-4.458c.538-.196 1.006.128.83.945z"
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this),
+            "Pay in Telegram"
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+          className: "text-center",
+          children: [
+            paymentStatus === "polling" && /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+              className: "flex items-center justify-center gap-2 text-xs text-yellow-400",
+              children: [
+                /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("span", {
+                  className: "animate-spin",
+                  children: "⟳"
+                }, undefined, false, undefined, this),
+                "Waiting for payment..."
+              ]
+            }, undefined, true, undefined, this),
+            paymentStatus === "paid" && /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+              className: "text-xs text-green-400",
+              children: "✓ Payment received!"
+            }, undefined, false, undefined, this),
+            paymentStatus === "failed" && /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+              className: "text-xs text-red-400",
+              children: "Payment failed. Please try again."
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("p", {
+          className: "text-[10px] text-zinc-600 text-center mt-3",
+          children: "After payment, you can close the Telegram window. Your balance will update automatically."
+        }, undefined, false, undefined, this)
+      ]
+    }, undefined, true, undefined, this)
+  }, undefined, false, undefined, this);
+}
+
+// src/features/auth/TopupModal.tsx
+var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
+function TopupModal({ onClose, onTopup }) {
+  const user = useAuthStore((s) => s.user);
+  const topup = useAuthStore((s) => s.topup);
+  const isLoading = useAuthStore((s) => s.isLoading);
+  const error = useAuthStore((s) => s.error);
+  const clearError = useAuthStore((s) => s.clearError);
+  const activeInvoice = useAuthStore((s) => s.activeInvoice);
+  const clearActiveInvoice = useAuthStore((s) => s.clearActiveInvoice);
+  const [selectedCurrency, setSelectedCurrency] = import_react8.useState("USD");
+  const handleTopup = async (pkgType) => {
+    await topup(pkgType, selectedCurrency);
+  };
+  const handlePaymentPaid = () => {
+    onTopup();
+  };
+  const handlePaymentClose = () => {
+    clearActiveInvoice();
+    useAuthStore.getState().checkAuth();
+  };
+  const freeAvailable = user ? canFreeTopup(user.last_free_topup) : false;
+  const daysLeft = user ? daysUntilFreeTopup(user.last_free_topup) : null;
+  if (activeInvoice) {
+    return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(PaymentModal, {
+      invoice: activeInvoice,
+      onPaid: handlePaymentPaid,
+      onClose: handlePaymentClose
+    }, undefined, false, undefined, this);
+  }
+  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+    className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
+    children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+      className: "relative bg-zinc-800 rounded-xl p-6 w-full max-w-md mx-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)] max-h-[85vh] overflow-y-auto",
+      children: [
+        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+          className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
+        }, undefined, false, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+          className: "flex items-center justify-between mb-4",
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
+              className: "text-lg font-semibold text-zinc-100",
+              children: "Transcription Balance"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("button", {
+              onClick: onClose,
+              className: "text-zinc-400 hover:text-zinc-200 transition-colors",
+              children: "✕"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
           className: "flex items-center gap-3 mb-4 p-3 bg-zinc-700/50 rounded-lg",
           children: [
-            user?.photo_url ? /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("img", {
+            user?.photo_url ? /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("img", {
               src: user.photo_url,
               alt: user.first_name,
               className: "w-8 h-8 rounded-full object-cover"
-            }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+            }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
               className: "w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center text-sm font-semibold",
               children: user?.first_name?.charAt(0) || "?"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
               className: "text-sm",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
                   className: "text-zinc-100 font-medium",
                   children: user?.first_name || "—"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
                   className: "text-zinc-400",
                   children: [
                     "Balance: ",
-                    /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("span", {
+                    /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("span", {
                       className: "text-purple-400",
                       children: formatSeconds(user?.remaining_seconds || 0)
                     }, undefined, false, undefined, this)
@@ -52649,11 +52869,24 @@ function TopupModal({ onClose, onTopup }) {
             }, undefined, true, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("p", {
+        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
           className: "text-xs text-zinc-500 mb-3",
           children: "+5 hours every 30 days free. Add more hours below."
         }, undefined, false, undefined, this),
-        daysLeft !== null && daysLeft > 0 && /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("p", {
+        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+          className: "mb-3",
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+              className: "text-xs text-zinc-400 mb-1.5",
+              children: "Currency"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(CurrencySelector, {
+              value: selectedCurrency,
+              onChange: setSelectedCurrency
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this),
+        daysLeft !== null && daysLeft > 0 && /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
           className: "text-xs text-yellow-400 mb-3",
           children: [
             "Free topup available in ",
@@ -52662,12 +52895,12 @@ function TopupModal({ onClose, onTopup }) {
             daysLeft > 1 ? "s" : ""
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
           className: "space-y-3",
           children: HOUR_PACKS.map((pack, i) => {
             const isFree = pack.type === "free";
             const isDisabled = isFree && !freeAvailable;
-            return /* @__PURE__ */ jsx_dev_runtime4.jsxDEV(HourPackCard, {
+            return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV(HourPackCard, {
               pack,
               disabled: isDisabled,
               isLoading,
@@ -52676,14 +52909,14 @@ function TopupModal({ onClose, onTopup }) {
             }, pack.type, false, undefined, this);
           })
         }, undefined, false, undefined, this),
-        error && /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("div", {
+        error && /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
           className: "mt-4 p-3 bg-red-900/30 border border-red-700/50 rounded-lg",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("p", {
+            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("p", {
               className: "text-xs text-red-400",
               children: error
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime4.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("button", {
               onClick: clearError,
               className: "text-xs text-red-300 underline mt-1",
               children: "Dismiss"
@@ -52696,7 +52929,7 @@ function TopupModal({ onClose, onTopup }) {
 }
 
 // src/features/auth/ConfirmationModal.tsx
-var jsx_dev_runtime5 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime6 = __toESM(require_jsx_dev_runtime(), 1);
 function formatDuration(sec) {
   const h = Math.floor(sec / 3600);
   const m = Math.floor(sec % 3600 / 60);
@@ -52718,53 +52951,53 @@ function ConfirmationModal({ videoDuration, onClose, onConfirm, onLogout }) {
     await logout();
     onLogout();
   };
-  return /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
-    children: /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+    children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
       className: "relative bg-zinc-800 rounded-xl p-6 w-full max-w-sm mx-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)] max-h-[85vh] overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
           className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
           className: "flex items-center justify-between mb-4",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("h2", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h2", {
               className: "text-lg font-semibold text-zinc-100",
               children: "Confirm transcription"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
               onClick: onClose,
               className: "text-zinc-400 hover:text-zinc-200 transition-colors",
               children: "✕"
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
           className: "flex items-center gap-3 mb-4 p-3 bg-zinc-700/50 rounded-lg",
           children: [
-            user.photo_url ? /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("img", {
+            user.photo_url ? /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("img", {
               src: user.photo_url,
               alt: user.first_name,
               className: "w-10 h-10 rounded-full object-cover"
-            }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+            }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
               className: "w-10 h-10 rounded-full bg-purple-600 flex items-center justify-center text-lg font-semibold",
               children: user.first_name.charAt(0)
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
               className: "text-sm flex-1 min-w-0",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
                   className: "text-zinc-100 font-medium truncate",
                   children: displayName
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
                   className: "text-zinc-400",
                   children: "Signed in via Telegram"
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
               onClick: handleLogout,
               className: "text-xs text-zinc-500 hover:text-red-400 transition-colors whitespace-nowrap",
               title: "Sign out",
@@ -52772,43 +53005,43 @@ function ConfirmationModal({ videoDuration, onClose, onConfirm, onLogout }) {
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
           className: "space-y-2 mb-6",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
               className: "flex justify-between text-sm",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
                   className: "text-zinc-400",
                   children: "Video duration"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
                   className: "text-zinc-200 font-semibold",
                   children: formatDuration(videoDuration)
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
               className: "flex justify-between text-sm",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
                   className: "text-zinc-400",
                   children: "Current balance"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
                   className: "text-purple-400 font-semibold",
                   children: formatDuration(user.remaining_seconds)
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
               className: "flex justify-between text-sm border-t border-zinc-700 pt-2",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
                   className: "text-zinc-400",
                   children: "After transcription"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
                   className: "font-semibold text-zinc-200",
                   children: formatDuration(remainingAfter)
                 }, undefined, false, undefined, this)
@@ -52816,15 +53049,15 @@ function ConfirmationModal({ videoDuration, onClose, onConfirm, onLogout }) {
             }, undefined, true, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
           className: "flex gap-3",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
               onClick: onClose,
               className: "flex-1 px-4 py-2 rounded-lg bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-sm font-semibold transition-colors",
               children: "Cancel"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime5.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
               onClick: onConfirm,
               className: "flex-1 px-4 py-2 rounded-lg bg-purple-600 hover:bg-purple-500 text-white text-sm font-semibold transition-colors",
               children: "Transcribe"
@@ -52837,8 +53070,8 @@ function ConfirmationModal({ videoDuration, onClose, onConfirm, onLogout }) {
 }
 
 // src/features/action-buttons/ActionButtons.tsx
-var jsx_dev_runtime6 = __toESM(require_jsx_dev_runtime(), 1);
-var FileIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
+var jsx_dev_runtime7 = __toESM(require_jsx_dev_runtime(), 1);
+var FileIcon = () => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "14",
   height: "14",
@@ -52847,15 +53080,15 @@ var FileIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
       d: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("polyline", {
       points: "14 2 14 8 20 8"
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var UrlIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
+var UrlIcon = () => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "14",
   height: "14",
@@ -52864,15 +53097,15 @@ var UrlIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
       d: "M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
       d: "M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var TranscribeIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
+var TranscribeIcon = () => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "14",
   height: "14",
@@ -52881,19 +53114,19 @@ var TranscribeIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
       d: "M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
       d: "M19 10v2a7 7 0 01-14 0v-2"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("line", {
       x1: "12",
       y1: "19",
       x2: "12",
       y2: "23"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("line", {
       x1: "8",
       y1: "23",
       x2: "16",
@@ -52901,7 +53134,7 @@ var TranscribeIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var DownloadIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
+var DownloadIcon = () => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "14",
   height: "14",
@@ -52910,13 +53143,13 @@ var DownloadIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
       d: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("polyline", {
       points: "7 10 12 15 17 10"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("line", {
       x1: "12",
       y1: "15",
       x2: "12",
@@ -52924,7 +53157,7 @@ var DownloadIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var UnloadIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
+var UnloadIcon = () => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "14",
   height: "14",
@@ -52933,19 +53166,19 @@ var UnloadIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("polyline", {
       points: "3 6 5 6 21 6"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
       d: "M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("line", {
       x1: "10",
       y1: "11",
       x2: "10",
       y2: "17"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("line", {
       x1: "14",
       y1: "11",
       x2: "14",
@@ -52953,7 +53186,7 @@ var UnloadIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var CloseIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
+var CloseIcon = () => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -52961,7 +53194,7 @@ var CloseIcon = () => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("svg", {
   fill: "none",
   stroke: "currentColor",
   strokeWidth: "2",
-  children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("path", {
+  children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("path", {
     d: "M18 6 6 18M6 6l12 12"
   }, undefined, false, undefined, this)
 }, undefined, false, undefined, this);
@@ -52985,11 +53218,10 @@ var ActionButtonsInner = () => {
   const duration = usePlayerStore((state) => state.duration);
   const transcribing = usePlayerStore((state) => state.transcribing);
   const actions = playerActions;
-  const { initMediaPlayer, play, pause, transcribe, getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
-  const fileInputRef = import_react7.useRef(null);
+  const { initMediaPlayer, play, pause, cleanup, transcribe, getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
+  const fileInputRef = import_react9.useRef(null);
   const hasFile = !!fileName;
   const hasTranscription = !!(transcriptionResults && transcriptionResults.length > 0);
-  const shouldAutoplay = () => localStorage.getItem(AUTOPLAY_KEY) === "true";
   const handleFileChange = async (e) => {
     const file = e.target.files?.[0];
     if (!file)
@@ -53011,10 +53243,6 @@ var ActionButtonsInner = () => {
     });
     try {
       await initMediaPlayer(file);
-      if (shouldAutoplay()) {
-        await new Promise((r) => setTimeout(r, 1000));
-        await play();
-      }
     } catch (error) {
       actions.setError("Failed to load file: " + error.message);
     }
@@ -53045,10 +53273,6 @@ var ActionButtonsInner = () => {
       });
       const file = new File([blob], url2.split("/").pop() || "video", { type: blob.type });
       await initMediaPlayer(file);
-      if (shouldAutoplay()) {
-        await new Promise((r) => setTimeout(r, 1000));
-        await play();
-      }
     } catch (error) {
       saveSession({ fileBlob: null });
       actions.setError("Failed to load URL: " + error.message);
@@ -53061,7 +53285,6 @@ var ActionButtonsInner = () => {
         exportBtn.click();
       return;
     }
-    await pause();
     actions.setFileName("");
     actions.setError(null);
     actions.setWarning(null);
@@ -53071,23 +53294,18 @@ var ActionButtonsInner = () => {
     actions.setCensoringEffects([]);
     actions.setCurrentTime(0);
     actions.setDuration(0);
+    await cleanup();
     try {
       const { clearSession: clearSession2 } = await Promise.resolve().then(() => exports_idb);
       await clearSession2();
     } catch (err) {
       console.error("Failed to clear session:", err);
     }
-    const canvas = document.getElementById("videoCanvas");
-    if (canvas) {
-      const ctx = canvas.getContext("2d");
-      if (ctx)
-        ctx.clearRect(0, 0, canvas.width, canvas.height);
-    }
   };
-  const [transcribeLoading, setTranscribeLoading] = import_react7.useState(false);
-  const [authModal, setAuthModal] = import_react7.useState(null);
-  const [authModalError, setAuthModalError] = import_react7.useState(null);
-  const authModalRetryRef = import_react7.useRef(null);
+  const [transcribeLoading, setTranscribeLoading] = import_react9.useState(false);
+  const [authModal, setAuthModal] = import_react9.useState(null);
+  const [authModalError, setAuthModalError] = import_react9.useState(null);
+  const authModalRetryRef = import_react9.useRef(null);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const authError = useAuthStore((s) => s.error);
   const checkAuth = useAuthStore((s) => s.checkAuth);
@@ -53136,7 +53354,7 @@ var ActionButtonsInner = () => {
     }
     setAuthModal("confirm");
   };
-  import_react7.useEffect(() => {
+  import_react9.useEffect(() => {
     if ((authModal === "login" || authModal === "confirm") && isAuthenticated && !authError) {
       const user = useAuthStore.getState().user;
       if (user) {
@@ -53167,9 +53385,9 @@ var ActionButtonsInner = () => {
       setTranscribeLoading(false);
     }
   };
-  const [showExportModal, setShowExportModal] = import_react7.useState(false);
-  const [exportFormat, setExportFormat] = import_react7.useState("same");
-  const [exportError, setExportError] = import_react7.useState(null);
+  const [showExportModal, setShowExportModal] = import_react9.useState(false);
+  const [exportFormat, setExportFormat] = import_react9.useState("same");
+  const [exportError, setExportError] = import_react9.useState(null);
   const exporting = usePlayerStore((state) => state.exporting);
   const exportProgress = usePlayerStore((state) => state.exportProgress);
   const originalExt = (fileName?.match(/\.[^.]+$/) ?? [])[0]?.toLowerCase() ?? "";
@@ -53179,7 +53397,7 @@ var ActionButtonsInner = () => {
   const altFormat = originalFormat === "mp4" ? "webm" : "mp4";
   const altVidCodec = altFormat === "mp4" ? "avc" : "vp9";
   const altAudCodec = altFormat === "mp4" ? "aac" : "opus";
-  const handleExport = import_react7.useCallback(async () => {
+  const handleExport = import_react9.useCallback(async () => {
     setExportError(null);
     actions.setExporting(true);
     try {
@@ -53212,23 +53430,23 @@ var ActionButtonsInner = () => {
       actions.setExportDone();
     }
   }, [exportFormat, fileName, originalFormat, actions, getInput, getAudioTrack, getAudioSink, getVideoTrack]);
-  return /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
     className: "relative bg-zinc-800 rounded-xl p-4 space-y-2 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
         className: "absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none"
       }, undefined, false, undefined, this),
-      !hasFile && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(jsx_dev_runtime6.Fragment, {
+      !hasFile && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
         children: [
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
             onClick: () => fileInputRef.current?.click(),
             className: `${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`,
             children: [
-              /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(FileIcon, {}, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(FileIcon, {}, undefined, false, undefined, this),
               " Load File"
             ]
           }, undefined, true, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("input", {
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("input", {
             ref: fileInputRef,
             type: "file",
             accept: "video/*,video/x-matroska,video/mp2t,.ts,audio/*,audio/aac",
@@ -53237,60 +53455,60 @@ var ActionButtonsInner = () => {
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      !hasFile && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+      !hasFile && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
         onClick: handleUrlClick,
         className: `${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`,
         children: [
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(UrlIcon, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(UrlIcon, {}, undefined, false, undefined, this),
           " Load URL"
         ]
       }, undefined, true, undefined, this),
-      hasFile && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+      hasFile && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
         onClick: handleUnload,
         className: `${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`,
         children: [
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(UnloadIcon, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(UnloadIcon, {}, undefined, false, undefined, this),
           " Unload"
         ]
       }, undefined, true, undefined, this),
-      hasFile && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+      hasFile && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
         onClick: _handleTranscribe,
         className: `${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`,
         children: [
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(TranscribeIcon, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(TranscribeIcon, {}, undefined, false, undefined, this),
           " Transcribe"
         ]
       }, undefined, true, undefined, this),
-      hasTranscription && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+      hasTranscription && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
         onClick: () => {
           setExportError(null);
           setShowExportModal(true);
         },
         className: `${cdBtn} w-full flex items-center gap-2 text-xs font-semibold bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-2 rounded`,
         children: [
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
           " Export"
         ]
       }, undefined, true, undefined, this),
-      exportError && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+      exportError && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
         className: "text-xs text-red-400 p-2 bg-red-900/20 rounded",
         children: exportError
       }, undefined, false, undefined, this),
-      exporting && exportProgress && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+      exporting && exportProgress && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
         className: "space-y-1",
         children: [
-          exportProgress.phases.map((phase) => /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+          exportProgress.phases.map((phase) => /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
             className: "flex items-center gap-2 text-xs",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
+              /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
                 className: phase.status === "done" ? "text-green-400" : phase.status === "active" ? "text-yellow-400" : "text-zinc-600",
                 children: phase.status === "done" ? "✓" : phase.status === "active" ? "⟳" : "○"
               }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
+              /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
                 className: `flex-1 min-w-0 ${phase.status === "active" ? "text-white font-semibold" : phase.status === "done" ? "text-zinc-300" : "text-zinc-500"}`,
                 children: phase.label
               }, undefined, false, undefined, this),
-              (phase.status === "active" || phase.status === "done") && phase.pct > 0 && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
+              (phase.status === "active" || phase.status === "done") && phase.pct > 0 && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
                 className: "text-zinc-400 tabular-nums",
                 children: [
                   phase.pct,
@@ -53299,7 +53517,7 @@ var ActionButtonsInner = () => {
               }, undefined, true, undefined, this)
             ]
           }, phase.key, true, undefined, this)),
-          /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
             className: "text-[10px] text-zinc-500 pt-0.5 border-t border-zinc-700/50",
             children: [
               "Elapsed: ",
@@ -53309,12 +53527,12 @@ var ActionButtonsInner = () => {
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      authModal === "login" && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(LoginModal, {
+      authModal === "login" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(LoginModal, {
         onClose: () => setAuthModal(null),
         onRetry: authModalRetryRef.current ?? undefined,
         initialError: authModalError
       }, undefined, false, undefined, this),
-      authModal === "topup" && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(TopupModal, {
+      authModal === "topup" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(TopupModal, {
         onClose: () => {
           setAuthModal(null);
           clearAuthError();
@@ -53324,7 +53542,7 @@ var ActionButtonsInner = () => {
           setAuthModal("confirm");
         }
       }, undefined, false, undefined, this),
-      authModal === "confirm" && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(ConfirmationModal, {
+      authModal === "confirm" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(ConfirmationModal, {
         videoDuration: duration,
         onClose: () => setAuthModal(null),
         onConfirm: handleConfirmTranscribe,
@@ -53333,58 +53551,58 @@ var ActionButtonsInner = () => {
           setAuthModal(null);
         }
       }, undefined, false, undefined, this),
-      showExportModal && /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+      showExportModal && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
         className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
-        children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+        children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
           className: "relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
               className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
               className: "flex items-center justify-between",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("h3", {
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
                   className: "text-sm font-semibold flex items-center gap-2",
                   children: [
-                    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
                     " Export Video"
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
                   onClick: () => setShowExportModal(false),
                   className: `${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`,
-                  children: /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(CloseIcon, {}, undefined, false, undefined, this)
+                  children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(CloseIcon, {}, undefined, false, undefined, this)
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
               children: [
-                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("label", {
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("label", {
                   className: "block text-xs text-zinc-400 mb-1.5",
                   children: "Format"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
                   className: "flex gap-2",
                   children: [
-                    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
                       type: "button",
                       onClick: () => setExportFormat("same"),
                       className: `${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${exportFormat === "same" ? "bg-zinc-600 text-zinc-100" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
                       children: videoCodec && audioCodec ? `Same (${codecLabel(videoCodec)} + ${codecLabel(audioCodec)})` : "Same as input"
                     }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
                       type: "button",
                       onClick: () => setExportFormat(altFormat),
                       className: `${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${exportFormat === altFormat ? "bg-zinc-600 text-zinc-100" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
                       children: [
-                        /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
+                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
                           children: [
                             ".",
                             altFormat.toUpperCase()
                           ]
                         }, undefined, true, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("span", {
+                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
                           className: "text-[9px] opacity-70 block",
                           children: [
                             codecLabel(altVidCodec),
@@ -53398,18 +53616,18 @@ var ActionButtonsInner = () => {
                 }, undefined, true, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
               onClick: () => {
                 handleExport();
                 setShowExportModal(false);
               },
               className: `${cdBtn} w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`,
               children: [
-                /* @__PURE__ */ jsx_dev_runtime6.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
                 " Export"
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime6.jsxDEV("p", {
+            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
               className: "text-[10px] text-zinc-500 leading-relaxed",
               children: "Video will be re-encoded with censored audio."
             }, undefined, false, undefined, this)
@@ -53419,21 +53637,21 @@ var ActionButtonsInner = () => {
     ]
   }, undefined, true, undefined, this);
 };
-var ActionButtons = import_react7.memo(ActionButtonsInner);
+var ActionButtons = import_react9.memo(ActionButtonsInner);
 
 // src/features/player/ProgressBar.tsx
-var import_react8 = __toESM(require_react(), 1);
-var jsx_dev_runtime7 = __toESM(require_jsx_dev_runtime(), 1);
+var import_react10 = __toESM(require_react(), 1);
+var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
 var ProgressBarInner = () => {
   const duration = usePlayerStore((state) => state.duration);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
   const { seekToTime, formatSeconds: formatSeconds2, getPlaybackTime, pause, play } = useMediaPlayerContext();
-  const isDraggingRef = import_react8.useRef(false);
-  const wasPlayingRef = import_react8.useRef(false);
-  const progressRef = import_react8.useRef(null);
-  const [currentTime, setCurrentTime] = import_react8.useState(0);
-  const prevTimeRef = import_react8.useRef(currentTime);
-  import_react8.useEffect(() => {
+  const isDraggingRef = import_react10.useRef(false);
+  const wasPlayingRef = import_react10.useRef(false);
+  const progressRef = import_react10.useRef(null);
+  const [currentTime, setCurrentTime] = import_react10.useState(0);
+  const prevTimeRef = import_react10.useRef(currentTime);
+  import_react10.useEffect(() => {
     const interval = setInterval(() => {
       const t = getPlaybackTime();
       if (Math.floor(t) !== Math.floor(prevTimeRef.current)) {
@@ -53443,7 +53661,7 @@ var ProgressBarInner = () => {
     }, 200);
     return () => clearInterval(interval);
   }, [getPlaybackTime]);
-  const seekFromX = import_react8.useCallback((clientX) => {
+  const seekFromX = import_react10.useCallback((clientX) => {
     if (!progressRef.current)
       return;
     const rect = progressRef.current.getBoundingClientRect();
@@ -53451,7 +53669,7 @@ var ProgressBarInner = () => {
     const time = duration * percent;
     seekToTime(time);
   }, [duration, seekToTime]);
-  const updateDragVisual = import_react8.useCallback((clientX) => {
+  const updateDragVisual = import_react10.useCallback((clientX) => {
     if (!progressRef.current)
       return;
     const rect = progressRef.current.getBoundingClientRect();
@@ -53474,11 +53692,11 @@ var ProgressBarInner = () => {
     e.preventDefault();
     wasPlayingRef.current = isPlaying;
     if (isPlaying)
-      pause();
+      pause().catch((err) => console.error("ProgressBar pause error:", err));
     isDraggingRef.current = true;
     updateDragVisual(e.clientX);
   };
-  const handleDragEnd = import_react8.useCallback((clientX) => {
+  const handleDragEnd = import_react10.useCallback((clientX) => {
     if (!isDraggingRef.current)
       return;
     isDraggingRef.current = false;
@@ -53487,37 +53705,37 @@ var ProgressBarInner = () => {
       play();
     }
   }, [seekFromX, play]);
-  const handleDragVisualMouse = import_react8.useCallback((e) => {
+  const handleDragVisualMouse = import_react10.useCallback((e) => {
     if (!isDraggingRef.current)
       return;
     updateDragVisual(e.clientX);
   }, [updateDragVisual]);
-  const handleMouseUp = import_react8.useCallback((e) => {
+  const handleMouseUp = import_react10.useCallback((e) => {
     handleDragEnd(e.clientX);
   }, [handleDragEnd]);
-  const handleTouchStart = import_react8.useCallback((e) => {
+  const handleTouchStart = import_react10.useCallback((e) => {
     const touch = e.touches[0];
     wasPlayingRef.current = isPlaying;
     if (isPlaying)
-      pause();
+      pause().catch((err) => console.error("ProgressBar pause error:", err));
     isDraggingRef.current = true;
     updateDragVisual(touch.clientX);
   }, [isPlaying, pause, updateDragVisual]);
-  const handleTouchMove = import_react8.useCallback((e) => {
+  const handleTouchMove = import_react10.useCallback((e) => {
     if (!isDraggingRef.current)
       return;
     e.preventDefault();
     const touch = e.touches[0];
     updateDragVisual(touch.clientX);
   }, [updateDragVisual]);
-  const handleTouchEnd = import_react8.useCallback(() => {
+  const handleTouchEnd = import_react10.useCallback(() => {
     if (!isDraggingRef.current)
       return;
     isDraggingRef.current = false;
     const time = usePlayerStore.getState().currentTime;
     seekToTime(time);
   }, [seekToTime]);
-  import_react8.useEffect(() => {
+  import_react10.useEffect(() => {
     window.addEventListener("mousemove", handleDragVisualMouse);
     window.addEventListener("mouseup", handleMouseUp);
     window.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -53530,15 +53748,15 @@ var ProgressBarInner = () => {
     };
   }, [handleDragVisualMouse, handleMouseUp, handleTouchMove, handleTouchEnd]);
   const progress = duration > 0 ? Math.max(0, Math.min(100, currentTime / duration * 100)) : 0;
-  return /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
     className: "flex-1 flex items-center gap-2",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("span", {
         className: "text-xs opacity-60",
         "data-testid": "current-time",
         children: formatSeconds2(currentTime)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
         ref: progressRef,
         onMouseDown: handleDragStart,
         onTouchStart: handleTouchStart,
@@ -53548,15 +53766,15 @@ var ProgressBarInner = () => {
         "aria-valuemin": 0,
         "aria-valuemax": duration,
         "aria-label": "Playback progress",
-        children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
           className: "flex-1 h-1 bg-zinc-700 rounded-full relative mx-2",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
               "data-testid": "progress-fill",
               style: { width: `${progress}%` },
               className: "h-full bg-purple-500 rounded-full"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
               "data-testid": "progress-thumb",
               style: { left: `${progress}%` },
               className: "absolute w-4 h-4 bg-purple-500 rounded-full -top-1.5 -translate-x-1/2 cursor-grab active:cursor-grabbing"
@@ -53564,7 +53782,7 @@ var ProgressBarInner = () => {
           ]
         }, undefined, true, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
+      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("span", {
         className: "text-xs opacity-60",
         "data-testid": "duration",
         "data-seconds": duration,
@@ -53573,75 +53791,123 @@ var ProgressBarInner = () => {
     ]
   }, undefined, true, undefined, this);
 };
-var ProgressBar = import_react8.memo(ProgressBarInner);
+var ProgressBar = import_react10.memo(ProgressBarInner);
 
 // src/features/player/PlayerDisplay.tsx
-var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
 var PLAYER_SHADOW = "shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]";
 var PlayerDisplayInner = () => {
   const fileName = usePlayerStore((state) => state.fileName);
   const error = usePlayerStore((state) => state.error);
   const isEnded = usePlayerStore((state) => state.isEnded);
+  const audioLocked = usePlayerStore((state) => state.audioLocked);
   const { canvasRef, play, seekToTime } = useMediaPlayerContext();
-  const handleReplay = import_react9.useCallback(async (e) => {
+  const handleReplay = import_react11.useCallback(async (e) => {
     e.stopPropagation();
     playerActions.setIsEnded(false);
     await seekToTime(0);
     await play();
   }, [seekToTime, play]);
-  return /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+  const handleUnlock = import_react11.useCallback(async (e) => {
+    e.stopPropagation();
+    playerActions.setAudioLocked(false);
+    try {
+      await play();
+    } catch (err) {
+      console.error("Failed to unlock playback:", err);
+      playerActions.setAudioLocked(true);
+    }
+  }, [play]);
+  return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
     "data-testid": "player-display-container",
     className: `relative w-full max-h-[33vh] bg-zinc-900 rounded-xl overflow-hidden flex items-center justify-center ${PLAYER_SHADOW}`,
     children: [
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
         className: "absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none z-10"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("canvas", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("canvas", {
         id: "videoCanvas",
         ref: canvasRef,
         "aria-label": "Video canvas",
         role: "img",
         className: "w-full max-h-[33vh] bg-zinc-800 [object-fit:contain]"
       }, undefined, false, undefined, this),
-      !fileName && !error && /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+      !fileName && !error && /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
         className: "absolute inset-0 flex items-center justify-center pointer-events-none",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("p", {
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("p", {
           className: "text-zinc-500 text-center",
           children: "Load video or audio file"
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      isEnded && /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+      isEnded && /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
         className: "absolute inset-0 flex items-center justify-center bg-black/40 z-20",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("button", {
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("button", {
           onClick: handleReplay,
           className: "p-4 rounded-full bg-zinc-800/90 hover:bg-zinc-700 transition-colors",
           "aria-label": "Replay from start",
-          children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("img", {
+          children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("img", {
             src: "assets/replay-icon.svg",
             alt: "Replay",
             className: "w-10 h-10"
           }, undefined, false, undefined, this)
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
-        className: "absolute right-3 top-3 z-30",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(ActionButtons, {}, undefined, false, undefined, this)
+      audioLocked && /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
+        "data-testid": "audio-lock-overlay",
+        className: "absolute inset-0 flex items-center justify-center bg-black/60 z-20 cursor-pointer",
+        onClick: handleUnlock,
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
+          className: "flex flex-col items-center gap-3",
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("svg", {
+              xmlns: "http://www.w3.org/2000/svg",
+              viewBox: "0 0 24 24",
+              fill: "none",
+              stroke: "currentColor",
+              strokeWidth: "1.5",
+              strokeLinecap: "round",
+              strokeLinejoin: "round",
+              className: "w-14 h-14 text-yellow-400",
+              children: [
+                /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("rect", {
+                  x: "3",
+                  y: "11",
+                  width: "18",
+                  height: "11",
+                  rx: "2",
+                  ry: "2"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("path", {
+                  d: "M7 11V7a5 5 0 0 1 10 0v4"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("p", {
+              className: "text-zinc-300 text-sm font-medium",
+              children: "Click to unlock playback"
+            }, undefined, false, undefined, this)
+          ]
+        }, undefined, true, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
+        className: "absolute right-3 top-3 z-30",
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(ActionButtons, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      fileName && /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
         className: "absolute bottom-3 left-4 right-4 z-30",
-        children: /* @__PURE__ */ jsx_dev_runtime8.jsxDEV(ProgressBar, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV(ProgressBar, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 };
-var PlayerDisplay = import_react9.memo(PlayerDisplayInner);
+var PlayerDisplay = import_react11.memo(PlayerDisplayInner);
 
 // src/features/player/PlaybackControls.tsx
-var import_react11 = __toESM(require_react(), 1);
+var import_react13 = __toESM(require_react(), 1);
 
 // src/features/player/VolumeControls.tsx
-var import_react10 = __toESM(require_react(), 1);
-var jsx_dev_runtime9 = __toESM(require_jsx_dev_runtime(), 1);
+var import_react12 = __toESM(require_react(), 1);
+var jsx_dev_runtime10 = __toESM(require_jsx_dev_runtime(), 1);
 var VolumeControlsInner = () => {
   const volume = usePlayerStore((state) => state.volume);
   const isMuted = usePlayerStore((state) => state.isMuted);
@@ -53654,20 +53920,20 @@ var VolumeControlsInner = () => {
     toggleMute();
   };
   const volumeIcon = isMuted ? "assets/volume-off-icon.svg" : volume >= 0.67 ? "assets/volume-2-icon.svg" : volume >= 0.34 ? "assets/volume-1-icon.svg" : "assets/volume-0-icon.svg";
-  return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("div", {
     className: "flex items-center gap-2",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("button", {
+      /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("button", {
         onClick: handleMuteToggle,
         className: "p-1 rounded-md hover:bg-zinc-700 transition-colors",
         "aria-label": isMuted ? "Unmute" : "Mute",
-        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("img", {
+        children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("img", {
           src: volumeIcon,
           alt: isMuted ? "Unmute" : "Mute",
           className: "w-5 h-5"
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("input", {
+      /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("input", {
         type: "range",
         min: "0",
         max: "1",
@@ -53680,13 +53946,13 @@ var VolumeControlsInner = () => {
     ]
   }, undefined, true, undefined, this);
 };
-var VolumeControls = import_react10.memo(VolumeControlsInner);
+var VolumeControls = import_react12.memo(VolumeControlsInner);
 
 // src/features/player/PlaybackControls.tsx
-var jsx_dev_runtime10 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime11 = __toESM(require_jsx_dev_runtime(), 1);
 var SPEEDS = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 var MODAL_SHADOW = "shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]";
-var ChevronDownIcon = () => /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("svg", {
+var ChevronDownIcon = () => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "12",
   height: "12",
@@ -53694,11 +53960,11 @@ var ChevronDownIcon = () => /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("svg", {
   fill: "none",
   stroke: "currentColor",
   strokeWidth: "2",
-  children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("polyline", {
+  children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("polyline", {
     points: "6 9 12 15 18 9"
   }, undefined, false, undefined, this)
 }, undefined, false, undefined, this);
-var LedIndicator = ({ on }) => /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("span", {
+var LedIndicator = ({ on }) => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
   className: `inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1 ${on ? "bg-green-400 shadow-[0_0_4px_1px_rgba(74,222,128,0.7)]" : "bg-red-800 shadow-none"}`
 }, undefined, false, undefined, this);
 var PlaybackControlsInner = () => {
@@ -53709,17 +53975,17 @@ var PlaybackControlsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const autoScroll = usePlayerStore((state) => state.autoScroll);
   const { play, pause } = useMediaPlayerContext();
-  const [showSpeedMenu, setShowSpeedMenu] = import_react11.useState(false);
-  return /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("div", {
+  const [showSpeedMenu, setShowSpeedMenu] = import_react13.useState(false);
+  return /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
     className: `relative bg-zinc-800 rounded-xl p-4 ${MODAL_SHADOW}`,
     children: [
-      /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
         className: "absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
         className: "flex items-center gap-3",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
             onClick: () => {
               if (isPlaying)
                 pause();
@@ -53728,30 +53994,30 @@ var PlaybackControlsInner = () => {
             },
             className: `${cdBtn} p-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0`,
             "aria-label": isPlaying ? "Pause" : "Play",
-            children: /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("img", {
+            children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("img", {
               src: isPlaying ? "assets/pause-icon.svg" : "assets/play-icon.svg",
               alt: isPlaying ? "Pause" : "Play",
               className: "w-6 h-6"
             }, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
-          censoringEffects && censoringEffects.length > 0 && /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("button", {
+          censoringEffects && censoringEffects.length > 0 && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
             onClick: () => playerActions.setCensoringMode(!censoringMode),
             className: `${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex-shrink-0 ${censoringMode ? "bg-red-800 text-white hover:bg-red-700 active:bg-red-900 border-t-red-400 border-l-red-400 border-b-red-950 border-r-red-950 active:border-t-red-950 active:border-l-red-950 active:border-b-red-400 active:border-r-red-400" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600"}`,
             title: censoringMode ? "Censoring ON — click to play original audio" : "Censoring OFF — click to play with effects",
             children: [
               censoringMode ? "⚡ CENSORED" : "\uD83D\uDD0A ORIGINAL",
               " ",
-              /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(LedIndicator, {
+              /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(LedIndicator, {
                 on: censoringMode
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
-          transcriptionResults && transcriptionResults.length > 0 && /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("button", {
+          transcriptionResults && transcriptionResults.length > 0 && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
             onClick: () => playerActions.toggleAutoScroll(),
             className: `${cdBtn} p-1 rounded flex-shrink-0 ${autoScroll ? "text-purple-300 bg-purple-900/50 hover:bg-purple-800/50 active:bg-purple-950/50 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 active:border-t-purple-950 active:border-l-purple-950 active:border-b-purple-400 active:border-r-purple-400" : "bg-zinc-700 text-zinc-400 hover:bg-zinc-600 active:bg-zinc-600"}`,
             title: autoScroll ? "Auto-scroll to current segment (ON)" : "Auto-scroll to current segment (OFF)",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("svg", {
+              /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
                 xmlns: "http://www.w3.org/2000/svg",
                 width: "14",
                 height: "14",
@@ -53762,46 +54028,46 @@ var PlaybackControlsInner = () => {
                 strokeLinecap: "round",
                 strokeLinejoin: "round",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("rect", {
+                  /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("rect", {
                     x: "3",
                     y: "2",
                     width: "18",
                     height: "20",
                     rx: "3"
                   }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("line", {
+                  /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("line", {
                     x1: "12",
                     y1: "10",
                     x2: "12",
                     y2: "16"
                   }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("polyline", {
+                  /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("polyline", {
                     points: "9 13 12 16 15 13"
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(LedIndicator, {
+              /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(LedIndicator, {
                 on: autoScroll
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(VolumeControls, {}, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(VolumeControls, {}, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
             className: "relative flex-shrink-0",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("button", {
+              /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
                 onClick: () => setShowSpeedMenu((v) => !v),
                 className: `${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex items-center gap-1 bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600 ${playbackSpeed !== 1 ? "bg-purple-900/50 text-purple-300 border-t-purple-500 border-l-purple-500 border-b-purple-950 border-r-purple-950" : ""}`,
                 title: `Playback speed: ${playbackSpeed}x`,
                 children: [
                   playbackSpeed,
                   "x ",
-                  /* @__PURE__ */ jsx_dev_runtime10.jsxDEV(ChevronDownIcon, {}, undefined, false, undefined, this)
+                  /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(ChevronDownIcon, {}, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              showSpeedMenu && /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("div", {
+              showSpeedMenu && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
                 className: "absolute bottom-full right-0 mb-1 bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1 z-20",
-                children: SPEEDS.map((s) => /* @__PURE__ */ jsx_dev_runtime10.jsxDEV("button", {
+                children: SPEEDS.map((s) => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
                   onClick: () => {
                     playerActions.setPlaybackSpeed(s);
                     setShowSpeedMenu(false);
@@ -53820,17 +54086,17 @@ var PlaybackControlsInner = () => {
     ]
   }, undefined, true, undefined, this);
 };
-var PlaybackControls = import_react11.memo(PlaybackControlsInner);
+var PlaybackControls = import_react13.memo(PlaybackControlsInner);
 
 // src/features/transcription/TranscriptionResults.tsx
-var import_react15 = __toESM(require_react(), 1);
+var import_react17 = __toESM(require_react(), 1);
 var import_react_dom = __toESM(require_react_dom(), 1);
 
 // node_modules/react-window/dist/react-window.js
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
-var import_react12 = __toESM(require_react(), 1);
+var import_react14 = __toESM(require_react(), 1);
 "use client";
-var q = typeof window < "u" ? import_react12.useLayoutEffect : import_react12.useEffect;
+var q = typeof window < "u" ? import_react14.useLayoutEffect : import_react14.useEffect;
 function ie(e) {
   if (e !== undefined)
     switch (typeof e) {
@@ -53852,10 +54118,10 @@ function be({
   mode: o,
   style: i
 }) {
-  const { styleHeight: f, styleWidth: l } = import_react12.useMemo(() => ({
+  const { styleHeight: f, styleWidth: l } = import_react14.useMemo(() => ({
     styleHeight: ie(i?.height),
     styleWidth: ie(i?.width)
-  }), [i?.height, i?.width]), [c, d] = import_react12.useState({
+  }), [i?.height, i?.width]), [c, d] = import_react14.useState({
     height: t,
     width: s
   }), a = r || o === "only-height" && f !== undefined || o === "only-width" && l !== undefined || f !== undefined && l !== undefined;
@@ -53874,18 +54140,18 @@ function be({
     return h.observe(n, { box: e }), () => {
       h?.unobserve(n);
     };
-  }, [e, a, n, f, l]), import_react12.useMemo(() => ({
+  }, [e, a, n, f, l]), import_react14.useMemo(() => ({
     height: f ?? c.height,
     width: l ?? c.width
   }), [c, f, l]);
 }
 function ae(e) {
-  const t = import_react12.useRef(() => {
+  const t = import_react14.useRef(() => {
     throw new Error("Cannot call during render.");
   });
   return q(() => {
     t.current = e;
-  }, [e]), import_react12.useCallback((s) => t.current?.(s), [t]);
+  }, [e]), import_react14.useCallback((s) => t.current?.(s), [t]);
 }
 var U = null;
 function Ie(e = false) {
@@ -54055,7 +54321,7 @@ function Oe({
   itemProps: t,
   itemSize: s
 }) {
-  return import_react12.useMemo(() => me({
+  return import_react14.useMemo(() => me({
     itemCount: e,
     itemProps: t,
     itemSize: s
@@ -54096,11 +54362,11 @@ function te({
     element: e,
     mode: r === "vertical" ? "only-height" : "only-width",
     style: t
-  }), h = import_react12.useRef({
+  }), h = import_react14.useRef({
     height: 0,
     width: 0
   }), p = r === "vertical" ? d : a, I = ye({ containerSize: p, itemSize: f });
-  import_react12.useLayoutEffect(() => {
+  import_react14.useLayoutEffect(() => {
     if (typeof l == "function") {
       const g = h.current;
       (g.height !== d || g.width !== a) && (l({ height: d, width: a }, { ...g }), g.height = d, g.width = a);
@@ -54110,7 +54376,7 @@ function te({
     itemCount: o,
     itemProps: i,
     itemSize: I
-  }), w = import_react12.useCallback((g) => u.get(g), [u]), [m, O] = import_react12.useState(() => P({
+  }), w = import_react14.useCallback((g) => u.get(g), [u]), [m, O] = import_react14.useState(() => P({
     cachedBounds: u,
     containerScrollOffset: 0,
     containerSize: p,
@@ -54126,11 +54392,11 @@ function te({
     startIndexOverscan: Math.min(o - 1, m.startIndexOverscan),
     stopIndexVisible: Math.min(o - 1, m.stopIndexVisible),
     stopIndexOverscan: Math.min(o - 1, m.stopIndexOverscan)
-  }, z = import_react12.useCallback(() => fe({
+  }, z = import_react14.useCallback(() => fe({
     cachedBounds: u,
     itemCount: o,
     itemSize: I
-  }), [u, o, I]), $ = import_react12.useCallback((g) => {
+  }), [u, o, I]), $ = import_react14.useCallback((g) => {
     const S = Z({
       containerElement: e,
       direction: r,
@@ -54225,7 +54491,7 @@ function te({
   };
 }
 function de(e) {
-  return import_react12.useMemo(() => e, Object.values(e));
+  return import_react14.useMemo(() => e, Object.values(e));
 }
 function ue(e, t) {
   const {
@@ -54259,7 +54525,7 @@ function Ae({
   style: h,
   ...p
 }) {
-  const I = de(d), u = import_react12.useMemo(() => import_react12.memo(f, ue), [f]), [w, m] = import_react12.useState(null), O = ze(c), G = import_react12.useMemo(() => O ? (b) => c.getRowHeight(b) ?? c.getAverageRowHeight() : c, [O, c]), {
+  const I = de(d), u = import_react14.useMemo(() => import_react14.memo(f, ue), [f]), [w, m] = import_react14.useState(null), O = ze(c), G = import_react14.useMemo(() => O ? (b) => c.getRowHeight(b) ?? c.getAverageRowHeight() : c, [O, c]), {
     getCellBounds: x,
     getEstimatedSize: F,
     scrollToIndex: V,
@@ -54278,7 +54544,7 @@ function Ae({
     onResize: n,
     overscanCount: i
   });
-  import_react12.useImperativeHandle(r, () => ({
+  import_react14.useImperativeHandle(r, () => ({
     get element() {
       return w;
     },
@@ -54314,7 +54580,7 @@ function Ae({
     c,
     z,
     y
-  ]), import_react12.useEffect(() => {
+  ]), import_react14.useEffect(() => {
     z >= 0 && y >= 0 && o && o({
       startIndex: $,
       stopIndex: g
@@ -54329,12 +54595,12 @@ function Ae({
     y,
     g
   ]);
-  const S = import_react12.useMemo(() => {
+  const S = import_react14.useMemo(() => {
     const b = [];
     if (l > 0)
       for (let v = z;v <= y; v++) {
         const R = x(v);
-        b.push(/* @__PURE__ */ import_react12.createElement(u, {
+        b.push(/* @__PURE__ */ import_react14.createElement(u, {
           ...I,
           ariaAttributes: {
             "aria-posinset": v + 1,
@@ -54369,7 +54635,7 @@ function Ae({
       zIndex: -1
     }
   });
-  return import_react12.createElement(a, {
+  return import_react14.createElement(a, {
     role: "list",
     ...p,
     className: t,
@@ -54383,12 +54649,12 @@ function Ae({
     }
   }, S, e, E);
 }
-var Me = import_react12.useRef;
+var Me = import_react14.useRef;
 
 // src/features/transcription/EffectModal.tsx
-var import_react13 = __toESM(require_react(), 1);
-var jsx_dev_runtime11 = __toESM(require_jsx_dev_runtime(), 1);
-var CloseIcon2 = () => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
+var import_react15 = __toESM(require_react(), 1);
+var jsx_dev_runtime12 = __toESM(require_jsx_dev_runtime(), 1);
+var CloseIcon2 = () => /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -54396,21 +54662,21 @@ var CloseIcon2 = () => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
   fill: "none",
   stroke: "currentColor",
   strokeWidth: "2",
-  children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("path", {
+  children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("path", {
     d: "M18 6 6 18M6 6l12 12"
   }, undefined, false, undefined, this)
 }, undefined, false, undefined, this);
-var BoltIcon = () => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
+var BoltIcon = () => /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "14",
   height: "14",
   viewBox: "0 0 24 24",
   fill: "currentColor",
-  children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("path", {
+  children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("path", {
     d: "M13 2L3 14h9l-1 10 10-12h-9l1-10z"
   }, undefined, false, undefined, this)
 }, undefined, false, undefined, this);
-var TrashIcon = () => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
+var TrashIcon = () => /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "12",
   height: "12",
@@ -54419,10 +54685,10 @@ var TrashIcon = () => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("polyline", {
       points: "3,6 5,6 21,6"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("path", {
       d: "M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2"
     }, undefined, false, undefined, this)
   ]
@@ -54430,18 +54696,18 @@ var TrashIcon = () => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
 function uid() {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
-var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate, effect }) => {
+var EffectModal = import_react15.memo(({ segmentStart, onClose, onAdd, onUpdate, effect }) => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
   const soundList = Object.values(bleepSounds);
   const isEdit = !!effect && !!onUpdate;
-  const [selectedSoundId, setSelectedSoundId] = import_react13.useState("");
-  const [volume, setVolume] = import_react13.useState(1);
-  const [volumeMode, setVolumeMode] = import_react13.useState("auto");
-  const [playbackRate, setPlaybackRate] = import_react13.useState(1);
-  const [dampenOriginal, setDampenOriginal] = import_react13.useState(true);
-  const [dampenAmount, setDampenAmount] = import_react13.useState(1);
-  const [dampenType, setDampenType] = import_react13.useState("sharp");
-  import_react13.useEffect(() => {
+  const [selectedSoundId, setSelectedSoundId] = import_react15.useState("");
+  const [volume, setVolume] = import_react15.useState(1);
+  const [volumeMode, setVolumeMode] = import_react15.useState("auto");
+  const [playbackRate, setPlaybackRate] = import_react15.useState(1);
+  const [dampenOriginal, setDampenOriginal] = import_react15.useState(true);
+  const [dampenAmount, setDampenAmount] = import_react15.useState(1);
+  const [dampenType, setDampenType] = import_react15.useState("sharp");
+  import_react15.useEffect(() => {
     if (isEdit && effect) {
       setSelectedSoundId(effect.soundId);
       setVolume(effect.volume);
@@ -54452,7 +54718,7 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
       setDampenType(effect.dampenType);
     }
   }, [isEdit, effect]);
-  import_react13.useEffect(() => {
+  import_react15.useEffect(() => {
     if (!isEdit && !selectedSoundId && soundList.length > 0) {
       setSelectedSoundId(soundList[0].id);
     }
@@ -54488,69 +54754,69 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
     onClose();
   };
   const canSubmit = selectedSoundId !== "";
-  return /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
-    children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+    children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
       className: "relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)] max-h-[85vh] overflow-y-auto",
       children: [
-        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
           className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
           className: "flex items-center justify-between",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("h3", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("h3", {
               className: "text-sm font-semibold flex items-center gap-2",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(BoltIcon, {}, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(BoltIcon, {}, undefined, false, undefined, this),
                 " ",
                 isEdit ? "Edit Effect" : "Add Effect"
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
               onClick: onClose,
               className: "p-1 rounded hover:bg-zinc-600 text-zinc-400",
-              children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(CloseIcon2, {}, undefined, false, undefined, this)
+              children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(CloseIcon2, {}, undefined, false, undefined, this)
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
           children: [
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("label", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("label", {
               className: "block text-xs text-zinc-400 mb-1",
               children: "Bleep Sound"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("select", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("select", {
               value: selectedSoundId,
               onChange: (e) => setSelectedSoundId(e.target.value),
               className: "w-full bg-zinc-700 rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-purple-500",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("option", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("option", {
                   value: "",
                   children: "— Select a sound —"
                 }, undefined, false, undefined, this),
-                soundList.map((s) => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("option", {
+                soundList.map((s) => /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("option", {
                   value: s.id,
                   children: s.label
                 }, s.id, false, undefined, this))
               ]
             }, undefined, true, undefined, this),
-            soundList.length === 0 && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("p", {
+            soundList.length === 0 && /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("p", {
               className: "text-[11px] text-zinc-500 mt-1",
               children: "No bleep sounds available. Add sounds in the Bleep Sounds section first."
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
           children: [
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
               className: "flex items-center justify-between mb-1",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("label", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("label", {
                   className: "text-xs text-zinc-400",
                   children: "Effect Volume"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
                   className: "text-xs text-zinc-300",
                   children: [
                     Math.round(volume * 100),
@@ -54559,16 +54825,16 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
                 }, undefined, true, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
               className: "flex gap-2 mb-2",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
                   type: "button",
                   onClick: () => setVolumeMode("manual"),
                   className: `flex-1 text-xs py-1 rounded transition-colors ${volumeMode === "manual" ? "bg-purple-600 text-white" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
                   children: "Manual"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
                   type: "button",
                   onClick: () => setVolumeMode("auto"),
                   className: `flex-1 text-xs py-1 rounded transition-colors ${volumeMode === "auto" ? "bg-purple-600 text-white" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
@@ -54576,7 +54842,7 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            volumeMode === "manual" && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("input", {
+            volumeMode === "manual" && /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("input", {
               type: "range",
               min: "0",
               max: "1",
@@ -54585,22 +54851,22 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
               onChange: (e) => setVolume(Number(e.target.value)),
               className: "w-full accent-purple-500"
             }, undefined, false, undefined, this),
-            volumeMode === "auto" && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("p", {
+            volumeMode === "auto" && /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("p", {
               className: "text-[10px] text-zinc-500",
               children: "Bleep volume will match the loudness of the word being censored."
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
           children: [
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
               className: "flex items-center justify-between mb-1",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("label", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("label", {
                   className: "text-xs text-zinc-400",
                   children: "Playback Speed"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
                   className: "text-xs text-zinc-300",
                   children: [
                     playbackRate.toFixed(2),
@@ -54609,7 +54875,7 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
                 }, undefined, true, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("input", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("input", {
               type: "range",
               min: "0.25",
               max: "4",
@@ -54620,38 +54886,38 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
           className: "space-y-3",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
               className: "flex items-center gap-2",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("input", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("input", {
                   type: "checkbox",
                   id: "dampenToggle",
                   checked: dampenOriginal,
                   onChange: (e) => setDampenOriginal(e.target.checked),
                   className: "accent-purple-500"
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("label", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("label", {
                   htmlFor: "dampenToggle",
                   className: "text-xs text-zinc-300",
                   children: "Dampen original audio"
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            dampenOriginal && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(jsx_dev_runtime11.Fragment, {
+            dampenOriginal && /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(jsx_dev_runtime12.Fragment, {
               children: [
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
                   children: [
-                    /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+                    /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
                       className: "flex items-center justify-between mb-1",
                       children: [
-                        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("label", {
+                        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("label", {
                           className: "text-xs text-zinc-400",
                           children: "Dampen Amount"
                         }, undefined, false, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+                        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
                           className: "text-xs text-zinc-300",
                           children: [
                             Math.round(dampenAmount * 100),
@@ -54660,7 +54926,7 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
                         }, undefined, true, undefined, this)
                       ]
                     }, undefined, true, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("input", {
+                    /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("input", {
                       type: "range",
                       min: "50",
                       max: "100",
@@ -54669,35 +54935,35 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
                       onChange: (e) => setDampenAmount(Number(e.target.value) / 100),
                       className: "w-full accent-purple-500"
                     }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+                    /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
                       className: "flex justify-between text-[10px] text-zinc-500",
                       children: [
-                        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+                        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
                           children: "50%"
                         }, undefined, false, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+                        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
                           children: "100% (mute)"
                         }, undefined, false, undefined, this)
                       ]
                     }, undefined, true, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
                   children: [
-                    /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("label", {
+                    /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("label", {
                       className: "block text-xs text-zinc-400 mb-1.5",
                       children: "Dampen Type"
                     }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("div", {
+                    /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("div", {
                       className: "flex gap-2",
                       children: [
-                        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
+                        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
                           type: "button",
                           onClick: () => setDampenType("sharp"),
                           className: `flex-1 text-xs py-1.5 rounded transition-colors ${dampenType === "sharp" ? "bg-purple-600 text-white" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
                           children: "Sharp"
                         }, undefined, false, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
+                        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
                           type: "button",
                           onClick: () => setDampenType("parabolic"),
                           className: `flex-1 text-xs py-1.5 rounded transition-colors ${dampenType === "parabolic" ? "bg-purple-600 text-white" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
@@ -54711,7 +54977,7 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
             }, undefined, true, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
+        /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
           onClick: handleSubmit,
           disabled: !canSubmit,
           className: "w-full bg-purple-600 hover:bg-purple-500 text-white text-xs font-semibold py-2 rounded transition-colors disabled:opacity-50 disabled:cursor-not-allowed",
@@ -54721,11 +54987,11 @@ var EffectModal = import_react13.memo(({ segmentStart, onClose, onAdd, onUpdate,
     }, undefined, true, undefined, this)
   }, undefined, false, undefined, this);
 });
-var EffectBadge = import_react13.memo(({ effect, onRemove, onEdit }) => {
+var EffectBadge = import_react15.memo(({ effect, onRemove, onEdit }) => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
   const soundLabel = bleepSounds[effect.soundId]?.label ?? "Unknown";
   const volMode = effect.volumeMode ?? "manual";
-  return /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+  return /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
     className: "flex items-center gap-1 px-1.5 py-0.5 bg-blue-900/30 text-blue-400 rounded group cursor-pointer",
     "data-testid": "censoring-effects",
     onClick: (e) => {
@@ -54733,43 +54999,43 @@ var EffectBadge = import_react13.memo(({ effect, onRemove, onEdit }) => {
       onEdit?.(effect);
     },
     children: [
-      /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(BoltIcon, {}, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+      /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(BoltIcon, {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
         className: "truncate max-w-[80px]",
         children: soundLabel
       }, undefined, false, undefined, this),
-      volMode === "auto" && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("span", {
+      volMode === "auto" && /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("span", {
         className: "text-[9px] text-blue-300",
         title: "Auto volume",
         children: "auto"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
+      /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
         onClick: (e) => {
           e.stopPropagation();
           onRemove(effect.id);
         },
         className: "hidden group-hover:flex items-center text-red-400 hover:text-red-300",
         title: "Remove effect",
-        children: /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(TrashIcon, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime12.jsxDEV(TrashIcon, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 });
 
 // src/features/player/ShieldButton.tsx
-var import_react14 = __toESM(require_react(), 1);
-var jsx_dev_runtime12 = __toESM(require_jsx_dev_runtime(), 1);
+var import_react16 = __toESM(require_react(), 1);
+var jsx_dev_runtime13 = __toESM(require_jsx_dev_runtime(), 1);
 var ShieldButtonInner = ({ children, className = "", active = false, ...props }) => {
-  return /* @__PURE__ */ jsx_dev_runtime12.jsxDEV("button", {
+  return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("button", {
     className: `${cdBtn} inline-flex items-center justify-center gap-1 rounded ${active ? "bg-purple-900/60 text-purple-200 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 hover:bg-purple-800/60" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"} ${className}`,
     ...props,
     children
   }, undefined, false, undefined, this);
 };
-var ShieldButton = import_react14.memo(ShieldButtonInner);
+var ShieldButton = import_react16.memo(ShieldButtonInner);
 
 // src/features/transcription/TranscriptionResults.tsx
-var jsx_dev_runtime13 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime14 = __toESM(require_jsx_dev_runtime(), 1);
 var importWorker = null;
 var jsonExportWorker = null;
 var ROW_HEIGHT = 36;
@@ -54777,10 +55043,10 @@ var LIST_HEIGHT = 400;
 var BORDERED_SECTION = "relative border border-zinc-600 rounded-xl p-3";
 var SUBTITLE = "absolute -top-[7px] right-3 bg-zinc-800 px-2 text-[10px] text-zinc-500 font-semibold uppercase tracking-wider";
 function BorderedSection({ title, children, className }) {
-  return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
     className: `${BORDERED_SECTION} ${className ?? ""}`,
     children: [
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
         className: SUBTITLE,
         children: title
       }, undefined, false, undefined, this),
@@ -54788,7 +55054,7 @@ function BorderedSection({ title, children, className }) {
     ]
   }, undefined, true, undefined, this);
 }
-var PlusIcon = () => /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("svg", {
+var PlusIcon = () => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "14",
   height: "14",
@@ -54797,13 +55063,13 @@ var PlusIcon = () => /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("line", {
       x1: "12",
       y1: "5",
       x2: "12",
       y2: "19"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("line", {
       x1: "5",
       y1: "12",
       x2: "19",
@@ -54811,7 +55077,7 @@ var PlusIcon = () => /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("svg", {
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var SegmentItem = import_react15.memo(({
+var SegmentItem = import_react17.memo(({
   start,
   end,
   text,
@@ -54827,16 +55093,16 @@ var SegmentItem = import_react15.memo(({
 }) => {
   const hasMatches = triggered.length > 0;
   const bgClass = isHighlighted ? "bg-purple-900/40 ring-2 ring-purple-500/50" : hasMatches ? "bg-zinc-700 hover:bg-zinc-600 ring-1 ring-red-800/50" : "bg-zinc-700 hover:bg-zinc-600";
-  return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
     className: `flex items-center gap-2 text-xs py-1 px-2 rounded cursor-pointer transition-colors ${bgClass}`,
     "data-segment": start,
     id: `seg-${start}`,
     onClick: () => onJump(start),
     children: [
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
         className: "timestamp text-zinc-400 whitespace-nowrap",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
             className: "cursor-pointer hover:text-purple-300",
             title: start.toFixed(2) + "s",
             onClick: (e) => {
@@ -54845,11 +55111,11 @@ var SegmentItem = import_react15.memo(({
             },
             children: formatTime(start)
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
             className: "text-zinc-500",
             children: " — "
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
             className: "cursor-pointer hover:text-purple-300",
             title: end.toFixed(2) + "s",
             onClick: (e) => {
@@ -54860,20 +55126,20 @@ var SegmentItem = import_react15.memo(({
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
         className: "text text-zinc-200 flex-1 truncate",
         title: text,
-        children: highlightedText ? highlightedText.map((part) => part.highlighted ? /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("mark", {
+        children: highlightedText ? highlightedText.map((part) => part.highlighted ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("mark", {
           className: "bg-yellow-900/60 text-yellow-200 rounded px-0.5",
           children: part.content
-        }, part.key, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+        }, part.key, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
           children: part.content
         }, part.key, false, undefined, this)) : text
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "flex items-center gap-1",
         children: [
-          triggered.map(({ slug, count }) => /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+          triggered.map(({ slug, count }) => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
             className: "px-1 py-0.5 bg-purple-900/30 text-purple-400 rounded",
             children: [
               slug,
@@ -54881,12 +55147,12 @@ var SegmentItem = import_react15.memo(({
               count
             ]
           }, slug, true, undefined, this)),
-          rowEffects.map((effect) => /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(EffectBadge, {
+          rowEffects.map((effect) => /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(EffectBadge, {
             effect,
             onRemove: onRemoveEffect,
             onEdit: onEditEffect
           }, effect.id, false, undefined, this)),
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("button", {
             onClick: (e) => {
               e.stopPropagation();
               onAddEffect(start);
@@ -54894,13 +55160,13 @@ var SegmentItem = import_react15.memo(({
             className: "text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded flex items-center gap-1",
             title: "Add effect",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("svg", {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("svg", {
                 xmlns: "http://www.w3.org/2000/svg",
                 width: "12",
                 height: "12",
                 viewBox: "0 0 24 24",
                 fill: "currentColor",
-                children: /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("path", {
+                children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("path", {
                   d: "M13 2L3 14h9l-1 10 10-12h-9l1-10z"
                 }, undefined, false, undefined, this)
               }, undefined, false, undefined, this),
@@ -54921,10 +55187,10 @@ function TranscriptionRow(props) {
   const rowEffects = deps.segmentEffects.get(start) ?? [];
   const isHighlighted = start === closestStart;
   const highlightedText = deps.highlightCache.get(start) ?? null;
-  return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
     style,
     className: "h-full",
-    children: /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(SegmentItem, {
+    children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(SegmentItem, {
       start,
       end,
       text,
@@ -54998,16 +55264,16 @@ function parseStage(stage) {
 }
 function TranscribeProgressBar({ stage }) {
   const { label, pct } = parseStage(stage);
-  return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
     className: "space-y-1",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "flex items-center justify-between text-zinc-400",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
             children: label
           }, undefined, false, undefined, this),
-          pct != null && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+          pct != null && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
             children: [
               pct,
               "%"
@@ -55015,9 +55281,9 @@ function TranscribeProgressBar({ stage }) {
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "w-full bg-zinc-700 rounded-full h-1.5 overflow-hidden",
-        children: /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+        children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
           className: `bg-purple-500 h-1.5 rounded-full transition-all duration-200 ${pct == null ? "animate-pulse" : ""}`,
           style: { width: pct != null ? `${pct}%` : "100%" }
         }, undefined, false, undefined, this)
@@ -55027,11 +55293,11 @@ function TranscribeProgressBar({ stage }) {
 }
 function TranscribeProgress() {
   const transcribeStage = usePlayerStore((state) => state.transcribeStage);
-  return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
     className: "text-xs py-2",
-    children: transcribeStage ? /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(TranscribeProgressBar, {
+    children: transcribeStage ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(TranscribeProgressBar, {
       stage: transcribeStage
-    }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+    }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
       className: "text-zinc-500",
       children: "Transcribing..."
     }, undefined, false, undefined, this)
@@ -55046,17 +55312,17 @@ var TranscriptionResultsInner = () => {
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
   const { transcribe, seekToTime, getPlaybackTime } = useMediaPlayerContext();
-  const [isLoading, setIsLoading] = import_react15.useState(false);
-  const [error, setError] = import_react15.useState(null);
-  const [showMatchesOnly, setShowMatchesOnly] = import_react15.useState(false);
-  const [searchQuery, setSearchQuery] = import_react15.useState("");
+  const [isLoading, setIsLoading] = import_react17.useState(false);
+  const [error, setError] = import_react17.useState(null);
+  const [showMatchesOnly, setShowMatchesOnly] = import_react17.useState(false);
+  const [searchQuery, setSearchQuery] = import_react17.useState("");
   const autoScroll = usePlayerStore((state) => state.autoScroll);
-  const [modalSegment, setModalSegment] = import_react15.useState(null);
-  const [editEffect, setEditEffect] = import_react15.useState(null);
-  const [addWordStart, setAddWordStart] = import_react15.useState("");
-  const [addWordEnd, setAddWordEnd] = import_react15.useState("");
-  const [addWordText, setAddWordText] = import_react15.useState("");
-  const [addWordError, setAddWordError] = import_react15.useState(null);
+  const [modalSegment, setModalSegment] = import_react17.useState(null);
+  const [editEffect, setEditEffect] = import_react17.useState(null);
+  const [addWordStart, setAddWordStart] = import_react17.useState("");
+  const [addWordEnd, setAddWordEnd] = import_react17.useState("");
+  const [addWordText, setAddWordText] = import_react17.useState("");
+  const [addWordError, setAddWordError] = import_react17.useState(null);
   const handleAddWordSubmit = () => {
     setAddWordError(null);
     const s = parseFloat(addWordStart);
@@ -55082,15 +55348,15 @@ var TranscriptionResultsInner = () => {
     setAddWordEnd("");
     setAddWordText("");
   };
-  const [authModal, setAuthModal] = import_react15.useState(null);
-  const [authModalError, setAuthModalError] = import_react15.useState(null);
-  const authModalRetryRef = import_react15.useRef(null);
+  const [authModal, setAuthModal] = import_react17.useState(null);
+  const [authModalError, setAuthModalError] = import_react17.useState(null);
+  const authModalRetryRef = import_react17.useRef(null);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const authUser = useAuthStore((s) => s.user);
   const authError = useAuthStore((s) => s.error);
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const clearAuthError = useAuthStore((s) => s.clearError);
-  import_react15.useEffect(() => {
+  import_react17.useEffect(() => {
     const restoreAuthModal = async () => {
       try {
         const { loadSession: loadSession2 } = await Promise.resolve().then(() => exports_idb);
@@ -55121,7 +55387,7 @@ var TranscriptionResultsInner = () => {
   const handleRemoveEffect = (id) => {
     actions.removeSoundEffect(id);
   };
-  const importJsonRef = import_react15.useRef(null);
+  const importJsonRef = import_react17.useRef(null);
   const handleExportJson = async () => {
     if (!transcriptionResults)
       return;
@@ -55208,7 +55474,7 @@ var TranscriptionResultsInner = () => {
       }, 800);
     }
   };
-  const segmentEffects = import_react15.useMemo(() => {
+  const segmentEffects = import_react17.useMemo(() => {
     const map = new Map;
     for (const e of censoringEffects ?? []) {
       if (e.effectType === "sound") {
@@ -55219,9 +55485,9 @@ var TranscriptionResultsInner = () => {
     }
     return map;
   }, [censoringEffects]);
-  const [dictMatches, setDictMatches] = import_react15.useState(null);
-  const matchesVersionRef = import_react15.useRef(0);
-  import_react15.useEffect(() => {
+  const [dictMatches, setDictMatches] = import_react17.useState(null);
+  const matchesVersionRef = import_react17.useRef(0);
+  import_react17.useEffect(() => {
     if (!transcriptionResults) {
       setDictMatches(null);
       return;
@@ -55247,10 +55513,10 @@ var TranscriptionResultsInner = () => {
       setDictMatches(map);
     }, 0);
   }, [transcriptionResults, activeDictionaries, loadedDictionaries]);
-  const closestRef = import_react15.useRef(null);
-  const [closestStart, setClosestStart] = import_react15.useState(null);
+  const closestRef = import_react17.useRef(null);
+  const [closestStart, setClosestStart] = import_react17.useState(null);
   const rwListRef = Me(null);
-  const filteredSegments = import_react15.useMemo(() => {
+  const filteredSegments = import_react17.useMemo(() => {
     if (!transcriptionResults)
       return [];
     return transcriptionResults.filter(([start, _end, text]) => {
@@ -55261,7 +55527,7 @@ var TranscriptionResultsInner = () => {
       return true;
     });
   }, [transcriptionResults, showMatchesOnly, dictMatches, searchQuery]);
-  import_react15.useEffect(() => {
+  import_react17.useEffect(() => {
     const applyHighlight = (closest, scroll) => {
       if (closest == null)
         return;
@@ -55298,7 +55564,7 @@ var TranscriptionResultsInner = () => {
     }, 500);
     return () => clearInterval(interval);
   }, [transcriptionResults, getPlaybackTime]);
-  const highlightSearch = import_react15.useCallback((text) => {
+  const highlightSearch = import_react17.useCallback((text) => {
     if (!searchQuery)
       return null;
     const parts = [];
@@ -55318,7 +55584,7 @@ var TranscriptionResultsInner = () => {
     }
     return parts;
   }, [searchQuery]);
-  const highlightCache = import_react15.useMemo(() => {
+  const highlightCache = import_react17.useMemo(() => {
     if (!searchQuery)
       return new Map;
     const cache = new Map;
@@ -55327,11 +55593,11 @@ var TranscriptionResultsInner = () => {
     }
     return cache;
   }, [filteredSegments, searchQuery, highlightSearch]);
-  const handleJumpToTime = import_react15.useCallback((time) => {
+  const handleJumpToTime = import_react17.useCallback((time) => {
     seekToTime(time);
     document.getElementById("videoCanvas")?.scrollIntoView({ behavior: "smooth" });
   }, [seekToTime]);
-  const formatTime = import_react15.useCallback((seconds) => {
+  const formatTime = import_react17.useCallback((seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
@@ -55345,7 +55611,7 @@ var TranscriptionResultsInner = () => {
   rowRendererDeps.onRemoveEffect = handleRemoveEffect;
   rowRendererDeps.onEditEffect = (effect) => setEditEffect(effect);
   rowRendererDeps.formatTime = formatTime;
-  import_react15.useEffect(() => {
+  import_react17.useEffect(() => {
     if (!transcriptionResults)
       return;
     const t = getPlaybackTime();
@@ -55415,7 +55681,7 @@ var TranscriptionResultsInner = () => {
     setAuthModal("confirm");
   };
   const handleTranscribe = _handleTranscribe;
-  import_react15.useEffect(() => {
+  import_react17.useEffect(() => {
     if ((authModal === "login" || authModal === "confirm") && isAuthenticated && !authError) {
       const user = useAuthStore.getState().user;
       if (user) {
@@ -55448,28 +55714,28 @@ var TranscriptionResultsInner = () => {
       setIsLoading(false);
     }
   };
-  return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
     className: "relative bg-zinc-800 rounded-xl p-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none"
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "flex items-center justify-between mb-3 gap-3",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("h2", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("h2", {
             className: "block text-base sm:text-lg font-semibold text-zinc-300 shrink-0",
             children: "Transcription"
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
             className: "flex items-center gap-2",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("button", {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("button", {
                 onClick: () => importJsonRef.current?.click(),
                 className: `${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 flex items-center gap-1`,
                 title: "Import transcription + effects from JSON",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("svg", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("svg", {
                     xmlns: "http://www.w3.org/2000/svg",
                     width: "14",
                     height: "14",
@@ -55478,13 +55744,13 @@ var TranscriptionResultsInner = () => {
                     stroke: "currentColor",
                     strokeWidth: "2",
                     children: [
-                      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("path", {
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("path", {
                         d: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
                       }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("polyline", {
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("polyline", {
                         points: "17 8 12 3 7 8"
                       }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("line", {
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("line", {
                         x1: "12",
                         y1: "3",
                         x2: "12",
@@ -55495,14 +55761,14 @@ var TranscriptionResultsInner = () => {
                   "Import"
                 ]
               }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("button", {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("button", {
                 "data-testid": "export-json",
                 onClick: handleExportJson,
                 disabled: !transcriptionResults,
                 className: `${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1`,
                 title: "Export transcription + effects to JSON",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("svg", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("svg", {
                     xmlns: "http://www.w3.org/2000/svg",
                     width: "14",
                     height: "14",
@@ -55511,13 +55777,13 @@ var TranscriptionResultsInner = () => {
                     stroke: "currentColor",
                     strokeWidth: "2",
                     children: [
-                      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("path", {
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("path", {
                         d: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
                       }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("polyline", {
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("polyline", {
                         points: "7 10 12 15 17 10"
                       }, undefined, false, undefined, this),
-                      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("line", {
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("line", {
                         x1: "12",
                         y1: "15",
                         x2: "12",
@@ -55528,7 +55794,7 @@ var TranscriptionResultsInner = () => {
                   "Export"
                 ]
               }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("input", {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("input", {
                 ref: importJsonRef,
                 type: "file",
                 accept: ".json",
@@ -55539,49 +55805,49 @@ var TranscriptionResultsInner = () => {
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      error && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      error && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "mb-3 text-xs text-red-400 p-3 bg-red-900/20 rounded space-y-1",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
             className: "font-semibold",
             children: error
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
             className: "text-[11px] text-red-400/70",
             children: "Check the browser console for details. If the file was exported from another session, it may have an outdated format."
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "mb-3",
-        children: /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(BorderedSection, {
+        children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(BorderedSection, {
           title: "Filters",
-          children: /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+          children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
             className: "flex items-center gap-2 shrink-0",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
                 className: "relative flex items-center",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("input", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("input", {
                     type: "text",
                     value: searchQuery,
                     onChange: (e) => setSearchQuery(e.target.value),
                     placeholder: "Search...",
                     className: `${cdInset} text-xs bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1.5 focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500 w-28`
                   }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
                     className: `absolute right-2 w-1.5 h-1.5 rounded-full ${searchQuery ? "bg-green-400 shadow-[0_0_4px_1px_rgba(74,222,128,0.7)]" : "bg-red-800 shadow-none"}`
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(ShieldButton, {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(ShieldButton, {
                 active: showMatchesOnly,
                 onClick: () => setShowMatchesOnly((v) => !v),
                 className: "text-xs px-3 py-1.5",
                 title: "Show only dictionary matches",
                 children: [
                   "Matches only",
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("span", {
                     className: `inline-block w-1.5 h-1.5 rounded-full flex-shrink-0 ml-1.5 ${showMatchesOnly ? "bg-green-400 shadow-[0_0_4px_1px_rgba(74,222,128,0.7)]" : "bg-red-800 shadow-none"}`
                   }, undefined, false, undefined, this)
                 ]
@@ -55590,22 +55856,22 @@ var TranscriptionResultsInner = () => {
           }, undefined, true, undefined, this)
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "mb-3 flex justify-end",
-        children: /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(BorderedSection, {
+        children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(BorderedSection, {
           title: "Add Word",
           className: "shrink-0 max-w-xs",
-          children: /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("form", {
+          children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("form", {
             onSubmit: (e) => {
               e.preventDefault();
               handleAddWordSubmit();
             },
             className: "flex flex-col gap-1.5",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
                 className: "flex gap-1.5 items-center",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("input", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("input", {
                     type: "number",
                     step: "0.1",
                     min: "0",
@@ -55616,7 +55882,7 @@ var TranscriptionResultsInner = () => {
                     className: `${cdInset} w-20 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`,
                     required: true
                   }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("input", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("input", {
                     type: "number",
                     step: "0.1",
                     min: "0",
@@ -55629,10 +55895,10 @@ var TranscriptionResultsInner = () => {
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+              /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
                 className: "flex gap-1.5",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("input", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("input", {
                     type: "text",
                     value: addWordText,
                     onChange: (e) => setAddWordText(e.target.value),
@@ -55640,17 +55906,17 @@ var TranscriptionResultsInner = () => {
                     className: `${cdInset} flex-1 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`,
                     required: true
                   }, undefined, false, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("button", {
+                  /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("button", {
                     type: "submit",
                     className: `${cdBtn} px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold flex items-center gap-1 shrink-0`,
                     children: [
-                      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(PlusIcon, {}, undefined, false, undefined, this),
+                      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(PlusIcon, {}, undefined, false, undefined, this),
                       " Add"
                     ]
                   }, undefined, true, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              addWordError && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+              addWordError && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
                 className: "text-[10px] text-red-400",
                 children: addWordError
               }, undefined, false, undefined, this)
@@ -55658,12 +55924,12 @@ var TranscriptionResultsInner = () => {
           }, undefined, true, undefined, this)
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(BorderedSection, {
+      /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(BorderedSection, {
         title: "Words",
-        children: transcribing ? /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(TranscribeProgress, {}, undefined, false, undefined, this) : isLoading && !transcriptionResults ? /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+        children: transcribing ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(TranscribeProgress, {}, undefined, false, undefined, this) : isLoading && !transcriptionResults ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
           className: "text-xs text-zinc-500 py-2",
           children: "Loading transcription..."
-        }, undefined, false, undefined, this) : transcriptionResults && transcriptionResults.length > 0 ? /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(Ae, {
+        }, undefined, false, undefined, this) : transcriptionResults && transcriptionResults.length > 0 ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(Ae, {
           listRef: rwListRef,
           rowCount: filteredSegments.length,
           rowHeight: ROW_HEIGHT,
@@ -55671,32 +55937,32 @@ var TranscriptionResultsInner = () => {
           overscanCount: 5,
           style: { height: LIST_HEIGHT, width: "100%" },
           rowComponent: TranscriptionRow
-        }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+        }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
           className: "text-xs text-zinc-500 py-2",
           children: "No transcription data"
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      modalSegment != null && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(EffectModal, {
+      modalSegment != null && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(EffectModal, {
         segmentStart: modalSegment,
         onClose: () => setModalSegment(null),
         onAdd: handleAddEffect
       }, undefined, false, undefined, this),
-      editEffect && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(EffectModal, {
+      editEffect && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(EffectModal, {
         segmentStart: editEffect.segmentStart,
         onClose: () => setEditEffect(null),
         onAdd: handleAddEffect,
         onUpdate: handleUpdateEffect,
         effect: editEffect
       }, undefined, false, undefined, this),
-      (authModal === "login" || authModal === "topup" || authModal === "confirm") && import_react_dom.default.createPortal(/* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
+      (authModal === "login" || authModal === "topup" || authModal === "confirm") && import_react_dom.default.createPortal(/* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
         className: "relative z-[100]",
         children: [
-          authModal === "login" && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(LoginModal, {
+          authModal === "login" && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(LoginModal, {
             onClose: () => setAuthModal(null),
             onRetry: authModalRetryRef.current ?? undefined,
             initialError: authModalError
           }, undefined, false, undefined, this),
-          authModal === "topup" && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(TopupModal, {
+          authModal === "topup" && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(TopupModal, {
             onClose: () => {
               setAuthModal(null);
               clearAuthError();
@@ -55706,7 +55972,7 @@ var TranscriptionResultsInner = () => {
               setAuthModal("confirm");
             }
           }, undefined, false, undefined, this),
-          authModal === "confirm" && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(ConfirmationModal, {
+          authModal === "confirm" && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(ConfirmationModal, {
             videoDuration: duration,
             onClose: () => setAuthModal(null),
             onConfirm: handleConfirmTranscribe,
@@ -55720,35 +55986,35 @@ var TranscriptionResultsInner = () => {
     ]
   }, undefined, true, undefined, this);
 };
-var TranscriptionResults = import_react15.memo(TranscriptionResultsInner);
+var TranscriptionResults = import_react17.memo(TranscriptionResultsInner);
 
 // src/features/transcription/ImportProgressModal.tsx
-var import_react16 = __toESM(require_react(), 1);
-var jsx_dev_runtime14 = __toESM(require_jsx_dev_runtime(), 1);
+var import_react18 = __toESM(require_react(), 1);
+var jsx_dev_runtime15 = __toESM(require_jsx_dev_runtime(), 1);
 function ImportProgressModalInner() {
   const importing = usePlayerStore((state) => state.importing);
   const importStage = usePlayerStore((state) => state.importStage);
   if (!importing || !importStage)
     return null;
-  return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
-    children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
+    children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
       className: "bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-3",
       children: [
-        /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("h3", {
+        /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("h3", {
           className: "text-sm font-semibold text-zinc-200",
           children: "Importing JSON"
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
           className: "space-y-1",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
               className: "text-xs text-zinc-400",
               children: importStage
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
               className: "w-full bg-zinc-700 rounded-full h-1.5 overflow-hidden",
-              children: /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
+              children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
                 className: "bg-blue-500 h-1.5 rounded-full animate-pulse w-full"
               }, undefined, false, undefined, this)
             }, undefined, false, undefined, this)
@@ -55758,14 +56024,14 @@ function ImportProgressModalInner() {
     }, undefined, true, undefined, this)
   }, undefined, false, undefined, this);
 }
-var ImportProgressModal = import_react16.memo(ImportProgressModalInner);
+var ImportProgressModal = import_react18.memo(ImportProgressModalInner);
 
 // src/features/settings/SettingsModal.tsx
-var import_react20 = __toESM(require_react(), 1);
+var import_react22 = __toESM(require_react(), 1);
 var import_react_dom2 = __toESM(require_react_dom(), 1);
 
 // src/features/dictionary/DictionaryManager.tsx
-var import_react17 = __toESM(require_react(), 1);
+var import_react19 = __toESM(require_react(), 1);
 
 // src/aho-corasick.ts
 class FastAhoScanner {
@@ -55804,14 +56070,14 @@ class FastAhoScanner {
 }
 
 // src/features/dictionary/DictionaryManager.tsx
-var jsx_dev_runtime15 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime16 = __toESM(require_jsx_dev_runtime(), 1);
 var DEFAULT_DICTIONARIES = ["ru-profanity", "ru-stopwords", "ru-youtube"];
 var DictionaryManagerInner = () => {
   const loadedDictionaries = usePlayerStore((state) => state.loadedDictionaries);
   const activeDictionaries = usePlayerStore((state) => state.activeDictionaries);
   const actions = usePlayerActions();
-  const [isLoading, setIsLoading] = import_react17.useState({});
-  import_react17.useEffect(() => {
+  const [isLoading, setIsLoading] = import_react19.useState({});
+  import_react19.useEffect(() => {
     const loadDefaults = async () => {
       await loadBackendUrl();
       for (const slug of DEFAULT_DICTIONARIES) {
@@ -55867,31 +56133,31 @@ var DictionaryManagerInner = () => {
   const handleRemoveDictionary = (slug) => {
     actions.removeDictionary(slug);
   };
-  return /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("div", {
     children: [
-      /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("button", {
+      /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("button", {
         onClick: handleAddDictionary,
         disabled: Object.values(isLoading).some((v) => v),
         className: "w-full text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors mb-3 disabled:opacity-50",
         children: Object.values(isLoading).some((v) => v) ? "Loading..." : "+ Load Dictionary"
       }, undefined, false, undefined, this),
-      Object.keys(loadedDictionaries).length > 0 ? /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+      Object.keys(loadedDictionaries).length > 0 ? /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("div", {
         className: "space-y-2",
-        children: Object.entries(loadedDictionaries).map(([slug, dict]) => /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+        children: Object.entries(loadedDictionaries).map(([slug, dict]) => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("div", {
           className: "flex items-center justify-between text-xs py-1.5 px-2 rounded bg-zinc-700",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("span", {
+            /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("span", {
               className: "truncate",
               children: dict.name
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+            /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("div", {
               className: "flex items-center gap-1",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("button", {
+                /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("button", {
                   onClick: () => handleToggleDictionary(slug),
                   className: "p-1 rounded hover:bg-zinc-600",
                   "aria-label": activeDictionaries.has(slug) ? "Deactivate" : "Activate",
-                  children: activeDictionaries.has(slug) ? /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("svg", {
+                  children: activeDictionaries.has(slug) ? /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
                     xmlns: "http://www.w3.org/2000/svg",
                     width: "16",
                     height: "16",
@@ -55899,10 +56165,10 @@ var DictionaryManagerInner = () => {
                     fill: "none",
                     stroke: "currentColor",
                     strokeWidth: "2",
-                    children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("path", {
+                    children: /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
                       d: "M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
                     }, undefined, false, undefined, this)
-                  }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("svg", {
+                  }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
                     xmlns: "http://www.w3.org/2000/svg",
                     width: "16",
                     height: "16",
@@ -55910,18 +56176,18 @@ var DictionaryManagerInner = () => {
                     fill: "none",
                     stroke: "currentColor",
                     strokeWidth: "2",
-                    children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("circle", {
+                    children: /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("circle", {
                       cx: "12",
                       cy: "12",
                       r: "9"
                     }, undefined, false, undefined, this)
                   }, undefined, false, undefined, this)
                 }, undefined, false, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("button", {
+                /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("button", {
                   onClick: () => handleRemoveDictionary(slug),
                   className: "p-1 rounded hover:bg-zinc-600",
                   "aria-label": "Remove",
-                  children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("svg", {
+                  children: /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
                     xmlns: "http://www.w3.org/2000/svg",
                     width: "16",
                     height: "16",
@@ -55929,7 +56195,7 @@ var DictionaryManagerInner = () => {
                     fill: "none",
                     stroke: "currentColor",
                     strokeWidth: "2",
-                    children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("path", {
+                    children: /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
                       d: "M18 6 6 18M6 6l12 12"
                     }, undefined, false, undefined, this)
                   }, undefined, false, undefined, this)
@@ -55938,17 +56204,17 @@ var DictionaryManagerInner = () => {
             }, undefined, true, undefined, this)
           ]
         }, slug, true, undefined, this))
-      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("div", {
         className: "text-xs text-zinc-500 py-2",
         children: "No dictionaries loaded"
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 };
-var DictionaryManager = import_react17.memo(DictionaryManagerInner);
+var DictionaryManager = import_react19.memo(DictionaryManagerInner);
 
 // src/features/bleep-sounds/BleepSoundManager.tsx
-var import_react18 = __toESM(require_react(), 1);
+var import_react20 = __toESM(require_react(), 1);
 
 // src/utils/uid.ts
 function uid2() {
@@ -56048,8 +56314,8 @@ async function importBleepSounds(file, onAdd) {
 }
 
 // src/features/bleep-sounds/bleep-icons.tsx
-var jsx_dev_runtime16 = __toESM(require_jsx_dev_runtime(), 1);
-var CloseIcon3 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var jsx_dev_runtime17 = __toESM(require_jsx_dev_runtime(), 1);
+var CloseIcon3 = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -56057,21 +56323,21 @@ var CloseIcon3 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   fill: "none",
   stroke: "currentColor",
   strokeWidth: "2",
-  children: /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+  children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
     d: "M18 6 6 18M6 6l12 12"
   }, undefined, false, undefined, this)
 }, undefined, false, undefined, this);
-var PlayIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var PlayIcon = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
   viewBox: "0 0 24 24",
   fill: "currentColor",
-  children: /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+  children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
     d: "M8 5v14l11-7z"
   }, undefined, false, undefined, this)
 }, undefined, false, undefined, this);
-var PlusIcon2 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var PlusIcon2 = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -56079,11 +56345,11 @@ var PlusIcon2 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   fill: "none",
   stroke: "currentColor",
   strokeWidth: "2",
-  children: /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+  children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
     d: "M12 5v14M5 12h14"
   }, undefined, false, undefined, this)
 }, undefined, false, undefined, this);
-var DownloadIcon2 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var DownloadIcon2 = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -56092,13 +56358,13 @@ var DownloadIcon2 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("polyline", {
       points: "7,10 12,15 17,10"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("line", {
       x1: "12",
       y1: "15",
       x2: "12",
@@ -56106,7 +56372,7 @@ var DownloadIcon2 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var UploadIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var UploadIcon = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -56115,13 +56381,13 @@ var UploadIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("polyline", {
       points: "17,8 12,3 7,8"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("line", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("line", {
       x1: "12",
       y1: "3",
       x2: "12",
@@ -56129,7 +56395,7 @@ var UploadIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var FileIcon2 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var FileIcon2 = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "20",
   height: "20",
@@ -56138,15 +56404,15 @@ var FileIcon2 = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("polyline", {
       points: "14,2 14,8 20,8"
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var LinkIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var LinkIcon = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "20",
   height: "20",
@@ -56155,15 +56421,15 @@ var LinkIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var LoadingIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var LoadingIcon = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   className: "animate-spin",
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
@@ -56173,19 +56439,19 @@ var LoadingIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("circle", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("circle", {
       cx: "12",
       cy: "12",
       r: "10",
       strokeOpacity: "0.25"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M12 2a10 10 0 0110 10",
       strokeOpacity: "0.75"
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var SaveIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var SaveIcon = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -56194,18 +56460,18 @@ var SaveIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("polyline", {
       points: "17,21 17,13 7,13 7,21"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("polyline", {
       points: "7,3 7,8 15,8"
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
-var SavedIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
+var SavedIcon = () => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("svg", {
   xmlns: "http://www.w3.org/2000/svg",
   width: "16",
   height: "16",
@@ -56214,30 +56480,30 @@ var SavedIcon = () => /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("svg", {
   stroke: "currentColor",
   strokeWidth: "2",
   children: [
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("polyline", {
       points: "17,21 17,13 7,13 7,21"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("polyline", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("polyline", {
       points: "7,3 7,8 15,8"
     }, undefined, false, undefined, this),
-    /* @__PURE__ */ jsx_dev_runtime16.jsxDEV("path", {
+    /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("path", {
       d: "M7 15l3 3 7-7"
     }, undefined, false, undefined, this)
   ]
 }, undefined, true, undefined, this);
 
 // src/features/bleep-sounds/BleepSoundManager.tsx
-var jsx_dev_runtime17 = __toESM(require_jsx_dev_runtime(), 1);
-var AddModal = import_react18.memo(({ onAdd, onClose }) => {
-  const [mode, setMode] = import_react18.useState("file");
-  const [label, setLabel] = import_react18.useState("");
-  const [url2, setUrl] = import_react18.useState("");
-  const [loading, setLoading] = import_react18.useState(false);
-  const [error, setError] = import_react18.useState(null);
-  const fileInputRef = import_react18.useRef(null);
+var jsx_dev_runtime18 = __toESM(require_jsx_dev_runtime(), 1);
+var AddModal = import_react20.memo(({ onAdd, onClose }) => {
+  const [mode, setMode] = import_react20.useState("file");
+  const [label, setLabel] = import_react20.useState("");
+  const [url2, setUrl] = import_react20.useState("");
+  const [loading, setLoading] = import_react20.useState(false);
+  const [error, setError] = import_react20.useState(null);
+  const fileInputRef = import_react20.useRef(null);
   const handleFileSelect = async (e) => {
     const file = e.target.files?.[0];
     if (!file)
@@ -56287,32 +56553,32 @@ var AddModal = import_react18.memo(({ onAdd, onClose }) => {
       setLoading(false);
     }
   };
-  return /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center bg-black/50",
-    children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+    children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
       className: "bg-zinc-800 rounded-lg p-5 w-full max-w-sm space-y-4",
       children: [
-        /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
           className: "flex items-center justify-between",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("h3", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("h3", {
               className: "text-sm font-semibold",
               children: "Add Bleep Sound"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
               onClick: onClose,
               className: "p-1 rounded hover:bg-zinc-600 text-zinc-400",
-              children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(CloseIcon3, {}, undefined, false, undefined, this)
+              children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(CloseIcon3, {}, undefined, false, undefined, this)
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
           children: [
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("label", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("label", {
               className: "block text-xs text-zinc-400 mb-1",
               children: "Label (optional)"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("input", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("input", {
               type: "text",
               value: label,
               onChange: (e) => setLabel(e.target.value),
@@ -56321,44 +56587,44 @@ var AddModal = import_react18.memo(({ onAdd, onClose }) => {
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
           className: "flex gap-2",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
               onClick: () => setMode("file"),
               className: `flex-1 flex items-center justify-center gap-2 text-xs py-2 rounded transition-colors ${mode === "file" ? "bg-purple-600 text-white" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
               children: [
-                /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(FileIcon2, {}, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(FileIcon2, {}, undefined, false, undefined, this),
                 " From Disk"
               ]
             }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
               onClick: () => setMode("url"),
               className: `flex-1 flex items-center justify-center gap-2 text-xs py-2 rounded transition-colors ${mode === "url" ? "bg-purple-600 text-white" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
               children: [
-                /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(LinkIcon, {}, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(LinkIcon, {}, undefined, false, undefined, this),
                 " From URL"
               ]
             }, undefined, true, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        mode === "file" && /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("input", {
+        mode === "file" && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("input", {
           ref: fileInputRef,
           type: "file",
           accept: "audio/*",
           onChange: handleFileSelect,
           className: "w-full text-xs bg-zinc-700 rounded px-3 py-2 outline-none file:mr-3 file:py-1 file:px-3 file:rounded file:bg-purple-600 file:text-white file:cursor-pointer"
         }, undefined, false, undefined, this),
-        mode === "url" && /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+        mode === "url" && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
           children: [
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("input", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("input", {
               type: "url",
               value: url2,
               onChange: (e) => setUrl(e.target.value),
               placeholder: "https://example.com/sound.mp3",
               className: "w-full bg-zinc-700 rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-purple-500 mb-2"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
               onClick: handleUrlSubmit,
               disabled: !url2.trim() || loading,
               className: "w-full bg-purple-600 hover:bg-purple-500 text-white text-xs py-2 rounded transition-colors disabled:opacity-50",
@@ -56366,7 +56632,7 @@ var AddModal = import_react18.memo(({ onAdd, onClose }) => {
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        error && /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("p", {
+        error && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("p", {
           className: "text-xs text-red-400",
           children: error
         }, undefined, false, undefined, this)
@@ -56374,7 +56640,7 @@ var AddModal = import_react18.memo(({ onAdd, onClose }) => {
     }, undefined, true, undefined, this)
   }, undefined, false, undefined, this);
 });
-var SoundRow = import_react18.memo(({
+var SoundRow = import_react20.memo(({
   sound,
   loading,
   onDownload,
@@ -56385,11 +56651,11 @@ var SoundRow = import_react18.memo(({
   onPlay,
   onDecode
 }) => {
-  const [editing, setEditing] = import_react18.useState(null);
-  const [draftLabel, setDraftLabel] = import_react18.useState(sound.label);
-  const [draftUrl, setDraftUrl] = import_react18.useState(sound.url);
-  const labelInputRef = import_react18.useRef(null);
-  const urlInputRef = import_react18.useRef(null);
+  const [editing, setEditing] = import_react20.useState(null);
+  const [draftLabel, setDraftLabel] = import_react20.useState(sound.label);
+  const [draftUrl, setDraftUrl] = import_react20.useState(sound.url);
+  const labelInputRef = import_react20.useRef(null);
+  const urlInputRef = import_react20.useRef(null);
   const handleSaveLabel = () => {
     const trimmed = draftLabel.trim();
     if (trimmed && trimmed !== sound.label) {
@@ -56436,30 +56702,30 @@ var SoundRow = import_react18.memo(({
     setEditing(null);
   };
   const hasBlob = !!sound.dataUrl;
-  return /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
     className: "flex items-center gap-2 py-1.5 px-2 rounded bg-zinc-700",
     children: [
-      sound.audioBuffer ? /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+      sound.audioBuffer ? /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
         onClick: () => onPlay(sound.audioBuffer),
         className: "p-1 rounded hover:bg-zinc-600 text-zinc-400",
         "aria-label": "Preview",
         title: "Preview sound",
-        children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(PlayIcon, {}, undefined, false, undefined, this)
-      }, undefined, false, undefined, this) : loading ? /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+        children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(PlayIcon, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this) : loading ? /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
         disabled: true,
         className: "p-1 rounded text-zinc-500",
         title: "Decoding...",
-        children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(LoadingIcon, {}, undefined, false, undefined, this)
-      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+        children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(LoadingIcon, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
         onClick: () => onDecode(sound.id),
         className: "p-1 rounded hover:bg-zinc-600 text-zinc-500 hover:text-zinc-300",
         "aria-label": "Load sound",
         title: "Load sound (decode on demand)",
-        children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(PlayIcon, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(PlayIcon, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
         className: "flex-1 min-w-0",
-        children: editing === "label" ? /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("input", {
+        children: editing === "label" ? /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("input", {
           ref: labelInputRef,
           type: "text",
           value: draftLabel,
@@ -56475,14 +56741,14 @@ var SoundRow = import_react18.memo(({
           },
           className: "w-full bg-zinc-600 rounded px-2 py-0.5 text-xs outline-none focus:ring-1 focus:ring-purple-500",
           autoFocus: true
-        }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("span", {
+        }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
           className: "block text-xs truncate cursor-pointer hover:text-zinc-200",
           onDoubleClick: () => setEditing("label"),
           title: "Double-click to edit label",
           children: sound.label
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      isRemoteUrl(sound.url) && (editing === "url" ? /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("input", {
+      isRemoteUrl(sound.url) && (editing === "url" ? /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("input", {
         ref: urlInputRef,
         type: "text",
         value: draftUrl,
@@ -56498,7 +56764,7 @@ var SoundRow = import_react18.memo(({
         },
         className: "bg-zinc-600 rounded px-1.5 py-0.5 text-[10px] outline-none focus:ring-1 focus:ring-purple-500 w-40",
         autoFocus: true
-      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("span", {
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
         className: "text-[10px] text-zinc-500 cursor-pointer hover:text-zinc-300",
         onDoubleClick: () => {
           setDraftUrl(sound.url);
@@ -56507,27 +56773,27 @@ var SoundRow = import_react18.memo(({
         title: `Double-click to edit URL: ${sound.url}`,
         children: "url"
       }, undefined, false, undefined, this)),
-      hasBlob && /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("span", {
+      hasBlob && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
         className: "text-zinc-500",
         title: "Saved in IndexedDB",
-        children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(SavedIcon, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(SavedIcon, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      !hasBlob && isRemoteUrl(sound.url) && (isDownloading ? /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+      !hasBlob && isRemoteUrl(sound.url) && (isDownloading ? /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
         disabled: true,
         className: "p-1 rounded text-zinc-500",
         title: "Downloading to IndexedDB...",
-        children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(LoadingIcon, {}, undefined, false, undefined, this)
-      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+        children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(LoadingIcon, {}, undefined, false, undefined, this)
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
         onClick: () => onDownload(sound.id),
         className: "p-1 rounded hover:bg-zinc-600 text-zinc-500 hover:text-zinc-300",
         title: "Download to IndexedDB (save as blob)",
-        children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(SaveIcon, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(SaveIcon, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this)),
-      /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+      /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
         onClick: () => onRemove(sound.id),
         className: "p-1 rounded hover:bg-zinc-600 text-zinc-400",
         "aria-label": "Remove",
-        children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(CloseIcon3, {}, undefined, false, undefined, this)
+        children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(CloseIcon3, {}, undefined, false, undefined, this)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
@@ -56535,14 +56801,14 @@ var SoundRow = import_react18.memo(({
 var BleepSoundManagerInner = () => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
   const actions = usePlayerActions();
-  const [showAddModal, setShowAddModal] = import_react18.useState(false);
-  const [loadingIds, setLoadingIds] = import_react18.useState(new Set);
-  const [downloadingIds, setDownloadingIds] = import_react18.useState(new Set);
-  const audioCtxRef = import_react18.useRef(null);
-  import_react18.useEffect(() => {
+  const [showAddModal, setShowAddModal] = import_react20.useState(false);
+  const [loadingIds, setLoadingIds] = import_react20.useState(new Set);
+  const [downloadingIds, setDownloadingIds] = import_react20.useState(new Set);
+  const audioCtxRef = import_react20.useRef(null);
+  import_react20.useEffect(() => {
     hydrateBleepSounds();
   }, []);
-  import_react18.useEffect(() => {
+  import_react20.useEffect(() => {
     const ctx = new AudioContext;
     audioCtxRef.current = ctx;
     const ids = Object.keys(bleepSounds);
@@ -56568,23 +56834,23 @@ var BleepSoundManagerInner = () => {
       audioCtxRef.current = null;
     };
   }, []);
-  const getAudioCtx = import_react18.useCallback(() => {
+  const getAudioCtx = import_react20.useCallback(() => {
     if (!audioCtxRef.current || audioCtxRef.current.state === "closed") {
       audioCtxRef.current = new AudioContext;
     }
     return audioCtxRef.current;
   }, []);
-  const handlePlay = import_react18.useCallback((buffer) => {
+  const handlePlay = import_react20.useCallback((buffer) => {
     const ctx = getAudioCtx();
     const source = ctx.createBufferSource();
     source.buffer = buffer;
     source.connect(ctx.destination);
     source.start();
   }, [getAudioCtx]);
-  const handleAdd = import_react18.useCallback((id, label, url2, fileData) => {
+  const handleAdd = import_react20.useCallback((id, label, url2, fileData) => {
     actions.addBleepSound(id, label, url2, fileData);
   }, [actions]);
-  const handleDecode = import_react18.useCallback((id) => {
+  const handleDecode = import_react20.useCallback((id) => {
     const sound = bleepSounds[id];
     if (!sound)
       return;
@@ -56599,7 +56865,7 @@ var BleepSoundManagerInner = () => {
       });
     });
   }, [bleepSounds, actions, getAudioCtx]);
-  const handleDownload = import_react18.useCallback(async (id) => {
+  const handleDownload = import_react20.useCallback(async (id) => {
     setDownloadingIds((prev) => new Set(prev).add(id));
     try {
       await actions.downloadUrlSound(id);
@@ -56611,11 +56877,11 @@ var BleepSoundManagerInner = () => {
       });
     }
   }, [actions]);
-  const handleExport = import_react18.useCallback(() => {
+  const handleExport = import_react20.useCallback(() => {
     exportBleepSounds(bleepSounds);
   }, [bleepSounds]);
-  const importInputRef = import_react18.useRef(null);
-  const handleImport = import_react18.useCallback(async (e) => {
+  const importInputRef = import_react20.useRef(null);
+  const handleImport = import_react20.useCallback(async (e) => {
     const file = e.target.files?.[0];
     if (!file)
       return;
@@ -56631,33 +56897,33 @@ var BleepSoundManagerInner = () => {
         importInputRef.current.value = "";
     }
   }, [actions]);
-  return /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
     children: [
-      /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
         className: "flex gap-2 mb-3",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
             onClick: () => setShowAddModal(true),
             className: "flex-1 flex items-center justify-center gap-2 text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(PlusIcon2, {}, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(PlusIcon2, {}, undefined, false, undefined, this),
               " Add Sound"
             ]
           }, undefined, true, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
             onClick: () => importInputRef.current?.click(),
             className: "flex items-center justify-center gap-2 text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors",
             title: "Import sounds from SQLite",
-            children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(UploadIcon, {}, undefined, false, undefined, this)
+            children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(UploadIcon, {}, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
             onClick: handleExport,
             disabled: Object.keys(bleepSounds).length === 0,
             className: "flex items-center justify-center gap-2 text-xs bg-zinc-700 hover:bg-zinc-600 text-zinc-200 px-3 py-1.5 rounded transition-colors disabled:opacity-30 disabled:cursor-not-allowed",
             title: "Export sounds to SQLite",
-            children: /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(DownloadIcon2, {}, undefined, false, undefined, this)
+            children: /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(DownloadIcon2, {}, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("input", {
+          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("input", {
             ref: importInputRef,
             type: "file",
             accept: ".sqlite,.db",
@@ -56666,9 +56932,9 @@ var BleepSoundManagerInner = () => {
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      Object.keys(bleepSounds).length > 0 ? /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+      Object.keys(bleepSounds).length > 0 ? /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
         className: "space-y-2",
-        children: Object.values(bleepSounds).map((sound) => /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(SoundRow, {
+        children: Object.values(bleepSounds).map((sound) => /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(SoundRow, {
           sound,
           loading: loadingIds.has(sound.id),
           onDownload: handleDownload,
@@ -56679,35 +56945,35 @@ var BleepSoundManagerInner = () => {
           onPlay: handlePlay,
           onDecode: handleDecode
         }, sound.id, false, undefined, this))
-      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime17.jsxDEV("div", {
+      }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
         className: "text-xs text-zinc-500 py-2",
         children: "No bleep sounds added"
       }, undefined, false, undefined, this),
-      showAddModal && /* @__PURE__ */ jsx_dev_runtime17.jsxDEV(AddModal, {
+      showAddModal && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV(AddModal, {
         onAdd: handleAdd,
         onClose: () => setShowAddModal(false)
       }, undefined, false, undefined, this)
     ]
   }, undefined, true, undefined, this);
 };
-var BleepSoundManager = import_react18.memo(BleepSoundManagerInner);
+var BleepSoundManager = import_react20.memo(BleepSoundManagerInner);
 
 // src/features/debug/DebugTab.tsx
-var import_react19 = __toESM(require_react(), 1);
-var jsx_dev_runtime18 = __toESM(require_jsx_dev_runtime(), 1);
+var import_react21 = __toESM(require_react(), 1);
+var jsx_dev_runtime19 = __toESM(require_jsx_dev_runtime(), 1);
 var DEBUG_ERRORS = window.__obrezErrors;
 function DebugTab() {
-  const [jsErrors, setJsErrors] = import_react19.useState(DEBUG_ERRORS.slice());
-  const pollRef = import_react19.useRef();
+  const [jsErrors, setJsErrors] = import_react21.useState(DEBUG_ERRORS.slice());
+  const pollRef = import_react21.useRef();
   const authError = useAuthStore((s) => s.error);
   const playerError = usePlayerStore((s) => s.error);
-  const pollErrors = import_react19.useCallback(() => {
+  const pollErrors = import_react21.useCallback(() => {
     const current = window.__obrezErrors;
     if (current.length !== jsErrors.length) {
       setJsErrors(current.slice());
     }
   }, [jsErrors.length]);
-  import_react19.useEffect(() => {
+  import_react21.useEffect(() => {
     pollRef.current = setInterval(pollErrors, 500);
     return () => {
       if (pollRef.current)
@@ -56741,67 +57007,67 @@ function DebugTab() {
     }
     return src;
   };
-  return /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
     className: "space-y-3",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
         className: "flex items-center justify-between p-3 bg-zinc-800/50 rounded-lg border border-zinc-700",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
+          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
             className: `text-sm font-bold ${!totalErrors ? "text-green-400" : "text-red-400"}`,
             children: !totalErrors ? "✓ No errors" : `⚠ ${totalErrors} error${totalErrors > 1 ? "s" : ""}`
           }, undefined, false, undefined, this),
-          totalErrors > 0 && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
+          totalErrors > 0 && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
             onClick: handleClear,
             className: "text-[10px] text-zinc-500 hover:text-zinc-300 px-2 py-1 rounded bg-zinc-800 hover:bg-zinc-700 transition-colors",
             children: "Clear all"
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      authError && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+      authError && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
         className: "rounded-lg p-3 bg-red-900/20 border border-red-800/50 cursor-pointer hover:bg-red-900/30 transition-colors",
         onClick: () => handleCopy(authError),
         title: "Click to copy raw error",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
             className: "text-[10px] text-red-400 font-semibold uppercase tracking-wider",
             children: "Auth"
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
             className: "text-xs text-zinc-300 mt-1",
             children: authError
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      playerError && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+      playerError && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
         className: "rounded-lg p-3 bg-red-900/20 border border-red-800/50 cursor-pointer hover:bg-red-900/30 transition-colors",
         onClick: () => handleCopy(playerError),
         title: "Click to copy raw error",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
             className: "text-[10px] text-red-400 font-semibold uppercase tracking-wider",
             children: "Player"
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
             className: "text-xs text-zinc-300 mt-1",
             children: playerError
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      jsErrors.length > 0 && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+      jsErrors.length > 0 && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
         className: "space-y-3",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
             className: "text-[10px] text-zinc-500 font-semibold uppercase tracking-wider",
             children: "Captured"
           }, undefined, false, undefined, this),
-          jsErrors.slice().reverse().map((err, i) => /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+          jsErrors.slice().reverse().map((err, i) => /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
             className: "rounded-lg p-3 bg-zinc-800/50 border border-zinc-700/50",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+              /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
                 className: "flex items-center justify-between mb-1",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
+                  /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
                     className: "text-[10px] text-red-400 font-semibold uppercase tracking-wider",
                     children: [
                       "[",
@@ -56810,7 +57076,7 @@ function DebugTab() {
                       err.label
                     ]
                   }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("button", {
+                  /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
                     onClick: (e) => {
                       e.stopPropagation();
                       handleCopy(err.raw);
@@ -56821,21 +57087,21 @@ function DebugTab() {
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              err.source && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+              err.source && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
                 className: "text-[10px] text-blue-400 mt-1",
                 children: [
                   "\uD83D\uDCCD ",
                   formatSource(err.source)
                 ]
               }, undefined, true, undefined, this),
-              err.msg && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+              err.msg && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
                 className: "text-xs text-zinc-300 mt-1 line-clamp-2",
                 children: err.msg
               }, undefined, false, undefined, this),
-              err.frames.length > 0 && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("details", {
+              err.frames.length > 0 && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("details", {
                 className: "mt-2 group",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("summary", {
+                  /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("summary", {
                     className: "text-[10px] text-zinc-500 cursor-pointer hover:text-zinc-300 transition-colors select-none",
                     children: [
                       "Stack trace (",
@@ -56843,27 +57109,27 @@ function DebugTab() {
                       " frames)"
                     ]
                   }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+                  /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
                     className: "mt-1 space-y-0.5 text-[10px] text-zinc-400",
                     children: err.frames.map((f, fi) => {
                       const { func, loc } = parseLocation(f);
-                      return /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+                      return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
                         className: "flex items-start gap-1 pl-2 border-l-2 border-zinc-700 group-hover:border-zinc-600 transition-colors",
                         children: [
-                          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
+                          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
                             className: "text-zinc-600 shrink-0 w-4 text-right",
                             children: [
                               fi + 1,
                               "."
                             ]
                           }, undefined, true, undefined, this),
-                          /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
+                          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
                             children: [
-                              /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
+                              /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
                                 className: "text-zinc-300",
                                 children: func
                               }, undefined, false, undefined, this),
-                              loc && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("span", {
+                              loc && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
                                 className: "text-zinc-500 ml-1",
                                 children: [
                                   "— ",
@@ -56882,7 +57148,7 @@ function DebugTab() {
           }, `${i}-${err.time}`, true, undefined, this))
         ]
       }, undefined, true, undefined, this),
-      !totalErrors && /* @__PURE__ */ jsx_dev_runtime18.jsxDEV("div", {
+      !totalErrors && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
         className: "text-xs text-zinc-500 py-4 text-center",
         children: "No errors captured yet."
       }, undefined, false, undefined, this)
@@ -56892,15 +57158,15 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "177";
+var BUILD_NUM = "182";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
-var jsx_dev_runtime19 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime20 = __toESM(require_jsx_dev_runtime(), 1);
 function Tooltip({ text }) {
-  const [show, setShow] = import_react20.useState(false);
-  const [anchor, setAnchor] = import_react20.useState(null);
-  import_react20.useEffect(() => {
+  const [show, setShow] = import_react22.useState(false);
+  const [anchor, setAnchor] = import_react22.useState(null);
+  import_react22.useEffect(() => {
     if (show) {
       const el = document.querySelector("[data-tooltip-anchor]");
       if (el) {
@@ -56913,9 +57179,9 @@ function Tooltip({ text }) {
     e.stopPropagation();
     setShow((v) => !v);
   };
-  return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(jsx_dev_runtime19.Fragment, {
+  return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(jsx_dev_runtime20.Fragment, {
     children: [
-      /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+      /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
         "data-tooltip-anchor": true,
         className: "relative inline-flex items-center ml-1 cursor-help",
         onMouseEnter: () => setShow(true),
@@ -56923,12 +57189,12 @@ function Tooltip({ text }) {
         onFocus: () => setShow(true),
         onBlur: () => setShow(false),
         onClick: handleClick,
-        children: /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+        children: /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
           className: "text-zinc-600 text-xs select-none",
           children: "ⓘ"
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      show && anchor && import_react_dom2.createPortal(/* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+      show && anchor && import_react_dom2.createPortal(/* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
         className: "fixed z-[100] w-56 px-3 py-2 text-xs leading-relaxed text-zinc-200 bg-zinc-800 border border-zinc-700 rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.6)] whitespace-normal pointer-events-none",
         style: { left: anchor.left, top: anchor.top, transform: "translateX(-50%)" },
         children: text
@@ -56938,7 +57204,6 @@ function Tooltip({ text }) {
 }
 var TABS = [
   { key: "user", emoji: "\uD83D\uDC64", tooltip: "Account & Balance" },
-  { key: "player", emoji: "▶", tooltip: "Player" },
   { key: "dictionaries", emoji: "\uD83D\uDCDA", tooltip: "Dictionaries" },
   { key: "bleep", emoji: "\uD83D\uDD0A", tooltip: "Bleep Sounds" },
   { key: "version", emoji: "\uD83D\uDD04", tooltip: "Version" },
@@ -56946,15 +57211,21 @@ var TABS = [
 ];
 var MODAL_SHADOW2 = "shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)]";
 function SettingsModal({ onClose }) {
-  const [activeTab, setActiveTab] = import_react20.useState("user");
-  const [versions, setVersions] = import_react20.useState(null);
-  const [frozenHeight, setFrozenHeight] = import_react20.useState(null);
-  const contentRef = import_react20.useRef(null);
-  const animatingRef = import_react20.useRef(false);
-  const animTimeoutRef = import_react20.useRef(null);
-  const frozenHeightRef = import_react20.useRef(null);
+  const [activeTab, setActiveTab] = import_react22.useState("user");
+  const [versions, setVersions] = import_react22.useState(null);
+  const [frozenHeight, setFrozenHeight] = import_react22.useState(null);
+  const contentRef = import_react22.useRef(null);
+  const animatingRef = import_react22.useRef(false);
+  const animTimeoutRef = import_react22.useRef(null);
+  const frozenHeightRef = import_react22.useRef(null);
   const currentVersion = typeof window !== "undefined" ? window.location.pathname.split("/").filter(Boolean).pop() || "master" : "master";
-  import_react20.useEffect(() => {
+  import_react22.useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    if (params.has("code")) {
+      onClose();
+    }
+  }, [onClose]);
+  import_react22.useEffect(() => {
     if (animatingRef.current)
       return;
     if (frozenHeight === null)
@@ -56971,7 +57242,7 @@ function SettingsModal({ onClose }) {
       }, 350);
     });
   }, [activeTab, versions, frozenHeight]);
-  import_react20.useEffect(() => {
+  import_react22.useEffect(() => {
     if (activeTab !== "version" || versions)
       return;
     const parts = window.location.pathname.split("/").filter(Boolean);
@@ -56984,7 +57255,7 @@ function SettingsModal({ onClose }) {
     localStorage.setItem("obrez-version", v);
     window.location.replace(base + v + "/");
   };
-  import_react20.useEffect(() => {
+  import_react22.useEffect(() => {
     const handleKey = (e) => {
       if (e.key === "Escape")
         onClose();
@@ -56992,35 +57263,35 @@ function SettingsModal({ onClose }) {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
-  return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60",
     onClick: (e) => {
       if (e.target === e.currentTarget)
         onClose();
     },
-    children: /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+    children: /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
       className: `relative flex flex-col overflow-hidden mx-4 mt-[-2vh] w-full max-w-2xl rounded-xl bg-zinc-900 ${MODAL_SHADOW2}`,
       children: [
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
           className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]"
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
           className: "relative flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0",
           children: [
-            /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("h2", {
+            /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("h2", {
               className: "text-lg font-semibold text-zinc-100",
               children: "⚙ Настройки"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
+            /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("button", {
               onClick: onClose,
               className: "text-zinc-400 hover:text-zinc-200 transition-colors p-1 rounded hover:bg-zinc-800",
               children: "✕"
             }, undefined, false, undefined, this)
           ]
         }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
           className: "relative flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0",
-          children: TABS.map((tab) => /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
+          children: TABS.map((tab) => /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("button", {
             onClick: () => {
               if (animatingRef.current)
                 return;
@@ -57040,104 +57311,89 @@ function SettingsModal({ onClose }) {
             children: tab.emoji
           }, tab.key, false, undefined, this))
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
           ref: contentRef,
           style: frozenHeight != null ? { height: frozenHeight, transition: "height 300ms ease-in-out" } : undefined,
           children: [
-            activeTab === "user" && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+            activeTab === "user" && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
               className: "p-5",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("h3", {
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("h3", {
                   className: "text-sm text-zinc-300 mb-3",
                   children: [
                     "Account & Balance ",
-                    /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(Tooltip, {
+                    /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(Tooltip, {
                       text: "Manage your Telegram account, check transcription balance, and top up hours."
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(UserContent, {
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(UserContent, {
                   onClose
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            activeTab === "player" && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+            activeTab === "dictionaries" && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
               className: "p-5",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("h3", {
-                  className: "text-sm text-zinc-300 mb-3",
-                  children: [
-                    "Player ",
-                    /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(Tooltip, {
-                      text: "Settings for media playback — autoplay, speed, and quality options."
-                    }, undefined, false, undefined, this)
-                  ]
-                }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(PlayerContent, {}, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            activeTab === "dictionaries" && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-              className: "p-5",
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("h3", {
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("h3", {
                   className: "text-sm text-zinc-300 mb-3",
                   children: [
                     "Word Lists ",
-                    /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(Tooltip, {
+                    /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(Tooltip, {
                       text: "Choose which word lists to match against during transcription. Only active lists highlight matched words."
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(DictionaryManager, {}, undefined, false, undefined, this)
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(DictionaryManager, {}, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            activeTab === "bleep" && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+            activeTab === "bleep" && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
               className: "p-5",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("h3", {
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("h3", {
                   className: "text-sm text-zinc-300 mb-3",
                   children: [
                     "Sound Effects ",
-                    /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(Tooltip, {
+                    /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(Tooltip, {
                       text: "Manage bleep and censor sounds. Upload custom audio files or use the default tone."
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(BleepSoundManager, {}, undefined, false, undefined, this)
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(BleepSoundManager, {}, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            activeTab === "version" && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+            activeTab === "version" && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
               className: "p-5",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("h3", {
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("h3", {
                   className: "text-sm text-zinc-300 mb-3",
                   children: [
                     "Switch Version ",
-                    /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(Tooltip, {
+                    /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(Tooltip, {
                       text: "Switch between master (latest) and stable releases. Useful if master breaks."
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(VersionContent, {
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(VersionContent, {
                   versions,
                   currentVersion,
                   onSelect: handleVersionSelect
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            activeTab === "debug" && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+            activeTab === "debug" && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
               className: "p-5",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("h3", {
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("h3", {
                   className: "text-sm text-zinc-300 mb-3",
                   children: [
                     "Debug ",
-                    /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(Tooltip, {
+                    /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(Tooltip, {
                       text: "View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string."
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(DebugTab, {}, undefined, false, undefined, this)
+                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(DebugTab, {}, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this)
           ]
@@ -57154,8 +57410,11 @@ function UserContent({ onClose }) {
   const isLoading = useAuthStore((s) => s.isLoading);
   const error = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
-  const [showLogin, setShowLogin] = import_react20.useState(false);
-  import_react20.useEffect(() => {
+  const activeInvoice = useAuthStore((s) => s.activeInvoice);
+  const paymentStatus = useAuthStore((s) => s.paymentStatus);
+  const [showLogin, setShowLogin] = import_react22.useState(false);
+  const [selectedCurrency, setSelectedCurrency] = import_react22.useState("USD");
+  import_react22.useEffect(() => {
     if (isAuthenticated && showLogin) {
       setShowLogin(false);
       useAuthStore.getState().checkAuth();
@@ -57168,73 +57427,82 @@ function UserContent({ onClose }) {
     onClose();
   };
   const handleTopup = async (pkgType) => {
-    await topup(pkgType);
-    if (!useAuthStore.getState().error) {
+    await topup(pkgType, selectedCurrency);
+    const err = useAuthStore.getState().error;
+    const inv = useAuthStore.getState().activeInvoice;
+    if (!err && !inv) {
       onClose();
     }
   };
+  const handlePaymentPaid = () => {
+    onClose();
+  };
+  const handlePaymentClose = () => {
+    useAuthStore.getState().clearActiveInvoice();
+    useAuthStore.getState().checkAuth();
+  };
   if (!isAuthenticated) {
-    return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+    return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
       className: "text-center py-8",
       children: [
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
           className: "text-4xl mb-3",
           children: "\uD83D\uDD12"
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("p", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("p", {
           className: "text-sm text-zinc-400",
           children: "Not signed in"
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("p", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("p", {
           className: "text-xs text-zinc-500 mt-1 mb-4",
           children: "Sign in with Telegram to use transcription."
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("button", {
           onClick: () => setShowLogin(true),
           className: "bg-[#2AABEE] hover:bg-[#229ED9] text-white font-medium px-6 py-2 rounded-lg transition-colors text-sm shadow-[0_4px_14px_rgba(42,171,238,0.3)]",
           children: "Sign in with Telegram"
         }, undefined, false, undefined, this),
-        showLogin && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(LoginModal, {
+        showLogin && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(LoginModal, {
           onClose: () => setShowLogin(false)
         }, undefined, false, undefined, this)
       ]
     }, undefined, true, undefined, this);
   }
-  return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
     className: "space-y-4",
     children: [
-      /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
         className: "relative flex items-center gap-4 p-5 rounded-xl border border-zinc-700 bg-zinc-800/50 shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
             className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.2)]"
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
             className: "relative",
-            children: user?.photo_url ? /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("img", {
+            children: user?.photo_url ? /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("img", {
               src: user.photo_url,
               alt: user.first_name,
               className: "w-12 h-12 rounded-full object-cover shadow-[0_2px_10px_rgba(0,0,0,0.4)]"
-            }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+            }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
               className: "w-12 h-12 rounded-full bg-purple-600 flex items-center justify-center text-lg font-semibold shrink-0 shadow-[0_2px_10px_rgba(139,92,246,0.4)]",
               children: user?.first_name?.charAt(0) || "?"
             }, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
             className: "flex-1 min-w-0",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+              /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
                 className: "text-zinc-100 font-medium",
                 children: user?.first_name
               }, undefined, false, undefined, this),
-              user?.username && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+              user?.username && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
                 className: "text-xs text-zinc-400",
                 children: [
                   "@",
                   user.username
                 ]
               }, undefined, true, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+              /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
                 className: "text-sm text-purple-400 mt-0.5",
                 children: [
                   "Balance: ",
@@ -57243,7 +57511,7 @@ function UserContent({ onClose }) {
               }, undefined, true, undefined, this)
             ]
           }, undefined, true, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("button", {
             onClick: handleLogout,
             className: "text-xs text-zinc-500 hover:text-red-400 transition-colors shrink-0",
             title: "Log out",
@@ -57251,12 +57519,25 @@ function UserContent({ onClose }) {
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
+        className: "mb-3",
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
+            className: "text-xs text-zinc-400 mb-1.5",
+            children: "Currency"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(CurrencySelector, {
+            value: selectedCurrency,
+            onChange: setSelectedCurrency
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
         className: "space-y-3",
         children: HOUR_PACKS.map((pack, i) => {
           const isFree = pack.type === "free";
           const isDisabled = isFree && !freeAvailable;
-          return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(HourPackCard, {
+          return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(HourPackCard, {
             pack,
             disabled: isDisabled,
             isLoading,
@@ -57265,7 +57546,12 @@ function UserContent({ onClose }) {
           }, pack.type, false, undefined, this);
         })
       }, undefined, false, undefined, this),
-      daysLeft !== null && daysLeft > 0 && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("p", {
+      activeInvoice && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(PaymentModal, {
+        invoice: activeInvoice,
+        onPaid: handlePaymentPaid,
+        onClose: handlePaymentClose
+      }, undefined, false, undefined, this),
+      daysLeft !== null && daysLeft > 0 && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("p", {
         className: "text-xs text-yellow-400 text-center",
         children: [
           "Free topup available in ",
@@ -57274,14 +57560,14 @@ function UserContent({ onClose }) {
           daysLeft > 1 ? "s" : ""
         ]
       }, undefined, true, undefined, this),
-      error && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+      error && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
         className: "relative p-4 rounded-xl bg-red-900/30 border border-red-700/50 shadow-[0_4px_12px_rgba(127,29,29,0.2)]",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("p", {
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("p", {
             className: "text-xs text-red-400",
             children: error
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
+          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("button", {
             onClick: clearError,
             className: "text-xs text-red-300 underline mt-1",
             children: "Dismiss"
@@ -57291,82 +57577,34 @@ function UserContent({ onClose }) {
     ]
   }, undefined, true, undefined, this);
 }
-function PlayerContent() {
-  return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-    className: "space-y-4",
-    children: /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-      className: "relative flex items-center justify-between p-5 rounded-xl border border-zinc-700 bg-zinc-800/50 shadow-[0_4px_16px_rgba(0,0,0,0.3),inset_0_1px_0_rgba(255,255,255,0.05)]",
-      children: [
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-          className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.2)]"
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-          className: "relative",
-          children: [
-            /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-              className: "text-sm text-zinc-200 font-medium",
-              children: [
-                "▶ Play on load",
-                /* @__PURE__ */ jsx_dev_runtime19.jsxDEV(Tooltip, {
-                  text: "When enabled, the video starts playing automatically as soon as a file is loaded. Disable to review the timeline before playback."
-                }, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-              className: "text-xs text-zinc-500 mt-0.5",
-              children: "Auto-play video after loading a file"
-            }, undefined, false, undefined, this)
-          ]
-        }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("label", {
-          className: "relative inline-flex items-center cursor-pointer",
-          children: [
-            /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("input", {
-              type: "checkbox",
-              id: "obrez-play-on-load",
-              className: "sr-only peer",
-              defaultChecked: localStorage.getItem("obrez_play_on_load") === "true",
-              onChange: (e) => {
-                localStorage.setItem("obrez_play_on_load", e.target.checked ? "true" : "false");
-              }
-            }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
-              className: "w-11 h-6 bg-zinc-600 rounded-full peer-checked:bg-purple-600 peer-focus:ring-2 peer-focus:ring-purple-500/50 transition-colors after:content-[''] after:absolute after:top-0.5 after:left-0.5 after:bg-white after:rounded-full after:h-5 after:w-5 after:transition-all after:duration-200 peer-checked:after:translate-x-full"
-            }, undefined, false, undefined, this)
-          ]
-        }, undefined, true, undefined, this)
-      ]
-    }, undefined, true, undefined, this)
-  }, undefined, false, undefined, this);
-}
 function VersionContent({ versions, currentVersion, onSelect }) {
   if (!versions) {
-    return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+    return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
       className: "text-xs text-zinc-500 py-4",
       children: "Unable to load versions"
     }, undefined, false, undefined, this);
   }
-  return /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
     className: "space-y-2",
-    children: versions.versions.map((v) => /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("button", {
+    children: versions.versions.map((v) => /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("button", {
       onClick: () => onSelect(v),
       className: `relative w-full flex items-center gap-3 text-xs py-3 px-4 rounded-lg transition-all ${v === currentVersion ? "bg-purple-900/30 border border-purple-700/50 text-purple-300 shadow-[0_2px_12px_rgba(139,92,246,0.2),inset_0_1px_0_rgba(139,92,246,0.1)]" : "bg-zinc-700/80 hover:bg-zinc-600 text-zinc-200 shadow-[0_2px_8px_rgba(0,0,0,0.2)]"}`,
       children: [
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
           className: `w-4 h-4 rounded-full border flex items-center justify-center flex-shrink-0 ${v === currentVersion ? "border-purple-500" : "border-zinc-500"}`,
-          children: v === currentVersion && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+          children: v === currentVersion && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
             className: "w-2 h-2 rounded-full bg-purple-500"
           }, undefined, false, undefined, this)
         }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+        /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
           className: "font-semibold",
           children: v
         }, undefined, false, undefined, this),
-        v === versions.default && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+        v === versions.default && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
           className: "text-[10px] text-zinc-500 ml-auto",
           children: "default"
         }, undefined, false, undefined, this),
-        v === currentVersion && /* @__PURE__ */ jsx_dev_runtime19.jsxDEV("span", {
+        v === currentVersion && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
           className: "text-[10px] text-purple-400 ml-auto",
           children: [
             "current ",
@@ -57379,11 +57617,16 @@ function VersionContent({ versions, currentVersion, onSelect }) {
 }
 
 // src/App.tsx
-var jsx_dev_runtime20 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime21 = __toESM(require_jsx_dev_runtime(), 1);
 var DEFAULT_DICTIONARIES2 = ["ru-profanity", "ru-stopwords", "ru-youtube"];
 function SessionRestorer() {
   const { initMediaPlayer, startRenderLoop, play } = useMediaPlayerContext();
-  import_react21.useEffect(() => {
+  const restoreRef = import_react23.useRef(false);
+  import_react23.useEffect(() => {
+    if (restoreRef.current)
+      return;
+    restoreRef.current = true;
+    console.log("[SessionRestorer] restoring session (first call)");
     const restoreSession = async () => {
       try {
         const { loadSession: loadSession2 } = await Promise.resolve().then(() => exports_idb);
@@ -57394,10 +57637,6 @@ function SessionRestorer() {
           type: session.fileBlob.type || "video/mp4"
         });
         await initMediaPlayer(file);
-        const isPlaying = usePlayerStore.getState().isPlaying;
-        if (!isPlaying && localStorage.getItem(AUTOPLAY_KEY) === "true") {
-          await play();
-        }
         if (session.transcriptionResults) {
           playerActions.setTranscriptionResults(session.transcriptionResults);
         }
@@ -57416,7 +57655,7 @@ function SessionRestorer() {
   return null;
 }
 var App = () => {
-  import_react21.useEffect(() => {
+  import_react23.useEffect(() => {
     const loadDefaults = async () => {
       try {
         await loadBackendUrl();
@@ -57451,7 +57690,7 @@ var App = () => {
       }
     }
   }, []);
-  import_react21.useEffect(() => {
+  import_react23.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
     const code = params.get("code");
     const state = params.get("state");
@@ -57470,36 +57709,36 @@ var App = () => {
       }
     }
   }, []);
-  const [settingsOpen, setSettingsOpen] = import_react21.useState(false);
-  return /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(MediaPlayerProvider, {
+  const [settingsOpen, setSettingsOpen] = import_react23.useState(false);
+  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(MediaPlayerProvider, {
     children: [
-      /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(SessionRestorer, {}, undefined, false, undefined, this),
-      /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
+      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(SessionRestorer, {}, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
         className: "min-h-screen bg-zinc-900 text-zinc-100",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("header", {
+          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("header", {
             className: "sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800",
-            children: /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
+            children: /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
               className: "max-w-4xl mx-auto px-4 py-3 flex items-center justify-between",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("a", {
+                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("a", {
                   href: "https://irsent.github.io/obrez-ts",
                   className: "flex items-center gap-3",
                   children: [
-                    /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("img", {
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("img", {
                       src: "assets/obrez-logo.jpg",
                       alt: "Obrez Logo",
                       className: "w-8 h-8"
                     }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("h1", {
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h1", {
                       className: "text-3xl font-semibold text-purple-500 leading-8",
                       children: "Obrez"
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
+                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
                   className: "flex items-center gap-1",
-                  children: /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("button", {
+                  children: /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
                     id: "obrez-gear",
                     onClick: () => setSettingsOpen(true),
                     className: "w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm",
@@ -57509,16 +57748,16 @@ var App = () => {
               ]
             }, undefined, true, undefined, this)
           }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime20.jsxDEV("div", {
+          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
             className: "max-w-4xl mx-auto px-4 py-4 space-y-4",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(ImportProgressModal, {}, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(PlayerDisplay, {}, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(PlaybackControls, {}, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(TranscriptionResults, {}, undefined, false, undefined, this)
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(ImportProgressModal, {}, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(PlayerDisplay, {}, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(PlaybackControls, {}, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(TranscriptionResults, {}, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
-          settingsOpen && /* @__PURE__ */ jsx_dev_runtime20.jsxDEV(SettingsModal, {
+          settingsOpen && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(SettingsModal, {
             onClose: () => setSettingsOpen(false)
           }, undefined, false, undefined, this)
         ]
@@ -57528,8 +57767,8 @@ var App = () => {
 };
 
 // src/main.tsx
-var jsx_dev_runtime21 = __toESM(require_jsx_dev_runtime(), 1);
+var jsx_dev_runtime22 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
-import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime21.jsxDEV(App, {}, undefined, false, undefined, this));
+import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=8DC45155904712D864756E2164756E21
+//# debugId=FC746BC0F577D34464756E2164756E21

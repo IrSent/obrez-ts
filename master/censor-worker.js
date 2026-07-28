@@ -103,7 +103,8 @@ async function renderCensored(audioChunks, sampleRate, numChannels, rmsMapData, 
     };
     const result = await ctx.startRendering();
     ctx.onrenderprogress = null;
-    self.postMessage({ type: "RENDER_READY", payload: result }, [result]);
+    const msg = { type: "RENDER_READY", payload: result };
+    self.postMessage(msg, [result]);
   } catch (err) {
     self.postMessage({
       type: "ERROR",
@@ -112,4 +113,4 @@ async function renderCensored(audioChunks, sampleRate, numChannels, rmsMapData, 
   }
 }
 
-//# debugId=C3D144F38042511764756E2164756E21
+//# debugId=1328DBB4B874FE5D64756E2164756E21
