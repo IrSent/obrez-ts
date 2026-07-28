@@ -274,6 +274,7 @@ function UserContent({ onClose }: UserContentProps) {
   const paymentStatus = useAuthStore((s) => s.paymentStatus);
   const [showLogin, setShowLogin] = useState(false);
   const [selectedCurrency, setSelectedCurrency] = useState<FiatCurrency>('USD');
+  const [topupSuccess, setTopupSuccess] = useState<string | null>(null);
 
   // After successful login, close LoginModal and refresh user data
   useEffect(() => {
@@ -293,16 +294,22 @@ function UserContent({ onClose }: UserContentProps) {
 
   const handleTopup = async (pkgType: HourPackType) => {
     await topup(pkgType, selectedCurrency);
-    // Free pack: close on success
     const err = useAuthStore.getState().error;
     const inv = useAuthStore.getState().activeInvoice;
     if (!err && !inv) {
-      onClose();
+      // Free pack — show success message instead of closing
+      const pack = HOUR_PACKS.find((p) => p.type === pkgType);
+      setTopupSuccess(`+${pack?.hours || '?'} hours added!`);
+      setTimeout(() => setTopupSuccess(null), 3000);
     }
   };
 
   const handlePaymentPaid = () => {
-    onClose();
+    setTopupSuccess('Payment received! Your balance has been updated.');
+    setTimeout(() => {
+      useAuthStore.getState().clearActiveInvoice();
+      onClose();
+    }, 2000);
   };
 
   const handlePaymentClose = () => {
@@ -405,6 +412,11 @@ function UserContent({ onClose }: UserContentProps) {
           <button onClick={clearError} className="text-xs text-red-300 underline mt-1">
             Dismiss
           </button>
+        </div>
+      )}
+      {topupSuccess && (
+        <div className="relative p-4 rounded-xl bg-green-900/30 border border-green-700/50 shadow-[0_4px_12px_rgba(22,101,52,0.2)]">
+          <p className="text-xs text-green-400">✓ {topupSuccess}</p>
         </div>
       )}
     </div>

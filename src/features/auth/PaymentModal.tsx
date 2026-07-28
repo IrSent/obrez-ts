@@ -48,6 +48,7 @@ export function PaymentModal({ invoice, onPaid, onClose }: PaymentModalProps) {
           <h2 className="text-lg font-semibold text-zinc-100">Complete Payment</h2>
           <button
             onClick={onClose}
+            aria-label="Close"
             className="text-zinc-400 hover:text-zinc-200 transition-colors"
           >
             ✕

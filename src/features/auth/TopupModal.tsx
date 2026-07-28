@@ -20,14 +20,26 @@ export function TopupModal({ onClose, onTopup }: TopupModalProps) {
   const clearActiveInvoice = useAuthStore((s) => s.clearActiveInvoice);
 
   const [selectedCurrency, setSelectedCurrency] = useState<FiatCurrency>('USD');
+  const [topupSuccess, setTopupSuccess] = useState<string | null>(null);
 
   const handleTopup = async (pkgType: HourPackType) => {
     await topup(pkgType, selectedCurrency);
-    // If free, onTopup will be called after invoice check below
+    const err = useAuthStore.getState().error;
+    const inv = useAuthStore.getState().activeInvoice;
+    if (!err && !inv) {
+      // Free pack — show success message
+      const hours = pkgType === 'free' ? 5 : '?';
+      setTopupSuccess(`+${hours} hours added!`);
+      setTimeout(() => setTopupSuccess(null), 3000);
+    }
   };
 
   const handlePaymentPaid = () => {
-    onTopup();
+    setTopupSuccess('Payment received! Your balance has been updated.');
+    setTimeout(() => {
+      clearActiveInvoice(); // Remove this after the success message is shown
+      onTopup();
+    }, 2000);
   };
 
   const handlePaymentClose = () => {
@@ -125,6 +137,11 @@ export function TopupModal({ onClose, onTopup }: TopupModalProps) {
             <button onClick={clearError} className="text-xs text-red-300 underline mt-1">
               Dismiss
             </button>
+          </div>
+        )}
+        {topupSuccess && (
+          <div className="mt-4 p-3 bg-green-900/30 border border-green-700/50 rounded-lg">
+            <p className="text-xs text-green-400">✓ {topupSuccess}</p>
           </div>
         )}
       </div>

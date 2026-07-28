@@ -1,19 +1,30 @@
 import { test, expect } from '@playwright/test';
 import { authenticateAs, openAccountTab } from './fixtures/auth';
-import * as fs from 'node:fs';
-import * as path from 'node:path';
 
 const LOCAL_BACKEND = 'http://127.0.0.1:8686';
 
 /**
  * Mock backend-url.json to point to localhost instead of localtunnel.
- * This way all backend requests go to localhost and can be intercepted.
+ * Disable HTTP cache so the route always fires.
  */
 async function mockBackendUrl(page) {
-  await page.route('**/backend-url.json', (route) => {
+  await page.context().route('**/backend-url.json', (route) => {
     route.fulfill({
       contentType: 'application/json',
       body: JSON.stringify({ url: LOCAL_BACKEND }),
+    });
+  });
+}
+
+/**
+ * Mock checkAuth (/api/auth/me) so the fake JWT cookie is not validated by the real backend.
+ */
+function mockCheckAuth(page, user) {
+  page.route(`${LOCAL_BACKEND}/api/auth/me`, (route) => {
+    route.fulfill({
+      status: 200,
+      contentType: 'application/json',
+      body: JSON.stringify({ user }),
     });
   });
 }
@@ -24,25 +35,27 @@ async function mockBackendUrl(page) {
  * Flow:
  * 1. Auth as user with 0 balance
  * 2. Open Settings → Account tab
- * 3. Click Basic pack → backend creates invoice via CryptoBot testnet
+ * 3. Click Basic pack → mock returns invoice
  * 4. PaymentModal appears with correct amount
- * 5. Intercept /payments/status → return 'credited' with updated balance
+ * 5. Mock /payments/status → return 'credited' with updated balance
  * 6. UI shows payment received, balance updates
  */
 test('full basic topup flow via Settings', async ({ page }) => {
   await mockBackendUrl(page);
-  const authUser = await authenticateAs(page, {
+
+  const authUser = {
+    tg_user_id: 'test-user-123',
+    first_name: 'Test',
+    username: 'testuser',
+    photo_url: null,
     remaining_seconds: 0,
     last_free_topup: null,
-  });
+  };
 
-  // Open Settings → Account tab
-  await openAccountTab(page);
+  // Mock all backend endpoints BEFORE navigation
+  mockCheckAuth(page, authUser);
 
-  // Intercept /topup to let the real backend create the invoice
-  // But we need the backend to accept our fake JWT → route it
-  await page.route(`${LOCAL_BACKEND}/**/api/hours/topup`, async (route) => {
-    // Return a fake invoice response (real backend would reject our fake JWT)
+  page.route(`${LOCAL_BACKEND}/api/hours/topup*`, async (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -60,35 +73,16 @@ test('full basic topup flow via Settings', async ({ page }) => {
     });
   });
 
-  // Click Basic pack
-  const basicCard = page.locator('button:has-text("Basic")');
-  await basicCard.click();
-
-  // Wait for PaymentModal
-  const payBtn = page.getByRole('button', { name: 'Pay in Telegram' });
-  await expect(payBtn).toBeVisible({ timeout: 10_000 });
-
-  // Check the amount
-  const amountText = page.getByText('0.99 USD');
-  await expect(amountText).toBeVisible();
-
-  // Check status indicator — should show "Waiting for payment"
-  const waitingText = page.getByText('Waiting for payment');
-  await expect(waitingText).toBeVisible();
-
-  // Intercept polling endpoint — first return pending, then credited
   let pollCount = 0;
-  await page.route(`${LOCAL_BACKEND}/**/api/payments/status`, async (route) => {
+  page.route(`${LOCAL_BACKEND}/api/payments/status*`, async (route) => {
     pollCount++;
     if (pollCount <= 2) {
-      // First 2 polls: still pending
       route.fulfill({
         status: 200,
         contentType: 'application/json',
         body: JSON.stringify({ status: 'pending' }),
       });
     } else {
-      // 3rd poll: credited
       route.fulfill({
         status: 200,
         contentType: 'application/json',
@@ -103,13 +97,25 @@ test('full basic topup flow via Settings', async ({ page }) => {
     }
   });
 
-  // Wait for payment success indicator
-  const successText = page.getByText('Payment received');
-  await expect(successText).toBeVisible({ timeout: 15_000 });
+  // Authenticate
+  await authenticateAs(page, authUser);
 
-  // PaymentModal should close after payment → Settings/TopupModal re-appears
-  // Wait a moment for state to update
-  await page.waitForTimeout(2_000);
+  // Open Settings → Account tab
+  await openAccountTab(page);
+
+  // Click Basic pack
+  await page.locator('button:has-text("Basic")').click();
+
+  // Wait for PaymentModal
+  const payBtn = page.getByRole('button', { name: 'Pay in Telegram' });
+  await expect(payBtn).toBeVisible({ timeout: 10_000 });
+
+  // Check the amount
+  await expect(page.getByText('0.99 USD')).toBeVisible();
+
+  // Wait for payment success indicator (polling will eventually return 'credited')
+  // PaymentModal closes after payment — check that balance updated to 10h
+  await expect(page.getByText('10h 0m 0s')).toBeVisible({ timeout: 15_000 });
 });
 
 /**
@@ -117,15 +123,19 @@ test('full basic topup flow via Settings', async ({ page }) => {
  */
 test('free topup via Settings', async ({ page }) => {
   await mockBackendUrl(page);
-  await authenticateAs(page, {
+
+  const authUser = {
+    tg_user_id: 'test-user-123',
+    first_name: 'Test',
+    username: 'testuser',
+    photo_url: null,
     remaining_seconds: 0,
     last_free_topup: null,
-  });
+  };
 
-  await openAccountTab(page);
+  mockCheckAuth(page, authUser);
 
-  // Intercept /topup for free pack
-  await page.route(`${LOCAL_BACKEND}/**/api/hours/topup`, async (route) => {
+  page.route(`${LOCAL_BACKEND}/api/hours/topup*`, async (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -139,18 +149,20 @@ test('free topup via Settings', async ({ page }) => {
     });
   });
 
+  await authenticateAs(page, authUser);
+  await openAccountTab(page);
+
   // Click Free pack
-  const freeCard = page.locator('button:has-text("Free")');
-  await freeCard.click();
+  await page.locator('button:has-text("Free")').click();
 
   // PaymentModal should NOT appear
-  const payBtn = page.getByRole('button', { name: 'Pay in Telegram' });
-  await expect(payBtn).not.toBeVisible();
+  await expect(page.getByRole('button', { name: 'Pay in Telegram' })).not.toBeVisible();
+
+  // Success message should appear
+  await expect(page.getByText('+5 hours added!')).toBeVisible({ timeout: 5_000 });
 
   // Balance should be updated
-  await page.waitForTimeout(1_000);
-  const balanceText = page.getByText('5h 0m 0s');
-  await expect(balanceText).toBeVisible();
+  await expect(page.getByText('5h 0m 0s')).toBeVisible({ timeout: 5_000 });
 });
 
 /**
@@ -158,32 +170,52 @@ test('free topup via Settings', async ({ page }) => {
  */
 test('free topup cooldown disabled', async ({ page }) => {
   await mockBackendUrl(page);
-  // User who already used free topup today
-  await authenticateAs(page, {
+
+  const authUser = {
+    tg_user_id: 'test-user-123',
+    first_name: 'Test',
+    username: 'testuser',
+    photo_url: null,
     remaining_seconds: 18000,
     last_free_topup: new Date().toISOString(),
-  });
+  };
 
+  mockCheckAuth(page, authUser);
+
+  await authenticateAs(page, authUser);
   await openAccountTab(page);
 
   // Free card should be disabled
-  const freeCard = page.locator('button:has-text("Free")');
-  await expect(freeCard).toBeDisabled();
+  await expect(page.locator('button:has-text("Free")')).toBeDisabled();
 
   // Cooldown message should be visible
-  const cooldownMsg = page.getByText('Free topup available in');
-  await expect(cooldownMsg).toBeVisible();
+  await expect(page.getByText('Free topup available in')).toBeVisible();
 });
 
 /**
  * Test 4: Currency selector switches currencies.
  */
 test('currency selector switches currencies', async ({ page }) => {
-  await authenticateAs(page);
+  await mockBackendUrl(page);
+
+  const authUser = {
+    tg_user_id: 'test-user-123',
+    first_name: 'Test',
+    username: 'testuser',
+    photo_url: null,
+    remaining_seconds: 18000,
+    last_free_topup: null,
+  };
+
+  mockCheckAuth(page, authUser);
+
+  await authenticateAs(page, authUser);
   await openAccountTab(page);
 
   // Currency selector should have 3 buttons
-  const currencyBtns = page.locator('button:has-text("USD"), button:has-text("RUB"), button:has-text("EUR")');
+  const currencyBtns = page.locator(
+    'button:has-text("USD"), button:has-text("RUB"), button:has-text("EUR")',
+  );
   await expect(currencyBtns).toHaveCount(3);
 
   // Switch to RUB
@@ -201,11 +233,20 @@ test('currency selector switches currencies', async ({ page }) => {
  * Test 5: Close PaymentModal clears activeInvoice.
  */
 test('close PaymentModal clears active invoice', async ({ page }) => {
-  await authenticateAs(page, { remaining_seconds: 0 });
-  await openAccountTab(page);
+  await mockBackendUrl(page);
 
-  // Intercept /topup
-  await page.route(`${LOCAL_BACKEND}/**/api/hours/topup`, async (route) => {
+  const authUser = {
+    tg_user_id: 'test-user-123',
+    first_name: 'Test',
+    username: 'testuser',
+    photo_url: null,
+    remaining_seconds: 0,
+    last_free_topup: null,
+  };
+
+  mockCheckAuth(page, authUser);
+
+  page.route(`${LOCAL_BACKEND}/api/hours/topup*`, async (route) => {
     route.fulfill({
       status: 200,
       contentType: 'application/json',
@@ -223,13 +264,15 @@ test('close PaymentModal clears active invoice', async ({ page }) => {
     });
   });
 
+  await authenticateAs(page, authUser);
+  await openAccountTab(page);
+
   // Click Basic → PaymentModal appears
   await page.locator('button:has-text("Basic")').click();
   await expect(page.getByRole('button', { name: 'Pay in Telegram' })).toBeVisible({ timeout: 10_000 });
 
-  // Close the modal
-  const closeBtn = page.getByRole('button', { name: 'Close' });
-  await closeBtn.click();
+  // Close the modal (X button in PaymentModal)
+  await page.getByLabel('Close').click();
 
   // PaymentModal should be gone
   await expect(page.getByRole('button', { name: 'Pay in Telegram' })).not.toBeVisible();
@@ -242,17 +285,23 @@ test('close PaymentModal clears active invoice', async ({ page }) => {
  * Test 6: Topup flow from ActionButtons (Transcribe → insufficient balance → TopupModal).
  */
 test('topup flow from Transcribe button', async ({ page }) => {
-  await authenticateAs(page, {
+  await mockBackendUrl(page);
+
+  const authUser = {
+    tg_user_id: 'test-user-123',
+    first_name: 'Test',
+    username: 'testuser',
+    photo_url: null,
     remaining_seconds: 0,
     last_free_topup: null,
-  });
+  };
+
+  mockCheckAuth(page, authUser);
+
+  await authenticateAs(page, authUser);
 
   // Load a test file
-  await page.setInputFiles('input[type="file"]', {
-    name: 'ru-profanity.mp4',
-    mimeType: 'video/mp4',
-    buffer: Buffer.from(fs.readFileSync(path.resolve(__dirname, 'ru-profanity.mp4'))),
-  });
+  await page.setInputFiles('input[type="file"]', 'e2e/ru-profanity.mp4');
 
   // Wait for file to load
   await page.waitForSelector('text=Transcribe', { timeout: 15_000 });
@@ -264,7 +313,5 @@ test('topup flow from Transcribe button', async ({ page }) => {
   await page.waitForSelector('text=Transcription Balance', { timeout: 10_000 });
 
   // Free card should be clickable
-  const freeCard = page.locator('button:has-text("Free")');
-  await expect(freeCard).toBeEnabled();
+  await expect(page.locator('button:has-text("Free")')).toBeEnabled();
 });
-

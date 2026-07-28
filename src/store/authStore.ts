@@ -204,9 +204,9 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         set({
           user: { ...(get().user || {}), ...data.user },
           paymentStatus: 'paid',
-          activeInvoice: null,
           error: null,
         });
+        // Don't clear activeInvoice here — let the PaymentModal's onPaid/close handle it
       }
     } catch {
       // ignore — keep polling
