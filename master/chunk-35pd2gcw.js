@@ -50433,6 +50433,59 @@ function backendWsPath(path) {
   return `${scheme}${_backendUrl.split("://")[1]}${path}`;
 }
 
+// src/utils/upload.ts
+function uploadFile(file, fileName, path, onProgress) {
+  const url2 = backendPath(path);
+  const extraHeaders = backendHeaders();
+  return new Promise((resolve, reject) => {
+    const xhr = new XMLHttpRequest;
+    xhr.open("POST", url2);
+    xhr.withCredentials = true;
+    for (const [key, value] of Object.entries(extraHeaders)) {
+      xhr.setRequestHeader(key, value);
+    }
+    xhr.upload.onprogress = (e) => {
+      if (e.lengthComputable && onProgress) {
+        onProgress({
+          loaded: e.loaded,
+          total: e.total,
+          pct: Math.round(e.loaded / e.total * 100)
+        });
+      }
+    };
+    xhr.onload = () => {
+      if (xhr.status < 200 || xhr.status >= 300) {
+        try {
+          const data = JSON.parse(xhr.responseText);
+          reject(new Error(data.detail || data.error || `HTTP ${xhr.status}`));
+        } catch {
+          reject(new Error(`Upload failed (HTTP ${xhr.status})`));
+        }
+        return;
+      }
+      try {
+        resolve(JSON.parse(xhr.responseText));
+      } catch {
+        reject(new Error("Invalid JSON response from server"));
+      }
+    };
+    xhr.onerror = () => reject(new Error("Network error while uploading"));
+    xhr.onabort = () => reject(new Error("Upload aborted"));
+    const formData = new FormData;
+    formData.append("file", file, fileName);
+    xhr.send(formData);
+  });
+}
+function fmtBytes(bytes2) {
+  const mb = bytes2 / 1024 / 1024;
+  return mb >= 1 ? `${mb.toFixed(1)} MB` : `${Math.round(bytes2 / 1024)} KB`;
+}
+function safePct(pct) {
+  if (typeof pct !== "number" || !isFinite(pct) || pct < 0)
+    return 0;
+  return Math.round(pct);
+}
+
 // src/features/transcription/useTranscribe.ts
 function useTranscribe(deps) {
   const { audioTrackRef, resourceRef, audioSinkRef } = deps;
@@ -50442,6 +50495,7 @@ function useTranscribe(deps) {
       return;
     }
     try {
+      playerActions.setError(null);
       playerActions.setTranscribing(true);
       playerActions.setTranscribeStage("Collecting audio data…");
       const format = usePlayerStore.getState().transcribeFormat;
@@ -50497,11 +50551,11 @@ function useTranscribe(deps) {
         }
         playerActions.setTranscribeStage(`Remuxing audio — ${packetCount} packets (finalizing…)`);
         await output.finalize();
-        const result = bufferTarget.buffer;
-        if (!result) {
+        const result2 = bufferTarget.buffer;
+        if (!result2) {
           throw new Error("Remux completed but no output buffer was produced");
         }
-        audioBlob = new Blob([result], { type: "video/mp4" });
+        audioBlob = new Blob([result2], { type: "video/mp4" });
         audioFileName = `${fileName}.mp4`;
         transcribeInput.dispose();
       } else {
@@ -50520,21 +50574,13 @@ function useTranscribe(deps) {
         });
         audioFileName = `${fileName}.wav`;
       }
-      playerActions.setTranscribeStage("Sending to server…");
       await loadBackendUrl();
-      const formData = new FormData;
-      formData.append("file", audioBlob, audioFileName);
-      const response = await fetch(backendPath("/transcribe"), {
-        headers: backendHeaders(),
-        method: "POST",
-        body: formData,
-        credentials: "include"
+      const result = await uploadFile(audioBlob, audioFileName, "/transcribe", (info) => {
+        const mbLoaded = fmtBytes(info.loaded);
+        const mbTotal = fmtBytes(info.total);
+        playerActions.setTranscribeStage(`Sending to server… ${info.pct}% (${mbLoaded} / ${mbTotal})`);
       });
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || "Failed to transcribe audio");
-      }
-      const { task_id } = await response.json();
+      const { task_id } = result;
       playerActions.setTranscribeStage("Waiting for transcription…");
       const waitStart = Date.now();
       const waitInterval = setInterval(() => {
@@ -50550,16 +50596,15 @@ function useTranscribe(deps) {
             playerActions.setTranscribing(true);
             const prog = msg.results;
             if (prog && typeof prog === "object" && "progress" in prog) {
-              const pct = prog.progress ?? 0;
+              const pct = safePct(prog.progress);
               const segs = prog.segments ?? "";
               const time = prog.time ?? "";
               const phase = prog.phase ?? "";
-              const validPct = isNaN(pct) ? 0 : pct;
               if (phase === "segmenting") {
-                const detail = [validPct > 0 ? validPct + "%" : "", segs].filter(Boolean).join(" · ");
-                playerActions.setTranscribeStage(`Segmenting — ${detail}`);
+                const detail = [pct > 0 ? pct + "%" : "", segs].filter(Boolean).join(" · ");
+                playerActions.setTranscribeStage(`Segmenting${detail ? ` — ${detail}` : ""}`);
               } else {
-                const detail = [validPct + "%", segs, time].filter(Boolean).join(" · ");
+                const detail = [pct + "%", segs, time].filter(Boolean).join(" · ");
                 playerActions.setTranscribeStage(`Transcribing — ${detail}`);
               }
             } else {
@@ -50574,7 +50619,8 @@ function useTranscribe(deps) {
             }, 0);
           } else if (msg.status === "ERROR") {
             playerActions.setTranscribing(false);
-            reject(new Error(msg.results || "Transcription error"));
+            const errMsg = msg.results || "Transcription error";
+            reject(new Error(errMsg));
           }
         };
         socket.onerror = (error) => {
@@ -50588,6 +50634,7 @@ function useTranscribe(deps) {
       });
     } catch (error) {
       console.error("Transcription error:", error);
+      window.__obrezShowError("Transcribe", error instanceof Error ? error.message : String(error), error instanceof Error ? error.stack : undefined);
       playerActions.setError(error instanceof Error ? error.message : "Transcription failed");
     }
   }, [audioSinkRef, audioTrackRef]);
@@ -55276,6 +55323,9 @@ function parseStage(stage) {
   const m2 = stage.match(/^(.+?)\s+—\s+(\d+)%/);
   if (m2)
     return { label: m2[1].trim(), pct: parseInt(m2[2], 10) };
+  const m3b = stage.match(/^(.+?)\s+(\d+)%\s*\(.*?\)$/);
+  if (m3b)
+    return { label: m3b[1].trim(), pct: parseInt(m3b[2], 10) };
   const m3 = stage.match(/^(.+?)\s+—\s+(\d+[,\d\s]*)\s*\/\s*(\d+[,\d\s]*)$/);
   if (m3) {
     const done = parseFloat(m3[2].replace(/,/g, ""));
@@ -55315,9 +55365,13 @@ function TranscribeProgressBar({ stage }) {
 }
 function TranscribeProgress() {
   const transcribeStage = usePlayerStore((state) => state.transcribeStage);
+  const error = usePlayerStore((state) => state.error);
   return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
     className: "text-xs py-2",
-    children: transcribeStage ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(TranscribeProgressBar, {
+    children: error ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
+      className: "text-red-400",
+      children: "⚠ Error — check Debug logs in Settings"
+    }, undefined, false, undefined, this) : transcribeStage ? /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(TranscribeProgressBar, {
       stage: transcribeStage
     }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
       className: "text-zinc-500",
@@ -55976,8 +56030,7 @@ var TranscriptionResultsInner = () => {
         onUpdate: handleUpdateEffect,
         effect: editEffect
       }, undefined, false, undefined, this),
-      (authModal === "login" || authModal === "topup" || authModal === "confirm") && import_react_dom.default.createPortal(/* @__PURE__ */ jsx_dev_runtime14.jsxDEV("div", {
-        className: "relative z-[100]",
+      (authModal === "login" || authModal === "topup" || authModal === "confirm") && import_react_dom.default.createPortal(/* @__PURE__ */ jsx_dev_runtime14.jsxDEV(jsx_dev_runtime14.Fragment, {
         children: [
           authModal === "login" && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(LoginModal, {
             onClose: () => setAuthModal(null),
@@ -57180,7 +57233,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "183";
+var BUILD_NUM = "184";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57810,4 +57863,4 @@ var jsx_dev_runtime22 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=D0F5573F3BCC820264756E2164756E21
+//# debugId=C76C05930FA80EA464756E2164756E21
