@@ -12,7 +12,8 @@ import {
   EncodedPacketSink,
 } from 'mediabunny';
 import { audioBuffersToWav } from '../../audio';
-import { loadBackendUrl, backendPath, backendWsPath, backendHeaders } from '../../config';
+import { loadBackendUrl, backendWsPath } from '../../config';
+import { uploadFile, fmtBytes, safePct } from '../../utils/upload';
 
 export interface TranscribeDeps {
   audioTrackRef: React.RefObject<any | null>;
@@ -30,6 +31,7 @@ export function useTranscribe(deps: TranscribeDeps): () => Promise<void> {
     }
 
     try {
+      playerActions.setError(null); // clear stale errors before starting
       playerActions.setTranscribing(true);
       playerActions.setTranscribeStage('Collecting audio data…');
 
@@ -153,24 +155,20 @@ export function useTranscribe(deps: TranscribeDeps): () => Promise<void> {
         audioFileName = `${fileName}.wav`;
       }
 
-      playerActions.setTranscribeStage('Sending to server…');
-      await loadBackendUrl(); // гарантируем загрузку конфига перед backendPath()
-      const formData = new FormData();
-      formData.append('file', audioBlob, audioFileName);
+      // ─── Upload with progress ──────────────────────────────────
+      await loadBackendUrl();
+      const result = await uploadFile(
+        audioBlob,
+        audioFileName,
+        '/transcribe',
+        (info) => {
+          const mbLoaded = fmtBytes(info.loaded);
+          const mbTotal = fmtBytes(info.total);
+          playerActions.setTranscribeStage(`Sending to server… ${info.pct}% (${mbLoaded} / ${mbTotal})`);
+        },
+      );
 
-      const response = await fetch(backendPath('/transcribe'), {
-        headers: backendHeaders(),
-        method: 'POST',
-        body: formData,
-        credentials: 'include',
-      });
-
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.error || 'Failed to transcribe audio');
-      }
-
-      const { task_id } = await response.json();
+      const { task_id } = result;
 
       playerActions.setTranscribeStage('Waiting for transcription…');
 
@@ -193,17 +191,16 @@ export function useTranscribe(deps: TranscribeDeps): () => Promise<void> {
             // Сервер может отправлять информацию о прогрессе в results: { progress, segments, time, phase }
             const prog = msg.results;
             if (prog && typeof prog === 'object' && 'progress' in prog) {
-              const pct = prog.progress ?? 0;
+              const pct = safePct(prog.progress);
               const segs = prog.segments ?? '';
               const time = prog.time ?? '';
               const phase = prog.phase ?? '';
-              const validPct = isNaN(pct) ? 0 : pct;
 
               if (phase === 'segmenting') {
-                const detail = [validPct > 0 ? validPct + '%' : '', segs].filter(Boolean).join(' · ');
-                playerActions.setTranscribeStage(`Segmenting — ${detail}`);
+                const detail = [pct > 0 ? pct + '%' : '', segs].filter(Boolean).join(' · ');
+                playerActions.setTranscribeStage(`Segmenting${detail ? ` — ${detail}` : ''}`);
               } else {
-                const detail = [validPct + '%', segs, time].filter(Boolean).join(' · ');
+                const detail = [pct + '%', segs, time].filter(Boolean).join(' · ');
                 playerActions.setTranscribeStage(`Transcribing — ${detail}`);
               }
             } else {
@@ -222,7 +219,8 @@ export function useTranscribe(deps: TranscribeDeps): () => Promise<void> {
             }, 0);
           } else if (msg.status === 'ERROR') {
             playerActions.setTranscribing(false);
-            reject(new Error(msg.results || 'Transcription error'));
+            const errMsg = msg.results || 'Transcription error';
+            reject(new Error(errMsg));
           }
         };
 
@@ -237,6 +235,8 @@ export function useTranscribe(deps: TranscribeDeps): () => Promise<void> {
       });
     } catch (error) {
       console.error('Transcription error:', error);
+      // Push to DebugTab so user can see details in Settings → 🐛 Debug
+      (window as any).__obrezShowError('Transcribe', error instanceof Error ? error.message : String(error), error instanceof Error ? error.stack : undefined);
       playerActions.setError(error instanceof Error ? error.message : 'Transcription failed');
     }
   }, [audioSinkRef, audioTrackRef]);

@@ -235,6 +235,7 @@ function findSegmentIndex(
  * Parse stage strings into { label, pct }:
  *   "Encoding — 1,234 / 5,678 (42%)"       → label + pct
  *   "Transcribing — 45% · 3/8 · 120s"     → label + pct
+ *   "Sending to server… 45% (12.3 MB / 45.6 MB)" → label + pct
  *   "Remuxing audio — 12,345 packets"     → label, no pct
  *   "Sending to server…"                  → label, no pct
  */
@@ -243,6 +244,9 @@ function parseStage(stage: string): { label: string; pct: number | null } {
   if (m) return { label: m[1].trim(), pct: parseInt(m[2], 10) };
   const m2 = stage.match(/^(.+?)\s+—\s+(\d+)%/);
   if (m2) return { label: m2[1].trim(), pct: parseInt(m2[2], 10) };
+  // Upload progress: "Sending to server… 45% (12.3 MB / 45.6 MB)"
+  const m3b = stage.match(/^(.+?)\s+(\d+)%\s*\(.*?\)$/);
+  if (m3b) return { label: m3b[1].trim(), pct: parseInt(m3b[2], 10) };
   const m3 = stage.match(/^(.+?)\s+—\s+(\d+[,\d\s]*)\s*\/\s*(\d+[,\d\s]*)$/);
   if (m3) {
     const done = parseFloat(m3[2].replace(/,/g, ''));
@@ -279,10 +283,15 @@ function TranscribeProgressBar({ stage }: { stage: string }) {
  */
 function TranscribeProgress() {
   const transcribeStage = usePlayerStore((state) => state.transcribeStage);
+  const error = usePlayerStore((state) => state.error);
 
   return (
     <div className="text-xs py-2">
-      {transcribeStage ? (
+      {error ? (
+        <div className="text-red-400">
+          ⚠ Error — check Debug logs in Settings
+        </div>
+      ) : transcribeStage ? (
         <TranscribeProgressBar stage={transcribeStage} />
       ) : (
         <div className="text-zinc-500">Transcribing...</div>
@@ -963,7 +972,7 @@ const TranscriptionResultsInner = () => {
        {/* Auth modals — only one at a time, rendered via Portal to avoid clipping */}
       {(authModal === 'login' || authModal === 'topup' || authModal === 'confirm') &&
         ReactDOM.createPortal(
-          <div className="relative z-[100]">
+          <>
             {authModal === 'login' && (
               <LoginModal
                 onClose={() => setAuthModal(null)}
@@ -994,7 +1003,7 @@ const TranscriptionResultsInner = () => {
                 }}
               />
             )}
-          </div>,
+          </>,
           document.body,
         )}
     </div>
