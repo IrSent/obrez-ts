@@ -55468,7 +55468,7 @@ var TranscriptionResultsInner = () => {
     if (!transcriptionResults)
       return;
     if (!jsonExportWorker) {
-      jsonExportWorker = new Worker("/json-export.worker.js");
+      jsonExportWorker = new Worker("./json-export.worker.js");
     }
     const transcriptionData = transcriptionResults.map(([start, end, text2]) => ({
       start,
@@ -55506,7 +55506,7 @@ var TranscriptionResultsInner = () => {
     if (!file)
       return;
     if (!importWorker) {
-      importWorker = new Worker("/json-import.worker.js");
+      importWorker = new Worker("./json-import.worker.js");
     }
     actions.setImporting(true);
     actions.setImportStage(`Reading file... (${(file.size / 1024).toFixed(0)} KB)`);
@@ -57233,7 +57233,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "184";
+var BUILD_NUM = "185";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57863,4 +57863,4 @@ var jsx_dev_runtime22 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=C76C05930FA80EA464756E2164756E21
+//# debugId=B7522CDAA00C457B64756E2164756E21
