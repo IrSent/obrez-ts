@@ -402,7 +402,7 @@ const TranscriptionResultsInner = () => {
 
     if (!jsonExportWorker) {
       jsonExportWorker = new Worker(
-        '/json-export.worker.js',
+        './json-export.worker.js',
       );
     }
 
@@ -447,7 +447,7 @@ const TranscriptionResultsInner = () => {
 
     if (!importWorker) {
       importWorker = new Worker(
-        '/json-import.worker.js',
+        './json-import.worker.js',
       );
     }
 
