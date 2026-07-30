@@ -1,4 +1,5 @@
 import { memo, useCallback, useRef, useState, useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useAuthStore } from '../../store/authStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
@@ -450,90 +451,95 @@ const ActionButtonsInner = () => {
         </div>
       )}
 
-      {/* ─── Modals ─── */}
+      {/* ─── Modals — rendered via Portal to escape PlayerDisplay overflow-hidden ─── */}
 
-      {/* Auth modals for transcribe */}
-      {authModal === 'login' && (
-        <LoginModal
-          onClose={() => setAuthModal(null)}
-          onRetry={authModalRetryRef.current ?? undefined}
-          initialError={authModalError}
-        />
-      )}
-      {authModal === 'topup' && (
-        <TopupModal
-          onClose={() => {
-            setAuthModal(null);
-            clearAuthError();
-          }}
-          onTopup={async () => {
-            await checkAuth();
-            setAuthModal('confirm');
-          }}
-        />
-      )}
-      {authModal === 'confirm' && (
-        <ConfirmationModal
-          videoDuration={duration}
-          onClose={() => setAuthModal(null)}
-          onConfirm={handleConfirmTranscribe}
-          onLogout={async () => {
-            await useAuthStore.getState().logout();
-            setAuthModal(null);
-          }}
-        />
-      )}
+      {(authModal || showExportModal) && createPortal(
+        <>
+          {/* Auth modals for transcribe */}
+          {authModal === 'login' && (
+            <LoginModal
+              onClose={() => setAuthModal(null)}
+              onRetry={authModalRetryRef.current ?? undefined}
+              initialError={authModalError}
+            />
+          )}
+          {authModal === 'topup' && (
+            <TopupModal
+              onClose={() => {
+                setAuthModal(null);
+                clearAuthError();
+              }}
+              onTopup={async () => {
+                await checkAuth();
+                setAuthModal('confirm');
+              }}
+            />
+          )}
+          {authModal === 'confirm' && (
+            <ConfirmationModal
+              videoDuration={duration}
+              onClose={() => setAuthModal(null)}
+              onConfirm={handleConfirmTranscribe}
+              onLogout={async () => {
+                await useAuthStore.getState().logout();
+                setAuthModal(null);
+              }}
+            />
+          )}
 
-      {/* Export modal */}
-      {showExportModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-          <div className="relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
-            <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]" />
-            <div className="flex items-center justify-between">
-              <h3 className="text-sm font-semibold flex items-center gap-2">
-                <DownloadIcon /> Export Video
-              </h3>
-              <button onClick={() => setShowExportModal(false)} className={`${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`}>
-                <CloseIcon />
-              </button>
-            </div>
-            <div>
-              <label className="block text-xs text-zinc-400 mb-1.5">Format</label>
-              <div className="flex gap-2">
+          {/* Export modal */}
+          {showExportModal && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+              <div className="relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
+                <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]" />
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold flex items-center gap-2">
+                    <DownloadIcon /> Export Video
+                  </h3>
+                  <button onClick={() => setShowExportModal(false)} className={`${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`}>
+                    <CloseIcon />
+                  </button>
+                </div>
+                <div>
+                  <label className="block text-xs text-zinc-400 mb-1.5">Format</label>
+                  <div className="flex gap-2">
+                    <button
+                      type="button"
+                      onClick={() => setExportFormat('same')}
+                      className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
+                        exportFormat === 'same' ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                      }`}
+                    >
+                      {videoCodec && audioCodec
+                        ? `Same (${codecLabel(videoCodec)} + ${codecLabel(audioCodec)})`
+                        : 'Same as input'}
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setExportFormat(altFormat)}
+                      className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
+                        exportFormat === altFormat ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
+                      }`}
+                    >
+                      <span>.{altFormat.toUpperCase()}</span>
+                      <span className="text-[9px] opacity-70 block">{codecLabel(altVidCodec)} + {codecLabel(altAudCodec)}</span>
+                    </button>
+                  </div>
+                </div>
                 <button
-                  type="button"
-                  onClick={() => setExportFormat('same')}
-                  className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
-                    exportFormat === 'same' ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-                  }`}
+                  onClick={() => { handleExport(); setShowExportModal(false); }}
+                  className={`${cdBtn} w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
                 >
-                  {videoCodec && audioCodec
-                    ? `Same (${codecLabel(videoCodec)} + ${codecLabel(audioCodec)})`
-                    : 'Same as input'}
+                  <DownloadIcon /> Export
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setExportFormat(altFormat)}
-                  className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
-                    exportFormat === altFormat ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
-                  }`}
-                >
-                  <span>.{altFormat.toUpperCase()}</span>
-                  <span className="text-[9px] opacity-70 block">{codecLabel(altVidCodec)} + {codecLabel(altAudCodec)}</span>
-                </button>
+                <p className="text-[10px] text-zinc-500 leading-relaxed">
+                  Video will be re-encoded with censored audio.
+                </p>
               </div>
             </div>
-            <button
-              onClick={() => { handleExport(); setShowExportModal(false); }}
-              className={`${cdBtn} w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
-            >
-              <DownloadIcon /> Export
-            </button>
-            <p className="text-[10px] text-zinc-500 leading-relaxed">
-              Video will be re-encoded with censored audio.
-            </p>
-          </div>
-        </div>
+          )}
+        </>,
+        document.body,
       )}
     </div>
   );
