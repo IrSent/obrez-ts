@@ -53348,13 +53348,9 @@ var ActionButtonsInner = () => {
       actions.setError("Failed to load URL: " + error.message);
     }
   };
-  const handleUnload = async () => {
-    if (hasTranscription && !confirm("Unload? Transcription saved to IndexedDB. Want to export JSON first?")) {
-      const exportBtn = document.querySelector('[data-testid="export-json"]');
-      if (exportBtn)
-        exportBtn.click();
-      return;
-    }
+  const [showUnloadConfirm, setShowUnloadConfirm] = import_react9.useState(false);
+  const confirmUnload = async () => {
+    setShowUnloadConfirm(false);
     actions.setFileName("");
     actions.setError(null);
     actions.setWarning(null);
@@ -53370,6 +53366,13 @@ var ActionButtonsInner = () => {
       await clearSession2();
     } catch (err) {
       console.error("Failed to clear session:", err);
+    }
+  };
+  const handleUnload = () => {
+    if (hasTranscription) {
+      setShowUnloadConfirm(true);
+    } else {
+      confirmUnload();
     }
   };
   const [transcribeLoading, setTranscribeLoading] = import_react9.useState(false);
@@ -53597,7 +53600,7 @@ var ActionButtonsInner = () => {
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      (authModal || showExportModal) && import_react_dom.createPortal(/* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
+      (authModal || showExportModal || showUnloadConfirm) && import_react_dom.createPortal(/* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
         children: [
           authModal === "login" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(LoginModal, {
             onClose: () => setAuthModal(null),
@@ -53703,6 +53706,61 @@ var ActionButtonsInner = () => {
                   className: "text-[10px] text-zinc-500 leading-relaxed",
                   children: "Video will be re-encoded with censored audio."
                 }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this),
+          showUnloadConfirm && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+            className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
+            children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+              className: "relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]",
+              children: [
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+                  className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+                  className: "flex items-center justify-between",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
+                      className: "text-sm font-semibold flex items-center gap-2",
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(UnloadIcon, {}, undefined, false, undefined, this),
+                        " Unload File"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
+                      onClick: () => setShowUnloadConfirm(false),
+                      className: `${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`,
+                      children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(CloseIcon, {}, undefined, false, undefined, this)
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
+                  className: "text-xs text-zinc-300",
+                  children: "Transcription is saved to IndexedDB. Export JSON before unloading?"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+                  className: "flex gap-2",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
+                      onClick: () => {
+                        setShowUnloadConfirm(false);
+                        const exportBtn = document.querySelector('[data-testid="export-json"]');
+                        if (exportBtn)
+                          exportBtn.click();
+                      },
+                      className: `${cdBtn} flex-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`,
+                      children: "Export JSON"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
+                      onClick: confirmUnload,
+                      className: `${cdBtn} flex-1 bg-red-800 hover:bg-red-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`,
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(UnloadIcon, {}, undefined, false, undefined, this),
+                        " Unload"
+                      ]
+                    }, undefined, true, undefined, this)
+                  ]
+                }, undefined, true, undefined, this)
               ]
             }, undefined, true, undefined, this)
           }, undefined, false, undefined, this)
@@ -54088,7 +54146,7 @@ var PlaybackControlsInner = () => {
           }, undefined, true, undefined, this),
           transcriptionResults && transcriptionResults.length > 0 && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
             onClick: () => playerActions.toggleAutoScroll(),
-            className: `${cdBtn} p-1 rounded flex-shrink-0 ${autoScroll ? "text-purple-300 bg-purple-900/50 hover:bg-purple-800/50 active:bg-purple-950/50 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 active:border-t-purple-950 active:border-l-purple-950 active:border-b-purple-400 active:border-r-purple-400" : "bg-zinc-700 text-zinc-400 hover:bg-zinc-600 active:bg-zinc-600"}`,
+            className: `${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex-shrink-0 flex items-center gap-1 ${autoScroll ? "text-purple-300 bg-purple-900/50 hover:bg-purple-800/50 active:bg-purple-950/50 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 active:border-t-purple-950 active:border-l-purple-950 active:border-b-purple-400 active:border-r-purple-400" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600"}`,
             title: autoScroll ? "Auto-scroll to current segment (ON)" : "Auto-scroll to current segment (OFF)",
             children: [
               /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("svg", {
@@ -54120,6 +54178,7 @@ var PlaybackControlsInner = () => {
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
+              "Scroll ",
               /* @__PURE__ */ jsx_dev_runtime11.jsxDEV(LedIndicator, {
                 on: autoScroll
               }, undefined, false, undefined, this)
@@ -57238,7 +57297,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "186";
+var BUILD_NUM = "187";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57868,4 +57927,4 @@ var jsx_dev_runtime22 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=71F465932E3643C664756E2164756E21
+//# debugId=BF4C02FE85635F3F64756E2164756E21
