@@ -153,14 +153,10 @@ const ActionButtonsInner = () => {
 
   // ─── Unload ──────────────────────────────────────────────────
 
-  const handleUnload = async () => {
-    // Ask to export JSON if there's transcription data
-    if (hasTranscription && !confirm('Unload? Transcription saved to IndexedDB. Want to export JSON first?')) {
-      // Cancelled → trigger JSON export from TranscriptionResults
-      const exportBtn = document.querySelector('[data-testid="export-json"]');
-      if (exportBtn) (exportBtn as HTMLElement).click();
-      return;
-    }
+  const [showUnloadConfirm, setShowUnloadConfirm] = useState(false);
+
+  const confirmUnload = async () => {
+    setShowUnloadConfirm(false);
 
     // Clear fileName BEFORE cleanup — the fallback interval (setInterval 500ms)
     // checks fileName to decide whether to draw frames. If we clear it after
@@ -186,6 +182,14 @@ const ActionButtonsInner = () => {
       await clearSession();
     } catch (err) {
       console.error('Failed to clear session:', err);
+    }
+  };
+
+  const handleUnload = () => {
+    if (hasTranscription) {
+      setShowUnloadConfirm(true);
+    } else {
+      confirmUnload();
     }
   };
 
@@ -453,7 +457,7 @@ const ActionButtonsInner = () => {
 
       {/* ─── Modals — rendered via Portal to escape PlayerDisplay overflow-hidden ─── */}
 
-      {(authModal || showExportModal) && createPortal(
+      {(authModal || showExportModal || showUnloadConfirm) && createPortal(
         <>
           {/* Auth modals for transcribe */}
           {authModal === 'login' && (
@@ -535,6 +539,44 @@ const ActionButtonsInner = () => {
                 <p className="text-[10px] text-zinc-500 leading-relaxed">
                   Video will be re-encoded with censored audio.
                 </p>
+              </div>
+            </div>
+          )}
+
+          {/* Unload confirmation modal */}
+          {showUnloadConfirm && (
+            <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+              <div className="relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
+                <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]" />
+                <div className="flex items-center justify-between">
+                  <h3 className="text-sm font-semibold flex items-center gap-2">
+                    <UnloadIcon /> Unload File
+                  </h3>
+                  <button onClick={() => setShowUnloadConfirm(false)} className={`${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`}>
+                    <CloseIcon />
+                  </button>
+                </div>
+                <p className="text-xs text-zinc-300">
+                  Transcription is saved to IndexedDB. Export JSON before unloading?
+                </p>
+                <div className="flex gap-2">
+                  <button
+                    onClick={() => {
+                      setShowUnloadConfirm(false);
+                      const exportBtn = document.querySelector('[data-testid="export-json"]');
+                      if (exportBtn) (exportBtn as HTMLElement).click();
+                    }}
+                    className={`${cdBtn} flex-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
+                  >
+                    Export JSON
+                  </button>
+                  <button
+                    onClick={confirmUnload}
+                    className={`${cdBtn} flex-1 bg-red-800 hover:bg-red-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
+                  >
+                    <UnloadIcon /> Unload
+                  </button>
+                </div>
               </div>
             </div>
           )}

@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 550 nodes, 885 edges, 58 communities. Commit: 0cc151c</p>
+<p class="subtitle">Generated from graphify knowledge graph: 550 nodes, 885 edges, 58 communities. Commit: 44b7a7a</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -119,17 +119,17 @@ flowchart LR
     OTHER_D0941E68("Other<br/><small>41 nodes</small>")
     class OTHER_D0941E68 module;
     SERVE_API_35EC8E86 -->|imports x21| OUTPUTS_DOCS_ED82387C
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x20| OUTPUTS_DOCS_ED82387C
+    INGEST_CACHE_UPDATE_FF457338 -->|imports x19| OUTPUTS_DOCS_ED82387C
     SERVE_API_35EC8E86 -->|imports x18| INGEST_CACHE_UPDATE_FF457338
-    OUTPUTS_DOCS_ED82387C -->|imports x14| INGEST_CACHE_UPDATE_FF457338
-    COMMUNITY_57_508B74B3 -->|imports x12| INGEST_CACHE_UPDATE_FF457338
+    COMMUNITY_57_508B74B3 -->|imports x15| OUTPUTS_DOCS_ED82387C
+    COMMUNITY_57_508B74B3 -->|imports x15| INGEST_CACHE_UPDATE_FF457338
+    OUTPUTS_DOCS_ED82387C -->|imports x15| INGEST_CACHE_UPDATE_FF457338
     COMMUNITY_7_989501FC -->|imports x10| COMMUNITY_57_508B74B3
-    OUTPUTS_DOCS_ED82387C -->|calls x9| COMMUNITY_57_508B74B3
     COMMUNITY_7_989501FC -->|imports x8| OUTPUTS_DOCS_ED82387C
-    COMMUNITY_57_508B74B3 -->|imports x7| OUTPUTS_DOCS_ED82387C
-    INGEST_CACHE_UPDATE_FF457338 -->|imports x6| COMMUNITY_57_508B74B3
     COMMUNITY_7_989501FC -->|imports x4| SERVE_API_35EC8E86
-    SERVE_API_35EC8E86 -->|imports x4| COMMUNITY_57_508B74B3
+    SERVE_API_35EC8E86 -->|imports x4| COMMUNITY_7_989501FC
+    COMMUNITY_57_508B74B3 -->|imports x3| SERVE_API_35EC8E86
+    COMMUNITY_57_508B74B3 -->|imports x3| COMMUNITY_27_99AD9ED4
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -151,7 +151,7 @@ flowchart LR
   </div>
   <div class="card">
     <h4>Core Flow</h4>
-    <div class="arrow-chain">Graph Build -&gt; Analysis &amp; Clustering -&gt; Outputs &amp; Docs -&gt; Ingestion &amp; Updates -&gt; Community 57 -&gt; Community 27 -&gt; CLI &amp; Skill Installers</div>
+    <div class="arrow-chain">Graph Build -&gt; Analysis &amp; Clustering -&gt; Outputs &amp; Docs -&gt; Ingestion &amp; Updates -&gt; Serving API -&gt; Community 7 -&gt; Community 57</div>
   </div>
 </div>
 <div class="grid">
@@ -832,6 +832,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>2</td>
   <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -839,7 +847,7 @@ flowchart LR
   <td>findClosestSegment() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>2</td>
+  <td>3</td>
   <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -847,7 +855,7 @@ flowchart LR
   <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>4</td>
   <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>findClosestSegment()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
@@ -855,7 +863,7 @@ flowchart LR
   <td>TranscriptionResultsInner() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>5</td>
   <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small><br><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
@@ -863,7 +871,7 @@ flowchart LR
   <td>usePlayerStore node in src/store/playerStore.ts.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>6</td>
   <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
@@ -871,7 +879,7 @@ flowchart LR
   <td>usePlayerActions() node in src/store/playerStore.ts.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>7</td>
   <td><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
   <td><span class="tag tag-class">Class</span></td>
   <td>External entry / no inbound edge</td>
@@ -879,7 +887,7 @@ flowchart LR
   <td>PlaybackSpeed node in src/types/index.ts.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>8</td>
   <td><code>SessionRestorer()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -887,7 +895,7 @@ flowchart LR
   <td>SessionRestorer() node in src/App.tsx.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>9</td>
   <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -895,7 +903,7 @@ flowchart LR
   <td>Module file in src/context/MediaPlayerContext.tsx.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>10</td>
   <td><code>MediaPlayerContext</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -903,20 +911,12 @@ flowchart LR
   <td>MediaPlayerContext node in src/context/MediaPlayerContext.tsx.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>11</td>
   <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>SessionRestorer()</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+11 more</td>
   <td>useMediaPlayerContext() node in src/context/MediaPlayerContext.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
   <td>12</td>
@@ -2106,20 +2106,21 @@ flowchart LR
 
 <!-- ====== 9. Community 57 ====== -->
 <h2 id="community-57">9. Community 57</h2>
-<p>Community 57 groups implementation around features, settings, auth, settingsmodaltsx, mostly in features/settings/SettingsModal.tsx, features/action-buttons/ActionButtons.tsx, src/store/authStore.ts. This section covers 56 nodes and 113 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Community 57 groups implementation around features, settings, auth, actionbuttonstsx, mostly in features/action-buttons/ActionButtons.tsx, features/settings/SettingsModal.tsx, src/store/authStore.ts. This section covers 56 nodes and 113 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
 flowchart LR
     %% Section: Community 57 (56 nodes, 113 edges)
+    subgraph community_57_features_action_buttons_ActionButto_6b916237["features/action-buttons/ActionButtons.tsx"]
+        action_buttons_actionbuttons_78ab3197("ActionButtons.tsx")
+        action_buttons_actionbuttons_codeclabel_52e9a5e9("codecLabel()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
+        action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6("ActionButtonsInner()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
+    end
     subgraph community_57_src_utils_auth_ts_e2a0a667["src/utils/auth.ts"]
         utils_auth_canfreetopup_e6832bc1("canFreeTopup()<br/><small>src/utils/auth.ts</small>")
         utils_auth_daysuntilfreetopup_c93d63d8("daysUntilFreeTopup()<br/><small>src/utils/auth.ts</small>")
         utils_auth_formatseconds_cdef2b69("formatSeconds()<br/><small>src/utils/auth.ts</small>")
-    end
-    subgraph community_57_features_action_buttons_ActionButto_6b916237["features/action-buttons/ActionButtons.tsx"]
-        action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6("ActionButtonsInner()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
-        action_buttons_actionbuttons_codeclabel_52e9a5e9("codecLabel()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
     end
     subgraph community_57_features_auth_ConfirmationModal_tsx_361d8ead["features/auth/ConfirmationModal.tsx"]
         auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
@@ -2137,15 +2138,15 @@ flowchart LR
         settings_settingsmodal_68a86dc6("SettingsModal.tsx")
         settings_settingsmodal_usercontent_d2a4d459("UserContent()<br/><small>features/settings/SettingsModal.tsx</small>")
     end
-    subgraph community_57_src_store_authStore_ts_6806e61e["src/store/authStore.ts"]
-        store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
-        store_authstore_2c5e1d9c("authStore.ts")
-    end
     subgraph community_57_src_utils_pkce_browser_ts_b3924fda["src/utils/pkce-browser.ts"]
         utils_pkce_browser_generatecodechallenge_6cf9cdc6("generateCodeChallenge()<br/><small>src/utils/pkce-browser.ts</small>")
         utils_pkce_browser_base64urlencode_c1ec60dd("base64urlEncode()<br/><small>src/utils/pkce-browser.ts</small>")
     end
     auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
+    store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
+    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
+    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| store_authstore_useauthstore_4a03c2d9
+    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_auth_canfreetopup_e6832bc1
     auth_paymentmodal_paymentmodal_970b6a3f -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_topupmodal_4bc16812 -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
@@ -2155,27 +2156,25 @@ flowchart LR
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_formatseconds_cdef2b69
-    store_authstore_useauthstore_4a03c2d9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
     store_authstore_useauthstore_4a03c2d9 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
     store_authstore_useauthstore_4a03c2d9 -->|calls| auth_loginmodal_loginmodal_992d0af3
-    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
-    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_auth_canfreetopup_e6832bc1
     auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
     utils_pkce_browser_generatecodechallenge_6cf9cdc6 -->|calls| utils_pkce_browser_base64urlencode_c1ec60dd
-    auth_paymentmodal_32cf67c1 -->|imports| store_authstore_2c5e1d9c
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_loginmodal_992d0af3
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_5fbdbcde
+    action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_topupmodal_4bc16812
+    action_buttons_actionbuttons_78ab3197 -->|imports| store_authstore_useauthstore_4a03c2d9
+    action_buttons_actionbuttons_78ab3197 -->|imports| utils_auth_canfreetopup_e6832bc1
     auth_paymentmodal_32cf67c1 -->|imports| store_authstore_useauthstore_4a03c2d9
     auth_paymentmodal_32cf67c1 -->|imports| auth_topupmodal_5fbdbcde
-    auth_paymentmodal_32cf67c1 -->|imports| settings_settingsmodal_68a86dc6
-    auth_paymentmodal_paymentmodal_970b6a3f -->|imports| auth_topupmodal_5fbdbcde
-    auth_paymentmodal_paymentmodal_970b6a3f -->|imports| settings_settingsmodal_68a86dc6
-    auth_topupmodal_5fbdbcde -->|imports| store_authstore_2c5e1d9c
-    auth_topupmodal_5fbdbcde -->|imports| store_authstore_useauthstore_4a03c2d9
-    %% Omitted for readability: 38 nodes, 9 edges
+    %% Omitted for readability: 38 nodes, 12 edges
+    class action_buttons_actionbuttons_78ab3197 ui;
+    class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
+    class action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 ui;
     class utils_auth_canfreetopup_e6832bc1 function;
     class utils_auth_daysuntilfreetopup_c93d63d8 function;
     class utils_auth_formatseconds_cdef2b69 function;
-    class action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 ui;
-    class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
     class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
     class auth_confirmationmodal_formatduration_1ba061e3 ui;
     class auth_paymentmodal_32cf67c1 ui;
@@ -2184,11 +2183,10 @@ flowchart LR
     class auth_topupmodal_topupmodal_4bc16812 ui;
     class settings_settingsmodal_68a86dc6 ui;
     class settings_settingsmodal_usercontent_d2a4d459 ui;
-    class store_authstore_useauthstore_4a03c2d9 ui;
-    class store_authstore_2c5e1d9c ui;
     class utils_pkce_browser_generatecodechallenge_6cf9cdc6 function;
     class utils_pkce_browser_base64urlencode_c1ec60dd function;
     class auth_loginmodal_loginmodal_992d0af3 ui;
+    class store_authstore_useauthstore_4a03c2d9 ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
     classDef async fill:#2e1065,stroke:#a78bfa,color:#ede9fe,stroke-width:1px;
@@ -2212,206 +2210,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small><br>+1 more</td>
-  <td>Module file in features/auth/PaymentModal.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>PaymentModalProps</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>PaymentModalProps node in features/auth/PaymentModal.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>PaymentModal()</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>PaymentModal() node in features/auth/PaymentModal.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>PaymentModal()</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br>+8 more</td>
-  <td>Module file in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+2 more</td>
-  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>PaymentModal()</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+10 more</td>
-  <td>Module file in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>Tooltip()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Tooltip() node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>TabKey</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TabKey node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>TABS</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TABS node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>VersionInfo</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>VersionInfo node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>SettingsModalProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>SettingsModalProps node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>UserContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>UserContentProps node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>UserContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+1 more</td>
-  <td>UserContent() node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>VersionContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>VersionContentProps node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>VersionContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>VersionContent() node in features/settings/SettingsModal.tsx.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br>+2 more</td>
-  <td>Module file in src/store/authStore.ts.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>AuthState</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AuthState node in src/store/authStore.ts.</td>
-</tr>
-<tr>
-  <td>20</td>
-  <td><code>AuthActions</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AuthActions node in src/store/authStore.ts.</td>
-</tr>
-<tr>
-  <td>21</td>
-  <td><code>AuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>AuthStore node in src/store/authStore.ts.</td>
-</tr>
-<tr>
-  <td>22</td>
-  <td><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>PaymentModal()</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br>+3 more</td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br>+3 more</td>
-  <td>useAuthStore node in src/store/authStore.ts.</td>
-</tr>
-<tr>
-  <td>23</td>
-  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>AuthUser node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>24</td>
-  <td><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
-  <td><code>HourPackCard.tsx</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small></td>
-  <td>HourPackType node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>25</td>
   <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small><br>+1 more</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>ConfirmationModal()</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br>+3 more</td>
+  <td>External entry / no inbound edge</td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
   <td>Module file in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>2</td>
   <td><code>FileIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2419,7 +2225,7 @@ flowchart LR
   <td>FileIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>3</td>
   <td><code>UrlIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2427,7 +2233,7 @@ flowchart LR
   <td>UrlIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>4</td>
   <td><code>TranscribeIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2435,7 +2241,7 @@ flowchart LR
   <td>TranscribeIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>5</td>
   <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2443,12 +2249,204 @@ flowchart LR
   <td>DownloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>6</td>
   <td><code>UnloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>UnloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>7</td>
+  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CloseIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>8</td>
+  <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CODEC_LABELS node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>9</td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td>codecLabel() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>10</td>
+  <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Exports documentation data to a target format.</td>
+</tr>
+<tr>
+  <td>11</td>
+  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>ActionButtonsInner() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small><br>+1 more</td>
+  <td>Module file in features/auth/PaymentModal.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>PaymentModalProps</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>PaymentModalProps node in features/auth/PaymentModal.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>PaymentModal()</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>PaymentModal() node in features/auth/PaymentModal.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>PaymentModal()</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
+  <td>Module file in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>TopupModalProps</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TopupModalProps node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>TopupModal()</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+1 more</td>
+  <td>TopupModal() node in features/auth/TopupModal.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>PaymentModal()</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small></td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+10 more</td>
+  <td>Module file in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>Tooltip()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Tooltip() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>TabKey</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TabKey node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>TABS</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TABS node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>VersionInfo</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>VersionInfo node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>SettingsModalProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>SettingsModalProps node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>UserContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>UserContentProps node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>UserContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>daysUntilFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>formatSeconds()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+1 more</td>
+  <td>UserContent() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>VersionContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>VersionContentProps node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>VersionContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>VersionContent() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>PaymentModal.tsx</code><br><small style="color:var(--muted)">features/auth/PaymentModal.tsx</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br>+1 more</td>
+  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>ConfirmationModal.tsx</code><br><small style="color:var(--muted)">features/auth/ConfirmationModal.tsx</small><br><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small><br>+1 more</td>
+  <td>Module file in src/store/authStore.ts.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>AuthState</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>AuthState node in src/store/authStore.ts.</td>
 </tr>
 </table>
 
@@ -3848,7 +3846,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-07-29 18:02 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-07-30 09:30 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

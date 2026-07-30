@@ -82,10 +82,10 @@ const PlaybackControlsInner = () => {
         {transcriptionResults && transcriptionResults.length > 0 && (
           <button
             onClick={() => playerActions.toggleAutoScroll()}
-            className={`${cdBtn} p-1 rounded flex-shrink-0 ${
+            className={`${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex-shrink-0 flex items-center gap-1 ${
               autoScroll
                 ? 'text-purple-300 bg-purple-900/50 hover:bg-purple-800/50 active:bg-purple-950/50 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 active:border-t-purple-950 active:border-l-purple-950 active:border-b-purple-400 active:border-r-purple-400'
-                : 'bg-zinc-700 text-zinc-400 hover:bg-zinc-600 active:bg-zinc-600'
+                : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
             }`}
             title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
           >
@@ -94,7 +94,7 @@ const PlaybackControlsInner = () => {
               <line x1="12" y1="10" x2="12" y2="16" />
               <polyline points="9 13 12 16 15 13" />
             </svg>
-            <LedIndicator on={autoScroll} />
+            Scroll <LedIndicator on={autoScroll} />
           </button>
         )}
 
