@@ -51651,6 +51651,7 @@ var import_react11 = __toESM(require_react(), 1);
 
 // src/features/action-buttons/ActionButtons.tsx
 var import_react9 = __toESM(require_react(), 1);
+var import_react_dom = __toESM(require_react_dom(), 1);
 
 // src/store/authStore.ts
 var useAuthStore = create((set, get) => ({
@@ -53596,113 +53597,117 @@ var ActionButtonsInner = () => {
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      authModal === "login" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(LoginModal, {
-        onClose: () => setAuthModal(null),
-        onRetry: authModalRetryRef.current ?? undefined,
-        initialError: authModalError
-      }, undefined, false, undefined, this),
-      authModal === "topup" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(TopupModal, {
-        onClose: () => {
-          setAuthModal(null);
-          clearAuthError();
-        },
-        onTopup: async () => {
-          await checkAuth();
-          setAuthModal("confirm");
-        }
-      }, undefined, false, undefined, this),
-      authModal === "confirm" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(ConfirmationModal, {
-        videoDuration: duration,
-        onClose: () => setAuthModal(null),
-        onConfirm: handleConfirmTranscribe,
-        onLogout: async () => {
-          await useAuthStore.getState().logout();
-          setAuthModal(null);
-        }
-      }, undefined, false, undefined, this),
-      showExportModal && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-        className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
-        children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-          className: "relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]",
-          children: [
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-              className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
-            }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-              className: "flex items-center justify-between",
+      (authModal || showExportModal) && import_react_dom.createPortal(/* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
+        children: [
+          authModal === "login" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(LoginModal, {
+            onClose: () => setAuthModal(null),
+            onRetry: authModalRetryRef.current ?? undefined,
+            initialError: authModalError
+          }, undefined, false, undefined, this),
+          authModal === "topup" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(TopupModal, {
+            onClose: () => {
+              setAuthModal(null);
+              clearAuthError();
+            },
+            onTopup: async () => {
+              await checkAuth();
+              setAuthModal("confirm");
+            }
+          }, undefined, false, undefined, this),
+          authModal === "confirm" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(ConfirmationModal, {
+            videoDuration: duration,
+            onClose: () => setAuthModal(null),
+            onConfirm: handleConfirmTranscribe,
+            onLogout: async () => {
+              await useAuthStore.getState().logout();
+              setAuthModal(null);
+            }
+          }, undefined, false, undefined, this),
+          showExportModal && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+            className: "fixed inset-0 z-50 flex items-center justify-center bg-black/60",
+            children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+              className: "relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
-                  className: "text-sm font-semibold flex items-center gap-2",
-                  children: [
-                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
-                    " Export Video"
-                  ]
-                }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
-                  onClick: () => setShowExportModal(false),
-                  className: `${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`,
-                  children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(CloseIcon, {}, undefined, false, undefined, this)
-                }, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("label", {
-                  className: "block text-xs text-zinc-400 mb-1.5",
-                  children: "Format"
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+                  className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]"
                 }, undefined, false, undefined, this),
                 /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
-                  className: "flex gap-2",
+                  className: "flex items-center justify-between",
                   children: [
-                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
-                      type: "button",
-                      onClick: () => setExportFormat("same"),
-                      className: `${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${exportFormat === "same" ? "bg-zinc-600 text-zinc-100" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
-                      children: videoCodec && audioCodec ? `Same (${codecLabel(videoCodec)} + ${codecLabel(audioCodec)})` : "Same as input"
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
-                      type: "button",
-                      onClick: () => setExportFormat(altFormat),
-                      className: `${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${exportFormat === altFormat ? "bg-zinc-600 text-zinc-100" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("h3", {
+                      className: "text-sm font-semibold flex items-center gap-2",
                       children: [
-                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
+                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
+                        " Export Video"
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
+                      onClick: () => setShowExportModal(false),
+                      className: `${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`,
+                      children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(CloseIcon, {}, undefined, false, undefined, this)
+                    }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("label", {
+                      className: "block text-xs text-zinc-400 mb-1.5",
+                      children: "Format"
+                    }, undefined, false, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+                      className: "flex gap-2",
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
+                          type: "button",
+                          onClick: () => setExportFormat("same"),
+                          className: `${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${exportFormat === "same" ? "bg-zinc-600 text-zinc-100" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
+                          children: videoCodec && audioCodec ? `Same (${codecLabel(videoCodec)} + ${codecLabel(audioCodec)})` : "Same as input"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
+                          type: "button",
+                          onClick: () => setExportFormat(altFormat),
+                          className: `${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${exportFormat === altFormat ? "bg-zinc-600 text-zinc-100" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"}`,
                           children: [
-                            ".",
-                            altFormat.toUpperCase()
-                          ]
-                        }, undefined, true, undefined, this),
-                        /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
-                          className: "text-[9px] opacity-70 block",
-                          children: [
-                            codecLabel(altVidCodec),
-                            " + ",
-                            codecLabel(altAudCodec)
+                            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
+                              children: [
+                                ".",
+                                altFormat.toUpperCase()
+                              ]
+                            }, undefined, true, undefined, this),
+                            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("span", {
+                              className: "text-[9px] opacity-70 block",
+                              children: [
+                                codecLabel(altVidCodec),
+                                " + ",
+                                codecLabel(altAudCodec)
+                              ]
+                            }, undefined, true, undefined, this)
                           ]
                         }, undefined, true, undefined, this)
                       ]
                     }, undefined, true, undefined, this)
                   ]
-                }, undefined, true, undefined, this)
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
+                  onClick: () => {
+                    handleExport();
+                    setShowExportModal(false);
+                  },
+                  className: `${cdBtn} w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`,
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
+                    " Export"
+                  ]
+                }, undefined, true, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
+                  className: "text-[10px] text-zinc-500 leading-relaxed",
+                  children: "Video will be re-encoded with censored audio."
+                }, undefined, false, undefined, this)
               ]
-            }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("button", {
-              onClick: () => {
-                handleExport();
-                setShowExportModal(false);
-              },
-              className: `${cdBtn} w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`,
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(DownloadIcon, {}, undefined, false, undefined, this),
-                " Export"
-              ]
-            }, undefined, true, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("p", {
-              className: "text-[10px] text-zinc-500 leading-relaxed",
-              children: "Video will be re-encoded with censored audio."
-            }, undefined, false, undefined, this)
-          ]
-        }, undefined, true, undefined, this)
-      }, undefined, false, undefined, this)
+            }, undefined, true, undefined, this)
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this), document.body)
     ]
   }, undefined, true, undefined, this);
 };
@@ -54159,7 +54164,7 @@ var PlaybackControls = import_react13.memo(PlaybackControlsInner);
 
 // src/features/transcription/TranscriptionResults.tsx
 var import_react17 = __toESM(require_react(), 1);
-var import_react_dom = __toESM(require_react_dom(), 1);
+var import_react_dom2 = __toESM(require_react_dom(), 1);
 
 // node_modules/react-window/dist/react-window.js
 var import_jsx_runtime = __toESM(require_jsx_runtime(), 1);
@@ -56030,7 +56035,7 @@ var TranscriptionResultsInner = () => {
         onUpdate: handleUpdateEffect,
         effect: editEffect
       }, undefined, false, undefined, this),
-      (authModal === "login" || authModal === "topup" || authModal === "confirm") && import_react_dom.default.createPortal(/* @__PURE__ */ jsx_dev_runtime14.jsxDEV(jsx_dev_runtime14.Fragment, {
+      (authModal === "login" || authModal === "topup" || authModal === "confirm") && import_react_dom2.default.createPortal(/* @__PURE__ */ jsx_dev_runtime14.jsxDEV(jsx_dev_runtime14.Fragment, {
         children: [
           authModal === "login" && /* @__PURE__ */ jsx_dev_runtime14.jsxDEV(LoginModal, {
             onClose: () => setAuthModal(null),
@@ -56103,7 +56108,7 @@ var ImportProgressModal = import_react18.memo(ImportProgressModalInner);
 
 // src/features/settings/SettingsModal.tsx
 var import_react22 = __toESM(require_react(), 1);
-var import_react_dom2 = __toESM(require_react_dom(), 1);
+var import_react_dom3 = __toESM(require_react_dom(), 1);
 
 // src/features/dictionary/DictionaryManager.tsx
 var import_react19 = __toESM(require_react(), 1);
@@ -57233,7 +57238,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "185";
+var BUILD_NUM = "186";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57269,7 +57274,7 @@ function Tooltip({ text }) {
           children: "ⓘ"
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
-      show && anchor && import_react_dom2.createPortal(/* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
+      show && anchor && import_react_dom3.createPortal(/* @__PURE__ */ jsx_dev_runtime20.jsxDEV("span", {
         className: "fixed z-[100] w-56 px-3 py-2 text-xs leading-relaxed text-zinc-200 bg-zinc-800 border border-zinc-700 rounded-lg shadow-[0_8px_30px_rgba(0,0,0,0.6)] whitespace-normal pointer-events-none",
         style: { left: anchor.left, top: anchor.top, transform: "translateX(-50%)" },
         children: text
@@ -57863,4 +57868,4 @@ var jsx_dev_runtime22 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=B7522CDAA00C457B64756E2164756E21
+//# debugId=71F465932E3643C664756E2164756E21
