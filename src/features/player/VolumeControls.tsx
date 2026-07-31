@@ -25,7 +25,7 @@ const VolumeControlsInner = () => {
     <div className="flex items-center gap-2">
       <button
         onClick={handleMuteToggle}
-        className="p-1 rounded-md hover:bg-zinc-700 transition-colors"
+        className="h-10 rounded-md hover:bg-zinc-700 transition-colors flex items-center justify-center"
         aria-label={isMuted ? 'Unmute' : 'Mute'}
       >
         <img src={volumeIcon} alt={isMuted ? 'Unmute' : 'Mute'} className="w-5 h-5" />

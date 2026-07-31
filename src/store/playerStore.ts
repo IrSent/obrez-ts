@@ -86,6 +86,9 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   // Playback speed
   playbackSpeed: 1,
+
+  // Proposed time from Text-view tooltip
+  proposedTime: null,
 }));
 
 /**
@@ -364,6 +367,10 @@ export const playerActions = {
       importing: false,
       importStage: null,
     }),
+
+  // Proposed time actions (Text-view tooltip → Add Word / ProgressBar blink)
+  setProposedTime: (proposedTime: { time: number; field: 'start' | 'end' } | null) =>
+    usePlayerStore.setState({ proposedTime }),
 };
 
 /**

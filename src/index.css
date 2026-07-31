@@ -26,3 +26,40 @@
   background-color: rgba(59, 130, 246, 0.2) !important;
   outline: 2px solid #3b82f6;
 }
+
+/**
+ * Proposed-time blink — smooth but insistent pulse on currentTime / Add-Word fields
+ * when a time was clicked in the Text-view tooltip.
+ */
+@keyframes proposed-time-blink {
+  0%, 100% {
+    background-color: transparent;
+    box-shadow: none;
+  }
+  50% {
+    background-color: rgba(168, 85, 247, 0.25);
+    box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
+  }
+}
+.proposed-time-blink {
+  animation: proposed-time-blink 1.2s ease-in-out infinite;
+}
+
+/**
+ * Red wavy underline for words in the Text view (like errors in a notebook).
+ */
+@keyframes wave-draw {
+  0%   { stroke-dashoffset: 20; }
+  100% { stroke-dashoffset: 0; }
+}
+.text-view-word {
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-style: wavy;
+  text-decoration-color: #ef4444;
+  text-underline-offset: 3px;
+  transition: color 0.15s;
+}
+.text-view-word:hover {
+  color: #fca5a5;
+}

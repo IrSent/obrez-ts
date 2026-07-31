@@ -53,7 +53,7 @@ const PlaybackControlsInner = () => {
             if (isPlaying) void pause();
             else void play();
           }}
-          className={`${cdBtn} p-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0`}
+          className={`${cdBtn} h-10 px-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0 flex items-center justify-center`}
           aria-label={isPlaying ? 'Pause' : 'Play'}
         >
           <img
@@ -67,7 +67,7 @@ const PlaybackControlsInner = () => {
         {censoringEffects && censoringEffects.length > 0 && (
           <button
             onClick={() => playerActions.setCensoringMode(!censoringMode)}
-            className={`${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex-shrink-0 ${
+            className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center ${
               censoringMode
                 ? 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900 border-t-red-400 border-l-red-400 border-b-red-950 border-r-red-950 active:border-t-red-950 active:border-l-red-950 active:border-b-red-400 active:border-r-red-400'
                 : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
@@ -82,9 +82,9 @@ const PlaybackControlsInner = () => {
         {transcriptionResults && transcriptionResults.length > 0 && (
           <button
             onClick={() => playerActions.toggleAutoScroll()}
-            className={`${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex-shrink-0 flex items-center gap-1 ${
+            className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center gap-1 ${
               autoScroll
-                ? 'text-purple-300 bg-purple-900/50 hover:bg-purple-800/50 active:bg-purple-950/50 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 active:border-t-purple-950 active:border-l-purple-950 active:border-b-purple-400 active:border-r-purple-400'
+                ? 'bg-zinc-600 text-zinc-200 hover:bg-zinc-500 active:bg-zinc-700'
                 : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
             }`}
             title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
@@ -104,8 +104,8 @@ const PlaybackControlsInner = () => {
         <div className="relative flex-shrink-0">
           <button
             onClick={() => setShowSpeedMenu((v) => !v)}
-            className={`${cdBtn} px-2 py-1 rounded text-[11px] font-semibold flex items-center gap-1 bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600 ${
-              playbackSpeed !== 1 ? 'bg-purple-900/50 text-purple-300 border-t-purple-500 border-l-purple-500 border-b-purple-950 border-r-purple-950' : ''
+            className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex items-center gap-1 bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600 ${
+              playbackSpeed !== 1 ? 'bg-zinc-600 text-zinc-200' : ''
             }`}
             title={`Playback speed: ${playbackSpeed}x`}
           >

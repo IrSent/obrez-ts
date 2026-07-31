@@ -2,6 +2,35 @@ import { memo, useRef, useCallback, useEffect, useState } from 'react';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
+/**
+ * When proposedTime is active, blink the current-time display and allow
+ * the user to confirm by clicking it.
+ */
+function useProposedTimeCurrentBlink(timeRef: React.RefObject<HTMLElement | null>): void {
+  const proposedTime = usePlayerStore((s) => s.proposedTime);
+
+  useEffect(() => {
+    if (!proposedTime) return;
+    const el = timeRef.current;
+    if (!el) return;
+
+    el.classList.add('proposed-time-blink');
+
+    const onClick = () => {
+      const pt = usePlayerStore.getState().proposedTime;
+      if (!pt) return;
+      playerActions.setProposedTime(null);
+      el.classList.remove('proposed-time-blink');
+    };
+    el.addEventListener('click', onClick);
+
+    return () => {
+      el.removeEventListener('click', onClick);
+      el.classList.remove('proposed-time-blink');
+    };
+  }, [proposedTime, timeRef]);
+}
+
 const ProgressBarInner = () => {
   const duration = usePlayerStore((state) => state.duration);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
@@ -9,6 +38,8 @@ const ProgressBarInner = () => {
   const isDraggingRef = useRef(false);
   const wasPlayingRef = useRef(false);
   const progressRef = useRef<HTMLDivElement>(null);
+  const currentTimeRef = useRef<HTMLSpanElement>(null);
+  useProposedTimeCurrentBlink(currentTimeRef);
 
   // Read currentTime directly from playback, not from store — avoids setState
   // in the hot path. Only update local state when the displayed seconds change.
@@ -130,7 +161,7 @@ const ProgressBarInner = () => {
 
   return (
     <div className="flex-1 flex items-center gap-2">
-      <span className="text-xs opacity-60" data-testid="current-time">{formatSeconds(currentTime)}</span>
+      <span ref={currentTimeRef} className="text-xs opacity-60 cursor-default" data-testid="current-time">{formatSeconds(currentTime)}</span>
 
       <div
         ref={progressRef}

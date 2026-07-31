@@ -1,17 +1,19 @@
 import { memo, useEffect, useRef, useState, useMemo, useCallback } from 'react';
 import ReactDOM from 'react-dom';
-import { usePlayerStore, usePlayerActions } from '../../store/playerStore';
+import { usePlayerStore, usePlayerActions, playerActions } from '../../store/playerStore';
 import { useAuthStore } from '../../store/authStore';
 import { canFreeTopup } from '../../utils/auth';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { List, useListRef } from 'react-window';
 import { EffectModal, EffectBadge } from './EffectModal';
+import { TextView } from './TextView';
 import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
 import type { SoundCensoringEffect, TranscriptionResultTuple } from '../../types';
 import { cdBtn, cdInset } from '../player/cdBtn';
 import { ShieldButton } from '../player/ShieldButton';
+import { useProposedTimeBlink } from '../../hooks/useProposedTimeBlink';
 
 // Worker instances are created once and reused.
 let importWorker: Worker | null = null;
@@ -31,6 +33,35 @@ function BorderedSection({ title, children, className }: { title: string; childr
       <span className={SUBTITLE}>{title}</span>
       {children}
     </div>
+  );
+}
+
+/**
+ * Folder-style tab for the Words subsection.
+ * Active tab merges into the section (border broken beneath it via border-b in bg color).
+ * Inactive tabs always show their borders (top + sides), bottom border is transparent so
+ * the section's top border remains visible beneath them.
+ */
+function WordsTab({
+  label,
+  active,
+  onClick,
+}: {
+  label: string;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      className={`px-3 pb-1 text-[10px] font-semibold uppercase tracking-wider transition-colors rounded-t-md z-10 ${
+        active
+          ? 'bg-zinc-800 text-purple-300 border-t border-x border-b border-zinc-600 border-b-zinc-800'
+          : 'bg-zinc-800 text-zinc-500 hover:text-zinc-300 border-t border-x border-b border-zinc-600 border-b-transparent'
+      }`}
+    >
+      {label}
+    </button>
   );
 }
 
@@ -313,6 +344,7 @@ const TranscriptionResultsInner = () => {
   const [error, setError] = useState<string | null>(null);
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const [wordsTab, setWordsTab] = useState<'list' | 'text'>('list');
   const autoScroll = usePlayerStore((state) => state.autoScroll);
 
   // Effect modal — add mode
@@ -325,6 +357,15 @@ const TranscriptionResultsInner = () => {
   const [addWordEnd, setAddWordEnd] = useState('');
   const [addWordText, setAddWordText] = useState('');
   const [addWordError, setAddWordError] = useState<string | null>(null);
+
+  // Refs for Add Word inputs (used by proposedTime blink)
+  const addWordStartRef = useRef<HTMLInputElement>(null);
+  const addWordEndRef = useRef<HTMLInputElement>(null);
+
+  // Proposed-time blink — when a time is proposed from the Text-view tooltip,
+  // clicking the corresponding Add-Word field confirms it.
+  useProposedTimeBlink('start', setAddWordStart, addWordStartRef);
+  useProposedTimeBlink('end', setAddWordEnd, addWordEndRef);
 
   const handleAddWordSubmit = () => {
     setAddWordError(null);
@@ -883,6 +924,7 @@ const TranscriptionResultsInner = () => {
           <form onSubmit={(e) => { e.preventDefault(); handleAddWordSubmit(); }} className="flex flex-col gap-1.5">
             <div className="flex gap-1.5 items-center">
               <input
+                ref={addWordStartRef}
                 type="number"
                 step="0.1"
                 min="0"
@@ -894,6 +936,7 @@ const TranscriptionResultsInner = () => {
                 required
               />
               <input
+                ref={addWordEndRef}
                 type="number"
                 step="0.1"
                 min="0"
@@ -928,26 +971,52 @@ const TranscriptionResultsInner = () => {
         </BorderedSection>
       </div>
 
-      <BorderedSection title="Words">
-        {transcribing ? (
-          <TranscribeProgress />
-        ) : isLoading && !transcriptionResults ? (
-          <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
-        ) : transcriptionResults && transcriptionResults.length > 0 ? (
-          <List
-            listRef={rwListRef}
-            rowCount={filteredSegments.length}
-            rowHeight={ROW_HEIGHT}
-            // @ts-expect-error react-window v2 rowProps type inference bug
-            rowProps={{ closestStart, effectVersion: censoringEffects?.length ?? 0 }}
-            overscanCount={5}
-            style={{ height: LIST_HEIGHT, width: '100%' }}
-            rowComponent={TranscriptionRow}
+      <div className="relative">
+        {/* Folder-style tabs attached to the border */}
+        <div className="absolute -top-[22px] left-3 flex gap-0.5 z-10">
+          <WordsTab
+            label="List"
+            active={wordsTab === 'list'}
+            onClick={() => setWordsTab('list')}
           />
-        ) : (
-          <div className="text-xs text-zinc-500 py-2">No transcription data</div>
-        )}
-      </BorderedSection>
+          <WordsTab
+            label="Text"
+            active={wordsTab === 'text'}
+            onClick={() => setWordsTab('text')}
+          />
+        </div>
+        <BorderedSection title="Words">
+          {transcribing ? (
+            <TranscribeProgress />
+          ) : isLoading && !transcriptionResults ? (
+            <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
+          ) : transcriptionResults && transcriptionResults.length > 0 ? (
+            wordsTab === 'text' ? (
+              <div className="max-h-[400px] overflow-y-auto pr-1">
+                <TextView
+                  segments={transcriptionResults}
+                  onAddEffect={(start) => setModalSegment(start)}
+                  onSeekTo={handleJumpToTime}
+                  formatTime={formatTime}
+                />
+              </div>
+            ) : (
+              <List
+                listRef={rwListRef}
+                rowCount={filteredSegments.length}
+                rowHeight={ROW_HEIGHT}
+                // @ts-expect-error react-window v2 rowProps type inference bug
+                rowProps={{ closestStart, effectVersion: censoringEffects?.length ?? 0 }}
+                overscanCount={5}
+                style={{ height: LIST_HEIGHT, width: '100%' }}
+                rowComponent={TranscriptionRow}
+              />
+            )
+          ) : (
+            <div className="text-xs text-zinc-500 py-2">No transcription data</div>
+          )}
+        </BorderedSection>
+      </div>
 
       {/* Effect modal — add mode */}
       {modalSegment != null && (
