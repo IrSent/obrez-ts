@@ -55554,6 +55554,7 @@ var SegmentItem = import_react19.memo(({
   onAddEffect,
   onRemoveEffect,
   onEditEffect,
+  onProposeTime,
   formatTime
 }) => {
   const hasMatches = triggered.length > 0;
@@ -55569,10 +55570,10 @@ var SegmentItem = import_react19.memo(({
         children: [
           /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("span", {
             className: "cursor-pointer hover:text-purple-300",
-            title: start.toFixed(2) + "s",
+            title: start.toFixed(2) + "s — click to propose as start time",
             onClick: (e) => {
               e.stopPropagation();
-              navigator.clipboard.writeText(start.toFixed(2));
+              onProposeTime(start, "start");
             },
             children: formatTime(start)
           }, undefined, false, undefined, this),
@@ -55582,10 +55583,10 @@ var SegmentItem = import_react19.memo(({
           }, undefined, false, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("span", {
             className: "cursor-pointer hover:text-purple-300",
-            title: end.toFixed(2) + "s",
+            title: end.toFixed(2) + "s — click to propose as end time",
             onClick: (e) => {
               e.stopPropagation();
-              navigator.clipboard.writeText(end.toFixed(2));
+              onProposeTime(end, "end");
             },
             children: formatTime(end)
           }, undefined, false, undefined, this)
@@ -55667,6 +55668,7 @@ function TranscriptionRow(props) {
       onAddEffect: deps.onAddEffect,
       onRemoveEffect: deps.onRemoveEffect,
       onEditEffect: deps.onEditEffect,
+      onProposeTime: deps.onProposeTime,
       formatTime: deps.formatTime
     }, undefined, false, undefined, this)
   }, undefined, false, undefined, this);
@@ -55680,6 +55682,7 @@ var rowRendererDeps = {
   onAddEffect: (_start) => {},
   onRemoveEffect: (_id) => {},
   onEditEffect: (_effect) => {},
+  onProposeTime: (_time, _field) => {},
   formatTime: (_seconds) => ""
 };
 function findClosestSegment(segments, time) {
@@ -56087,6 +56090,14 @@ var TranscriptionResultsInner = () => {
   rowRendererDeps.onAddEffect = (start) => setModalSegment(start);
   rowRendererDeps.onRemoveEffect = handleRemoveEffect;
   rowRendererDeps.onEditEffect = (effect) => setEditEffect(effect);
+  rowRendererDeps.onProposeTime = (time, field) => {
+    const pt = usePlayerStore.getState().proposedTime;
+    if (pt?.field === field && pt?.time === time) {
+      playerActions.setProposedTime(null);
+    } else {
+      playerActions.setProposedTime({ time, field });
+    }
+  };
   rowRendererDeps.formatTime = formatTime;
   import_react19.useEffect(() => {
     if (!transcriptionResults)
@@ -57664,7 +57675,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "189";
+var BUILD_NUM = "190";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -58294,4 +58305,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=50DE0B9C1DD28FC864756E2164756E21
+//# debugId=6EEE3573108C26FD64756E2164756E21
