@@ -1,7 +1,7 @@
-# Graph Report - obrez-ts  (2026-07-29)
+# Graph Report - obrez-ts  (2026-07-30)
 
 ## Corpus Check
-- 89 files · ~122,815 words
+- 89 files · ~122,838 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `0cc151c4`
+- Built from commit: `44b7a7a8`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -193,7 +193,7 @@ Cohesion: 0.07
 Nodes (37): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal() (+29 more)
 
 ## Knowledge Gaps
-- **207 isolated node(s):** `SegmentItem`, `rowRendererDeps`, `TranscribeDeps`, `PaymentModalProps`, `TopupModalProps` (+202 more)
+- **207 isolated node(s):** `CODEC_LABELS`, `ExportFormat`, `SegmentItem`, `rowRendererDeps`, `TranscribeDeps` (+202 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -204,7 +204,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Backend Config + Server`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `SegmentItem`, `rowRendererDeps`, `TranscribeDeps` to the rest of the system?**
+- **What connects `CODEC_LABELS`, `ExportFormat`, `SegmentItem` to the rest of the system?**
   _207 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Export Modal + Context` be split into smaller, more focused modules?**
   _Cohesion score 0.10526315789473684 - nodes in this community are weakly interconnected._

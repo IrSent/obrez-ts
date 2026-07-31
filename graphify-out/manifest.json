@@ -70,13 +70,13 @@
     "semantic_hash": ""
   },
   "src/features/player/ProgressBar.tsx": {
-    "mtime": 1785221688.626475,
-    "ast_hash": "876ff80884239ddedcf1d4a8bb58a0eb",
+    "mtime": 1785428728.8613427,
+    "ast_hash": "00f85ffd9f0b40df150dc7d81b2b61af",
     "semantic_hash": ""
   },
   "src/features/player/VolumeControls.tsx": {
-    "mtime": 1783932674.4095252,
-    "ast_hash": "b2ee7608cb4a8fe8beed86c0b1305619",
+    "mtime": 1785441956.1778953,
+    "ast_hash": "1b91b09a679525a1dffc14af30600e90",
     "semantic_hash": ""
   },
   "src/features/transcription/EffectModal.tsx": {
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "src/features/transcription/TranscriptionResults.tsx": {
-    "mtime": 1785351554.4826925,
-    "ast_hash": "ab86cea5cc3c20c5915f68c452358475",
+    "mtime": 1785499201.4736075,
+    "ast_hash": "1d5aaeddf7046297dad0c85daa345c99",
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
@@ -110,13 +110,13 @@
     "semantic_hash": "e6912c3dd4c2607e82cf0427398f9fc0"
   },
   "src/store/playerStore.ts": {
-    "mtime": 1785221688.6345105,
-    "ast_hash": "902a7bff4df118342bd53159c94749c9",
+    "mtime": 1785420354.8123982,
+    "ast_hash": "1987b5ccf18f84bf334ec869b5a6f7a3",
     "semantic_hash": ""
   },
   "src/types/index.ts": {
-    "mtime": 1785221688.6345105,
-    "ast_hash": "b2840c29ecd3fc5e1632e93e4cae2967",
+    "mtime": 1785420226.2791142,
+    "ast_hash": "1097526d0ab19a63dc2ab7d297e6c8e5",
     "semantic_hash": ""
   },
   "tailwind.config.js": {
@@ -480,13 +480,13 @@
     "semantic_hash": ""
   },
   "src/features/action-buttons/ActionButtons.tsx": {
-    "mtime": 1785403735.7788947,
-    "ast_hash": "5a72f203409897f8b2f95c5d4ecb730b",
+    "mtime": 1785406106.3053217,
+    "ast_hash": "1204c2b65a295036f81546b70e072bc2",
     "semantic_hash": ""
   },
   "src/features/player/PlaybackControls.tsx": {
-    "mtime": 1784485576.5751524,
-    "ast_hash": "4f8cc36abf44256216c7862cd32f4a77",
+    "mtime": 1785443162.0556645,
+    "ast_hash": "0044f651180c4222d711e74b76425b56",
     "semantic_hash": ""
   },
   "src/features/player/ShieldButton.tsx": {
@@ -522,6 +522,16 @@
   "src/utils/upload.ts": {
     "mtime": 1785332520.1634107,
     "ast_hash": "5ec3ab53a5371ba1882ae66fd995dcdc",
+    "semantic_hash": ""
+  },
+  "src/features/transcription/TextView.tsx": {
+    "mtime": 1785428982.735348,
+    "ast_hash": "97932aea41d87a7382f72ea983dae521",
+    "semantic_hash": ""
+  },
+  "src/hooks/useProposedTimeBlink.ts": {
+    "mtime": 1785428502.314435,
+    "ast_hash": "5a8d53ace33987b835cabc6d651a6ee6",
     "semantic_hash": ""
   }
 }
