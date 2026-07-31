@@ -159,7 +159,6 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     >
       <div
         className={`relative flex flex-col overflow-hidden mx-4 mt-8 mb-8 w-full max-w-2xl rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW}`}
-        style={{ minHeight: 'calc(100vh - 16px)' }}
       >
         {/* 3D inner bevel highlight */}
         <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
