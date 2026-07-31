@@ -627,6 +627,10 @@
     margin-top: -2vh;
   }
 
+  .mr-1 {
+    margin-right: calc(var(--spacing) * 1);
+  }
+
   .mb-1 {
     margin-bottom: calc(var(--spacing) * 1);
   }

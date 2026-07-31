@@ -55338,7 +55338,8 @@ function WordTooltip({
 function WordSpan({
   word,
   segment,
-  onClick
+  onClick,
+  matched
 }) {
   const ref = import_react16.useCallback((el) => {
     if (el)
@@ -55346,13 +55347,14 @@ function WordSpan({
   }, [onClick, segment]);
   return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
     ref,
-    className: "text-view-word",
+    className: `cursor-pointer mr-1 ${matched ? "text-view-word" : ""}`,
     children: word
   }, undefined, false, undefined, this);
 }
 function SentenceParagraph({
   segments,
-  onWordClick
+  onWordClick,
+  isWordMatched
 }) {
   return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("p", {
     className: "text-sm text-zinc-300 leading-relaxed mb-2",
@@ -55361,7 +55363,8 @@ function SentenceParagraph({
       return words.map((w, wi) => w.trim() ? /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(WordSpan, {
         word: w,
         segment: seg,
-        onClick: onWordClick
+        onClick: onWordClick,
+        matched: isWordMatched(w)
       }, `${si}-${wi}`, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
         children: w
       }, `${si}-${wi}`, false, undefined, this));
@@ -55372,7 +55375,8 @@ function TextView({
   segments,
   onAddEffect,
   onSeekTo,
-  formatTime
+  formatTime,
+  isWordMatched
 }) {
   const [tooltip, setTooltip] = import_react16.useState(null);
   const sentenceGroups = import_react16.useMemo(() => groupIntoSentences(segments), [segments]);
@@ -55430,7 +55434,8 @@ function TextView({
     children: [
       sentenceGroups.map((group, gi) => /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(SentenceParagraph, {
         segments: group,
-        onWordClick: handleWordClick
+        onWordClick: handleWordClick,
+        isWordMatched
       }, gi, false, undefined, this)),
       tooltip && /* @__PURE__ */ jsx_dev_runtime13.jsxDEV(WordTooltip, {
         segment: tooltip.segment,
@@ -55993,6 +55998,15 @@ var TranscriptionResultsInner = () => {
       setDictMatches(map);
     }, 0);
   }, [transcriptionResults, activeDictionaries, loadedDictionaries]);
+  const isWordMatched = import_react19.useCallback((word) => {
+    const lower = word.toLowerCase();
+    for (const slug of activeDictionaries) {
+      const dict = loadedDictionaries[slug];
+      if (dict && dict.scanner.findMatches(lower).length > 0)
+        return true;
+    }
+    return false;
+  }, [activeDictionaries, loadedDictionaries]);
   const closestRef = import_react19.useRef(null);
   const [closestStart, setClosestStart] = import_react19.useState(null);
   const rwListRef = Me(null);
@@ -56443,7 +56457,8 @@ var TranscriptionResultsInner = () => {
                 segments: transcriptionResults,
                 onAddEffect: (start) => setModalSegment(start),
                 onSeekTo: handleJumpToTime,
-                formatTime
+                formatTime,
+                isWordMatched
               }, undefined, false, undefined, this)
             }, undefined, false, undefined, this) : /* @__PURE__ */ jsx_dev_runtime15.jsxDEV(Ae, {
               listRef: rwListRef,
@@ -57675,7 +57690,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "190";
+var BUILD_NUM = "191";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -58305,4 +58320,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=6EEE3573108C26FD64756E2164756E21
+//# debugId=CB4F14A3281A09C764756E2164756E21
