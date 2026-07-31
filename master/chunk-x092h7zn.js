@@ -55850,6 +55850,10 @@ var TranscriptionResultsInner = () => {
           return;
         const params = new URLSearchParams(window.location.search);
         const isInCallback = params.has("code");
+        const cachedUser = useAuthStore.getState().user;
+        if (cachedUser && !isInCallback) {
+          return;
+        }
         setAuthModal(isInCallback ? "confirm" : session.authModal);
       } catch (err) {
         console.error("Failed to restore authModal:", err);
@@ -57690,7 +57694,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "192";
+var BUILD_NUM = "193";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -58320,4 +58324,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=A7A0CEF6352EE95C64756E2164756E21
+//# debugId=405420CCD9E2ADA464756E2164756E21
