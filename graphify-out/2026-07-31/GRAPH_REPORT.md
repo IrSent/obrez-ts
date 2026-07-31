@@ -1,7 +1,7 @@
 # Graph Report - obrez-ts  (2026-07-31)
 
 ## Corpus Check
-- 91 files · ~124,466 words
+- 91 files · ~124,535 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `bf0854f3`
+- Built from commit: `901557d0`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -183,7 +183,7 @@ Cohesion: 0.06
 Nodes (45): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal() (+37 more)
 
 ## Knowledge Gaps
-- **209 isolated node(s):** `SPEEDS`, `SegmentItem`, `rowRendererDeps`, `TranscriptionWord`, `BasicCensoringEffect` (+204 more)
+- **209 isolated node(s):** `SegmentItem`, `rowRendererDeps`, `SPEEDS`, `TranscriptionWord`, `BasicCensoringEffect` (+204 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -194,7 +194,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.036) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Backend Config + Server`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `SPEEDS`, `SegmentItem`, `rowRendererDeps` to the rest of the system?**
+- **What connects `SegmentItem`, `rowRendererDeps`, `SPEEDS` to the rest of the system?**
   _209 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
