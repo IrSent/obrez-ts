@@ -152,7 +152,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     return () => window.removeEventListener('keydown', handleKey);
   }, [onClose]);
 
-  return createPortal(
+  return (
     <div
       className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
@@ -252,8 +252,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           )}
         </div>
       </div>
-    </div>,
-    document.body,
+    </div>
   );
 }
 

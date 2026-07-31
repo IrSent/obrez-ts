@@ -1,4 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { useMediaPlayerContext } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
@@ -155,10 +156,13 @@ export const App = () => {
             <TranscriptionResults />
           </div>
 
-          {/* Settings modal — rendered via Portal in SettingsModal itself */}
-          {settingsOpen && (
-            <SettingsModal onClose={() => setSettingsOpen(false)} />
-          )}
+          {/* Settings modal — via Portal to avoid MediaPlayerProvider issues */}
+          {settingsOpen &&
+            createPortal(
+              <SettingsModal onClose={() => setSettingsOpen(false)} />,
+              document.body
+            )
+          }
         </div>
       </MediaPlayerProvider>
   );
