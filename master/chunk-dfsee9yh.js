@@ -57694,7 +57694,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "194";
+var BUILD_NUM = "196";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57799,14 +57799,15 @@ function SettingsModal({ onClose }) {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
-  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+  return import_react_dom4.createPortal(/* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60",
     onClick: (e) => {
       if (e.target === e.currentTarget)
         onClose();
     },
     children: /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-      className: `relative flex flex-col overflow-hidden mx-4 mt-[-2vh] w-full max-w-2xl rounded-xl bg-zinc-900 ${MODAL_SHADOW2}`,
+      className: `relative flex flex-col overflow-hidden mx-4 mt-8 mb-8 w-full max-w-2xl rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW2}`,
+      style: { minHeight: "calc(100vh - 16px)" },
       children: [
         /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
           className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]"
@@ -57936,7 +57937,7 @@ function SettingsModal({ onClose }) {
         }, undefined, true, undefined, this)
       ]
     }, undefined, true, undefined, this)
-  }, undefined, false, undefined, this);
+  }, undefined, false, undefined, this), document.body);
 }
 function UserContent({ onClose }) {
   const user = useAuthStore((s) => s.user);
@@ -58324,4 +58325,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=958A576281EB6D0464756E2164756E21
+//# debugId=4D4E23F57AB9A14A64756E2164756E21
