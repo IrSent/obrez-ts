@@ -92,6 +92,7 @@ const SegmentItem = memo(({
   onAddEffect,
   onRemoveEffect,
   onEditEffect,
+  onProposeTime,
   formatTime,
 }: {
   start: number;
@@ -105,6 +106,7 @@ const SegmentItem = memo(({
   onAddEffect: (start: number) => void;
   onRemoveEffect: (id: string) => void;
   onEditEffect: (effect: SoundCensoringEffect) => void;
+  onProposeTime: (time: number, field: 'start' | 'end') => void;
   formatTime: (seconds: number) => string;
 }) => {
   const hasMatches = triggered.length > 0;
@@ -119,16 +121,16 @@ const SegmentItem = memo(({
       <span className="timestamp text-zinc-400 whitespace-nowrap">
         <span
           className="cursor-pointer hover:text-purple-300"
-          title={start.toFixed(2) + 's'}
-          onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(start.toFixed(2)); }}
+          title={start.toFixed(2) + 's — click to propose as start time'}
+          onClick={(e) => { e.stopPropagation(); onProposeTime(start, 'start'); }}
         >
           {formatTime(start)}
         </span>
         <span className="text-zinc-500"> — </span>
         <span
           className="cursor-pointer hover:text-purple-300"
-          title={end.toFixed(2) + 's'}
-          onClick={(e) => { e.stopPropagation(); navigator.clipboard.writeText(end.toFixed(2)); }}
+          title={end.toFixed(2) + 's — click to propose as end time'}
+          onClick={(e) => { e.stopPropagation(); onProposeTime(end, 'end'); }}
         >
           {formatTime(end)}
         </span>
@@ -200,6 +202,7 @@ function TranscriptionRow(props: { index: number; style: React.CSSProperties; cl
         onAddEffect={deps.onAddEffect}
         onRemoveEffect={deps.onRemoveEffect}
         onEditEffect={deps.onEditEffect}
+        onProposeTime={deps.onProposeTime}
         formatTime={deps.formatTime}
       />
     </div>
@@ -220,6 +223,7 @@ const rowRendererDeps = {
   onAddEffect: (_start: number) => {},
   onRemoveEffect: (_id: string) => {},
   onEditEffect: (_effect: SoundCensoringEffect) => {},
+  onProposeTime: (_time: number, _field: 'start' | 'end') => {},
   formatTime: (_seconds: number) => '',
 };
 
@@ -697,6 +701,14 @@ const TranscriptionResultsInner = () => {
   rowRendererDeps.onAddEffect = (start: number) => setModalSegment(start);
   rowRendererDeps.onRemoveEffect = handleRemoveEffect;
   rowRendererDeps.onEditEffect = (effect: SoundCensoringEffect) => setEditEffect(effect);
+  rowRendererDeps.onProposeTime = (time: number, field: 'start' | 'end') => {
+    const pt = usePlayerStore.getState().proposedTime;
+    if (pt?.field === field && pt?.time === time) {
+      playerActions.setProposedTime(null);
+    } else {
+      playerActions.setProposedTime({ time, field });
+    }
+  };
   rowRendererDeps.formatTime = formatTime;
 
   // Auto-scroll and highlight tracking
