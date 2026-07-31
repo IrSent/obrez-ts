@@ -155,7 +155,7 @@ export const App = () => {
             <TranscriptionResults />
           </div>
 
-          {/* Settings modal */}
+          {/* Settings modal — rendered via Portal in SettingsModal itself */}
           {settingsOpen && (
             <SettingsModal onClose={() => setSettingsOpen(false)} />
           )}
