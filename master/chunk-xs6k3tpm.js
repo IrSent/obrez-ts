@@ -19710,6 +19710,7 @@ var import_client = __toESM(require_client(), 1);
 
 // src/App.tsx
 var import_react25 = __toESM(require_react(), 1);
+var import_react_dom5 = __toESM(require_react_dom(), 1);
 
 // src/context/MediaPlayerContext.tsx
 var import_react4 = __toESM(require_react(), 1);
@@ -57694,7 +57695,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "197";
+var BUILD_NUM = "198";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57799,7 +57800,7 @@ function SettingsModal({ onClose }) {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
-  return import_react_dom4.createPortal(/* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
     className: "fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60",
     onClick: (e) => {
       if (e.target === e.currentTarget)
@@ -57936,7 +57937,7 @@ function SettingsModal({ onClose }) {
         }, undefined, true, undefined, this)
       ]
     }, undefined, true, undefined, this)
-  }, undefined, false, undefined, this), document.body);
+  }, undefined, false, undefined, this);
 }
 function UserContent({ onClose }) {
   const user = useAuthStore((s) => s.user);
@@ -58310,9 +58311,9 @@ var App = () => {
               /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(TranscriptionResults, {}, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
-          settingsOpen && /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(SettingsModal, {
+          settingsOpen && import_react_dom5.createPortal(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(SettingsModal, {
             onClose: () => setSettingsOpen(false)
-          }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this), document.body)
         ]
       }, undefined, true, undefined, this)
     ]
@@ -58324,4 +58325,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=D8D036E6724734D564756E2164756E21
+//# debugId=67FFE70666DE5DE564756E2164756E21
