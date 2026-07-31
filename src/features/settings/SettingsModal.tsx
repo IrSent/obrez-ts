@@ -253,7 +253,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           )}
         </div>
       </div>
-    </>,
+    </div>,
     document.body,
   );
 }
