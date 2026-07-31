@@ -55458,7 +55458,7 @@ var import_react17 = __toESM(require_react(), 1);
 var jsx_dev_runtime14 = __toESM(require_jsx_dev_runtime(), 1);
 var ShieldButtonInner = ({ children, className = "", active = false, ...props }) => {
   return /* @__PURE__ */ jsx_dev_runtime14.jsxDEV("button", {
-    className: `${cdBtn} inline-flex items-center justify-center gap-1 rounded ${active ? "bg-purple-900/60 text-purple-200 border-t-purple-400 border-l-purple-400 border-b-purple-950 border-r-purple-950 hover:bg-purple-800/60" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"} ${className}`,
+    className: `${cdBtn} inline-flex items-center justify-center gap-1 rounded ${active ? "bg-zinc-600 text-zinc-200 border-t-zinc-400 border-l-zinc-400 border-b-zinc-950 border-r-zinc-950 hover:bg-zinc-500" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600"} ${className}`,
     ...props,
     children
   }, undefined, false, undefined, this);
@@ -57694,7 +57694,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "193";
+var BUILD_NUM = "194";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -58324,4 +58324,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=405420CCD9E2ADA464756E2164756E21
+//# debugId=958A576281EB6D0464756E2164756E21

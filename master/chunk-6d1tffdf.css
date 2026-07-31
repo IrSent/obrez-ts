@@ -1247,10 +1247,6 @@
     border-top-color: #ffffff14;
   }
 
-  .border-t-purple-400 {
-    border-top-color: var(--color-purple-400);
-  }
-
   .border-t-red-400 {
     border-top-color: var(--color-red-400);
   }
@@ -1259,12 +1255,12 @@
     border-top-color: var(--color-zinc-300);
   }
 
-  .border-t-zinc-950 {
-    border-top-color: var(--color-zinc-950);
+  .border-t-zinc-400 {
+    border-top-color: var(--color-zinc-400);
   }
 
-  .border-r-purple-950 {
-    border-right-color: var(--color-purple-950);
+  .border-t-zinc-950 {
+    border-top-color: var(--color-zinc-950);
   }
 
   .border-r-red-950 {
@@ -1291,10 +1287,6 @@
     border-bottom-color: #00000059;
   }
 
-  .border-b-purple-950 {
-    border-bottom-color: var(--color-purple-950);
-  }
-
   .border-b-red-950 {
     border-bottom-color: var(--color-red-950);
   }
@@ -1315,16 +1307,16 @@
     border-bottom-color: var(--color-zinc-950);
   }
 
-  .border-l-purple-400 {
-    border-left-color: var(--color-purple-400);
-  }
-
   .border-l-red-400 {
     border-left-color: var(--color-red-400);
   }
 
   .border-l-zinc-300 {
     border-left-color: var(--color-zinc-300);
+  }
+
+  .border-l-zinc-400 {
+    border-left-color: var(--color-zinc-400);
   }
 
   .border-l-zinc-950 {
@@ -2364,18 +2356,6 @@
     @supports (color: color-mix(in lab, red, red)) {
       .hover\:bg-purple-800\/50:hover {
         background-color: color-mix(in oklab, var(--color-purple-800) 50%, transparent);
-      }
-    }
-  }
-
-  @media (hover: hover) {
-    .hover\:bg-purple-800\/60:hover {
-      background-color: #6e11b099;
-    }
-
-    @supports (color: color-mix(in lab, red, red)) {
-      .hover\:bg-purple-800\/60:hover {
-        background-color: color-mix(in oklab, var(--color-purple-800) 60%, transparent);
       }
     }
   }
