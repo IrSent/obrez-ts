@@ -57690,7 +57690,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "191";
+var BUILD_NUM = "192";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57796,7 +57796,7 @@ function SettingsModal({ onClose }) {
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
   return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-    className: "fixed inset-0 z-50 flex items-center justify-center overflow-y-auto bg-black/60",
+    className: "fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60",
     onClick: (e) => {
       if (e.target === e.currentTarget)
         onClose();
@@ -58320,4 +58320,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=CB4F14A3281A09C764756E2164756E21
+//# debugId=A7A0CEF6352EE95C64756E2164756E21
