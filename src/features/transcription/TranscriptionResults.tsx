@@ -412,6 +412,15 @@ const TranscriptionResultsInner = () => {
         // so the authModal effect does the balance check without flickering.
         const params = new URLSearchParams(window.location.search);
         const isInCallback = params.has('code');
+
+        // If the user is already authenticated (JWT cookie still valid after reload),
+        // don't restore the authModal — the flow was interrupted and the user
+        // already completed the login step. Clear it silently.
+        const cachedUser = useAuthStore.getState().user;
+        if (cachedUser && !isInCallback) {
+          return;
+        }
+
         setAuthModal(isInCallback ? 'confirm' : session.authModal);
       } catch (err) {
         console.error('Failed to restore authModal:', err);

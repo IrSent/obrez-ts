@@ -82,6 +82,66 @@
   },
   "nodes": [
     {
+      "label": "TextView.tsx",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "id": "transcription_textview",
+      "community": 7,
+      "norm_label": "textview.tsx"
+    },
+    {
+      "label": "groupIntoSentences()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L11",
+      "_origin": "ast",
+      "id": "transcription_textview_groupintosentences",
+      "community": 7,
+      "norm_label": "groupintosentences()"
+    },
+    {
+      "label": "WordTooltip()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L30",
+      "_origin": "ast",
+      "id": "transcription_textview_wordtooltip",
+      "community": 7,
+      "norm_label": "wordtooltip()"
+    },
+    {
+      "label": "WordSpan()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L138",
+      "_origin": "ast",
+      "id": "transcription_textview_wordspan",
+      "community": 7,
+      "norm_label": "wordspan()"
+    },
+    {
+      "label": "SentenceParagraph()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L169",
+      "_origin": "ast",
+      "id": "transcription_textview_sentenceparagraph",
+      "community": 7,
+      "norm_label": "sentenceparagraph()"
+    },
+    {
+      "label": "TextView()",
+      "file_type": "code",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L204",
+      "_origin": "ast",
+      "id": "transcription_textview_textview",
+      "community": 7,
+      "norm_label": "textview()"
+    },
+    {
       "label": "TranscriptionResults.tsx",
       "file_type": "code",
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
@@ -225,7 +285,7 @@
       "label": "TranscriptionResults",
       "file_type": "code",
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L1094",
+      "source_location": "L1110",
       "_origin": "ast",
       "id": "transcription_transcriptionresults_transcriptionresults",
       "community": 7,
@@ -360,66 +420,6 @@
       "community": 6,
       "norm_label": "volumecontrols",
       "id": "player_volumecontrols_volumecontrols"
-    },
-    {
-      "label": "TextView.tsx",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "textview.tsx",
-      "id": "transcription_textview"
-    },
-    {
-      "label": "groupIntoSentences()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "groupintosentences()",
-      "id": "transcription_textview_groupintosentences"
-    },
-    {
-      "label": "WordTooltip()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L30",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "wordtooltip()",
-      "id": "transcription_textview_wordtooltip"
-    },
-    {
-      "label": "WordSpan()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L137",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "wordspan()",
-      "id": "transcription_textview_wordspan"
-    },
-    {
-      "label": "SentenceParagraph()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L159",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "sentenceparagraph()",
-      "id": "transcription_textview_sentenceparagraph"
-    },
-    {
-      "label": "TextView()",
-      "file_type": "code",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L186",
-      "_origin": "ast",
-      "community": 7,
-      "norm_label": "textview()",
-      "id": "transcription_textview_textview"
     },
     {
       "label": "useProposedTimeBlink.ts",
@@ -5772,6 +5772,122 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "store_playerstore_playeractions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "transcription_textview_groupintosentences"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L159",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "transcription_textview_sentenceparagraph"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L186",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "transcription_textview_textview"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L137",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "transcription_textview_wordspan"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_textview",
+      "target": "transcription_textview_wordtooltip"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_textview"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/transcription/TextView.tsx",
+      "source_location": "L244",
+      "weight": 1.0,
+      "source": "transcription_textview_textview",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/transcription/TranscriptionResults.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "transcription_transcriptionresults",
+      "target": "transcription_textview_textview"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/App.tsx",
       "source_location": "L6",
       "weight": 1.0,
@@ -6020,28 +6136,6 @@
       "confidence_score": 1.0,
       "source": "transcription_transcriptionresults",
       "target": "transcription_effectmodal_effectmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_textview"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TranscriptionResults.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_transcriptionresults",
-      "target": "transcription_textview_textview"
     },
     {
       "relation": "contains",
@@ -6821,100 +6915,6 @@
       "confidence_score": 1.0,
       "source": "player_playerdisplay",
       "target": "player_volumecontrols_volumecontrols"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "store_playerstore_playeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "transcription_textview_groupintosentences"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L159",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "transcription_textview_sentenceparagraph"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L186",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "transcription_textview_textview"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L137",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "transcription_textview_wordspan"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "transcription_textview",
-      "target": "transcription_textview_wordtooltip"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/transcription/TextView.tsx",
-      "source_location": "L244",
-      "weight": 1.0,
-      "source": "transcription_textview_textview",
-      "target": "store_playerstore_useplayerstore"
     },
     {
       "relation": "contains",
@@ -15386,5 +15386,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "901557d073dae5da0163b4a1cbf52fabe15ccb74"
+  "built_at_commit": "16e355108ab915eaf3ac2b3ace410a238dbb3d2e"
 }
