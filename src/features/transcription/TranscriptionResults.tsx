@@ -590,6 +590,21 @@ const TranscriptionResultsInner = () => {
     }, 0);
   }, [transcriptionResults, activeDictionaries, loadedDictionaries]);
 
+  /**
+   * Check if a single word (lowercased) matches any active dictionary.
+   */
+  const isWordMatched = useCallback(
+    (word: string): boolean => {
+      const lower = word.toLowerCase();
+      for (const slug of activeDictionaries) {
+        const dict = loadedDictionaries[slug];
+        if (dict && dict.scanner.findMatches(lower).length > 0) return true;
+      }
+      return false;
+    },
+    [activeDictionaries, loadedDictionaries],
+  );
+
   // closestSegmentStart — ref for interval comparison (avoids stale closure),
   // state for react-window rowProps (triggers visible row re-render)
   const closestRef = useRef<number | null>(null);
@@ -1010,6 +1025,7 @@ const TranscriptionResultsInner = () => {
                   onAddEffect={(start) => setModalSegment(start)}
                   onSeekTo={handleJumpToTime}
                   formatTime={formatTime}
+                  isWordMatched={isWordMatched}
                 />
               </div>
             ) : (

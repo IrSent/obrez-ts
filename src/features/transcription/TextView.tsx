@@ -132,16 +132,19 @@ function WordTooltip({
 }
 
 /**
- * A single word span with red wavy underline. Clicking opens the tooltip.
+ * A single word. Clicking opens the tooltip.
+ * If matched by dictionary, shown with red wavy underline.
  */
 function WordSpan({
   word,
   segment,
   onClick,
+  matched,
 }: {
   word: string;
   segment: [number, number, string];
   onClick: (wordEl: HTMLElement, segment: [number, number, string]) => void;
+  matched: boolean;
 }) {
   const ref = useCallback(
     (el: HTMLElement | null) => {
@@ -150,7 +153,14 @@ function WordSpan({
     [onClick, segment],
   );
 
-  return <span ref={ref} className="text-view-word">{word}</span>;
+  return (
+    <span
+      ref={ref}
+      className={`cursor-pointer mr-1 ${matched ? 'text-view-word' : ''}`}
+    >
+      {word}
+    </span>
+  );
 }
 
 /**
@@ -159,9 +169,11 @@ function WordSpan({
 function SentenceParagraph({
   segments,
   onWordClick,
+  isWordMatched,
 }: {
   segments: [number, number, string][];
   onWordClick: (wordEl: HTMLElement, segment: [number, number, string]) => void;
+  isWordMatched: (word: string) => boolean;
 }) {
   return (
     <p className="text-sm text-zinc-300 leading-relaxed mb-2">
@@ -169,7 +181,13 @@ function SentenceParagraph({
         const words = seg[2].split(/(\s+)/);
         return words.map((w, wi) =>
           w.trim() ? (
-            <WordSpan key={`${si}-${wi}`} word={w} segment={seg} onClick={onWordClick} />
+            <WordSpan
+              key={`${si}-${wi}`}
+              word={w}
+              segment={seg}
+              onClick={onWordClick}
+              matched={isWordMatched(w)}
+            />
           ) : (
             <span key={`${si}-${wi}`}>{w}</span>
           ),
@@ -188,11 +206,13 @@ export function TextView({
   onAddEffect,
   onSeekTo,
   formatTime,
+  isWordMatched,
 }: {
   segments: [number, number, string][];
   onAddEffect: (start: number) => void;
   onSeekTo: (time: number) => void;
   formatTime: (s: number) => string;
+  isWordMatched: (word: string) => boolean;
 }) {
   const [tooltip, setTooltip] = useState<{
     segment: [number, number, string];
@@ -268,7 +288,7 @@ export function TextView({
   return (
     <div className="pt-2">
       {sentenceGroups.map((group, gi) => (
-        <SentenceParagraph key={gi} segments={group} onWordClick={handleWordClick} />
+        <SentenceParagraph key={gi} segments={group} onWordClick={handleWordClick} isWordMatched={isWordMatched} />
       ))}
 
       {tooltip && (
