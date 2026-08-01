@@ -1,16 +1,16 @@
 # Graph Report - obrez-ts  (2026-08-01)
 
 ## Corpus Check
-- 91 files · ~124,578 words
+- 91 files · ~125,979 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 561 nodes · 909 edges · 58 communities (43 shown, 15 thin omitted)
+- 571 nodes · 932 edges · 58 communities (43 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `cecae6d1`
+- Built from commit: `092d5303`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -66,19 +66,19 @@
 7. `exportCensoredVideo()` - 12 edges
 8. `API Reference` - 12 edges
 9. `FastAhoScanner` - 11 edges
-10. `WritableBuffer` - 10 edges
+10. `openDb()` - 10 edges
 
 ## Surprising Connections (you probably didn't know these)
 - `ProgressBarInner()` --calls--> `formatSeconds()`  [INFERRED]
   src/features/player/ProgressBar.tsx → src/utils/auth.ts
-- `TranscribeProgress()` --calls--> `usePlayerStore`  [EXTRACTED]
-  src/features/transcription/TranscriptionResults.tsx → src/store/playerStore.ts
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Muted - Speaker with X Overlay`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-1-icon.svg
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Low - Speaker with Single Arc`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-2-icon.svg
 - `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume High - Speaker with Double Arc`  [INFERRED] [semantically similar]
   public/assets/volume-0-icon.svg → public/assets/volume-off-icon.svg
+- `Volume Zero - Speaker Icon (No Sound Waves)` --semantically_similar_to--> `Volume Muted - Speaker with Arcs and Diagonal Slash`  [INFERRED] [semantically similar]
+  public/assets/volume-0-icon.svg → public/assets/volume-x-icon.svg
 
 ## Import Cycles
 - None detected.
@@ -93,16 +93,16 @@
 ## Communities (58 total, 15 thin omitted)
 
 ### Community 0 - "Community 0"
-Cohesion: 0.12
-Nodes (23): DEFAULT_DICTIONARIES, useMediaPlayer(), createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, audioBuffersToWav(), WavProgress, writeString() (+15 more)
+Cohesion: 0.11
+Nodes (24): MediaPlayerProvider(), DEFAULT_DICTIONARIES, DictionaryManager, useMediaPlayer(), createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, audioBuffersToWav() (+16 more)
 
 ### Community 1 - "Package Dependencies"
 Cohesion: 0.05
 Nodes (40): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabunny, node-web-audio-api, react (+32 more)
 
 ### Community 2 - "Dictionary + Aho-Corasick"
-Cohesion: 0.14
-Nodes (22): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+14 more)
+Cohesion: 0.22
+Nodes (13): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+5 more)
 
 ### Community 3 - "Bleep Sounds + Icons"
 Cohesion: 0.14
@@ -117,12 +117,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, esModuleInterop, forceConsistentCasingInFileNames, jsx, lib, module, moduleResolution, outDir (+8 more)
 
 ### Community 6 - "Backend Config + Server"
-Cohesion: 0.08
-Nodes (37): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner() (+29 more)
+Cohesion: 0.10
+Nodes (32): ActionButtons, MediaPlayerContext, useMediaPlayerContext(), DictionaryManagerInner(), ExportButton, ExportButtonInner(), ExportProgressBar(), HeaderExportButton (+24 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.08
-Nodes (13): ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps, TextView(), findClosestSegment(), parseStage() (+5 more)
+Cohesion: 0.07
+Nodes (15): useProposedTimeBlink(), ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps, TextView(), findClosestSegment() (+7 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -149,8 +149,8 @@ Cohesion: 0.24
 Nodes (8): build(), buildVersion(), clients, DIST_DIR, getVersions(), PUBLIC_DIR, server, SRC_DIR
 
 ### Community 27 - "Community 27"
-Cohesion: 0.52
-Nodes (6): clearSession(), getFromStore(), loadSession(), openDb(), saveSession(), StoredSession
+Cohesion: 0.29
+Nodes (13): clearJournal(), clearSession(), deleteJournalEntriesForFile(), deleteJournalEntry(), getFromStore(), journalId(), loadAllJournalEntries(), loadJournalEntries() (+5 more)
 
 ### Community 34 - "Community 34"
 Cohesion: 0.50
@@ -169,8 +169,8 @@ Cohesion: 0.11
 Nodes (17): Ahead Rendering, Audio, audioProcess Callback, Boundary Computation, Codec Selection, Design, Error Handling, Export Pipeline (+9 more)
 
 ### Community 50 - "Community 50"
-Cohesion: 0.13
-Nodes (11): computeSegmentBoundaries(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects(), initProgress(), makeInitialPhases(), pickAudioCodec(), pickVideoCodec() (+3 more)
+Cohesion: 0.07
+Nodes (23): CODEC_LABELS, ExportFormat, ExportModal, ExportModalProps, computeSegmentBoundaries(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects() (+15 more)
 
 ### Community 51 - "Community 51"
 Cohesion: 0.12
@@ -193,7 +193,7 @@ Cohesion: 0.07
 Nodes (40): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal() (+32 more)
 
 ## Knowledge Gaps
-- **208 isolated node(s):** `TabKey`, `TABS`, `VersionInfo`, `SettingsModalProps`, `UserContentProps` (+203 more)
+- **208 isolated node(s):** `CODEC_LABELS`, `ExportFormat`, `TabKey`, `TABS`, `VersionInfo` (+203 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -201,16 +201,16 @@ Nodes (40): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, Conf
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 57`?**
-  _High betweenness centrality (0.035) - this node is a cross-community bridge._
-- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Community 0`, `Backend Config + Server`?**
+  _High betweenness centrality (0.034) - this node is a cross-community bridge._
+- **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Community 0`, `Community 50`, `Backend Config + Server`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `TabKey`, `TABS`, `VersionInfo` to the rest of the system?**
+- **What connects `CODEC_LABELS`, `ExportFormat`, `TabKey` to the rest of the system?**
   _208 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.12096774193548387 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.11363636363636363 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
-- **Should `Dictionary + Aho-Corasick` be split into smaller, more focused modules?**
-  _Cohesion score 0.13548387096774195 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**
   _Cohesion score 0.14153846153846153 - nodes in this community are weakly interconnected._
+- **Should `Community 4` be split into smaller, more focused modules?**
+  _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._

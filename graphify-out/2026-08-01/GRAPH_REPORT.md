@@ -1,7 +1,7 @@
 # Graph Report - obrez-ts  (2026-08-01)
 
 ## Corpus Check
-- 91 files · ~124,556 words
+- 91 files · ~124,578 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ee44a5ba`
+- Built from commit: `cecae6d1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -193,7 +193,7 @@ Cohesion: 0.07
 Nodes (40): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal() (+32 more)
 
 ## Knowledge Gaps
-- **208 isolated node(s):** `SegmentItem`, `rowRendererDeps`, `TranscriptionWord`, `BasicCensoringEffect`, `PaymentInvoice` (+203 more)
+- **208 isolated node(s):** `TabKey`, `TABS`, `VersionInfo`, `SettingsModalProps`, `UserContentProps` (+203 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -204,7 +204,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.035) - this node is a cross-community bridge._
 - **Why does `FastAhoScanner` connect `Dictionary + Aho-Corasick` to `Community 0`, `Backend Config + Server`?**
   _High betweenness centrality (0.008) - this node is a cross-community bridge._
-- **What connects `SegmentItem`, `rowRendererDeps`, `TranscriptionWord` to the rest of the system?**
+- **What connects `TabKey`, `TABS`, `VersionInfo` to the rest of the system?**
   _208 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.12096774193548387 - nodes in this community are weakly interconnected._
