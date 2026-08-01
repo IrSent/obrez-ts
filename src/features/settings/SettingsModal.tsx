@@ -154,12 +154,16 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   }, [onClose]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex flex-col justify-start items-center overflow-y-auto bg-black/60"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
+    <>
+      {/* Backdrop */}
       <div
-        className={`relative flex flex-col mx-4 mt-8 mb-8 w-full max-w-2xl rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW}`}
+        className="fixed inset-0 z-50 bg-black/60"
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      />
+      {/* Modal — fixed, anchored to top */}
+      <div
+        className={`fixed top-0 left-1/2 -translate-x-1/2 z-[51] flex flex-col mx-4 w-full max-w-2xl mt-8 mb-8 rounded-xl bg-zinc-900 overflow-y-auto ${MODAL_SHADOW}`}
+        style={{ maxHeight: 'calc(100vh - 4rem)' }}
       >
         {/* 3D inner bevel highlight */}
         <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
@@ -261,7 +265,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
             )}
           </div>
       </div>
-    </div>
+    </>
   );
 }
 
