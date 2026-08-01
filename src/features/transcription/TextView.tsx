@@ -36,7 +36,7 @@ function WordTooltip({
   onSeekTo,
   onProposeStart,
   onProposeEnd,
-  proposedField,
+  proposedTime,
   formatTime,
 }: {
   segment: [number, number, string];
@@ -47,7 +47,7 @@ function WordTooltip({
   onSeekTo: (time: number) => void;
   onProposeStart: () => void;
   onProposeEnd: () => void;
-  proposedField: 'start' | 'end' | null;
+  proposedTime: number | null;
   formatTime: (s: number) => string;
 }) {
   const [start, end, text] = segment;
@@ -72,7 +72,7 @@ function WordTooltip({
         <button
           onClick={onProposeStart}
           className={`text-left px-2 py-1 rounded transition-colors ${
-            proposedField === 'start'
+            proposedTime === start
               ? 'bg-purple-900/60 text-purple-200 ring-1 ring-purple-500'
               : 'bg-zinc-700 text-zinc-200 hover:bg-zinc-600'
           }`}
@@ -86,7 +86,7 @@ function WordTooltip({
         <button
           onClick={onProposeEnd}
           className={`text-left px-2 py-1 rounded transition-colors ${
-            proposedField === 'end'
+            proposedTime === end
               ? 'bg-purple-900/60 text-purple-200 ring-1 ring-purple-500'
               : 'bg-zinc-700 text-zinc-200 hover:bg-zinc-600'
           }`}
@@ -266,22 +266,22 @@ export function TextView({
   const handleProposeStart = useCallback(() => {
     const segment = tooltip!.segment;
     const pt = usePlayerStore.getState().proposedTime;
-    if (pt?.field === 'start' && pt?.time === segment[0]) {
-      // Cancel: same field, same value
+    if (pt === segment[0]) {
+      // Cancel: same value already proposed
       playerActions.setProposedTime(null);
     } else {
-      playerActions.setProposedTime({ time: segment[0], field: 'start' });
+      playerActions.setProposedTime(segment[0]);
     }
   }, [tooltip]);
 
   const handleProposeEnd = useCallback(() => {
     const segment = tooltip!.segment;
     const pt = usePlayerStore.getState().proposedTime;
-    if (pt?.field === 'end' && pt?.time === segment[1]) {
-      // Cancel: same field, same value
+    if (pt === segment[1]) {
+      // Cancel: same value already proposed
       playerActions.setProposedTime(null);
     } else {
-      playerActions.setProposedTime({ time: segment[1], field: 'end' });
+      playerActions.setProposedTime(segment[1]);
     }
   }, [tooltip]);
 
@@ -301,7 +301,7 @@ export function TextView({
           onSeekTo={onSeekTo}
           onProposeStart={handleProposeStart}
           onProposeEnd={handleProposeEnd}
-          proposedField={proposedTime?.field ?? null}
+          proposedTime={proposedTime}
           formatTime={formatTime}
         />
       )}

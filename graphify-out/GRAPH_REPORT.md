@@ -1,7 +1,7 @@
 # Graph Report - obrez-ts  (2026-07-31)
 
 ## Corpus Check
-- 91 files · ~124,682 words
+- 91 files · ~124,683 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ab4aca39`
+- Built from commit: `5d483143`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 

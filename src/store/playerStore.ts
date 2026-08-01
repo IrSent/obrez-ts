@@ -368,8 +368,8 @@ export const playerActions = {
       importStage: null,
     }),
 
-  // Proposed time actions (Text-view tooltip → Add Word / ProgressBar blink)
-  setProposedTime: (proposedTime: { time: number; field: 'start' | 'end' } | null) =>
+  // Proposed time actions (Text-view tooltip → Add Word blink)
+  setProposedTime: (proposedTime: number | null) =>
     usePlayerStore.setState({ proposedTime }),
 };
 

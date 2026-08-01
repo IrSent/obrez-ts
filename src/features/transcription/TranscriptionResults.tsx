@@ -106,7 +106,7 @@ const SegmentItem = memo(({
   onAddEffect: (start: number) => void;
   onRemoveEffect: (id: string) => void;
   onEditEffect: (effect: SoundCensoringEffect) => void;
-  onProposeTime: (time: number, field: 'start' | 'end') => void;
+  onProposeTime: (time: number) => void;
   formatTime: (seconds: number) => string;
 }) => {
   const hasMatches = triggered.length > 0;
@@ -122,7 +122,7 @@ const SegmentItem = memo(({
         <span
           className="cursor-pointer hover:text-purple-300"
           title={start.toFixed(2) + 's — click to propose as start time'}
-          onClick={(e) => { e.stopPropagation(); onProposeTime(start, 'start'); }}
+          onClick={(e) => { e.stopPropagation(); onProposeTime(start); }}
         >
           {formatTime(start)}
         </span>
@@ -130,7 +130,7 @@ const SegmentItem = memo(({
         <span
           className="cursor-pointer hover:text-purple-300"
           title={end.toFixed(2) + 's — click to propose as end time'}
-          onClick={(e) => { e.stopPropagation(); onProposeTime(end, 'end'); }}
+          onClick={(e) => { e.stopPropagation(); onProposeTime(end); }}
         >
           {formatTime(end)}
         </span>
@@ -223,7 +223,7 @@ const rowRendererDeps = {
   onAddEffect: (_start: number) => {},
   onRemoveEffect: (_id: string) => {},
   onEditEffect: (_effect: SoundCensoringEffect) => {},
-  onProposeTime: (_time: number, _field: 'start' | 'end') => {},
+  onProposeTime: (_time: number) => {},
   formatTime: (_seconds: number) => '',
 };
 
@@ -725,12 +725,12 @@ const TranscriptionResultsInner = () => {
   rowRendererDeps.onAddEffect = (start: number) => setModalSegment(start);
   rowRendererDeps.onRemoveEffect = handleRemoveEffect;
   rowRendererDeps.onEditEffect = (effect: SoundCensoringEffect) => setEditEffect(effect);
-  rowRendererDeps.onProposeTime = (time: number, field: 'start' | 'end') => {
+  rowRendererDeps.onProposeTime = (time: number) => {
     const pt = usePlayerStore.getState().proposedTime;
-    if (pt?.field === field && pt?.time === time) {
+    if (pt === time) {
       playerActions.setProposedTime(null);
     } else {
-      playerActions.setProposedTime({ time, field });
+      playerActions.setProposedTime(time);
     }
   };
   rowRendererDeps.formatTime = formatTime;

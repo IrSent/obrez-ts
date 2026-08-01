@@ -207,8 +207,8 @@ export type PlayerState = {
   /** Whether transcription results panel auto-scrolls on playback */
   autoScroll: boolean;
 
-  /** Proposed time from Text-view tooltip — blinks currentTime + Add Word fields until confirmed */
-  proposedTime: { time: number; field: 'start' | 'end' } | null;
+  /** Proposed time from Text-view tooltip — blinks both Add Word start/end fields until confirmed */
+  proposedTime: number | null;
 };
 
 /**
