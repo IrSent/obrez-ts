@@ -156,7 +156,7 @@ function WordSpan({
   return (
     <span
       ref={ref}
-      className={`cursor-pointer mr-1 ${matched ? 'text-view-word' : ''}`}
+      className={`cursor-pointer mr-1 break-words ${matched ? 'text-view-word' : ''}`}
     >
       {word}
     </span>
