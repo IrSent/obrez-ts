@@ -1904,6 +1904,10 @@
     letter-spacing: var(--tracking-widest);
   }
 
+  .break-words {
+    overflow-wrap: break-word;
+  }
+
   .whitespace-normal {
     white-space: normal;
   }

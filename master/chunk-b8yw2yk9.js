@@ -55322,7 +55322,7 @@ function WordSpan({
   }, [onClick, segment]);
   return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
     ref,
-    className: `cursor-pointer mr-1 ${matched ? "text-view-word" : ""}`,
+    className: `cursor-pointer mr-1 break-words ${matched ? "text-view-word" : ""}`,
     children: word
   }, undefined, false, undefined, this);
 }
@@ -57670,7 +57670,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "200";
+var BUILD_NUM = "201";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -58305,4 +58305,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=6B9C6E62A24327C364756E2164756E21
+//# debugId=51FA9404FCE5DCA764756E2164756E21
