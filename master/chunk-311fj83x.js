@@ -51469,6 +51469,7 @@ function useMediaPlayer() {
       gainNodeRef.current.gain.value = volume ** 2;
     }
     playerActions2.setVolume(volume);
+    localStorage.setItem("obrez_volume", volume.toString());
     if (volume > 0) {
       playerActions2.setIsMuted(false);
     }
@@ -51625,8 +51626,10 @@ function useMediaPlayer() {
         limiter.connect(analyserRef.current);
         analyserRef.current.connect(gainNodeRef.current);
         gainNodeRef.current.connect(audioContextRef.current.destination);
-        gainNodeRef.current.gain.value = 0.5 ** 2;
-        playerActions2.setVolume(0.5);
+        const savedVolume = parseFloat(localStorage.getItem("obrez_volume") ?? "0.5");
+        const initVolume = isNaN(savedVolume) ? 0.5 : savedVolume;
+        gainNodeRef.current.gain.value = initVolume ** 2;
+        playerActions2.setVolume(initVolume);
         bypassGainRef.current = bypassGain;
         stGainRef.current = stGain;
         const stopMonitor = startAudioMonitor(analyserRef.current, audioContextRef.current.sampleRate);
@@ -57863,7 +57866,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "210";
+var BUILD_NUM = "211";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -58576,6 +58579,10 @@ var App = () => {
         localStorage.removeItem("obrez_user");
       }
     }
+    const savedVol = parseFloat(localStorage.getItem("obrez_volume") ?? "");
+    if (!isNaN(savedVol)) {
+      playerActions2.setVolume(savedVol);
+    }
   }, []);
   import_react25.useEffect(() => {
     const params = new URLSearchParams(window.location.search);
@@ -58658,4 +58665,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=6B3859562B39AAC564756E2164756E21
+//# debugId=062E4CF923E7C5D964756E2164756E21
