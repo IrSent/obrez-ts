@@ -154,13 +154,21 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
   }, [onClose]);
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
+    <>
+      {/* Backdrop — just the dim layer */}
       <div
-        className={`relative flex flex-col w-full mx-4 mt-8 mb-8 max-w-2xl rounded-xl bg-zinc-900 ${MODAL_SHADOW}`}
+        className="fixed inset-0 z-50 bg-black/60"
+        onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
+      />
+      {/* Modal — fixed, scrollable content */}
+      <div
+        className={`fixed top-0 left-0 right-0 z-[51] flex justify-center overflow-y-scroll min-h-screen`}
       >
+        <div
+          className={`relative flex flex-col w-full mx-4 mt-8 mb-8 max-w-2xl rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW}`}
+        >
+        {/* 3D inner bevel highlight */}
+        <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
         {/* 3D inner bevel highlight */}
         <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
         {/* Header */}
@@ -260,8 +268,9 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               </div>
             )}
           </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 }
 
