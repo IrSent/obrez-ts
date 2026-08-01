@@ -155,11 +155,11 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/60"
+      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60 min-h-screen"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className={`relative flex flex-col mx-4 mt-8 mb-8 w-full max-w-2xl max-h-[calc(100vh-3rem)] rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW}`}
+        className={`relative flex flex-col overflow-hidden mx-4 mt-8 mb-8 w-full max-w-2xl rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW}`}
       >
         {/* 3D inner bevel highlight */}
         <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
@@ -174,10 +174,8 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           </button>
         </div>
 
-        {/* Content area — scrollable on mobile */}
-        <div className="relative flex-1 min-h-0 overflow-y-auto">
-          {/* Tabs — sticky on top, bg covers scroll content */}
-          <div className="sticky top-0 flex border-b border-zinc-800 px-5 pt-2 gap-2 bg-zinc-900 z-10">
+        {/* Tabs */}
+        <div className="relative flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0">
             {TABS.map((tab) => (
               <button
                 key={tab.key}
@@ -262,7 +260,6 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
               </div>
             )}
           </div>
-        </div>
       </div>
     </div>
   );
