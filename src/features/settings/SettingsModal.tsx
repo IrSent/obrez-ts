@@ -105,16 +105,15 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
     }
   }, [onClose]);
 
-  // Animate on tab change / versions load / unfreeze
+  // Animate on tab change / versions load — read frozenHeight from ref to avoid
+  // cascading re-renders when setFrozenHeight(null) fires in the timeout
   useEffect(() => {
     if (animatingRef.current) return;
 
-    // On unfreeze: nothing to animate — container already fits content
-    if (frozenHeight === null) return;
+    const oldH = frozenHeightRef.current;
+    if (oldH === null) return;
 
     animatingRef.current = true;
-    const oldH = frozenHeightRef.current;
-
     setFrozenHeight(oldH);
     requestAnimationFrame(() => {
       const newH = contentRef.current?.scrollHeight ?? oldH;
@@ -124,7 +123,7 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
         animatingRef.current = false;
       }, 350);
     });
-  }, [activeTab, versions, frozenHeight]);
+  }, [activeTab, versions]);
 
   useEffect(() => {
     if (activeTab !== 'version' || versions) return;
@@ -154,11 +153,11 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60"
+      className="fixed inset-0 z-50 flex items-center justify-center overflow-hidden bg-black/60"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
       <div
-        className={`relative flex flex-col overflow-hidden mx-4 mt-8 mb-8 w-full max-w-2xl rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW}`}
+        className={`relative flex flex-col mx-4 mt-8 mb-8 w-full max-w-2xl max-h-[calc(100dvh-3rem)] rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW}`}
       >
         {/* 3D inner bevel highlight */}
         <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
@@ -173,83 +172,86 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
           </button>
         </div>
 
-        {/* Tabs */}
-        <div className="relative flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0">
-          {TABS.map((tab) => (
-            <button
-              key={tab.key}
-              onClick={() => {
-                if (animatingRef.current) return;
-                // Freeze current height before content swaps — so grow/shrink animates
-                const h = contentRef.current?.scrollHeight ?? frozenHeightRef.current;
-                if (h != null) {
-                  setFrozenHeight(h);
-                  frozenHeightRef.current = h;
-                }
-                if (animTimeoutRef.current) { clearTimeout(animTimeoutRef.current); animTimeoutRef.current = null; }
-                setActiveTab(tab.key);
-              }}
-              title={tab.tooltip}
-              className={`px-3 py-2 text-sm font-medium rounded-t-lg transition-all ${
-                activeTab === tab.key
-                  ? 'bg-zinc-800 text-purple-400 border-b-2 border-purple-500 shadow-[0_-2px_8px_rgba(139,92,246,0.1)]'
-                  : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
-              }`}
-            >
-              {tab.emoji}
-            </button>
-          ))}
-        </div>
+        {/* Content area — scrollable on mobile */}
+        <div className="relative flex-1 min-h-0 overflow-y-auto">
+          {/* Tabs — sticky on top, bg covers scroll content */}
+          <div className="sticky top-0 flex border-b border-zinc-800 px-5 pt-2 gap-2 bg-zinc-900 z-10">
+            {TABS.map((tab) => (
+              <button
+                key={tab.key}
+                onClick={() => {
+                  if (animatingRef.current) return;
+                  // Freeze current height before content swaps — so grow/shrink animates
+                  const h = contentRef.current?.scrollHeight ?? frozenHeightRef.current;
+                  if (h != null) {
+                    setFrozenHeight(h);
+                    frozenHeightRef.current = h;
+                  }
+                  if (animTimeoutRef.current) { clearTimeout(animTimeoutRef.current); animTimeoutRef.current = null; }
+                  setActiveTab(tab.key);
+                }}
+                title={tab.tooltip}
+                className={`px-3 py-2 text-sm font-medium rounded-t-lg transition-all ${
+                  activeTab === tab.key
+                    ? 'bg-zinc-800 text-purple-400 border-b-2 border-purple-500 shadow-[0_-2px_8px_rgba(139,92,246,0.1)]'
+                    : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
+                }`}
+              >
+                {tab.emoji}
+              </button>
+            ))}
+          </div>
 
-        {/* Content — animated height transitions, no max-height / scroll */}
-        <div
-          ref={contentRef}
-          style={frozenHeight != null ? { height: frozenHeight, transition: 'height 300ms ease-in-out' } : undefined}
-        >
-          {activeTab === 'user' && (
-            <div className="p-5">
-              <h3 className="text-sm text-zinc-300 mb-3">
-                Account & Balance <Tooltip text="Manage your Telegram account, check transcription balance, and top up hours." />
-              </h3>
-              <UserContent onClose={onClose} />
-            </div>
-          )}
- {activeTab === 'dictionaries' && (
-            <div className="p-5">
-              <h3 className="text-sm text-zinc-300 mb-3">
-                Word Lists <Tooltip text="Choose which word lists to match against during transcription. Only active lists highlight matched words." />
-              </h3>
-              <DictionaryManager />
-            </div>
-          )}
-          {activeTab === 'bleep' && (
-            <div className="p-5">
-              <h3 className="text-sm text-zinc-300 mb-3">
-                Sound Effects <Tooltip text="Manage bleep and censor sounds. Upload custom audio files or use the default tone." />
-              </h3>
-              <BleepSoundManager />
-            </div>
-          )}
-          {activeTab === 'version' && (
-            <div className="p-5">
-              <h3 className="text-sm text-zinc-300 mb-3">
-                Switch Version <Tooltip text="Switch between master (latest) and stable releases. Useful if master breaks." />
-              </h3>
-              <VersionContent
-                versions={versions}
-                currentVersion={currentVersion}
-                onSelect={handleVersionSelect}
-              />
-            </div>
-          )}
-          {activeTab === 'debug' && (
-            <div className="p-5">
-              <h3 className="text-sm text-zinc-300 mb-3">
-                Debug <Tooltip text="View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string." />
-              </h3>
-              <DebugTab />
-            </div>
-          )}
+          {/* Content — animated height transitions */}
+          <div
+            ref={contentRef}
+            style={frozenHeight != null ? { height: frozenHeight, transition: 'height 300ms ease-in-out' } : undefined}
+          >
+            {activeTab === 'user' && (
+              <div className="p-5">
+                <h3 className="text-sm text-zinc-300 mb-3">
+                  Account & Balance <Tooltip text="Manage your Telegram account, check transcription balance, and top up hours." />
+                </h3>
+                <UserContent onClose={onClose} />
+              </div>
+            )}
+{activeTab === 'dictionaries' && (
+              <div className="p-5">
+                <h3 className="text-sm text-zinc-300 mb-3">
+                  Word Lists <Tooltip text="Choose which word lists to match against during transcription. Only active lists highlight matched words." />
+                </h3>
+                <DictionaryManager />
+              </div>
+            )}
+            {activeTab === 'bleep' && (
+              <div className="p-5">
+                <h3 className="text-sm text-zinc-300 mb-3">
+                  Sound Effects <Tooltip text="Manage bleep and censor sounds. Upload custom audio files or use the default tone." />
+                </h3>
+                <BleepSoundManager />
+              </div>
+            )}
+            {activeTab === 'version' && (
+              <div className="p-5">
+                <h3 className="text-sm text-zinc-300 mb-3">
+                  Switch Version <Tooltip text="Switch between master (latest) and stable releases. Useful if master breaks." />
+                </h3>
+                <VersionContent
+                  versions={versions}
+                  currentVersion={currentVersion}
+                  onSelect={handleVersionSelect}
+                />
+              </div>
+            )}
+            {activeTab === 'debug' && (
+              <div className="p-5">
+                <h3 className="text-sm text-zinc-300 mb-3">
+                  Debug <Tooltip text="View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string." />
+                </h3>
+                <DebugTab />
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
