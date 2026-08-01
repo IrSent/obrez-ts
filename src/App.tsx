@@ -96,6 +96,12 @@ export const App = () => {
         localStorage.removeItem('obrez_user');
       }
     }
+
+    // Restore volume from localStorage
+    const savedVol = parseFloat(localStorage.getItem('obrez_volume') ?? '');
+    if (!isNaN(savedVol)) {
+      playerActions.setVolume(savedVol);
+    }
   }, []);
 
   // OIDC callback: handle Telegram auth code after redirect

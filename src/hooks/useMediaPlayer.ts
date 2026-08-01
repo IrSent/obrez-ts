@@ -1224,6 +1224,7 @@ export function useMediaPlayer() {
       gainNodeRef.current.gain.value = volume ** 2;
     }
     playerActions.setVolume(volume);
+    localStorage.setItem('obrez_volume', volume.toString());
     // Поднимаем mute, если громкость установлена > 0
     if (volume > 0) {
       playerActions.setIsMuted(false);
@@ -1449,8 +1450,10 @@ export function useMediaPlayer() {
         limiter.connect(analyserRef.current);
         analyserRef.current.connect(gainNodeRef.current);
         gainNodeRef.current.connect(audioContextRef.current.destination);
-        gainNodeRef.current.gain.value = 0.5 ** 2;
-        playerActions.setVolume(0.5);
+        const savedVolume = parseFloat(localStorage.getItem('obrez_volume') ?? '0.5');
+        const initVolume = isNaN(savedVolume) ? 0.5 : savedVolume;
+        gainNodeRef.current.gain.value = initVolume ** 2;
+        playerActions.setVolume(initVolume);
 
         // Store refs for speed transition
         bypassGainRef.current = bypassGain;
