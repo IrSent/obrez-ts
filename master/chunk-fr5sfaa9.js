@@ -16908,18 +16908,29 @@ var require_client = __commonJS((exports, module) => {
 var exports_idb = {};
 __export(exports_idb, {
   saveSession: () => saveSession,
+  saveJournalEntry: () => saveJournalEntry,
   loadSession: () => loadSession,
-  clearSession: () => clearSession
+  loadJournalEntries: () => loadJournalEntries,
+  loadAllJournalEntries: () => loadAllJournalEntries,
+  deleteJournalEntry: () => deleteJournalEntry,
+  deleteJournalEntriesForFile: () => deleteJournalEntriesForFile,
+  clearSession: () => clearSession,
+  clearJournal: () => clearJournal
 });
-function openDb2() {
+function openDb2(targetVersion) {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open(DB_NAME2, DB_VERSION2);
+    const request = indexedDB.open(DB_NAME2, targetVersion ?? DB_VERSION2);
     request.onerror = () => reject(request.error);
     request.onsuccess = () => resolve(request.result);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
       if (!db.objectStoreNames.contains(STORE_NAME)) {
         db.createObjectStore(STORE_NAME);
+      }
+      if (!db.objectStoreNames.contains(JOURNAL_STORE)) {
+        const journal = db.createObjectStore(JOURNAL_STORE, { keyPath: "id" });
+        journal.createIndex("fileName", "fileName", { unique: false });
+        journal.createIndex("fileKey", ["fileName", "fileSize"], { unique: false });
       }
     };
   });
@@ -16952,7 +16963,61 @@ async function clearSession() {
   store.delete("session");
   await tx.complete;
 }
-var DB_NAME2 = "obrez-state", DB_VERSION2 = 1, STORE_NAME = "session";
+function journalId() {
+  return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
+}
+async function saveJournalEntry(entry) {
+  const full = { ...entry, id: journalId(), savedAt: Date.now() };
+  const db = await openDb2();
+  const tx = db.transaction(JOURNAL_STORE, "readwrite");
+  tx.objectStore(JOURNAL_STORE).add(full);
+  await tx.complete;
+  return full;
+}
+async function loadJournalEntries(fileName, fileSize) {
+  const db = await openDb2();
+  const tx = db.transaction(JOURNAL_STORE, "readonly");
+  const store = tx.objectStore(JOURNAL_STORE);
+  const index = store.index("fileKey");
+  return new Promise((resolve, reject) => {
+    const request = index.getAll([fileName, fileSize]);
+    request.onsuccess = () => resolve(request.result ?? []);
+    request.onerror = () => reject(request.error);
+  });
+}
+async function loadAllJournalEntries() {
+  const db = await openDb2();
+  const tx = db.transaction(JOURNAL_STORE, "readonly");
+  const store = tx.objectStore(JOURNAL_STORE);
+  return new Promise((resolve, reject) => {
+    const request = store.getAll();
+    request.onsuccess = () => resolve(request.result ?? []);
+    request.onerror = () => reject(request.error);
+  });
+}
+async function deleteJournalEntry(id) {
+  const db = await openDb2();
+  const tx = db.transaction(JOURNAL_STORE, "readwrite");
+  tx.objectStore(JOURNAL_STORE).delete(id);
+  await tx.complete;
+}
+async function deleteJournalEntriesForFile(fileName, fileSize) {
+  const entries = await loadJournalEntries(fileName, fileSize);
+  const db = await openDb2();
+  const tx = db.transaction(JOURNAL_STORE, "readwrite");
+  const store = tx.objectStore(JOURNAL_STORE);
+  for (const entry of entries) {
+    store.delete(entry.id);
+  }
+  await tx.complete;
+}
+async function clearJournal() {
+  const db = await openDb2();
+  const tx = db.transaction(JOURNAL_STORE, "readwrite");
+  tx.objectStore(JOURNAL_STORE).clear();
+  await tx.complete;
+}
+var DB_NAME2 = "obrez-state", DB_VERSION2 = 2, STORE_NAME = "session", JOURNAL_STORE = "journal";
 
 // node_modules/react/cjs/react-jsx-dev-runtime.development.js
 var require_react_jsx_dev_runtime_development = __commonJS((exports) => {
@@ -19976,6 +20041,7 @@ var usePlayerStore = create((set) => ({
   volume: 0.5,
   isMuted: false,
   fileName: "",
+  fileSize: 0,
   error: null,
   warning: null,
   isEnded: false,
@@ -20013,6 +20079,7 @@ var playerActions2 = {
   setVolume: (volume) => usePlayerStore.setState({ volume }),
   setIsMuted: (isMuted) => usePlayerStore.setState({ isMuted }),
   setFileName: (fileName) => usePlayerStore.setState({ fileName }),
+  setFileSize: (fileSize) => usePlayerStore.setState({ fileSize }),
   setError: (error) => usePlayerStore.setState({ error }),
   setWarning: (warning) => usePlayerStore.setState({ warning }),
   setIsEnded: (isEnded) => usePlayerStore.setState({ isEnded }),
@@ -20038,6 +20105,23 @@ var playerActions2 = {
         transcriptionResults: results,
         duration: state.duration || null
       }).catch((err) => console.error("Failed to save session (transcription):", err));
+      (async () => {
+        try {
+          const { saveJournalEntry: saveJournalEntry2 } = await Promise.resolve().then(() => exports_idb);
+          const session = await (await Promise.resolve().then(() => exports_idb)).loadSession();
+          const fileSize = session?.fileBlob?.size ?? 0;
+          await saveJournalEntry2({
+            fileName: state.fileName,
+            fileSize,
+            transcriptionResults: results,
+            censoringEffects: state.censoringEffects ?? [],
+            duration: state.duration ?? 0,
+            method: "transcribe"
+          });
+        } catch (err) {
+          console.error("Failed to save journal entry:", err);
+        }
+      })();
     }
   },
   setCensoringEffects: (effects) => {
@@ -53300,6 +53384,7 @@ var ActionButtonsInner = () => {
     if (!file)
       return;
     actions.setFileName(file.name);
+    actions.setFileSize(file.size);
     actions.setError(null);
     actions.setWarning(null);
     actions.setTranscriptionResults(null);
@@ -53335,6 +53420,7 @@ var ActionButtonsInner = () => {
       if (!response.ok)
         throw new Error(`HTTP ${response.status}`);
       const blob = await response.blob();
+      actions.setFileSize(blob.size);
       await saveSession({
         fileName: url2,
         fileBlob: blob,
@@ -53355,6 +53441,7 @@ var ActionButtonsInner = () => {
   const confirmUnload = async () => {
     setShowUnloadConfirm(false);
     actions.setFileName("");
+    actions.setFileSize(0);
     actions.setError(null);
     actions.setWarning(null);
     actions.setIsEnded(false);
@@ -55774,6 +55861,24 @@ var TranscriptionResultsInner = () => {
   const [searchQuery, setSearchQuery] = import_react19.useState("");
   const [wordsTab, setWordsTab] = import_react19.useState("list");
   const autoScroll = usePlayerStore((state) => state.autoScroll);
+  const fileName = usePlayerStore((state) => state.fileName);
+  const fileSize = usePlayerStore((state) => state.fileSize);
+  const [journalEntries, setJournalEntries] = import_react19.useState([]);
+  import_react19.useEffect(() => {
+    if (!fileName || !fileSize) {
+      setJournalEntries([]);
+      return;
+    }
+    (async () => {
+      try {
+        const { loadJournalEntries: loadJournalEntries2 } = await Promise.resolve().then(() => exports_idb);
+        const entries = await loadJournalEntries2(fileName, fileSize);
+        setJournalEntries(entries);
+      } catch (err) {
+        console.error("Failed to load journal entries:", err);
+      }
+    })();
+  }, [fileName, fileSize]);
   const [modalSegment, setModalSegment] = import_react19.useState(null);
   const [editEffect, setEditEffect] = import_react19.useState(null);
   const [addWordStart, setAddWordStart] = import_react19.useState("");
@@ -55878,8 +55983,8 @@ var TranscriptionResultsInner = () => {
       };
       jsonExportWorker.onerror = (ev) => reject(new Error(ev.message));
     });
-    const fileName = usePlayerStore.getState().fileName || "transcription";
-    const baseName = fileName.replace(/\.[^.]+$/, "");
+    const fileName2 = usePlayerStore.getState().fileName || "transcription";
+    const baseName = fileName2.replace(/\.[^.]+$/, "");
     const blob = new Blob([text], { type: "application/json" });
     const url2 = URL.createObjectURL(blob);
     const a = document.createElement("a");
@@ -55923,6 +56028,19 @@ var TranscriptionResultsInner = () => {
       actions.setImportStage(`Importing effects... ${effects.length} sound effects`);
       actions.setCensoringEffects(effects);
       await new Promise((r) => requestAnimationFrame(r));
+      try {
+        const { saveJournalEntry: saveJournalEntry2 } = await Promise.resolve().then(() => exports_idb);
+        await saveJournalEntry2({
+          fileName: file.name,
+          fileSize: file.size,
+          transcriptionResults: results,
+          censoringEffects: effects,
+          duration: actions.duration ?? 0,
+          method: "import"
+        });
+      } catch (err) {
+        console.error("Failed to save journal entry (import):", err);
+      }
       await new Promise((r) => setTimeout(r, 200));
       actions.setImportStage("Done ✓");
       setError(null);
@@ -56300,6 +56418,32 @@ var TranscriptionResultsInner = () => {
           }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this),
+      journalEntries.length > 0 && /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+        className: "mb-3",
+        children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV(BorderedSection, {
+          title: "Saved Transcriptions",
+          children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+            className: "space-y-2",
+            children: journalEntries.map((entry) => /* @__PURE__ */ jsx_dev_runtime15.jsxDEV(JournalEntryRow, {
+              entry,
+              onLoad: () => {
+                actions.setTranscriptionResults(entry.transcriptionResults);
+                actions.setCensoringEffects(entry.censoringEffects);
+                actions.setDuration(entry.duration);
+              },
+              onDelete: async () => {
+                try {
+                  const { deleteJournalEntry: deleteJournalEntry2 } = await Promise.resolve().then(() => exports_idb);
+                  await deleteJournalEntry2(entry.id);
+                  setJournalEntries((prev) => prev.filter((e) => e.id !== entry.id));
+                } catch (err) {
+                  console.error("Failed to delete journal entry:", err);
+                }
+              }
+            }, entry.id, false, undefined, this))
+          }, undefined, false, undefined, this)
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
         className: "mb-3",
         children: /* @__PURE__ */ jsx_dev_runtime15.jsxDEV(BorderedSection, {
@@ -56499,6 +56643,55 @@ var TranscriptionResultsInner = () => {
   }, undefined, true, undefined, this);
 };
 var TranscriptionResults = import_react19.memo(TranscriptionResultsInner);
+function JournalEntryRow({
+  entry,
+  onLoad,
+  onDelete
+}) {
+  const date = new Date(entry.savedAt);
+  const dateStr = date.toLocaleDateString(undefined, {
+    month: "short",
+    day: "numeric",
+    year: date.getFullYear() !== new Date().getFullYear() ? "numeric" : undefined
+  });
+  const timeStr = date.toLocaleTimeString(undefined, {
+    hour: "2-digit",
+    minute: "2-digit"
+  });
+  return /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("div", {
+    className: "flex items-center gap-2 text-xs bg-zinc-700/60 rounded-lg px-3 py-2",
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("span", {
+        className: `shrink-0 w-5 h-5 flex items-center justify-center rounded ${entry.method === "transcribe" ? "bg-purple-900/60 text-purple-300" : "bg-blue-900/60 text-blue-300"}`,
+        title: entry.method === "transcribe" ? "Transcribed" : "Imported",
+        children: entry.method === "transcribe" ? "\uD83C\uDF99" : "\uD83D\uDCC2"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("span", {
+        className: "flex-1 min-w-0 text-zinc-300",
+        children: [
+          dateStr,
+          " ",
+          timeStr,
+          " · ",
+          entry.transcriptionResults.length,
+          " segments"
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("button", {
+        onClick: onLoad,
+        className: "shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-100 px-2 py-1 rounded transition-colors",
+        title: "Load this transcription",
+        children: "Load"
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("button", {
+        onClick: onDelete,
+        className: "shrink-0 bg-red-900/50 hover:bg-red-800/60 text-red-300 px-2 py-1 rounded transition-colors",
+        title: "Delete this saved transcription",
+        children: "✕"
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
+}
 
 // src/features/transcription/ImportProgressModal.tsx
 var import_react20 = __toESM(require_react(), 1);
@@ -57670,7 +57863,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "201";
+var BUILD_NUM = "202";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57719,6 +57912,7 @@ var TABS = [
   { key: "dictionaries", emoji: "\uD83D\uDCDA", tooltip: "Dictionaries" },
   { key: "bleep", emoji: "\uD83D\uDD0A", tooltip: "Bleep Sounds" },
   { key: "version", emoji: "\uD83D\uDD04", tooltip: "Version" },
+  { key: "journal", emoji: "\uD83D\uDCCB", tooltip: "Transcription Journal" },
   { key: "debug", emoji: "\uD83D\uDC1B", tooltip: "Debug" }
 ];
 var MODAL_SHADOW2 = "shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)]";
@@ -57894,6 +58088,21 @@ function SettingsModal({ onClose }) {
                       currentVersion,
                       onSelect: handleVersionSelect
                     }, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                activeTab === "journal" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                  className: "p-5",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                      className: "text-sm text-zinc-300 mb-3",
+                      children: [
+                        "Transcription Journal ",
+                        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                          text: "All saved transcriptions, grouped by file. Load or delete past sessions."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(JournalContent, {}, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
                 activeTab === "debug" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
@@ -58149,6 +58358,145 @@ function VersionContent({ versions, currentVersion, onSelect }) {
     }, v, true, undefined, this))
   }, undefined, false, undefined, this);
 }
+function JournalContent() {
+  const [entries, setEntries] = import_react24.useState([]);
+  const [loading, setLoading] = import_react24.useState(true);
+  import_react24.useEffect(() => {
+    (async () => {
+      try {
+        const { loadAllJournalEntries: loadAllJournalEntries2 } = await Promise.resolve().then(() => exports_idb);
+        const all = await loadAllJournalEntries2();
+        setEntries(all.sort((a, b) => b.savedAt - a.savedAt));
+      } catch (err) {
+        console.error("Failed to load journal:", err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+  const handleDeleteAll = async () => {
+    if (!confirm("Delete all journal entries?"))
+      return;
+    try {
+      const { clearJournal: clearJournal2 } = await Promise.resolve().then(() => exports_idb);
+      await clearJournal2();
+      setEntries([]);
+    } catch (err) {
+      console.error("Failed to clear journal:", err);
+    }
+  };
+  const handleDeleteFile = async (fileName, fileSize) => {
+    if (!confirm(`Delete all entries for "${fileName}"?`))
+      return;
+    try {
+      const { deleteJournalEntriesForFile: deleteJournalEntriesForFile2 } = await Promise.resolve().then(() => exports_idb);
+      await deleteJournalEntriesForFile2(fileName, fileSize);
+      setEntries((prev) => prev.filter((e) => !(e.fileName === fileName && e.fileSize === fileSize)));
+    } catch (err) {
+      console.error("Failed to delete file entries:", err);
+    }
+  };
+  const handleDeleteEntry = async (id) => {
+    try {
+      const { deleteJournalEntry: deleteJournalEntry2 } = await Promise.resolve().then(() => exports_idb);
+      await deleteJournalEntry2(id);
+      setEntries((prev) => prev.filter((e) => e.id !== id));
+    } catch (err) {
+      console.error("Failed to delete entry:", err);
+    }
+  };
+  if (loading)
+    return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+      className: "text-xs text-zinc-500 py-4",
+      children: "Loading journal..."
+    }, undefined, false, undefined, this);
+  if (entries.length === 0) {
+    return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+      className: "text-xs text-zinc-500 py-4",
+      children: "No saved transcriptions yet."
+    }, undefined, false, undefined, this);
+  }
+  const groups = new Map;
+  for (const entry of entries) {
+    const key = `${entry.fileName}|||${entry.fileSize}`;
+    const existing = groups.get(key) ?? [];
+    existing.push(entry);
+    groups.set(key, existing);
+  }
+  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+    className: "space-y-4",
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+        className: "flex justify-end",
+        children: /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+          onClick: handleDeleteAll,
+          className: "text-[10px] bg-red-900/40 hover:bg-red-800/50 text-red-300 px-2 py-1 rounded transition-colors",
+          children: "Delete All"
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
+      Array.from(groups.entries()).map(([key, fileEntries]) => {
+        const fileName = fileEntries[0].fileName;
+        return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+          className: "bg-zinc-700/40 rounded-lg p-3 space-y-2",
+          children: [
+            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+              className: "flex items-center justify-between",
+              children: [
+                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("span", {
+                  className: "text-xs font-semibold text-zinc-200 truncate mr-2",
+                  children: fileName
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+                  onClick: () => handleDeleteFile(fileName, fileEntries[0].fileSize),
+                  className: "shrink-0 text-[10px] bg-zinc-600 hover:bg-red-800/50 text-zinc-300 hover:text-red-300 px-2 py-0.5 rounded transition-colors",
+                  children: "Delete all for this file"
+                }, undefined, false, undefined, this)
+              ]
+            }, undefined, true, undefined, this),
+            fileEntries.map((entry) => {
+              const date = new Date(entry.savedAt);
+              const dateStr = date.toLocaleDateString(undefined, {
+                month: "short",
+                day: "numeric"
+              });
+              const timeStr = date.toLocaleTimeString(undefined, {
+                hour: "2-digit",
+                minute: "2-digit"
+              });
+              return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                className: "flex items-center gap-2 text-xs bg-zinc-800/60 rounded px-2 py-1.5",
+                children: [
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("span", {
+                    className: `shrink-0 w-4 h-4 flex items-center justify-center rounded text-[10px] ${entry.method === "transcribe" ? "bg-purple-900/60 text-purple-300" : "bg-blue-900/60 text-blue-300"}`,
+                    title: entry.method === "transcribe" ? "Transcribed" : "Imported",
+                    children: entry.method === "transcribe" ? "T" : "I"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("span", {
+                    className: "flex-1 min-w-0 text-zinc-400",
+                    children: [
+                      dateStr,
+                      " ",
+                      timeStr,
+                      " · ",
+                      entry.transcriptionResults.length,
+                      " segments"
+                    ]
+                  }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+                    onClick: () => handleDeleteEntry(entry.id),
+                    className: "shrink-0 text-zinc-500 hover:text-red-400 transition-colors",
+                    title: "Delete",
+                    children: "✕"
+                  }, undefined, false, undefined, this)
+                ]
+              }, entry.id, true, undefined, this);
+            })
+          ]
+        }, key, true, undefined, this);
+      })
+    ]
+  }, undefined, true, undefined, this);
+}
 
 // src/App.tsx
 var jsx_dev_runtime22 = __toESM(require_jsx_dev_runtime(), 1);
@@ -58305,4 +58653,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=51FA9404FCE5DCA764756E2164756E21
+//# debugId=CBCCC2BAA132544364756E2164756E21
