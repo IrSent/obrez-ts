@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 561 nodes, 909 edges, 58 communities. Commit: ee44a5b</p>
+<p class="subtitle">Generated from graphify knowledge graph: 561 nodes, 909 edges, 58 communities. Commit: cecae6d</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -122,11 +122,11 @@ flowchart LR
     SERVE_API_35EC8E86 -->|imports x21| OUTPUTS_DOCS_ED82387C
     SERVE_API_35EC8E86 -->|imports x17| INGEST_CACHE_UPDATE_FF457338
     COMMUNITY_7_989501FC -->|imports x14| OUTPUTS_DOCS_ED82387C
-    OUTPUTS_DOCS_ED82387C -->|imports x12| COMMUNITY_57_508B74B3
+    COMMUNITY_57_508B74B3 -->|imports x10| OUTPUTS_DOCS_ED82387C
     COMMUNITY_7_989501FC -->|imports x10| COMMUNITY_57_508B74B3
-    SERVE_API_35EC8E86 -->|imports x8| COMMUNITY_57_508B74B3
+    OUTPUTS_DOCS_ED82387C -->|imports x10| COMMUNITY_57_508B74B3
     COMMUNITY_57_508B74B3 -->|imports x8| INGEST_CACHE_UPDATE_FF457338
-    COMMUNITY_57_508B74B3 -->|imports x8| OUTPUTS_DOCS_ED82387C
+    SERVE_API_35EC8E86 -->|imports x7| COMMUNITY_57_508B74B3
     INGEST_CACHE_UPDATE_FF457338 -->|imports x5| OUTPUTS_DOCS_ED82387C
     OUTPUTS_DOCS_ED82387C -->|imports x4| SERVE_API_35EC8E86
     COMMUNITY_7_989501FC -->|imports x4| SERVE_API_35EC8E86
@@ -2121,6 +2121,10 @@ flowchart LR
         auth_confirmationmodal_confirmationmodal_8b7e668a("ConfirmationModal()<br/><small>features/auth/ConfirmationModal.tsx</small>")
         auth_confirmationmodal_formatduration_1ba061e3("formatDuration()<br/><small>features/auth/ConfirmationModal.tsx</small>")
     end
+    subgraph community_57_features_auth_PaymentModal_tsx_587a984d["features/auth/PaymentModal.tsx"]
+        auth_paymentmodal_32cf67c1("PaymentModal.tsx")
+        auth_paymentmodal_paymentmodal_970b6a3f("PaymentModal()<br/><small>features/auth/PaymentModal.tsx</small>")
+    end
     subgraph community_57_features_auth_TopupModal_tsx_54269f56["features/auth/TopupModal.tsx"]
         auth_topupmodal_5fbdbcde("TopupModal.tsx")
         auth_topupmodal_topupmodal_4bc16812("TopupModal()<br/><small>features/auth/TopupModal.tsx</small>")
@@ -2130,10 +2134,8 @@ flowchart LR
         settings_settingsmodal_usercontent_d2a4d459("UserContent()<br/><small>features/settings/SettingsModal.tsx</small>")
     end
     auth_loginmodal_loginmodal_992d0af3("LoginModal()<br/><small>features/auth/LoginModal.tsx</small>")
-    auth_paymentmodal_paymentmodal_970b6a3f("PaymentModal()<br/><small>features/auth/PaymentModal.tsx</small>")
     debug_debugtab_debugtab_ba9945b9("DebugTab()<br/><small>features/debug/DebugTab.tsx</small>")
     store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
-    types_index_hourpacktype_aff69f52("HourPackType<br/><small>src/types/index.ts</small>")
     utils_pkce_browser_generatecodechallenge_6cf9cdc6("generateCodeChallenge()<br/><small>src/utils/pkce-browser.ts</small>")
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| store_authstore_useauthstore_4a03c2d9
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
@@ -2151,15 +2153,15 @@ flowchart LR
     store_authstore_useauthstore_4a03c2d9 -->|calls| auth_loginmodal_loginmodal_992d0af3
     store_authstore_useauthstore_4a03c2d9 -->|calls| debug_debugtab_debugtab_ba9945b9
     auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
-    types_index_hourpacktype_aff69f52 -->|imports| auth_topupmodal_5fbdbcde
-    types_index_hourpacktype_aff69f52 -->|imports| settings_settingsmodal_68a86dc6
     settings_settingsmodal_68a86dc6 -->|imports| auth_loginmodal_loginmodal_992d0af3
+    settings_settingsmodal_68a86dc6 -->|imports| auth_paymentmodal_32cf67c1
     settings_settingsmodal_68a86dc6 -->|imports| auth_paymentmodal_paymentmodal_970b6a3f
     settings_settingsmodal_68a86dc6 -->|imports| debug_debugtab_debugtab_ba9945b9
     settings_settingsmodal_68a86dc6 -->|imports| store_authstore_useauthstore_4a03c2d9
     settings_settingsmodal_68a86dc6 -->|imports| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_68a86dc6 -->|imports| utils_auth_daysuntilfreetopup_c93d63d8
-    %% Omitted for readability: 42 nodes, 12 edges
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_formatseconds_cdef2b69
+    %% Omitted for readability: 42 nodes, 13 edges
     class action_buttons_actionbuttons_78ab3197 ui;
     class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
     class action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 ui;
@@ -2168,15 +2170,15 @@ flowchart LR
     class utils_auth_formatseconds_cdef2b69 function;
     class auth_confirmationmodal_confirmationmodal_8b7e668a ui;
     class auth_confirmationmodal_formatduration_1ba061e3 ui;
+    class auth_paymentmodal_32cf67c1 ui;
+    class auth_paymentmodal_paymentmodal_970b6a3f ui;
     class auth_topupmodal_5fbdbcde ui;
     class auth_topupmodal_topupmodal_4bc16812 ui;
     class settings_settingsmodal_68a86dc6 ui;
     class settings_settingsmodal_usercontent_d2a4d459 ui;
     class auth_loginmodal_loginmodal_992d0af3 ui;
-    class auth_paymentmodal_paymentmodal_970b6a3f ui;
     class debug_debugtab_debugtab_ba9945b9 ui;
     class store_authstore_useauthstore_4a03c2d9 ui;
-    class types_index_hourpacktype_aff69f52 klass;
     class utils_pkce_browser_generatecodechallenge_6cf9cdc6 function;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
     classDef api fill:#450a0a,stroke:#f87171,color:#fee2e2,stroke-width:1px;
@@ -2201,30 +2203,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>AuthUser node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>HourPackCard.tsx</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small><br><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small><br>+1 more</td>
-  <td>HourPackType node in src/types/index.ts.</td>
-</tr>
-<tr>
-  <td>3</td>
   <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+14 more</td>
+  <td>External entry / no inbound edge</td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+15 more</td>
   <td>Module file in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>2</td>
   <td><code>Tooltip()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2232,7 +2218,7 @@ flowchart LR
   <td>Tooltip() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>3</td>
   <td><code>TabKey</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2240,7 +2226,7 @@ flowchart LR
   <td>TabKey node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>4</td>
   <td><code>TABS</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2248,7 +2234,7 @@ flowchart LR
   <td>TABS node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>5</td>
   <td><code>VersionInfo</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2256,7 +2242,7 @@ flowchart LR
   <td>VersionInfo node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>6</td>
   <td><code>SettingsModalProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2264,7 +2250,7 @@ flowchart LR
   <td>SettingsModalProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>7</td>
   <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2272,7 +2258,7 @@ flowchart LR
   <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>8</td>
   <td><code>UserContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2280,7 +2266,7 @@ flowchart LR
   <td>UserContentProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>9</td>
   <td><code>UserContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2288,7 +2274,7 @@ flowchart LR
   <td>UserContent() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>10</td>
   <td><code>VersionContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2296,12 +2282,28 @@ flowchart LR
   <td>VersionContentProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>11</td>
   <td><code>VersionContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>VersionContent() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>AuthUser</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>AuthUser node in src/types/index.ts.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>HourPackType</code><br><small style="color:var(--muted)">src/types/index.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
+  <td><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>HourPackCard.tsx</code><br><small style="color:var(--muted)">features/settings/HourPackCard.tsx</small><br><code>TopupModal.tsx</code><br><small style="color:var(--muted)">features/auth/TopupModal.tsx</small></td>
+  <td>HourPackType node in src/types/index.ts.</td>
 </tr>
 <tr>
   <td>14</td>
@@ -3882,7 +3884,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-08-01 07:23 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-08-01 10:18 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

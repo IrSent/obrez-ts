@@ -5,6 +5,7 @@ import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
 import { DebugTab } from '../debug/DebugTab';
 import { APP_VERSION } from '../../version';
 import { useAuthStore } from '../../store/authStore';
+import type { JournalEntry } from '../../utils/idb';
 import { HourPackCard, HOUR_PACKS, CurrencySelector } from './HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 import { LoginModal } from '../auth/LoginModal';
@@ -60,13 +61,14 @@ function Tooltip({ text }: { text: string }) {
   );
 }
 
-type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version' | 'debug';
+type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version' | 'debug' | 'journal';
 
 const TABS: { key: TabKey; emoji: string; tooltip: string }[] = [
   { key: 'user', emoji: '👤', tooltip: 'Account & Balance' },
     { key: 'dictionaries', emoji: '📚', tooltip: 'Dictionaries' },
   { key: 'bleep', emoji: '🔊', tooltip: 'Bleep Sounds' },
   { key: 'version', emoji: '🔄', tooltip: 'Version' },
+  { key: 'journal', emoji: '📋', tooltip: 'Transcription Journal' },
   { key: 'debug', emoji: '🐛', tooltip: 'Debug' },
 ];
 
@@ -241,6 +243,14 @@ export function SettingsModal({ onClose }: SettingsModalProps) {
                   currentVersion={currentVersion}
                   onSelect={handleVersionSelect}
                 />
+              </div>
+            )}
+            {activeTab === 'journal' && (
+              <div className="p-5">
+                <h3 className="text-sm text-zinc-300 mb-3">
+                  Transcription Journal <Tooltip text="All saved transcriptions, grouped by file. Load or delete past sessions." />
+                </h3>
+                <JournalContent />
               </div>
             )}
             {activeTab === 'debug' && (
@@ -464,6 +474,156 @@ function VersionContent({ versions, currentVersion, onSelect }: VersionContentPr
           )}
         </button>
       ))}
+    </div>
+  );
+}
+
+// ─── Journal tab ────────────────────────────────────────────
+
+function JournalContent() {
+  const [entries, setEntries] = useState<JournalEntry[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    (async () => {
+      try {
+        const { loadAllJournalEntries } = await import('../../utils/idb');
+        const all = await loadAllJournalEntries();
+        setEntries(all.sort((a, b) => b.savedAt - a.savedAt));
+      } catch (err) {
+        console.error('Failed to load journal:', err);
+      } finally {
+        setLoading(false);
+      }
+    })();
+  }, []);
+
+  const handleDeleteAll = async () => {
+    if (!confirm('Delete all journal entries?')) return;
+    try {
+      const { clearJournal } = await import('../../utils/idb');
+      await clearJournal();
+      setEntries([]);
+    } catch (err) {
+      console.error('Failed to clear journal:', err);
+    }
+  };
+
+  const handleDeleteFile = async (fileName: string, fileSize: number) => {
+    if (!confirm(`Delete all entries for "${fileName}"?`)) return;
+    try {
+      const { deleteJournalEntriesForFile } = await import('../../utils/idb');
+      await deleteJournalEntriesForFile(fileName, fileSize);
+      setEntries((prev) =>
+        prev.filter((e) => !(e.fileName === fileName && e.fileSize === fileSize)),
+      );
+    } catch (err) {
+      console.error('Failed to delete file entries:', err);
+    }
+  };
+
+  const handleDeleteEntry = async (id: string) => {
+    try {
+      const { deleteJournalEntry } = await import('../../utils/idb');
+      await deleteJournalEntry(id);
+      setEntries((prev) => prev.filter((e) => e.id !== id));
+    } catch (err) {
+      console.error('Failed to delete entry:', err);
+    }
+  };
+
+  if (loading) return <div className="text-xs text-zinc-500 py-4">Loading journal...</div>;
+
+  if (entries.length === 0) {
+    return <div className="text-xs text-zinc-500 py-4">No saved transcriptions yet.</div>;
+  }
+
+  // Group by fileName
+  const groups: Map<string, JournalEntry[]> = new Map();
+  for (const entry of entries) {
+    const key = `${entry.fileName}|||${entry.fileSize}`;
+    const existing = groups.get(key) ?? [];
+    existing.push(entry);
+    groups.set(key, existing);
+  }
+
+  return (
+    <div className="space-y-4">
+      {/* Delete all button */}
+      <div className="flex justify-end">
+        <button
+          onClick={handleDeleteAll}
+          className="text-[10px] bg-red-900/40 hover:bg-red-800/50 text-red-300 px-2 py-1 rounded transition-colors"
+        >
+          Delete All
+        </button>
+      </div>
+
+      {/* Grouped entries */}
+      {Array.from(groups.entries()).map(([key, fileEntries]) => {
+        const fileName = fileEntries[0].fileName;
+        return (
+          <div key={key} className="bg-zinc-700/40 rounded-lg p-3 space-y-2">
+            {/* File header */}
+            <div className="flex items-center justify-between">
+              <span className="text-xs font-semibold text-zinc-200 truncate mr-2">
+                {fileName}
+              </span>
+              <button
+                onClick={() => handleDeleteFile(fileName, fileEntries[0].fileSize)}
+                className="shrink-0 text-[10px] bg-zinc-600 hover:bg-red-800/50 text-zinc-300 hover:text-red-300 px-2 py-0.5 rounded transition-colors"
+              >
+                Delete all for this file
+              </button>
+            </div>
+
+            {/* Entries */}
+            {fileEntries.map((entry) => {
+              const date = new Date(entry.savedAt);
+              const dateStr = date.toLocaleDateString(undefined, {
+                month: 'short',
+                day: 'numeric',
+              });
+              const timeStr = date.toLocaleTimeString(undefined, {
+                hour: '2-digit',
+                minute: '2-digit',
+              });
+              return (
+                <div
+                  key={entry.id}
+                  className="flex items-center gap-2 text-xs bg-zinc-800/60 rounded px-2 py-1.5"
+                >
+                  {/* Method icon */}
+                  <span
+                    className={`shrink-0 w-4 h-4 flex items-center justify-center rounded text-[10px] ${
+                      entry.method === 'transcribe'
+                        ? 'bg-purple-900/60 text-purple-300'
+                        : 'bg-blue-900/60 text-blue-300'
+                    }`}
+                    title={entry.method === 'transcribe' ? 'Transcribed' : 'Imported'}
+                  >
+                    {entry.method === 'transcribe' ? 'T' : 'I'}
+                  </span>
+
+                  {/* Date and segment count */}
+                  <span className="flex-1 min-w-0 text-zinc-400">
+                    {dateStr} {timeStr} · {entry.transcriptionResults.length} segments
+                  </span>
+
+                  {/* Delete */}
+                  <button
+                    onClick={() => handleDeleteEntry(entry.id)}
+                    className="shrink-0 text-zinc-500 hover:text-red-400 transition-colors"
+                    title="Delete"
+                  >
+                    ✕
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        );
+      })}
     </div>
   );
 }

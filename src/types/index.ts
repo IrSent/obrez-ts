@@ -150,6 +150,9 @@ export type PlayerState = {
   /** Name of the currently loaded file */
   fileName: string;
 
+  /** Size of the currently loaded file in bytes */
+  fileSize: number;
+
   /** Error message if any */
   error: string | null;
 

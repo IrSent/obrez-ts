@@ -47,6 +47,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 
   // File state
   fileName: '',
+  fileSize: 0,
   error: null,
   warning: null,
   isEnded: false,
@@ -115,6 +116,7 @@ export const playerActions = {
   setVolume: (volume: number) => usePlayerStore.setState({ volume }),
   setIsMuted: (isMuted: boolean) => usePlayerStore.setState({ isMuted }),
   setFileName: (fileName: string) => usePlayerStore.setState({ fileName }),
+  setFileSize: (fileSize: number) => usePlayerStore.setState({ fileSize }),
   setError: (error: string | null) => usePlayerStore.setState({ error }),
   setWarning: (warning: string | null) => usePlayerStore.setState({ warning }),
   setIsEnded: (isEnded: boolean) => usePlayerStore.setState({ isEnded }),
@@ -135,7 +137,7 @@ export const playerActions = {
   },
   /**
    * Set transcription results + transcribing=false + clear stage in one setState.
-   * Also persists to IndexedDB (fire-and-forget).
+   * Also persists to IndexedDB (fire-and-forget) and saves to journal.
    */
   setTranscriptionDone: (results: Array<[number, number, string]>) => {
     usePlayerStore.setState({
@@ -150,6 +152,26 @@ export const playerActions = {
         transcriptionResults: results,
         duration: state.duration || null,
       }).catch((err) => console.error('Failed to save session (transcription):', err));
+
+      // Save to journal (fire-and-forget)
+      (async () => {
+        try {
+          const { saveJournalEntry } = await import('../utils/idb');
+          // Get the file blob from IndexedDB to determine file size
+          const session = await (await import('../utils/idb')).loadSession();
+          const fileSize = session?.fileBlob?.size ?? 0;
+          await saveJournalEntry({
+            fileName: state.fileName,
+            fileSize,
+            transcriptionResults: results,
+            censoringEffects: state.censoringEffects ?? [],
+            duration: state.duration ?? 0,
+            method: 'transcribe',
+          });
+        } catch (err) {
+          console.error('Failed to save journal entry:', err);
+        }
+      })();
     }
   },
   setCensoringEffects: (effects: CensoringEffect[]) => {

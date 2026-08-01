@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import { usePlayerStore, usePlayerActions, playerActions } from '../../store/playerStore';
 import { useAuthStore } from '../../store/authStore';
 import { canFreeTopup } from '../../utils/auth';
+import type { JournalEntry } from '../../utils/idb';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { List, useListRef } from 'react-window';
 import { EffectModal, EffectBadge } from './EffectModal';
@@ -351,6 +352,28 @@ const TranscriptionResultsInner = () => {
   const [wordsTab, setWordsTab] = useState<'list' | 'text'>('list');
   const autoScroll = usePlayerStore((state) => state.autoScroll);
 
+  // Journal entries for the current file
+  const fileName = usePlayerStore((state) => state.fileName);
+  const fileSize = usePlayerStore((state) => state.fileSize);
+  const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+
+  // Load journal entries when file changes
+  useEffect(() => {
+    if (!fileName || !fileSize) {
+      setJournalEntries([]);
+      return;
+    }
+    (async () => {
+      try {
+        const { loadJournalEntries } = await import('../../utils/idb');
+        const entries = await loadJournalEntries(fileName, fileSize);
+        setJournalEntries(entries);
+      } catch (err) {
+        console.error('Failed to load journal entries:', err);
+      }
+    })();
+  }, [fileName, fileSize]);
+
   // Effect modal — add mode
   const [modalSegment, setModalSegment] = useState<number | null>(null);
   // Effect modal — edit mode
@@ -538,6 +561,21 @@ const TranscriptionResultsInner = () => {
       actions.setCensoringEffects(effects);
 
       await new Promise((r) => requestAnimationFrame(r));
+
+      // Save to journal
+      try {
+        const { saveJournalEntry } = await import('../../utils/idb');
+        await saveJournalEntry({
+          fileName: file.name,
+          fileSize: file.size,
+          transcriptionResults: results,
+          censoringEffects: effects,
+          duration: actions.duration ?? 0,
+          method: 'import',
+        });
+      } catch (err) {
+        console.error('Failed to save journal entry (import):', err);
+      }
 
       await new Promise(r => setTimeout(r, 200));
       actions.setImportStage('Done ✓');
@@ -924,6 +962,36 @@ const TranscriptionResultsInner = () => {
         </div>
       )}
 
+      {/* Saved Transcriptions — shown when journal has entries for current file */}
+      {journalEntries.length > 0 && (
+        <div className="mb-3">
+          <BorderedSection title="Saved Transcriptions">
+            <div className="space-y-2">
+              {journalEntries.map((entry) => (
+                <JournalEntryRow
+                  key={entry.id}
+                  entry={entry}
+                  onLoad={() => {
+                    actions.setTranscriptionResults(entry.transcriptionResults);
+                    actions.setCensoringEffects(entry.censoringEffects as CensoringEffect[]);
+                    actions.setDuration(entry.duration);
+                  }}
+                  onDelete={async () => {
+                    try {
+                      const { deleteJournalEntry } = await import('../../utils/idb');
+                      await deleteJournalEntry(entry.id);
+                      setJournalEntries((prev) => prev.filter((e) => e.id !== entry.id));
+                    } catch (err) {
+                      console.error('Failed to delete journal entry:', err);
+                    }
+                  }}
+                />
+              ))}
+            </div>
+          </BorderedSection>
+        </div>
+      )}
+
       <div className="mb-3">
         <BorderedSection title="Filters">
           <div className="flex items-center gap-2 shrink-0">
@@ -1117,3 +1185,67 @@ const TranscriptionResultsInner = () => {
 };
 
 export const TranscriptionResults = memo(TranscriptionResultsInner);
+
+/**
+ * A single journal entry row — shows when/how saved, segment count,
+ * and Load / Delete buttons.
+ */
+function JournalEntryRow({
+  entry,
+  onLoad,
+  onDelete,
+}: {
+  entry: JournalEntry;
+  onLoad: () => void;
+  onDelete: () => void;
+}) {
+  const date = new Date(entry.savedAt);
+  const dateStr = date.toLocaleDateString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    year: date.getFullYear() !== new Date().getFullYear() ? 'numeric' : undefined,
+  });
+  const timeStr = date.toLocaleTimeString(undefined, {
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+
+  return (
+    <div className="flex items-center gap-2 text-xs bg-zinc-700/60 rounded-lg px-3 py-2">
+      {/* Method icon */}
+      <span
+        className={`shrink-0 w-5 h-5 flex items-center justify-center rounded ${
+          entry.method === 'transcribe'
+            ? 'bg-purple-900/60 text-purple-300'
+            : 'bg-blue-900/60 text-blue-300'
+        }`}
+        title={entry.method === 'transcribe' ? 'Transcribed' : 'Imported'}
+      >
+        {entry.method === 'transcribe' ? '🎙' : '📂'}
+      </span>
+
+      {/* Date and segment count */}
+      <span className="flex-1 min-w-0 text-zinc-300">
+        {dateStr} {timeStr} · {entry.transcriptionResults.length} segments
+      </span>
+
+      {/* Load button */}
+      <button
+        onClick={onLoad}
+        className="shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-100 px-2 py-1 rounded transition-colors"
+        title="Load this transcription"
+      >
+        Load
+      </button>
+
+      {/* Delete button */}
+      <button
+        onClick={onDelete}
+        className="shrink-0 bg-red-900/50 hover:bg-red-800/60 text-red-300 px-2 py-1 rounded transition-colors"
+        title="Delete this saved transcription"
+      >
+        ✕
+      </button>
+    </div>
+  );
+}

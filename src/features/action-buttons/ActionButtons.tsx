@@ -93,6 +93,7 @@ const ActionButtonsInner = () => {
     if (!file) return;
 
     actions.setFileName(file.name);
+    actions.setFileSize(file.size);
     actions.setError(null);
     actions.setWarning(null);
     actions.setTranscriptionResults(null);
@@ -134,6 +135,7 @@ const ActionButtonsInner = () => {
       const response = await fetch(url);
       if (!response.ok) throw new Error(`HTTP ${response.status}`);
       const blob = await response.blob();
+      actions.setFileSize(blob.size);
       await saveSession({
         fileName: url,
         fileBlob: blob,
@@ -163,6 +165,7 @@ const ActionButtonsInner = () => {
     // cleanup (and clearRect), a fallback tick between clearRect and setFileName('')
     // draws a lingering frame.
     actions.setFileName('');
+    actions.setFileSize(0);
     actions.setError(null);
     actions.setWarning(null);
     actions.setIsEnded(false);
