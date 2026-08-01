@@ -20006,7 +20006,7 @@ async function hydrateBleepSounds() {
     console.error("Failed to hydrate bleep sounds:", err);
   }
 }
-var playerActions = {
+var playerActions2 = {
   setIsPlaying: (isPlaying) => usePlayerStore.setState({ isPlaying }),
   setCurrentTime: (currentTime) => usePlayerStore.setState({ currentTime }),
   setDuration: (duration) => usePlayerStore.setState({ duration }),
@@ -20207,7 +20207,7 @@ var playerActions = {
   setProposedTime: (proposedTime) => usePlayerStore.setState({ proposedTime })
 };
 function usePlayerActions() {
-  return playerActions;
+  return playerActions2;
 }
 
 // src/utils/audioMonitor.ts
@@ -50494,13 +50494,13 @@ function useTranscribe(deps) {
   const { audioTrackRef, resourceRef, audioSinkRef } = deps;
   const transcribe = import_react2.useCallback(async () => {
     if (!audioTrackRef.current) {
-      playerActions.setError("No audio track available for transcription");
+      playerActions2.setError("No audio track available for transcription");
       return;
     }
     try {
-      playerActions.setError(null);
-      playerActions.setTranscribing(true);
-      playerActions.setTranscribeStage("Collecting audio data…");
+      playerActions2.setError(null);
+      playerActions2.setTranscribing(true);
+      playerActions2.setTranscribeStage("Collecting audio data…");
       const format = usePlayerStore.getState().transcribeFormat;
       const fileName = usePlayerStore.getState().fileName;
       let audioBlob;
@@ -50548,11 +50548,11 @@ function useTranscribe(deps) {
           }
           packetCount++;
           if (packetCount % YIELD_EVERY === 0) {
-            playerActions.setTranscribeStage(`Remuxing audio — ${packetCount} packets`);
+            playerActions2.setTranscribeStage(`Remuxing audio — ${packetCount} packets`);
             await new Promise((r) => setTimeout(r, 0));
           }
         }
-        playerActions.setTranscribeStage(`Remuxing audio — ${packetCount} packets (finalizing…)`);
+        playerActions2.setTranscribeStage(`Remuxing audio — ${packetCount} packets (finalizing…)`);
         await output.finalize();
         const result2 = bufferTarget.buffer;
         if (!result2) {
@@ -50568,12 +50568,12 @@ function useTranscribe(deps) {
         const chunks = [];
         for await (const { buffer } of audioSinkRef.current.buffers(0)) {
           chunks.push(buffer);
-          playerActions.setTranscribeStage(`Collecting audio data… (${chunks.length} chunks)`);
+          playerActions2.setTranscribeStage(`Collecting audio data… (${chunks.length} chunks)`);
         }
-        playerActions.setTranscribeStage(`Encoding WAV — ${chunks.length} chunks to process`);
+        playerActions2.setTranscribeStage(`Encoding WAV — ${chunks.length} chunks to process`);
         audioBlob = await audioBuffersToWav(chunks, audioTrackRef.current.sampleRate, (stage, done, total) => {
           const pct = Math.round(done / total * 100);
-          playerActions.setTranscribeStage(`${stage} — ${done.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`);
+          playerActions2.setTranscribeStage(`${stage} — ${done.toLocaleString()} / ${total.toLocaleString()} (${pct}%)`);
         });
         audioFileName = `${fileName}.wav`;
       }
@@ -50581,14 +50581,14 @@ function useTranscribe(deps) {
       const result = await uploadFile(audioBlob, audioFileName, "/transcribe", (info) => {
         const mbLoaded = fmtBytes(info.loaded);
         const mbTotal = fmtBytes(info.total);
-        playerActions.setTranscribeStage(`Sending to server… ${info.pct}% (${mbLoaded} / ${mbTotal})`);
+        playerActions2.setTranscribeStage(`Sending to server… ${info.pct}% (${mbLoaded} / ${mbTotal})`);
       });
       const { task_id } = result;
-      playerActions.setTranscribeStage("Waiting for transcription…");
+      playerActions2.setTranscribeStage("Waiting for transcription…");
       const waitStart = Date.now();
       const waitInterval = setInterval(() => {
         const secs = Math.floor((Date.now() - waitStart) / 1000);
-        playerActions.setTranscribeStage(`Waiting for server… (${secs}s)`);
+        playerActions2.setTranscribeStage(`Waiting for server… (${secs}s)`);
       }, 1000);
       const socket = new WebSocket(backendWsPath(`/ws/status/${task_id}`));
       await new Promise((resolve, reject) => {
@@ -50596,7 +50596,7 @@ function useTranscribe(deps) {
           clearInterval(waitInterval);
           const msg = JSON.parse(event.data);
           if (msg.status === "PROCESSING") {
-            playerActions.setTranscribing(true);
+            playerActions2.setTranscribing(true);
             const prog = msg.results;
             if (prog && typeof prog === "object" && "progress" in prog) {
               const pct = safePct(prog.progress);
@@ -50605,32 +50605,32 @@ function useTranscribe(deps) {
               const phase = prog.phase ?? "";
               if (phase === "segmenting") {
                 const detail = [pct > 0 ? pct + "%" : "", segs].filter(Boolean).join(" · ");
-                playerActions.setTranscribeStage(`Segmenting${detail ? ` — ${detail}` : ""}`);
+                playerActions2.setTranscribeStage(`Segmenting${detail ? ` — ${detail}` : ""}`);
               } else {
                 const detail = [pct + "%", segs, time].filter(Boolean).join(" · ");
-                playerActions.setTranscribeStage(`Transcribing — ${detail}`);
+                playerActions2.setTranscribeStage(`Transcribing — ${detail}`);
               }
             } else {
-              playerActions.setTranscribeStage("Server is transcribing…");
+              playerActions2.setTranscribeStage("Server is transcribing…");
             }
           } else if (msg.status === "DONE") {
             const resultsInSeconds = msg.results.map(([start, end, text]) => [start / 1000, end / 1000, text]);
             setTimeout(() => {
-              playerActions.setTranscriptionDone(resultsInSeconds);
+              playerActions2.setTranscriptionDone(resultsInSeconds);
               socket.close();
               resolve(true);
             }, 0);
           } else if (msg.status === "ERROR") {
-            playerActions.setTranscribing(false);
+            playerActions2.setTranscribing(false);
             const errMsg = msg.results || "Transcription error";
             reject(new Error(errMsg));
           }
         };
         socket.onerror = (error) => {
           clearInterval(waitInterval);
-          playerActions.setTranscribing(false);
+          playerActions2.setTranscribing(false);
           console.error("WebSocket error:", error);
-          playerActions.setError("Failed to connect to transcription server");
+          playerActions2.setError("Failed to connect to transcription server");
           socket.close();
           reject(new Error("WebSocket error"));
         };
@@ -50638,7 +50638,7 @@ function useTranscribe(deps) {
     } catch (error) {
       console.error("Transcription error:", error);
       window.__obrezShowError("Transcribe", error instanceof Error ? error.message : String(error), error instanceof Error ? error.stack : undefined);
-      playerActions.setError(error instanceof Error ? error.message : "Transcription failed");
+      playerActions2.setError(error instanceof Error ? error.message : "Transcription failed");
     }
   }, [audioSinkRef, audioTrackRef]);
   return transcribe;
@@ -50923,8 +50923,8 @@ function useMediaPlayer() {
     }
     playbackTimeAtStartRef.current = currentTime;
     abortAudioRef.current = true;
-    playerActions.setCurrentTime(currentTime);
-    playerActions.setIsPlaying(false);
+    playerActions2.setCurrentTime(currentTime);
+    playerActions2.setIsPlaying(false);
     if (audioBufferIteratorRef.current) {
       const returnPromise = audioBufferIteratorRef.current.return();
       const timeoutPromise = new Promise((r) => setTimeout(r, 500));
@@ -51040,8 +51040,8 @@ function useMediaPlayer() {
       }
       if (seekTo != null) {
         playbackTimeAtStartRef.current = seekTo;
-        playerActions.setCurrentTime(seekTo);
-        playerActions.setIsEnded(false);
+        playerActions2.setCurrentTime(seekTo);
+        playerActions2.setIsEnded(false);
         soundEffects.triggeredEffectsRef.current.clear();
         await startVideoIteratorRef.current();
       }
@@ -51049,8 +51049,8 @@ function useMediaPlayer() {
         const currentDuration = usePlayerStore.getState().duration;
         if (currentDuration > 0 && utilsRef.current.getPlaybackTime() >= currentDuration) {
           playbackTimeAtStartRef.current = 0;
-          playerActions.setCurrentTime(0);
-          playerActions.setIsEnded(false);
+          playerActions2.setCurrentTime(0);
+          playerActions2.setIsEnded(false);
           soundEffects.triggeredEffectsRef.current.clear();
           await startVideoIteratorRef.current();
         }
@@ -51074,11 +51074,11 @@ function useMediaPlayer() {
           const startAudioTimeout = new Promise((r) => setTimeout(r, 3000));
           await Promise.race([startAudioPromise, startAudioTimeout]);
           playbackStateRef.current = "playing";
-          playerActions.setIsPlaying(true);
+          playerActions2.setIsPlaying(true);
         } else {
           playbackStateRef.current = "paused";
-          playerActions.setIsPlaying(false);
-          playerActions.setAudioLocked(true);
+          playerActions2.setIsPlaying(false);
+          playerActions2.setAudioLocked(true);
         }
       } else {
         playbackStateRef.current = "paused";
@@ -51087,7 +51087,7 @@ function useMediaPlayer() {
       if (playbackStateRef.current === "transitioning") {
         console.warn("[audio] transition failed: state is still transitioning, resetting to paused");
         playbackStateRef.current = "paused";
-        playerActions.setIsPlaying(false);
+        playerActions2.setIsPlaying(false);
       }
     }
   };
@@ -51099,7 +51099,7 @@ function useMediaPlayer() {
         if (state.duration > 0 && playbackTime >= state.duration) {
           transitionRef.current("paused");
           playbackTimeAtStartRef.current = state.duration;
-          playerActions.setIsEnded(true);
+          playerActions2.setIsEnded(true);
         }
         const isTransitioning = playbackStateRef.current === "transitioning";
         if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
@@ -51339,7 +51339,7 @@ function useMediaPlayer() {
   const play = import_react3.useCallback(async () => {
     try {
       if (!audioContextRef.current) {
-        playerActions.setError("Audio system not available");
+        playerActions2.setError("Audio system not available");
         return;
       }
       const deadline = Date.now() + 5000;
@@ -51358,7 +51358,7 @@ function useMediaPlayer() {
       await transitionRef.current("playing");
     } catch (error) {
       console.error("Playback error:", error);
-      playerActions.setError(error instanceof Error ? error.message : "Playback failed");
+      playerActions2.setError(error instanceof Error ? error.message : "Playback failed");
     }
   }, []);
   const playRef = import_react3.useRef(null);
@@ -51377,16 +51377,16 @@ function useMediaPlayer() {
       await transitionRef.current(wasPlaying ? "playing" : "paused", seconds);
     } catch (error) {
       console.error("Seek error:", error);
-      playerActions.setError(error instanceof Error ? error.message : "Seek failed");
+      playerActions2.setError(error instanceof Error ? error.message : "Seek failed");
     }
   }, []);
   const setVolume = import_react3.useCallback((volume) => {
     if (gainNodeRef.current) {
       gainNodeRef.current.gain.value = volume ** 2;
     }
-    playerActions.setVolume(volume);
+    playerActions2.setVolume(volume);
     if (volume > 0) {
-      playerActions.setIsMuted(false);
+      playerActions2.setIsMuted(false);
     }
   }, []);
   const toggleMute = import_react3.useCallback(() => {
@@ -51397,12 +51397,12 @@ function useMediaPlayer() {
       if (currentlyMuted) {
         const restoreVolume = previousVolume === 0 ? 0.5 : previousVolume;
         gainNodeRef.current.gain.value = restoreVolume ** 2;
-        playerActions.setVolume(restoreVolume);
+        playerActions2.setVolume(restoreVolume);
       } else {
         gainNodeRef.current.gain.value = 0;
       }
     }
-    playerActions.setIsMuted(!currentlyMuted);
+    playerActions2.setIsMuted(!currentlyMuted);
   }, []);
   const initMediaPlayer = import_react3.useCallback(async (resource) => {
     console.log("[initMediaPlayer] called with", resource instanceof File ? resource.name : resource);
@@ -51412,7 +51412,7 @@ function useMediaPlayer() {
       }
       playbackStateRef.current = "idle";
       peakPlayingSourcesRef.current = 0;
-      playerActions.setAudioLocked(false);
+      playerActions2.setAudioLocked(false);
       if (audioContextRef.current) {
         stNodeRef.current?.disconnect();
         await audioContextRef.current.close();
@@ -51420,13 +51420,13 @@ function useMediaPlayer() {
         stNodeRef.current = null;
         gainNodeRef.current = null;
       }
-      playerActions.setError(null);
-      playerActions.setWarning(null);
-      playerActions.setIsEnded(false);
-      playerActions.setFileName(resource instanceof File ? resource.name : resource);
-      playerActions.setTranscriptionResults(null);
-      playerActions.setTranscribing(false);
-      playerActions.setCensoringEffects([]);
+      playerActions2.setError(null);
+      playerActions2.setWarning(null);
+      playerActions2.setIsEnded(false);
+      playerActions2.setFileName(resource instanceof File ? resource.name : resource);
+      playerActions2.setTranscriptionResults(null);
+      playerActions2.setTranscribing(false);
+      playerActions2.setCensoringEffects([]);
       soundEffects.triggeredEffectsRef.current.clear();
       const source = new BlobSource(resource, { maxCacheSize: 32 * 1024 * 1024 });
       const input = new Input({ source, formats: ALL_FORMATS });
@@ -51434,7 +51434,7 @@ function useMediaPlayer() {
       resourceRef.current = resource;
       playbackTimeAtStartRef.current = 0;
       const totalDuration = await input.computeDuration();
-      playerActions.setDuration(totalDuration);
+      playerActions2.setDuration(totalDuration);
       let videoTrack = await input.getPrimaryVideoTrack();
       let audioTrack = await input.getPrimaryAudioTrack();
       let problemMessage = "";
@@ -51463,7 +51463,7 @@ function useMediaPlayer() {
         throw new Error(problemMessage);
       }
       if (problemMessage) {
-        playerActions.setWarning(problemMessage);
+        playerActions2.setWarning(problemMessage);
       }
       const sampleRate = audioTrack ? await audioTrack.getSampleRate() : 48000;
       const AudioContextClass = window.AudioContext || window.webkitAudioContext;
@@ -51542,7 +51542,7 @@ function useMediaPlayer() {
         analyserRef.current.connect(gainNodeRef.current);
         gainNodeRef.current.connect(audioContextRef.current.destination);
         gainNodeRef.current.gain.value = 0.5 ** 2;
-        playerActions.setVolume(0.5);
+        playerActions2.setVolume(0.5);
         bypassGainRef.current = bypassGain;
         stGainRef.current = stGain;
         const stopMonitor = startAudioMonitor(analyserRef.current, audioContextRef.current.sampleRate);
@@ -51572,13 +51572,13 @@ function useMediaPlayer() {
       }
     } catch (error) {
       console.error("Error initializing media player:", error);
-      playerActions.setError(error instanceof Error ? error.message : "Failed to load media");
+      playerActions2.setError(error instanceof Error ? error.message : "Failed to load media");
     }
   }, []);
   const transcribe = useTranscribe({ audioTrackRef, resourceRef, audioSinkRef });
   const cleanup = import_react3.useCallback(async () => {
-    playerActions.setTranscribing(false);
-    playerActions.setIsEnded(false);
+    playerActions2.setTranscribing(false);
+    playerActions2.setIsEnded(false);
     stopTranscribeFocus();
     await stopAudioRef.current();
     playbackStateRef.current = "idle";
@@ -51828,17 +51828,17 @@ function updatePhase(key, patch) {
     ...current,
     phases: current.phases.map((p) => p.key === key ? { ...p, ...patch } : p)
   };
-  playerActions.setExportProgress(newProgress);
+  playerActions2.setExportProgress(newProgress);
 }
 function setElapsed(seconds) {
   const current = usePlayerStore.getState().exportProgress;
   if (!current)
     return;
-  playerActions.setExportProgress({ ...current, elapsed: seconds });
+  playerActions2.setExportProgress({ ...current, elapsed: seconds });
 }
 function initProgress() {
   const progress = { phases: makeInitialPhases(), elapsed: 0 };
-  playerActions.setExportProgress(progress);
+  playerActions2.setExportProgress(progress);
   return progress;
 }
 async function ensureBleepDecoded(soundId, ctx) {
@@ -51863,7 +51863,7 @@ async function ensureBleepDecoded(soundId, ctx) {
   if (!arrayBuffer)
     return null;
   const decoded = await ctx.decodeAudioData(arrayBuffer);
-  playerActions.setBleepBuffer(soundId, decoded);
+  playerActions2.setBleepBuffer(soundId, decoded);
   return decoded;
 }
 function getSoundEffects() {
@@ -53290,7 +53290,7 @@ var ActionButtonsInner = () => {
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const duration = usePlayerStore((state) => state.duration);
   const transcribing = usePlayerStore((state) => state.transcribing);
-  const actions = playerActions;
+  const actions = playerActions2;
   const { initMediaPlayer, play, pause, cleanup, transcribe, getInput, getAudioTrack, getAudioSink, getVideoTrack } = useMediaPlayerContext();
   const fileInputRef = import_react9.useRef(null);
   const hasFile = !!fileName;
@@ -53777,29 +53777,6 @@ var ActionButtons = import_react9.memo(ActionButtonsInner);
 // src/features/player/ProgressBar.tsx
 var import_react10 = __toESM(require_react(), 1);
 var jsx_dev_runtime8 = __toESM(require_jsx_dev_runtime(), 1);
-function useProposedTimeCurrentBlink(timeRef) {
-  const proposedTime = usePlayerStore((s) => s.proposedTime);
-  import_react10.useEffect(() => {
-    if (!proposedTime)
-      return;
-    const el = timeRef.current;
-    if (!el)
-      return;
-    el.classList.add("proposed-time-blink");
-    const onClick = () => {
-      const pt = usePlayerStore.getState().proposedTime;
-      if (!pt)
-        return;
-      playerActions.setProposedTime(null);
-      el.classList.remove("proposed-time-blink");
-    };
-    el.addEventListener("click", onClick);
-    return () => {
-      el.removeEventListener("click", onClick);
-      el.classList.remove("proposed-time-blink");
-    };
-  }, [proposedTime, timeRef]);
-}
 var ProgressBarInner = () => {
   const duration = usePlayerStore((state) => state.duration);
   const isPlaying = usePlayerStore((state) => state.isPlaying);
@@ -53807,8 +53784,6 @@ var ProgressBarInner = () => {
   const isDraggingRef = import_react10.useRef(false);
   const wasPlayingRef = import_react10.useRef(false);
   const progressRef = import_react10.useRef(null);
-  const currentTimeRef = import_react10.useRef(null);
-  useProposedTimeCurrentBlink(currentTimeRef);
   const [currentTime, setCurrentTime] = import_react10.useState(0);
   const prevTimeRef = import_react10.useRef(currentTime);
   import_react10.useEffect(() => {
@@ -53912,7 +53887,6 @@ var ProgressBarInner = () => {
     className: "flex-1 flex items-center gap-2",
     children: [
       /* @__PURE__ */ jsx_dev_runtime8.jsxDEV("span", {
-        ref: currentTimeRef,
         className: "text-xs opacity-60 cursor-default",
         "data-testid": "current-time",
         children: formatSeconds2(currentTime)
@@ -53965,18 +53939,18 @@ var PlayerDisplayInner = () => {
   const { canvasRef, play, seekToTime } = useMediaPlayerContext();
   const handleReplay = import_react11.useCallback(async (e) => {
     e.stopPropagation();
-    playerActions.setIsEnded(false);
+    playerActions2.setIsEnded(false);
     await seekToTime(0);
     await play();
   }, [seekToTime, play]);
   const handleUnlock = import_react11.useCallback(async (e) => {
     e.stopPropagation();
-    playerActions.setAudioLocked(false);
+    playerActions2.setAudioLocked(false);
     try {
       await play();
     } catch (err) {
       console.error("Failed to unlock playback:", err);
-      playerActions.setAudioLocked(true);
+      playerActions2.setAudioLocked(true);
     }
   }, [play]);
   return /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
@@ -54162,7 +54136,7 @@ var PlaybackControlsInner = () => {
             }, undefined, false, undefined, this)
           }, undefined, false, undefined, this),
           censoringEffects && censoringEffects.length > 0 && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
-            onClick: () => playerActions.setCensoringMode(!censoringMode),
+            onClick: () => playerActions2.setCensoringMode(!censoringMode),
             className: `${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center ${censoringMode ? "bg-red-800 text-white hover:bg-red-700 active:bg-red-900 border-t-red-400 border-l-red-400 border-b-red-950 border-r-red-950 active:border-t-red-950 active:border-l-red-950 active:border-b-red-400 active:border-r-red-400" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600"}`,
             title: censoringMode ? "Censoring ON — click to play original audio" : "Censoring OFF — click to play with effects",
             children: [
@@ -54174,7 +54148,7 @@ var PlaybackControlsInner = () => {
             ]
           }, undefined, true, undefined, this),
           transcriptionResults && transcriptionResults.length > 0 && /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
-            onClick: () => playerActions.toggleAutoScroll(),
+            onClick: () => playerActions2.toggleAutoScroll(),
             className: `${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center gap-1 ${autoScroll ? "bg-zinc-600 text-zinc-200 hover:bg-zinc-500 active:bg-zinc-700" : "bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600"}`,
             title: autoScroll ? "Auto-scroll to current segment (ON)" : "Auto-scroll to current segment (OFF)",
             children: [
@@ -54231,7 +54205,7 @@ var PlaybackControlsInner = () => {
                 className: "absolute bottom-full right-0 mb-1 bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1 z-20",
                 children: SPEEDS.map((s) => /* @__PURE__ */ jsx_dev_runtime11.jsxDEV("button", {
                   onClick: () => {
-                    playerActions.setPlaybackSpeed(s);
+                    playerActions2.setPlaybackSpeed(s);
                     setShowSpeedMenu(false);
                   },
                   className: `block w-full text-left px-3 py-1 text-xs transition-colors ${s === playbackSpeed ? "bg-purple-600 text-white" : "text-zinc-200 hover:bg-zinc-700"}`,
@@ -55211,7 +55185,7 @@ function WordTooltip({
   onSeekTo,
   onProposeStart,
   onProposeEnd,
-  proposedField,
+  proposedTime,
   formatTime
 }) {
   const [start, end, text] = segment;
@@ -55234,7 +55208,7 @@ function WordTooltip({
         children: [
           /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("button", {
             onClick: onProposeStart,
-            className: `text-left px-2 py-1 rounded transition-colors ${proposedField === "start" ? "bg-purple-900/60 text-purple-200 ring-1 ring-purple-500" : "bg-zinc-700 text-zinc-200 hover:bg-zinc-600"}`,
+            className: `text-left px-2 py-1 rounded transition-colors ${proposedTime === start ? "bg-purple-900/60 text-purple-200 ring-1 ring-purple-500" : "bg-zinc-700 text-zinc-200 hover:bg-zinc-600"}`,
             title: "Click to propose this as start time",
             children: [
               /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
@@ -55261,7 +55235,7 @@ function WordTooltip({
           }, undefined, true, undefined, this),
           /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("button", {
             onClick: onProposeEnd,
-            className: `text-left px-2 py-1 rounded transition-colors ${proposedField === "end" ? "bg-purple-900/60 text-purple-200 ring-1 ring-purple-500" : "bg-zinc-700 text-zinc-200 hover:bg-zinc-600"}`,
+            className: `text-left px-2 py-1 rounded transition-colors ${proposedTime === end ? "bg-purple-900/60 text-purple-200 ring-1 ring-purple-500" : "bg-zinc-700 text-zinc-200 hover:bg-zinc-600"}`,
             title: "Click to propose this as end time",
             children: [
               /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("span", {
@@ -55396,7 +55370,7 @@ function TextView({
     const handler = (e) => {
       if (e.key === "Escape") {
         setTooltip(null);
-        playerActions.setProposedTime(null);
+        playerActions2.setProposedTime(null);
       }
     };
     document.addEventListener("keydown", handler);
@@ -55415,19 +55389,19 @@ function TextView({
   const handleProposeStart = import_react16.useCallback(() => {
     const segment = tooltip.segment;
     const pt = usePlayerStore.getState().proposedTime;
-    if (pt?.field === "start" && pt?.time === segment[0]) {
-      playerActions.setProposedTime(null);
+    if (pt === segment[0]) {
+      playerActions2.setProposedTime(null);
     } else {
-      playerActions.setProposedTime({ time: segment[0], field: "start" });
+      playerActions2.setProposedTime(segment[0]);
     }
   }, [tooltip]);
   const handleProposeEnd = import_react16.useCallback(() => {
     const segment = tooltip.segment;
     const pt = usePlayerStore.getState().proposedTime;
-    if (pt?.field === "end" && pt?.time === segment[1]) {
-      playerActions.setProposedTime(null);
+    if (pt === segment[1]) {
+      playerActions2.setProposedTime(null);
     } else {
-      playerActions.setProposedTime({ time: segment[1], field: "end" });
+      playerActions2.setProposedTime(segment[1]);
     }
   }, [tooltip]);
   return /* @__PURE__ */ jsx_dev_runtime13.jsxDEV("div", {
@@ -55447,7 +55421,7 @@ function TextView({
         onSeekTo,
         onProposeStart: handleProposeStart,
         onProposeEnd: handleProposeEnd,
-        proposedField: proposedTime?.field ?? null,
+        proposedTime,
         formatTime
       }, undefined, false, undefined, this)
     ]
@@ -55468,22 +55442,23 @@ var ShieldButton = import_react17.memo(ShieldButtonInner);
 
 // src/hooks/useProposedTimeBlink.ts
 var import_react18 = __toESM(require_react(), 1);
-function useProposedTimeBlink(targetField, setField, fieldRef) {
+function useProposedTimeBlink(_targetField, setField, fieldRef) {
   const proposedTime = usePlayerStore((s) => s.proposedTime);
   const setFieldRef = import_react18.useRef(setField);
   setFieldRef.current = setField;
   import_react18.useEffect(() => {
-    const isActive = proposedTime?.field === targetField;
+    if (!proposedTime)
+      return;
     const el = fieldRef.current;
-    if (!isActive || !el)
+    if (!el)
       return;
     el.classList.add("proposed-time-blink");
     const onClick = () => {
       const pt = usePlayerStore.getState().proposedTime;
-      if (!pt || pt.field !== targetField)
+      if (!pt)
         return;
-      setFieldRef.current(pt.time.toFixed(2));
-      playerActions.setProposedTime(null);
+      setFieldRef.current(pt.toFixed(2));
+      playerActions2.setProposedTime(null);
       el.classList.remove("proposed-time-blink");
     };
     el.addEventListener("click", onClick);
@@ -55491,7 +55466,7 @@ function useProposedTimeBlink(targetField, setField, fieldRef) {
       el.removeEventListener("click", onClick);
       el.classList.remove("proposed-time-blink");
     };
-  }, [proposedTime, targetField, fieldRef]);
+  }, [proposedTime, _targetField, fieldRef]);
 }
 
 // src/features/transcription/TranscriptionResults.tsx
@@ -55579,7 +55554,7 @@ var SegmentItem = import_react19.memo(({
             title: start.toFixed(2) + "s — click to propose as start time",
             onClick: (e) => {
               e.stopPropagation();
-              onProposeTime(start, "start");
+              onProposeTime(start);
             },
             children: formatTime(start)
           }, undefined, false, undefined, this),
@@ -55592,7 +55567,7 @@ var SegmentItem = import_react19.memo(({
             title: end.toFixed(2) + "s — click to propose as end time",
             onClick: (e) => {
               e.stopPropagation();
-              onProposeTime(end, "end");
+              onProposeTime(end);
             },
             children: formatTime(end)
           }, undefined, false, undefined, this)
@@ -55688,7 +55663,7 @@ var rowRendererDeps = {
   onAddEffect: (_start) => {},
   onRemoveEffect: (_id) => {},
   onEditEffect: (_effect) => {},
-  onProposeTime: (_time, _field) => {},
+  onProposeTime: (_time) => {},
   formatTime: (_seconds) => ""
 };
 function findClosestSegment(segments, time) {
@@ -56109,12 +56084,12 @@ var TranscriptionResultsInner = () => {
   rowRendererDeps.onAddEffect = (start) => setModalSegment(start);
   rowRendererDeps.onRemoveEffect = handleRemoveEffect;
   rowRendererDeps.onEditEffect = (effect) => setEditEffect(effect);
-  rowRendererDeps.onProposeTime = (time, field) => {
+  rowRendererDeps.onProposeTime = (time) => {
     const pt = usePlayerStore.getState().proposedTime;
-    if (pt?.field === field && pt?.time === time) {
-      playerActions.setProposedTime(null);
+    if (pt === time) {
+      playerActions2.setProposedTime(null);
     } else {
-      playerActions.setProposedTime({ time, field });
+      playerActions2.setProposedTime(time);
     }
   };
   rowRendererDeps.formatTime = formatTime;
@@ -57695,7 +57670,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "198";
+var BUILD_NUM = "199";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -58192,13 +58167,13 @@ function SessionRestorer() {
         });
         await initMediaPlayer(file);
         if (session.transcriptionResults) {
-          playerActions.setTranscriptionResults(session.transcriptionResults);
+          playerActions2.setTranscriptionResults(session.transcriptionResults);
         }
         if (session.censoringEffects) {
-          playerActions.setCensoringEffects(session.censoringEffects);
+          playerActions2.setCensoringEffects(session.censoringEffects);
         }
         if (session.duration != null) {
-          playerActions.setDuration(session.duration);
+          playerActions2.setDuration(session.duration);
         }
       } catch (err) {
         console.error("Failed to restore session:", err);
@@ -58226,7 +58201,7 @@ var App = () => {
               continue;
             const buffer = await response.arrayBuffer();
             const scanner = new FastAhoScanner(buffer);
-            playerActions.loadDictionary(slug, slug, scanner);
+            playerActions2.loadDictionary(slug, slug, scanner);
           } catch (error) {
             console.error(`Failed to load default dictionary ${slug}:`, error);
           }
@@ -58325,4 +58300,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=67FFE70666DE5DE564756E2164756E21
+//# debugId=98D63254B78E8BDE64756E2164756E21
