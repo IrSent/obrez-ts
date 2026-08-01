@@ -786,8 +786,8 @@
     max-height: 400px;
   }
 
-  .max-h-\[calc\(100dvh-3rem\)\] {
-    max-height: calc(100dvh - 3rem);
+  .max-h-\[calc\(100vh-3rem\)\] {
+    max-height: calc(100vh - 3rem);
   }
 
   .min-h-0 {

@@ -57863,7 +57863,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "202";
+var BUILD_NUM = "203";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57976,7 +57976,7 @@ function SettingsModal({ onClose }) {
         onClose();
     },
     children: /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-      className: `relative flex flex-col mx-4 mt-8 mb-8 w-full max-w-2xl max-h-[calc(100dvh-3rem)] rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW2}`,
+      className: `relative flex flex-col mx-4 mt-8 mb-8 w-full max-w-2xl max-h-[calc(100vh-3rem)] rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW2}`,
       children: [
         /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
           className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]"
@@ -58653,4 +58653,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=CBCCC2BAA132544364756E2164756E21
+//# debugId=B2AF07C48FBC9A7864756E2164756E21
