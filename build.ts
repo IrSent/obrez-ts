@@ -14,18 +14,15 @@ const version = versionIdx >= 0
  * With --version: builds into dist/<version>/ (deploy mode, no cleanup of other versions).
  */
 async function build() {
-  const outDir = version ? `dist/${version}` : 'dist';
+  // Without --version: use current git branch as version dir
+  // (so it doesn't clobber other versions in dist/)
+  const resolvedVersion = version ?? (await $`git rev-parse --abbrev-ref HEAD`.text()).trim();
+  const outDir = `dist/${resolvedVersion}`;
 
   try {
-    if (!version) {
-      // Dev mode: clean entire dist folder
-      console.log('Cleaning dist folder...');
-      await rm('dist', { recursive: true, force: true });
-    } else {
-      // Deploy mode: clean only this version folder
-      console.log(`Cleaning ${outDir}/...`);
-      await rm(outDir, { recursive: true, force: true });
-    }
+    // Clean only this version folder
+    console.log(`Cleaning ${outDir}/...`);
+    await rm(outDir, { recursive: true, force: true });
 
     // Create dist folder
     console.log('Creating dist folder...');
@@ -37,18 +34,13 @@ async function build() {
 
     // Cache-bust: copy settings-early and settings-ui with MD5 hash in filename.
     // GitHub Pages caches for 600s — new filename = new URL = fresh content.
-    // Copied to dist/ root (for ../ resolution from version dirs) and outDir (dev mode).
+    // Copied to dist/ root (for ../ resolution from version dirs).
     const earlyHash = MD5.hash(await Bun.file('public/settings-early.js').arrayBuffer(), 'hex').slice(0, 8);
     const uiHash = MD5.hash(await Bun.file('public/settings-ui.js').arrayBuffer(), 'hex').slice(0, 8);
     const earlyName = `settings-early.${earlyHash}.js`;
     const uiName = `settings-ui.${uiHash}.js`;
     await $`cp public/settings-early.js dist/${earlyName}`;
     await $`cp public/settings-ui.js dist/${uiName}`;
-    if (version) {
-      // Also copy into version dir for dev mode
-      await $`cp public/settings-early.js ${outDir}/${earlyName}`;
-      await $`cp public/settings-ui.js ${outDir}/${uiName}`;
-    }
     console.log(`  ${earlyName}, ${uiName} → dist/`);
 
     // Copy Phase Vocoder processor from node_modules — always fresh

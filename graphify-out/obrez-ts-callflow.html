@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 571 nodes, 932 edges, 58 communities. Commit: 092d530</p>
+<p class="subtitle">Generated from graphify knowledge graph: 571 nodes, 932 edges, 58 communities. Commit: a73a9cf</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -822,19 +822,19 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
   <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
   <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>2</td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
   <td>3</td>
@@ -2093,7 +2093,7 @@ flowchart LR
 
 <!-- ====== 9. Community 57 ====== -->
 <h2 id="community-57">9. Community 57</h2>
-<p>Community 57 groups implementation around features, settings, auth, actionbuttonstsx, mostly in features/action-buttons/ActionButtons.tsx, features/settings/SettingsModal.tsx, src/store/authStore.ts. This section covers 61 nodes and 122 internal edges; the diagram shows only representative relationships to stay readable.</p>
+<p>Community 57 groups implementation around features, settings, auth, settingsmodaltsx, mostly in features/settings/SettingsModal.tsx, features/action-buttons/ActionButtons.tsx, src/store/authStore.ts. This section covers 61 nodes and 122 internal edges; the diagram shows only representative relationships to stay readable.</p>
 
 <div class="mermaid">
 %%{init: {"theme": "dark", "themeVariables": {"fontSize": "15.0px", "fontFamily": "Segoe UI, system-ui, sans-serif", "primaryColor": "#1e293b", "primaryTextColor": "#e2e8f0", "primaryBorderColor": "#38bdf8", "secondaryColor": "#0f172a", "tertiaryColor": "#334155", "lineColor": "#64748b", "textColor": "#e2e8f0"}, "flowchart": {"htmlLabels": true, "curve": "basis", "nodeSpacing": 48, "rankSpacing": 64, "padding": 14, "diagramPadding": 10, "useMaxWidth": true}}}%%
@@ -2129,13 +2129,13 @@ flowchart LR
     debug_debugtab_debugtab_ba9945b9("DebugTab()<br/><small>features/debug/DebugTab.tsx</small>")
     store_authstore_useauthstore_4a03c2d9("useAuthStore<br/><small>src/store/authStore.ts</small>")
     utils_pkce_browser_generatecodechallenge_6cf9cdc6("generateCodeChallenge()<br/><small>src/utils/pkce-browser.ts</small>")
-    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
-    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| store_authstore_useauthstore_4a03c2d9
-    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| store_authstore_useauthstore_4a03c2d9
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_daysuntilfreetopup_c93d63d8
     settings_settingsmodal_usercontent_d2a4d459 -->|calls| utils_auth_formatseconds_cdef2b69
+    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
+    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| store_authstore_useauthstore_4a03c2d9
+    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_auth_canfreetopup_e6832bc1
     auth_paymentmodal_paymentmodal_970b6a3f -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_topupmodal_4bc16812 -->|calls| store_authstore_useauthstore_4a03c2d9
     auth_topupmodal_topupmodal_4bc16812 -->|calls| utils_auth_canfreetopup_e6832bc1
@@ -2145,14 +2145,14 @@ flowchart LR
     store_authstore_useauthstore_4a03c2d9 -->|calls| auth_loginmodal_loginmodal_992d0af3
     store_authstore_useauthstore_4a03c2d9 -->|calls| debug_debugtab_debugtab_ba9945b9
     auth_confirmationmodal_formatduration_1ba061e3 -->|calls| auth_confirmationmodal_confirmationmodal_8b7e668a
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_confirmationmodal_confirmationmodal_8b7e668a
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_loginmodal_loginmodal_992d0af3
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_5fbdbcde
-    action_buttons_actionbuttons_78ab3197 -->|imports| auth_topupmodal_topupmodal_4bc16812
-    action_buttons_actionbuttons_78ab3197 -->|imports| store_authstore_useauthstore_4a03c2d9
-    action_buttons_actionbuttons_78ab3197 -->|imports| utils_auth_canfreetopup_e6832bc1
     settings_settingsmodal_68a86dc6 -->|imports| auth_loginmodal_loginmodal_992d0af3
     settings_settingsmodal_68a86dc6 -->|imports| auth_paymentmodal_32cf67c1
+    settings_settingsmodal_68a86dc6 -->|imports| auth_paymentmodal_paymentmodal_970b6a3f
+    settings_settingsmodal_68a86dc6 -->|imports| debug_debugtab_debugtab_ba9945b9
+    settings_settingsmodal_68a86dc6 -->|imports| store_authstore_useauthstore_4a03c2d9
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_canfreetopup_e6832bc1
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_daysuntilfreetopup_c93d63d8
+    settings_settingsmodal_68a86dc6 -->|imports| utils_auth_formatseconds_cdef2b69
     %% Omitted for readability: 43 nodes, 13 edges
     class action_buttons_actionbuttons_78ab3197 ui;
     class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
@@ -2195,94 +2195,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
-  <td>Module file in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>FileIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>FileIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>UrlIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>UrlIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>TranscribeIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>TranscribeIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>DownloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>UnloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>UnloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CloseIcon() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>CODEC_LABELS node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td>codecLabel() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>Exports documentation data to a target format.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
-  <td>ActionButtonsInner() node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
   <td><code>SettingsModal.tsx</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2290,7 +2202,7 @@ flowchart LR
   <td>Module file in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>13</td>
+  <td>2</td>
   <td><code>Tooltip()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2298,7 +2210,7 @@ flowchart LR
   <td>Tooltip() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>14</td>
+  <td>3</td>
   <td><code>TabKey</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2306,7 +2218,7 @@ flowchart LR
   <td>TabKey node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>4</td>
   <td><code>TABS</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2314,7 +2226,7 @@ flowchart LR
   <td>TABS node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>5</td>
   <td><code>VersionInfo</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2322,7 +2234,7 @@ flowchart LR
   <td>VersionInfo node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>17</td>
+  <td>6</td>
   <td><code>SettingsModalProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2330,7 +2242,7 @@ flowchart LR
   <td>SettingsModalProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>18</td>
+  <td>7</td>
   <td><code>UserContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2338,7 +2250,7 @@ flowchart LR
   <td>UserContentProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>19</td>
+  <td>8</td>
   <td><code>UserContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2346,7 +2258,7 @@ flowchart LR
   <td>UserContent() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>20</td>
+  <td>9</td>
   <td><code>VersionContentProps</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2354,7 +2266,7 @@ flowchart LR
   <td>VersionContentProps node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>10</td>
   <td><code>VersionContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -2362,12 +2274,100 @@ flowchart LR
   <td>VersionContent() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>11</td>
   <td><code>JournalContent()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td>No direct outbound edge</td>
   <td>JournalContent() node in features/settings/SettingsModal.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>auth.ts</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>authStore.ts</code><br><small style="color:var(--muted)">src/store/authStore.ts</small><br><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br>+7 more</td>
+  <td>Module file in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>FileIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>FileIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>UrlIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>UrlIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>TranscribeIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>TranscribeIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>DownloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>UnloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>UnloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CloseIcon() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>CODEC_LABELS node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td>codecLabel() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>Exports documentation data to a target format.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>canFreeTopup()</code><br><small style="color:var(--muted)">src/utils/auth.ts</small><br><code>useAuthStore</code><br><small style="color:var(--muted)">src/store/authStore.ts</small></td>
+  <td>ActionButtonsInner() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
   <td>23</td>
@@ -3964,7 +3964,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-08-01 12:22 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-08-01 14:54 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->
