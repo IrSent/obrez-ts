@@ -57863,7 +57863,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "209";
+var BUILD_NUM = "210";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsModal.tsx
@@ -57969,159 +57969,169 @@ function SettingsModal({ onClose }) {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
-  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-    className: "fixed inset-0 z-50 flex items-start justify-center overflow-y-auto bg-black/60",
-    onClick: (e) => {
-      if (e.target === e.currentTarget)
-        onClose();
-    },
-    children: /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-      className: `relative flex flex-col w-full mx-4 mt-8 mb-8 max-w-2xl rounded-xl bg-zinc-900 ${MODAL_SHADOW2}`,
-      children: [
-        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-          className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]"
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-          className: "relative flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0",
+  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(jsx_dev_runtime21.Fragment, {
+    children: [
+      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+        className: "fixed inset-0 z-50 bg-black/60",
+        onClick: (e) => {
+          if (e.target === e.currentTarget)
+            onClose();
+        }
+      }, undefined, false, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+        className: `fixed top-0 left-0 right-0 z-[51] flex justify-center overflow-y-scroll min-h-screen`,
+        children: /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+          className: `relative flex flex-col w-full mx-4 mt-8 mb-8 max-w-2xl rounded-xl bg-zinc-900 shrink-0 ${MODAL_SHADOW2}`,
           children: [
-            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h2", {
-              className: "text-lg font-semibold text-zinc-100",
-              children: "⚙ Настройки"
+            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+              className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]"
             }, undefined, false, undefined, this),
-            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
-              onClick: onClose,
-              className: "text-zinc-400 hover:text-zinc-200 transition-colors p-1 rounded hover:bg-zinc-800",
-              children: "✕"
-            }, undefined, false, undefined, this)
-          ]
-        }, undefined, true, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-          className: "relative flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0",
-          children: TABS.map((tab) => /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
-            onClick: () => {
-              if (animatingRef.current)
-                return;
-              const h = contentRef.current?.scrollHeight ?? frozenHeightRef.current;
-              if (h != null) {
-                setFrozenHeight(h);
-                frozenHeightRef.current = h;
-              }
-              if (animTimeoutRef.current) {
-                clearTimeout(animTimeoutRef.current);
-                animTimeoutRef.current = null;
-              }
-              setActiveTab(tab.key);
-            },
-            title: tab.tooltip,
-            className: `px-3 py-2 text-sm font-medium rounded-t-lg transition-all ${activeTab === tab.key ? "bg-zinc-800 text-purple-400 border-b-2 border-purple-500 shadow-[0_-2px_8px_rgba(139,92,246,0.1)]" : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50"}`,
-            children: tab.emoji
-          }, tab.key, false, undefined, this))
-        }, undefined, false, undefined, this),
-        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-          ref: contentRef,
-          style: frozenHeight != null ? { height: frozenHeight, transition: "height 300ms ease-in-out" } : undefined,
-          children: [
-            activeTab === "user" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-              className: "p-5",
+            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+              className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]"
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+              className: "relative flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0",
               children: [
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                  className: "text-sm text-zinc-300 mb-3",
-                  children: [
-                    "Account & Balance ",
-                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                      text: "Manage your Telegram account, check transcription balance, and top up hours."
-                    }, undefined, false, undefined, this)
-                  ]
-                }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(UserContent, {
-                  onClose
+                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h2", {
+                  className: "text-lg font-semibold text-zinc-100",
+                  children: "⚙ Настройки"
+                }, undefined, false, undefined, this),
+                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+                  onClick: onClose,
+                  className: "text-zinc-400 hover:text-zinc-200 transition-colors p-1 rounded hover:bg-zinc-800",
+                  children: "✕"
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            activeTab === "dictionaries" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-              className: "p-5",
+            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+              className: "relative flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0",
+              children: TABS.map((tab) => /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+                onClick: () => {
+                  if (animatingRef.current)
+                    return;
+                  const h = contentRef.current?.scrollHeight ?? frozenHeightRef.current;
+                  if (h != null) {
+                    setFrozenHeight(h);
+                    frozenHeightRef.current = h;
+                  }
+                  if (animTimeoutRef.current) {
+                    clearTimeout(animTimeoutRef.current);
+                    animTimeoutRef.current = null;
+                  }
+                  setActiveTab(tab.key);
+                },
+                title: tab.tooltip,
+                className: `px-3 py-2 text-sm font-medium rounded-t-lg transition-all ${activeTab === tab.key ? "bg-zinc-800 text-purple-400 border-b-2 border-purple-500 shadow-[0_-2px_8px_rgba(139,92,246,0.1)]" : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50"}`,
+                children: tab.emoji
+              }, tab.key, false, undefined, this))
+            }, undefined, false, undefined, this),
+            /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+              ref: contentRef,
+              style: frozenHeight != null ? { height: frozenHeight, transition: "height 300ms ease-in-out" } : undefined,
               children: [
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                  className: "text-sm text-zinc-300 mb-3",
+                activeTab === "user" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                  className: "p-5",
                   children: [
-                    "Word Lists ",
-                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                      text: "Choose which word lists to match against during transcription. Only active lists highlight matched words."
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                      className: "text-sm text-zinc-300 mb-3",
+                      children: [
+                        "Account & Balance ",
+                        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                          text: "Manage your Telegram account, check transcription balance, and top up hours."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(UserContent, {
+                      onClose
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DictionaryManager, {}, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            activeTab === "bleep" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-              className: "p-5",
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                  className: "text-sm text-zinc-300 mb-3",
+                activeTab === "dictionaries" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                  className: "p-5",
                   children: [
-                    "Sound Effects ",
-                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                      text: "Manage bleep and censor sounds. Upload custom audio files or use the default tone."
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                      className: "text-sm text-zinc-300 mb-3",
+                      children: [
+                        "Word Lists ",
+                        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                          text: "Choose which word lists to match against during transcription. Only active lists highlight matched words."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DictionaryManager, {}, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                activeTab === "bleep" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                  className: "p-5",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                      className: "text-sm text-zinc-300 mb-3",
+                      children: [
+                        "Sound Effects ",
+                        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                          text: "Manage bleep and censor sounds. Upload custom audio files or use the default tone."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(BleepSoundManager, {}, undefined, false, undefined, this)
+                  ]
+                }, undefined, true, undefined, this),
+                activeTab === "version" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                  className: "p-5",
+                  children: [
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                      className: "text-sm text-zinc-300 mb-3",
+                      children: [
+                        "Switch Version ",
+                        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                          text: "Switch between master (latest) and stable releases. Useful if master breaks."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(VersionContent, {
+                      versions,
+                      currentVersion,
+                      onSelect: handleVersionSelect
                     }, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(BleepSoundManager, {}, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            activeTab === "version" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-              className: "p-5",
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                  className: "text-sm text-zinc-300 mb-3",
+                activeTab === "journal" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                  className: "p-5",
                   children: [
-                    "Switch Version ",
-                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                      text: "Switch between master (latest) and stable releases. Useful if master breaks."
-                    }, undefined, false, undefined, this)
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                      className: "text-sm text-zinc-300 mb-3",
+                      children: [
+                        "Transcription Journal ",
+                        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                          text: "All saved transcriptions, grouped by file. Load or delete past sessions."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(JournalContent, {}, undefined, false, undefined, this)
                   ]
                 }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(VersionContent, {
-                  versions,
-                  currentVersion,
-                  onSelect: handleVersionSelect
-                }, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            activeTab === "journal" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-              className: "p-5",
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                  className: "text-sm text-zinc-300 mb-3",
+                activeTab === "debug" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+                  className: "p-5",
                   children: [
-                    "Transcription Journal ",
-                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                      text: "All saved transcriptions, grouped by file. Load or delete past sessions."
-                    }, undefined, false, undefined, this)
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                      className: "text-sm text-zinc-300 mb-3",
+                      children: [
+                        "Debug ",
+                        /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                          text: "View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string."
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DebugTab, {}, undefined, false, undefined, this)
                   ]
-                }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(JournalContent, {}, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this),
-            activeTab === "debug" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-              className: "p-5",
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                  className: "text-sm text-zinc-300 mb-3",
-                  children: [
-                    "Debug ",
-                    /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                      text: "View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string."
-                    }, undefined, false, undefined, this)
-                  ]
-                }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DebugTab, {}, undefined, false, undefined, this)
+                }, undefined, true, undefined, this)
               ]
             }, undefined, true, undefined, this)
           ]
         }, undefined, true, undefined, this)
-      ]
-    }, undefined, true, undefined, this)
-  }, undefined, false, undefined, this);
+      }, undefined, false, undefined, this)
+    ]
+  }, undefined, true, undefined, this);
 }
 function UserContent({ onClose }) {
   const user = useAuthStore((s) => s.user);
@@ -58648,4 +58658,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=12F17D950FE9A18864756E2164756E21
+//# debugId=6B3859562B39AAC564756E2164756E21
