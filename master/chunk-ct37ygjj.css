@@ -486,6 +486,10 @@
     left: calc(var(--spacing) * 0);
   }
 
+  .left-1\/2 {
+    left: 50%;
+  }
+
   .left-3 {
     left: calc(var(--spacing) * 3);
   }
@@ -508,6 +512,10 @@
 
   .z-50 {
     z-index: 50;
+  }
+
+  .z-\[51\] {
+    z-index: 51;
   }
 
   .z-\[100\] {
@@ -993,10 +1001,6 @@
 
   .justify-end {
     justify-content: flex-end;
-  }
-
-  .justify-start {
-    justify-content: flex-start;
   }
 
   .gap-0\.5 {
