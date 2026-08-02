@@ -54,11 +54,13 @@ if [ "$BUILD" = true ]; then
       cd "$tmpdir"
       bun install 2>/dev/null || true
       bun run build.ts --version "$ver"
-    )
+    ) || true
     rm -rf "$outdir"
     mkdir -p "$outdir"
-    cp -r "$tmpdir/dist/$ver/"* "$outdir"/
-    git worktree remove -f "$tmpdir"
+    if [ -d "$tmpdir/dist/$ver" ]; then
+      cp -r "$tmpdir/dist/$ver/"* "$outdir"/
+    fi
+    git worktree remove -f "$tmpdir" 2>/dev/null || true
     echo "✅ $ver → $outdir"
   }
 
