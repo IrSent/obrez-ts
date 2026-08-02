@@ -486,6 +486,10 @@
     left: calc(var(--spacing) * 0);
   }
 
+  .left-1\/2 {
+    left: 50%;
+  }
+
   .left-3 {
     left: calc(var(--spacing) * 3);
   }
@@ -1071,10 +1075,6 @@
 
   .overflow-y-auto {
     overflow-y: auto;
-  }
-
-  .overflow-y-scroll {
-    overflow-y: scroll;
   }
 
   .rounded {
