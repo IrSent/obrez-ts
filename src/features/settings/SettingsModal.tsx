@@ -5,12 +5,13 @@ import { BleepSoundManager } from '../bleep-sounds/BleepSoundManager';
 import { DebugTab } from '../debug/DebugTab';
 import { APP_VERSION } from '../../version';
 import { useAuthStore } from '../../store/authStore';
+import { playerActions } from '../../store/playerStore';
 import type { JournalEntry } from '../../utils/idb';
 import { HourPackCard, HOUR_PACKS, CurrencySelector } from './HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 import { LoginModal } from '../auth/LoginModal';
 import { PaymentModal } from '../auth/PaymentModal';
-import type { HourPackType, FiatCurrency } from '../../types';
+import type { HourPackType, FiatCurrency, CensoringEffect } from '../../types';
 
 /**
  * Tooltip icon — ⓘ — shows description on hover (desktop) or tap (mobile).
@@ -533,6 +534,40 @@ function JournalContent() {
     }
   };
 
+  const handleLoadEntry = (entry: JournalEntry) => {
+    playerActions.setTranscriptionResults(entry.transcriptionResults);
+    playerActions.setCensoringEffects(entry.censoringEffects as CensoringEffect[]);
+    playerActions.setDuration(entry.duration);
+    // Brief visual feedback
+    const feedbackEl = document.createElement('div');
+    feedbackEl.className = 'fixed bottom-4 right-4 z-[9999] text-xs text-green-400 bg-zinc-800 px-3 py-1.5 rounded shadow-lg';
+    feedbackEl.textContent = 'Transcription loaded!';
+    document.body.appendChild(feedbackEl);
+    setTimeout(() => feedbackEl.remove(), 2000);
+  };
+
+  const handleExportEntry = (entry: JournalEntry) => {
+    const transcriptionData = entry.transcriptionResults.map(([start, end, text]) => ({
+      start,
+      end,
+      text,
+    }));
+    const effects = (entry.censoringEffects ?? []).filter(
+      (e) => (e as { effectType?: string }).effectType === 'sound',
+    );
+    const data = JSON.stringify({ transcription: transcriptionData, effects }, null, 2);
+    const baseName = entry.fileName.replace(/\.[^.]+$/, '');
+    const blob = new Blob([data], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${baseName}_transcription.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+  };
+
   if (loading) return <div className="text-xs text-zinc-500 py-4">Loading journal...</div>;
 
   if (entries.length === 0) {
@@ -578,8 +613,8 @@ function JournalContent() {
               </button>
             </div>
 
-            {/* Entries */}
-            {fileEntries.map((entry) => {
+            {/* Entries with version labels */}
+            {fileEntries.map((entry, i) => {
               const date = new Date(entry.savedAt);
               const dateStr = date.toLocaleDateString(undefined, {
                 month: 'short',
@@ -589,6 +624,7 @@ function JournalContent() {
                 hour: '2-digit',
                 minute: '2-digit',
               });
+              const versionLabel = fileEntries.length > 1 ? `v${i + 1}` : '';
               return (
                 <div
                   key={entry.id}
@@ -606,10 +642,29 @@ function JournalContent() {
                     {entry.method === 'transcribe' ? 'T' : 'I'}
                   </span>
 
-                  {/* Date and segment count */}
+                  {/* Version, date and segment count */}
                   <span className="flex-1 min-w-0 text-zinc-400">
+                    {versionLabel && <span className="text-zinc-500 mr-1">{versionLabel}</span>}
                     {dateStr} {timeStr} · {entry.transcriptionResults.length} segments
                   </span>
+
+                  {/* Load into player */}
+                  <button
+                    onClick={() => handleLoadEntry(entry)}
+                    className="shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors"
+                    title="Load transcription into player"
+                  >
+                    ▶️
+                  </button>
+
+                  {/* Export as JSON */}
+                  <button
+                    onClick={() => handleExportEntry(entry)}
+                    className="shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors"
+                    title="Export transcription as JSON"
+                  >
+                    💾
+                  </button>
 
                   {/* Delete */}
                   <button

@@ -153,14 +153,14 @@ export const playerActions = {
         duration: state.duration || null,
       }).catch((err) => console.error('Failed to save session (transcription):', err));
 
-      // Save to journal (fire-and-forget)
+      // Save to journal (fire-and-forget, dedup by content hash)
       (async () => {
         try {
           const { saveJournalEntry } = await import('../utils/idb');
           // Get the file blob from IndexedDB to determine file size
           const session = await (await import('../utils/idb')).loadSession();
           const fileSize = session?.fileBlob?.size ?? 0;
-          await saveJournalEntry({
+          const result = await saveJournalEntry({
             fileName: state.fileName,
             fileSize,
             transcriptionResults: results,
@@ -168,6 +168,9 @@ export const playerActions = {
             duration: state.duration ?? 0,
             method: 'transcribe',
           });
+          if (!result) {
+            console.log('[journal] Duplicate entry skipped (same content for', state.fileName, ')');
+          }
         } catch (err) {
           console.error('Failed to save journal entry:', err);
         }

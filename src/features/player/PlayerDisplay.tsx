@@ -54,6 +54,15 @@ const PlayerDisplayInner = () => {
         </div>
       )}
 
+      {/* Filename badge — top-left */}
+      {fileName && (
+        <div className="absolute top-3 left-3 z-30 pointer-events-none">
+          <span className="bg-black/50 backdrop-blur-sm text-[10px] text-zinc-300 px-2 py-0.5 rounded block">
+            {fileName}
+          </span>
+        </div>
+      )}
+
       {/* Replay overlay — shown when video ends */}
       {isEnded && (
         <div className="absolute inset-0 flex items-center justify-center bg-black/40 z-20">
