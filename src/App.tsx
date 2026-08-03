@@ -7,7 +7,7 @@ import { PlaybackControls } from './features/player/PlaybackControls';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
 import { loadBackendUrl, backendPath, backendHeaders } from './config';
-import { SettingsModal } from './features/settings/SettingsModal';
+import { SettingsContent } from './features/settings/SettingsContent';
 import { usePlayerStore, playerActions } from './store/playerStore';
 import { useAuthStore } from './store/authStore';
 import { FastAhoScanner } from './aho-corasick';
@@ -131,44 +131,63 @@ export const App = () => {
     }
   }, []);
 
-  // Settings modal
+  // Settings open state
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   return (
     <MediaPlayerProvider>
         <SessionRestorer />
         <div className="min-h-screen bg-zinc-900 text-zinc-100">
-          {/* Sticky header — full width */}
-          <header className="sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800">
-            <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
-              <a href="https://irsent.github.io/obrez-ts" className="flex items-center gap-3">
-                <img
-                  src="assets/obrez-logo.jpg"
-                  alt="Obrez Logo"
-                  className="w-8 h-8"
-                />
-                <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez</h1>
-              </a>
-              <div className="flex items-center gap-1">
-                <button id="obrez-gear" onClick={() => setSettingsOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</button>
+          {/* Main view — slides left when settings opens */}
+          <div
+            style={{
+              width: '100%',
+              height: '100vh',
+              overflowY: 'auto',
+              transform: settingsOpen ? 'translateX(100%)' : 'translateX(0)',
+              transition: 'transform 500ms ease-in-out',
+            }}
+            className="bg-zinc-900"
+          >
+            <header id="obrez-header" className="sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800">
+              <div className="max-w-4xl mx-auto px-4 py-3 flex items-center justify-between">
+                <a href="https://irsent.github.io/obrez-ts" className="flex items-center gap-3">
+                  <img src="assets/obrez-logo.jpg" alt="Obrez Logo" className="w-8 h-8" />
+                  <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez</h1>
+                </a>
+                <div className="flex items-center gap-1">
+                  <button id="obrez-gear" onClick={() => setSettingsOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</button>
+                </div>
               </div>
-            </div>
-          </header>
+            </header>
 
-          <div className="max-w-4xl mx-auto px-4 py-4 space-y-4">
-            <ImportProgressModal />
-            <PlayerDisplay />
-            <PlaybackControls />
-            <TranscriptionResults />
+            <div className="max-w-4xl mx-auto px-4 pb-20 space-y-4" style={{ paddingTop: '1.5rem' }}>
+              <ImportProgressModal />
+              <PlayerDisplay />
+              <PlaybackControls />
+              <TranscriptionResults />
+            </div>
           </div>
 
-          {/* Settings modal — via Portal to avoid MediaPlayerProvider issues */}
-          {settingsOpen &&
-            createPortal(
-              <SettingsModal onClose={() => setSettingsOpen(false)} />,
-              document.body
-            )
-          }
+          {/* Settings view — slides in from the right */}
+          <div
+            style={{
+              position: 'fixed',
+              top: 0,
+              left: 0,
+              width: '100%',
+              height: '100vh',
+              overflowY: 'auto',
+              zIndex: 60,
+              transform: settingsOpen ? 'translateX(0)' : 'translateX(-100%)',
+              transition: 'transform 500ms ease-in-out',
+            }}
+            className="bg-zinc-900"
+          >
+            <div className="max-w-4xl mx-auto px-4 py-4">
+              <SettingsContent onClose={() => setSettingsOpen(false)} />
+            </div>
+          </div>
         </div>
       </MediaPlayerProvider>
   );
