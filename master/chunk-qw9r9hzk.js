@@ -53528,12 +53528,14 @@ var ActionButtonsInner = () => {
   const [transcribeLoading, setTranscribeLoading] = import_react9.useState(false);
   const [authModal, setAuthModal] = import_react9.useState(null);
   const [authModalError, setAuthModalError] = import_react9.useState(null);
+  const [authModalPending, setAuthModalPending] = import_react9.useState(false);
   const authModalRetryRef = import_react9.useRef(null);
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
   const authError = useAuthStore((s) => s.error);
   const checkAuth = useAuthStore((s) => s.checkAuth);
   const clearAuthError = useAuthStore((s) => s.clearError);
   const _handleTranscribe = async () => {
+    setAuthModalPending(true);
     for (let attempt = 0;attempt < 3; attempt++) {
       try {
         await checkAuth();
@@ -53552,6 +53554,7 @@ var ActionButtonsInner = () => {
         _handleTranscribe();
       };
       setAuthModal("login");
+      setAuthModalPending(false);
       return;
     }
     const user = useAuthStore.getState().user;
@@ -53567,15 +53570,18 @@ var ActionButtonsInner = () => {
       setAuthModalError(null);
       authModalRetryRef.current = null;
       setAuthModal("login");
+      setAuthModalPending(false);
       return;
     }
     const freeAvailable = canFreeTopup(user.last_free_topup);
     const balanceInsufficient = duration > user.remaining_seconds;
     if (freeAvailable || balanceInsufficient) {
       setAuthModal("topup");
+      setAuthModalPending(false);
       return;
     }
     setAuthModal("confirm");
+    setAuthModalPending(false);
   };
   import_react9.useEffect(() => {
     if ((authModal === "login" || authModal === "confirm") && isAuthenticated && !authError) {
@@ -53750,8 +53756,14 @@ var ActionButtonsInner = () => {
           }, undefined, true, undefined, this)
         ]
       }, undefined, true, undefined, this),
-      (authModal || showExportModal || showUnloadConfirm) && import_react_dom.createPortal(/* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
+      (authModalPending || authModal || showExportModal || showUnloadConfirm) && import_react_dom.createPortal(/* @__PURE__ */ jsx_dev_runtime7.jsxDEV(jsx_dev_runtime7.Fragment, {
         children: [
+          authModalPending && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+            className: "fixed inset-0 z-[100] flex items-center justify-center bg-black/60",
+            children: /* @__PURE__ */ jsx_dev_runtime7.jsxDEV("div", {
+              className: "animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent"
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this),
           authModal === "login" && /* @__PURE__ */ jsx_dev_runtime7.jsxDEV(LoginModal, {
             onClose: () => setAuthModal(null),
             onRetry: authModalRetryRef.current ?? undefined,
@@ -57931,7 +57943,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "215";
+var BUILD_NUM = "216";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsContent.tsx
@@ -58785,4 +58797,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=9DA3899AC38FE36564756E2164756E21
+//# debugId=A1317A74890BD93364756E2164756E21
