@@ -201,6 +201,7 @@ const ActionButtonsInner = () => {
   const [transcribeLoading, setTranscribeLoading] = useState(false);
   const [authModal, setAuthModal] = useState<'login' | 'topup' | 'confirm' | null>(null);
   const [authModalError, setAuthModalError] = useState<string | null>(null);
+  const [authModalPending, setAuthModalPending] = useState(false);
   const authModalRetryRef = useRef<(() => Promise<void>) | null>(null);
 
   const isAuthenticated = useAuthStore((s) => s.isAuthenticated);
@@ -209,6 +210,7 @@ const ActionButtonsInner = () => {
   const clearAuthError = useAuthStore((s) => s.clearError);
 
   const _handleTranscribe = async () => {
+    setAuthModalPending(true);
     // 1. Check auth (retry up to 3 times — localtunnel can be flaky)
     for (let attempt = 0; attempt < 3; attempt++) {
       try {
@@ -228,6 +230,7 @@ const ActionButtonsInner = () => {
         _handleTranscribe();
       };
       setAuthModal('login');
+      setAuthModalPending(false);
       return;
     }
 
@@ -245,6 +248,7 @@ const ActionButtonsInner = () => {
       setAuthModalError(null);
       authModalRetryRef.current = null;
       setAuthModal('login');
+      setAuthModalPending(false);
       return;
     }
 
@@ -253,11 +257,13 @@ const ActionButtonsInner = () => {
     const balanceInsufficient = duration > user.remaining_seconds;
     if (freeAvailable || balanceInsufficient) {
       setAuthModal('topup');
+      setAuthModalPending(false);
       return;
     }
 
     // 3. Show confirmation
     setAuthModal('confirm');
+    setAuthModalPending(false);
   };
 
   // React to login: when user gets authenticated, proceed
@@ -460,8 +466,14 @@ const ActionButtonsInner = () => {
 
       {/* ─── Modals — rendered via Portal to escape PlayerDisplay overflow-hidden ─── */}
 
-      {(authModal || showExportModal || showUnloadConfirm) && createPortal(
+      {(authModalPending || authModal || showExportModal || showUnloadConfirm) && createPortal(
         <>
+          {/* Loading spinner — blocks input while checkAuth runs */}
+          {authModalPending && (
+            <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60">
+              <div className="animate-spin rounded-full h-12 w-12 border-4 border-purple-500 border-t-transparent" />
+            </div>
+          )}
           {/* Auth modals for transcribe */}
           {authModal === 'login' && (
             <LoginModal

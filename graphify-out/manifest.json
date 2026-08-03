@@ -20,8 +20,8 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1785612348.8181543,
-    "ast_hash": "7b2b34d9cab028ee49bb6c48901caca6",
+    "mtime": 1785772647.6114142,
+    "ast_hash": "5937519bba196c4c00e2840b2229dc9b",
     "semantic_hash": ""
   },
   "src/aho-corasick.ts": {
@@ -65,8 +65,8 @@
     "semantic_hash": ""
   },
   "src/features/player/PlayerDisplay.tsx": {
-    "mtime": 1785221688.626475,
-    "ast_hash": "86fba35d91f7a78d533b45adc8a2d79f",
+    "mtime": 1785663065.7728846,
+    "ast_hash": "ede409fa1cdae9110a6cf8931b1d3fce",
     "semantic_hash": ""
   },
   "src/features/player/ProgressBar.tsx": {
@@ -85,8 +85,8 @@
     "semantic_hash": ""
   },
   "src/features/transcription/TranscriptionResults.tsx": {
-    "mtime": 1785585133.774551,
-    "ast_hash": "46b0046d71ae1bf99092840b61d00444",
+    "mtime": 1785666686.7838447,
+    "ast_hash": "aa4247678be0e42f709fd31981c1f667",
     "semantic_hash": ""
   },
   "src/hooks/useMediaPlayer.ts": {
@@ -110,8 +110,8 @@
     "semantic_hash": "e6912c3dd4c2607e82cf0427398f9fc0"
   },
   "src/store/playerStore.ts": {
-    "mtime": 1785584017.736881,
-    "ast_hash": "3a4cdab45e71c7a8ca73dcc78c6464d5",
+    "mtime": 1785655543.6870797,
+    "ast_hash": "679ae8df5113a6fd4d50fd20ff18da40",
     "semantic_hash": ""
   },
   "src/types/index.ts": {
@@ -375,8 +375,8 @@
     "semantic_hash": ""
   },
   "src/features/settings/SettingsModal.tsx": {
-    "mtime": 1785616943.283897,
-    "ast_hash": "be6f77a2944d055b507274b383e6710b",
+    "mtime": 1785666261.8063796,
+    "ast_hash": "39f3aaecd53488a1c59b96d5aa90862f",
     "semantic_hash": ""
   },
   "src/features/export/HeaderExportButton.tsx": {
@@ -450,8 +450,8 @@
     "semantic_hash": ""
   },
   "src/utils/idb.ts": {
-    "mtime": 1785582468.8119447,
-    "ast_hash": "121be0d7301a64ffd3824d90b8ff2334",
+    "mtime": 1785682281.8327315,
+    "ast_hash": "1e8e092001f15de1818a701141b146a3",
     "semantic_hash": ""
   },
   "src/features/debug/DebugTab.tsx": {
@@ -532,6 +532,11 @@
   "src/hooks/useProposedTimeBlink.ts": {
     "mtime": 1785567503.605035,
     "ast_hash": "9afd3246480b206d03ad0f8cffcb56bf",
+    "semantic_hash": ""
+  },
+  "src/features/settings/SettingsContent.tsx": {
+    "mtime": 1785765554.314921,
+    "ast_hash": "4ddb12aa3ae9f71b54570143fdca2502",
     "semantic_hash": ""
   }
 }
