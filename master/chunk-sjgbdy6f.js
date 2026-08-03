@@ -16917,10 +16917,27 @@ __export(exports_idb, {
   clearSession: () => clearSession,
   clearJournal: () => clearJournal
 });
+function idbError(label, err) {
+  const msg = err instanceof Error ? err.message : String(err);
+  const error = err instanceof ErrorEvent ? err : new Error(msg);
+  window.__obrezErrors.push({
+    label,
+    msg,
+    source: error.filename ? `${error.filename}:${error.lineno}` : null,
+    frames: error.stack?.split(`
+`).slice(1).map((f) => f.trim()) ?? [],
+    raw: `${label}: ${msg}${error.stack ? `
+` + error.stack : ""}`,
+    time: new Date().toLocaleTimeString()
+  });
+}
 function openDb2(targetVersion) {
   return new Promise((resolve, reject) => {
     const request = indexedDB.open(DB_NAME2, targetVersion ?? DB_VERSION2);
-    request.onerror = () => reject(request.error);
+    request.onerror = (e) => {
+      idbError("IDB Open", e.target?.error ?? e);
+      reject(e.target?.error ?? e);
+    };
     request.onsuccess = () => resolve(request.result);
     request.onupgradeneeded = (event) => {
       const db = event.target.result;
@@ -16943,36 +16960,74 @@ async function getFromStore(store, key) {
   });
 }
 async function saveSession(data) {
-  const db = await openDb2();
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  const store = tx.objectStore(STORE_NAME);
-  const existing = await getFromStore(store, "session");
-  store.put({ ...existing, ...data }, "session");
-  await tx.complete;
+  try {
+    const db = await openDb2();
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    const existing = await getFromStore(store, "session");
+    store.put({ ...existing, ...data }, "session");
+    await tx.complete;
+  } catch (err) {
+    idbError("IDB saveSession", err);
+    throw err;
+  }
 }
 async function loadSession() {
-  const db = await openDb2();
-  const tx = db.transaction(STORE_NAME, "readonly");
-  const store = tx.objectStore(STORE_NAME);
-  return getFromStore(store, "session");
+  try {
+    const db = await openDb2();
+    const tx = db.transaction(STORE_NAME, "readonly");
+    const store = tx.objectStore(STORE_NAME);
+    return getFromStore(store, "session");
+  } catch (err) {
+    idbError("IDB loadSession", err);
+    throw err;
+  }
 }
 async function clearSession() {
-  const db = await openDb2();
-  const tx = db.transaction(STORE_NAME, "readwrite");
-  const store = tx.objectStore(STORE_NAME);
-  store.delete("session");
-  await tx.complete;
+  try {
+    const db = await openDb2();
+    const tx = db.transaction(STORE_NAME, "readwrite");
+    const store = tx.objectStore(STORE_NAME);
+    store.delete("session");
+    await tx.complete;
+  } catch (err) {
+    idbError("IDB clearSession", err);
+    throw err;
+  }
 }
 function journalId() {
   return `${Date.now()}-${Math.random().toString(36).slice(2, 8)}`;
 }
+function normalizeForHash(results) {
+  return results.map(([start, end, text]) => [Math.round(start * 1e6) / 1e6, Math.round(end * 1e6) / 1e6, text]);
+}
+async function contentHash(transcriptionResults) {
+  const data = JSON.stringify(normalizeForHash(transcriptionResults));
+  const encoder = new TextEncoder;
+  const hashBuffer = await crypto.subtle.digest("SHA-256", encoder.encode(data));
+  return Array.from(new Uint8Array(hashBuffer)).map((b) => b.toString(16).padStart(2, "0")).join("");
+}
+async function hasDuplicate(fileName, fileSize, hash) {
+  const entries = await loadAllJournalEntries();
+  return entries.some((e) => e.fileName === fileName && e.fileSize === fileSize && e.contentHash === hash);
+}
 async function saveJournalEntry(entry) {
-  const full = { ...entry, id: journalId(), savedAt: Date.now() };
-  const db = await openDb2();
-  const tx = db.transaction(JOURNAL_STORE, "readwrite");
-  tx.objectStore(JOURNAL_STORE).add(full);
-  await tx.complete;
-  return full;
+  try {
+    const hash = await contentHash(entry.transcriptionResults);
+    const isDuplicate = await hasDuplicate(entry.fileName, entry.fileSize, hash);
+    if (isDuplicate) {
+      return null;
+    }
+    const full = { ...entry, contentHash: hash, id: journalId(), savedAt: Date.now() };
+    const db = await openDb2();
+    const tx = db.transaction(JOURNAL_STORE, "readwrite");
+    tx.objectStore(JOURNAL_STORE).add(full);
+    await tx.complete;
+    return full;
+  } catch (err) {
+    idbError("IDB saveJournalEntry", err);
+    throw err;
+  }
 }
 async function loadJournalEntries(fileName, fileSize) {
   const db = await openDb2();
@@ -19775,7 +19830,6 @@ var import_client = __toESM(require_client(), 1);
 
 // src/App.tsx
 var import_react25 = __toESM(require_react(), 1);
-var import_react_dom5 = __toESM(require_react_dom(), 1);
 
 // src/context/MediaPlayerContext.tsx
 var import_react4 = __toESM(require_react(), 1);
@@ -20110,7 +20164,7 @@ var playerActions2 = {
           const { saveJournalEntry: saveJournalEntry2 } = await Promise.resolve().then(() => exports_idb);
           const session = await (await Promise.resolve().then(() => exports_idb)).loadSession();
           const fileSize = session?.fileBlob?.size ?? 0;
-          await saveJournalEntry2({
+          const result = await saveJournalEntry2({
             fileName: state.fileName,
             fileSize,
             transcriptionResults: results,
@@ -20118,6 +20172,9 @@ var playerActions2 = {
             duration: state.duration ?? 0,
             method: "transcribe"
           });
+          if (!result) {
+            console.log("[journal] Duplicate entry skipped (same content for", state.fileName, ")");
+          }
         } catch (err) {
           console.error("Failed to save journal entry:", err);
         }
@@ -54064,6 +54121,13 @@ var PlayerDisplayInner = () => {
           children: "Load video or audio file"
         }, undefined, false, undefined, this)
       }, undefined, false, undefined, this),
+      fileName && /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
+        className: "absolute top-3 left-3 z-30 pointer-events-none",
+        children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("span", {
+          className: "bg-black/50 backdrop-blur-sm text-[10px] text-zinc-300 px-2 py-0.5 rounded block",
+          children: fileName
+        }, undefined, false, undefined, this)
+      }, undefined, false, undefined, this),
       isEnded && /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("div", {
         className: "absolute inset-0 flex items-center justify-center bg-black/40 z-20",
         children: /* @__PURE__ */ jsx_dev_runtime9.jsxDEV("button", {
@@ -56034,11 +56098,11 @@ var TranscriptionResultsInner = () => {
       try {
         const { saveJournalEntry: saveJournalEntry2 } = await Promise.resolve().then(() => exports_idb);
         await saveJournalEntry2({
-          fileName: file.name,
-          fileSize: file.size,
+          fileName: usePlayerStore.getState().fileName,
+          fileSize: usePlayerStore.getState().fileSize,
           transcriptionResults: results,
           censoringEffects: effects,
-          duration: actions.duration ?? 0,
+          duration: usePlayerStore.getState().duration ?? 0,
           method: "import"
         });
       } catch (err) {
@@ -56335,8 +56399,9 @@ var TranscriptionResultsInner = () => {
             children: [
               /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("button", {
                 onClick: () => importJsonRef.current?.click(),
-                className: `${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 flex items-center gap-1`,
-                title: "Import transcription + effects from JSON",
+                disabled: !fileName,
+                className: `${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1`,
+                title: fileName ? "Import transcription + effects from JSON" : "Load a media file first to import",
                 children: [
                   /* @__PURE__ */ jsx_dev_runtime15.jsxDEV("svg", {
                     xmlns: "http://www.w3.org/2000/svg",
@@ -56734,7 +56799,7 @@ function ImportProgressModalInner() {
 }
 var ImportProgressModal = import_react20.memo(ImportProgressModalInner);
 
-// src/features/settings/SettingsModal.tsx
+// src/features/settings/SettingsContent.tsx
 var import_react24 = __toESM(require_react(), 1);
 var import_react_dom4 = __toESM(require_react_dom(), 1);
 
@@ -57866,10 +57931,10 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "213";
+var BUILD_NUM = "215";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
-// src/features/settings/SettingsModal.tsx
+// src/features/settings/SettingsContent.tsx
 var jsx_dev_runtime21 = __toESM(require_jsx_dev_runtime(), 1);
 function Tooltip({ text }) {
   const [show, setShow] = import_react24.useState(false);
@@ -57918,8 +57983,7 @@ var TABS = [
   { key: "journal", emoji: "\uD83D\uDCCB", tooltip: "Transcription Journal" },
   { key: "debug", emoji: "\uD83D\uDC1B", tooltip: "Debug" }
 ];
-var MODAL_SHADOW2 = "shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_60px_rgba(139,92,246,0.15),0_0_0_1px_rgba(113,113,122,0.5)]";
-function SettingsModal({ onClose }) {
+function SettingsContent({ onClose }) {
   const [activeTab, setActiveTab] = import_react24.useState("user");
   const [versions, setVersions] = import_react24.useState(null);
   const [frozenHeight, setFrozenHeight] = import_react24.useState(null);
@@ -57972,158 +58036,143 @@ function SettingsModal({ onClose }) {
     window.addEventListener("keydown", handleKey);
     return () => window.removeEventListener("keydown", handleKey);
   }, [onClose]);
-  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(jsx_dev_runtime21.Fragment, {
+  return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+    className: "flex flex-col",
     children: [
       /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-        className: "fixed inset-0 z-50 bg-black/60",
-        onClick: (e) => {
-          if (e.target === e.currentTarget)
-            onClose();
-        }
+        className: "flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0",
+        children: [
+          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h2", {
+            className: "text-lg font-semibold text-zinc-100",
+            children: "⚙ Настройки"
+          }, undefined, false, undefined, this),
+          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+            onClick: onClose,
+            className: "text-zinc-300 hover:text-zinc-100 transition-colors flex items-center gap-1 text-sm font-medium",
+            children: "Вернуться →"
+          }, undefined, false, undefined, this)
+        ]
+      }, undefined, true, undefined, this),
+      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+        className: "flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0",
+        children: TABS.map((tab) => /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+          onClick: () => {
+            if (animatingRef.current)
+              return;
+            const h = contentRef.current?.scrollHeight ?? frozenHeightRef.current;
+            if (h != null) {
+              setFrozenHeight(h);
+              frozenHeightRef.current = h;
+            }
+            if (animTimeoutRef.current) {
+              clearTimeout(animTimeoutRef.current);
+              animTimeoutRef.current = null;
+            }
+            setActiveTab(tab.key);
+          },
+          title: tab.tooltip,
+          className: `px-3 py-2 text-sm font-medium rounded-t-lg transition-all ${activeTab === tab.key ? "bg-zinc-800 text-purple-400 border-b-2 border-purple-500 shadow-[0_-2px_8px_rgba(139,92,246,0.1)]" : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50"}`,
+          children: tab.emoji
+        }, tab.key, false, undefined, this))
       }, undefined, false, undefined, this),
       /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-        className: `fixed top-0 left-1/2 -translate-x-1/2 z-[51] flex flex-col w-full max-w-2xl mx-4 mt-8 mb-8 rounded-xl bg-zinc-900 shrink-0 overflow-y-auto ${MODAL_SHADOW2}`,
-        style: { maxHeight: "calc(100vh - 4rem)" },
+        ref: contentRef,
+        style: frozenHeight != null ? { height: frozenHeight, transition: "height 300ms ease-in-out" } : undefined,
         children: [
-          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-            className: "pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]"
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-            className: "relative flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0",
+          activeTab === "user" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+            className: "p-5",
             children: [
-              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h2", {
-                className: "text-lg font-semibold text-zinc-100",
-                children: "⚙ Настройки"
-              }, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
-                onClick: onClose,
-                className: "text-zinc-400 hover:text-zinc-200 transition-colors p-1 rounded hover:bg-zinc-800",
-                children: "✕"
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                className: "text-sm text-zinc-300 mb-3",
+                children: [
+                  "Account & Balance ",
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                    text: "Manage your Telegram account, check transcription balance, and top up hours."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(UserContent, {
+                onClose
               }, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-            className: "relative flex border-b border-zinc-800 px-5 pt-2 gap-2 shrink-0",
-            children: TABS.map((tab) => /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
-              onClick: () => {
-                if (animatingRef.current)
-                  return;
-                const h = contentRef.current?.scrollHeight ?? frozenHeightRef.current;
-                if (h != null) {
-                  setFrozenHeight(h);
-                  frozenHeightRef.current = h;
-                }
-                if (animTimeoutRef.current) {
-                  clearTimeout(animTimeoutRef.current);
-                  animTimeoutRef.current = null;
-                }
-                setActiveTab(tab.key);
-              },
-              title: tab.tooltip,
-              className: `px-3 py-2 text-sm font-medium rounded-t-lg transition-all ${activeTab === tab.key ? "bg-zinc-800 text-purple-400 border-b-2 border-purple-500 shadow-[0_-2px_8px_rgba(139,92,246,0.1)]" : "text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50"}`,
-              children: tab.emoji
-            }, tab.key, false, undefined, this))
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-            ref: contentRef,
-            style: frozenHeight != null ? { height: frozenHeight, transition: "height 300ms ease-in-out" } : undefined,
+          activeTab === "dictionaries" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+            className: "p-5",
             children: [
-              activeTab === "user" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-                className: "p-5",
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                className: "text-sm text-zinc-300 mb-3",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                    className: "text-sm text-zinc-300 mb-3",
-                    children: [
-                      "Account & Balance ",
-                      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                        text: "Manage your Telegram account, check transcription balance, and top up hours."
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(UserContent, {
-                    onClose
+                  "Word Lists ",
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                    text: "Choose which word lists to match against during transcription. Only active lists highlight matched words."
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              activeTab === "dictionaries" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-                className: "p-5",
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DictionaryManager, {}, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "bleep" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+            className: "p-5",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                className: "text-sm text-zinc-300 mb-3",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                    className: "text-sm text-zinc-300 mb-3",
-                    children: [
-                      "Word Lists ",
-                      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                        text: "Choose which word lists to match against during transcription. Only active lists highlight matched words."
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DictionaryManager, {}, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              activeTab === "bleep" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-                className: "p-5",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                    className: "text-sm text-zinc-300 mb-3",
-                    children: [
-                      "Sound Effects ",
-                      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                        text: "Manage bleep and censor sounds. Upload custom audio files or use the default tone."
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(BleepSoundManager, {}, undefined, false, undefined, this)
-                ]
-              }, undefined, true, undefined, this),
-              activeTab === "version" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-                className: "p-5",
-                children: [
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                    className: "text-sm text-zinc-300 mb-3",
-                    children: [
-                      "Switch Version ",
-                      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                        text: "Switch between master (latest) and stable releases. Useful if master breaks."
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(VersionContent, {
-                    versions,
-                    currentVersion,
-                    onSelect: handleVersionSelect
+                  "Sound Effects ",
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                    text: "Manage bleep and censor sounds. Upload custom audio files or use the default tone."
                   }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              activeTab === "journal" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-                className: "p-5",
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(BleepSoundManager, {}, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "version" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+            className: "p-5",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                className: "text-sm text-zinc-300 mb-3",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                    className: "text-sm text-zinc-300 mb-3",
-                    children: [
-                      "Transcription Journal ",
-                      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                        text: "All saved transcriptions, grouped by file. Load or delete past sessions."
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(JournalContent, {}, undefined, false, undefined, this)
+                  "Switch Version ",
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                    text: "Switch between master (latest) and stable releases. Useful if master breaks."
+                  }, undefined, false, undefined, this)
                 ]
               }, undefined, true, undefined, this),
-              activeTab === "debug" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
-                className: "p-5",
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(VersionContent, {
+                versions,
+                currentVersion,
+                onSelect: handleVersionSelect
+              }, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "journal" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+            className: "p-5",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                className: "text-sm text-zinc-300 mb-3",
                 children: [
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
-                    className: "text-sm text-zinc-300 mb-3",
-                    children: [
-                      "Debug ",
-                      /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
-                        text: "View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string."
-                      }, undefined, false, undefined, this)
-                    ]
-                  }, undefined, true, undefined, this),
-                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DebugTab, {}, undefined, false, undefined, this)
+                  "Transcription Journal ",
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                    text: "All saved transcriptions, grouped by file. Load or delete past sessions."
+                  }, undefined, false, undefined, this)
                 ]
-              }, undefined, true, undefined, this)
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(JournalContent, {}, undefined, false, undefined, this)
+            ]
+          }, undefined, true, undefined, this),
+          activeTab === "debug" && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
+            className: "p-5",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("h3", {
+                className: "text-sm text-zinc-300 mb-3",
+                children: [
+                  "Debug ",
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(Tooltip, {
+                    text: "View auth, player, and JS errors captured during the session. Click 'copy raw' to get the raw error string."
+                  }, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime21.jsxDEV(DebugTab, {}, undefined, false, undefined, this)
             ]
           }, undefined, true, undefined, this)
         ]
@@ -58140,7 +58189,6 @@ function UserContent({ onClose }) {
   const error = useAuthStore((s) => s.error);
   const clearError = useAuthStore((s) => s.clearError);
   const activeInvoice = useAuthStore((s) => s.activeInvoice);
-  const paymentStatus = useAuthStore((s) => s.paymentStatus);
   const [showLogin, setShowLogin] = import_react24.useState(false);
   const [selectedCurrency, setSelectedCurrency] = import_react24.useState("USD");
   const [topupSuccess, setTopupSuccess] = import_react24.useState(null);
@@ -58408,6 +58456,35 @@ function JournalContent() {
       console.error("Failed to delete entry:", err);
     }
   };
+  const handleLoadEntry = (entry) => {
+    playerActions2.setTranscriptionResults(entry.transcriptionResults);
+    playerActions2.setCensoringEffects(entry.censoringEffects);
+    playerActions2.setDuration(entry.duration);
+    const feedbackEl = document.createElement("div");
+    feedbackEl.className = "fixed bottom-4 right-4 z-[9999] text-xs text-green-400 bg-zinc-800 px-3 py-1.5 rounded shadow-lg";
+    feedbackEl.textContent = "Transcription loaded!";
+    document.body.appendChild(feedbackEl);
+    setTimeout(() => feedbackEl.remove(), 2000);
+  };
+  const handleExportEntry = (entry) => {
+    const transcriptionData = entry.transcriptionResults.map(([start, end, text]) => ({
+      start,
+      end,
+      text
+    }));
+    const effects = (entry.censoringEffects ?? []).filter((e) => e.effectType === "sound");
+    const data = JSON.stringify({ transcription: transcriptionData, effects }, null, 2);
+    const baseName = entry.fileName.replace(/\.[^.]+$/, "");
+    const blob = new Blob([data], { type: "application/json" });
+    const url2 = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url2;
+    a.download = `${baseName}_transcription.json`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url2);
+  };
   if (loading)
     return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
       className: "text-xs text-zinc-500 py-4",
@@ -58456,7 +58533,7 @@ function JournalContent() {
                 }, undefined, false, undefined, this)
               ]
             }, undefined, true, undefined, this),
-            fileEntries.map((entry) => {
+            fileEntries.map((entry, i) => {
               const date = new Date(entry.savedAt);
               const dateStr = date.toLocaleDateString(undefined, {
                 month: "short",
@@ -58466,6 +58543,7 @@ function JournalContent() {
                 hour: "2-digit",
                 minute: "2-digit"
               });
+              const versionLabel = fileEntries.length > 1 ? `v${i + 1}` : "";
               return /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("div", {
                 className: "flex items-center gap-2 text-xs bg-zinc-800/60 rounded px-2 py-1.5",
                 children: [
@@ -58477,6 +58555,10 @@ function JournalContent() {
                   /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("span", {
                     className: "flex-1 min-w-0 text-zinc-400",
                     children: [
+                      versionLabel && /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("span", {
+                        className: "text-zinc-500 mr-1",
+                        children: versionLabel
+                      }, undefined, false, undefined, this),
                       dateStr,
                       " ",
                       timeStr,
@@ -58485,6 +58567,18 @@ function JournalContent() {
                       " segments"
                     ]
                   }, undefined, true, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+                    onClick: () => handleLoadEntry(entry),
+                    className: "shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors",
+                    title: "Load transcription into player",
+                    children: "▶️"
+                  }, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
+                    onClick: () => handleExportEntry(entry),
+                    className: "shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors",
+                    title: "Export transcription as JSON",
+                    children: "\uD83D\uDCBE"
+                  }, undefined, false, undefined, this),
                   /* @__PURE__ */ jsx_dev_runtime21.jsxDEV("button", {
                     onClick: () => handleDeleteEntry(entry.id),
                     className: "shrink-0 text-zinc-500 hover:text-red-400 transition-colors",
@@ -58605,50 +58699,81 @@ var App = () => {
       /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
         className: "min-h-screen bg-zinc-900 text-zinc-100",
         children: [
-          /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("header", {
-            className: "sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800",
-            children: /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
-              className: "max-w-4xl mx-auto px-4 py-3 flex items-center justify-between",
-              children: [
-                /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("a", {
-                  href: "https://irsent.github.io/obrez-ts",
-                  className: "flex items-center gap-3",
+          /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
+            style: {
+              width: "100%",
+              height: "100vh",
+              overflowY: "auto",
+              transform: settingsOpen ? "translateX(100%)" : "translateX(0)",
+              transition: "transform 500ms ease-in-out"
+            },
+            className: "bg-zinc-900",
+            children: [
+              /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("header", {
+                id: "obrez-header",
+                className: "sticky top-0 left-0 right-0 z-50 bg-zinc-900 border-b border-zinc-800",
+                children: /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
+                  className: "max-w-4xl mx-auto px-4 py-3 flex items-center justify-between",
                   children: [
-                    /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("img", {
-                      src: "assets/obrez-logo.jpg",
-                      alt: "Obrez Logo",
-                      className: "w-8 h-8"
-                    }, undefined, false, undefined, this),
-                    /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("h1", {
-                      className: "text-3xl font-semibold text-purple-500 leading-8",
-                      children: "Obrez"
+                    /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("a", {
+                      href: "https://irsent.github.io/obrez-ts",
+                      className: "flex items-center gap-3",
+                      children: [
+                        /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("img", {
+                          src: "assets/obrez-logo.jpg",
+                          alt: "Obrez Logo",
+                          className: "w-8 h-8"
+                        }, undefined, false, undefined, this),
+                        /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("h1", {
+                          className: "text-3xl font-semibold text-purple-500 leading-8",
+                          children: "Obrez"
+                        }, undefined, false, undefined, this)
+                      ]
+                    }, undefined, true, undefined, this),
+                    /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
+                      className: "flex items-center gap-1",
+                      children: /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("button", {
+                        id: "obrez-gear",
+                        onClick: () => setSettingsOpen(true),
+                        className: "w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm",
+                        children: "⚙️"
+                      }, undefined, false, undefined, this)
                     }, undefined, false, undefined, this)
                   ]
-                }, undefined, true, undefined, this),
-                /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
-                  className: "flex items-center gap-1",
-                  children: /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("button", {
-                    id: "obrez-gear",
-                    onClick: () => setSettingsOpen(true),
-                    className: "w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm",
-                    children: "⚙️"
-                  }, undefined, false, undefined, this)
-                }, undefined, false, undefined, this)
-              ]
-            }, undefined, true, undefined, this)
-          }, undefined, false, undefined, this),
-          /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
-            className: "max-w-4xl mx-auto px-4 py-4 space-y-4",
-            children: [
-              /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(ImportProgressModal, {}, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(PlayerDisplay, {}, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(PlaybackControls, {}, undefined, false, undefined, this),
-              /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(TranscriptionResults, {}, undefined, false, undefined, this)
+                }, undefined, true, undefined, this)
+              }, undefined, false, undefined, this),
+              /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
+                className: "max-w-4xl mx-auto px-4 pb-20 space-y-4",
+                style: { paddingTop: "1.5rem" },
+                children: [
+                  /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(ImportProgressModal, {}, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(PlayerDisplay, {}, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(PlaybackControls, {}, undefined, false, undefined, this),
+                  /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(TranscriptionResults, {}, undefined, false, undefined, this)
+                ]
+              }, undefined, true, undefined, this)
             ]
           }, undefined, true, undefined, this),
-          settingsOpen && import_react_dom5.createPortal(/* @__PURE__ */ jsx_dev_runtime22.jsxDEV(SettingsModal, {
-            onClose: () => setSettingsOpen(false)
-          }, undefined, false, undefined, this), document.body)
+          /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
+            style: {
+              position: "fixed",
+              top: 0,
+              left: 0,
+              width: "100%",
+              height: "100vh",
+              overflowY: "auto",
+              zIndex: 60,
+              transform: settingsOpen ? "translateX(0)" : "translateX(-100%)",
+              transition: "transform 500ms ease-in-out"
+            },
+            className: "bg-zinc-900",
+            children: /* @__PURE__ */ jsx_dev_runtime22.jsxDEV("div", {
+              className: "max-w-4xl mx-auto px-4 py-4",
+              children: /* @__PURE__ */ jsx_dev_runtime22.jsxDEV(SettingsContent, {
+                onClose: () => setSettingsOpen(false)
+              }, undefined, false, undefined, this)
+            }, undefined, false, undefined, this)
+          }, undefined, false, undefined, this)
         ]
       }, undefined, true, undefined, this)
     ]
@@ -58660,4 +58785,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=038B43BC84753C7D64756E2164756E21
+//# debugId=9DA3899AC38FE36564756E2164756E21
