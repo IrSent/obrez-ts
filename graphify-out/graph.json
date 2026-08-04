@@ -92,10 +92,20 @@
       "norm_label": "authstore.ts"
     },
     {
+      "label": "getAuthHeaders()",
+      "file_type": "code",
+      "source_file": "src/store/authStore.ts",
+      "source_location": "L6",
+      "_origin": "ast",
+      "id": "store_authstore_getauthheaders",
+      "community": 57,
+      "norm_label": "getauthheaders()"
+    },
+    {
       "label": "AuthState",
       "file_type": "code",
       "source_file": "src/store/authStore.ts",
-      "source_location": "L5",
+      "source_location": "L15",
       "_origin": "ast",
       "id": "store_authstore_authstate",
       "community": 57,
@@ -105,7 +115,7 @@
       "label": "AuthActions",
       "file_type": "code",
       "source_file": "src/store/authStore.ts",
-      "source_location": "L15",
+      "source_location": "L25",
       "_origin": "ast",
       "id": "store_authstore_authactions",
       "community": 57,
@@ -115,7 +125,7 @@
       "label": "AuthStore",
       "file_type": "code",
       "source_file": "src/store/authStore.ts",
-      "source_location": "L26",
+      "source_location": "L36",
       "_origin": "ast",
       "id": "store_authstore_authstore",
       "community": 57,
@@ -125,7 +135,7 @@
       "label": "useAuthStore",
       "file_type": "code",
       "source_file": "src/store/authStore.ts",
-      "source_location": "L28",
+      "source_location": "L38",
       "_origin": "ast",
       "id": "store_authstore_useauthstore",
       "community": 57,
@@ -137,9 +147,9 @@
       "source_file": "src/utils/upload.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "id": "utils_upload",
       "community": 0,
-      "norm_label": "upload.ts"
+      "norm_label": "upload.ts",
+      "id": "utils_upload"
     },
     {
       "label": "getAuthHeaders()",
@@ -147,9 +157,9 @@
       "source_file": "src/utils/upload.ts",
       "source_location": "L8",
       "_origin": "ast",
-      "id": "utils_upload_getauthheaders",
       "community": 0,
-      "norm_label": "getauthheaders()"
+      "norm_label": "getauthheaders()",
+      "id": "utils_upload_getauthheaders"
     },
     {
       "label": "uploadFile()",
@@ -157,9 +167,9 @@
       "source_file": "src/utils/upload.ts",
       "source_location": "L23",
       "_origin": "ast",
-      "id": "utils_upload_uploadfile",
       "community": 0,
-      "norm_label": "uploadfile()"
+      "norm_label": "uploadfile()",
+      "id": "utils_upload_uploadfile"
     },
     {
       "label": "fmtBytes()",
@@ -167,9 +177,9 @@
       "source_file": "src/utils/upload.ts",
       "source_location": "L77",
       "_origin": "ast",
-      "id": "utils_upload_fmtbytes",
       "community": 0,
-      "norm_label": "fmtbytes()"
+      "norm_label": "fmtbytes()",
+      "id": "utils_upload_fmtbytes"
     },
     {
       "label": "safePct()",
@@ -177,9 +187,9 @@
       "source_file": "src/utils/upload.ts",
       "source_location": "L83",
       "_origin": "ast",
-      "id": "utils_upload_safepct",
       "community": 0,
-      "norm_label": "safepct()"
+      "norm_label": "safepct()",
+      "id": "utils_upload_safepct"
     },
     {
       "label": "ActionButtons.tsx",
@@ -187,7 +197,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "actionbuttons.tsx",
       "id": "action_buttons_actionbuttons"
     },
@@ -197,7 +207,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "fileicon()",
       "id": "action_buttons_actionbuttons_fileicon"
     },
@@ -207,7 +217,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L23",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "urlicon()",
       "id": "action_buttons_actionbuttons_urlicon"
     },
@@ -217,7 +227,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L30",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "transcribeicon()",
       "id": "action_buttons_actionbuttons_transcribeicon"
     },
@@ -227,7 +237,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L39",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "downloadicon()",
       "id": "action_buttons_actionbuttons_downloadicon"
     },
@@ -237,7 +247,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L47",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "unloadicon()",
       "id": "action_buttons_actionbuttons_unloadicon"
     },
@@ -247,7 +257,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L56",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "closeicon()",
       "id": "action_buttons_actionbuttons_closeicon"
     },
@@ -257,7 +267,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L64",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "codec_labels",
       "id": "action_buttons_actionbuttons_codec_labels"
     },
@@ -267,7 +277,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L69",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "codeclabel()",
       "id": "action_buttons_actionbuttons_codeclabel"
     },
@@ -277,7 +287,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L73",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "exportformat",
       "id": "action_buttons_actionbuttons_exportformat"
     },
@@ -287,7 +297,7 @@
       "source_file": "src/features/action-buttons/ActionButtons.tsx",
       "source_location": "L77",
       "_origin": "ast",
-      "community": 57,
+      "community": 27,
       "norm_label": "actionbuttonsinner()",
       "id": "action_buttons_actionbuttons_actionbuttonsinner"
     },
@@ -557,7 +567,7 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L88",
       "_origin": "ast",
-      "community": 6,
+      "community": 57,
       "norm_label": "settingsmodal()",
       "id": "settings_settingsmodal_settingsmodal"
     },
@@ -747,7 +757,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L339",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "transcriptionresultsinner()",
       "id": "transcription_transcriptionresults_transcriptionresultsinner"
     },
@@ -1197,7 +1207,7 @@
       "source_file": "src/types/index.ts",
       "source_location": "L248",
       "_origin": "ast",
-      "community": 2,
+      "community": 57,
       "norm_label": "paymentinvoice",
       "id": "types_index_paymentinvoice"
     },
@@ -1297,7 +1307,7 @@
       "source_file": "src/hooks/useProposedTimeBlink.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "useproposedtimeblink.ts",
       "id": "hooks_useproposedtimeblink"
     },
@@ -1307,7 +1317,7 @@
       "source_file": "src/hooks/useProposedTimeBlink.ts",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 6,
+      "community": 7,
       "norm_label": "useproposedtimeblink()",
       "id": "hooks_useproposedtimeblink_useproposedtimeblink"
     },
@@ -3049,7 +3059,7 @@
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 57,
+      "community": 7,
       "norm_label": "confirmationmodal.tsx",
       "id": "auth_confirmationmodal"
     },
@@ -3059,7 +3069,7 @@
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L3",
       "_origin": "ast",
-      "community": 57,
+      "community": 7,
       "norm_label": "formatduration()",
       "id": "auth_confirmationmodal_formatduration"
     },
@@ -3069,7 +3079,7 @@
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L12",
       "_origin": "ast",
-      "community": 57,
+      "community": 7,
       "norm_label": "confirmationmodalprops",
       "id": "auth_confirmationmodal_confirmationmodalprops"
     },
@@ -3079,7 +3089,7 @@
       "source_file": "src/features/auth/ConfirmationModal.tsx",
       "source_location": "L19",
       "_origin": "ast",
-      "community": 57,
+      "community": 7,
       "norm_label": "confirmationmodal()",
       "id": "auth_confirmationmodal_confirmationmodal"
     },
@@ -6204,6 +6214,16 @@
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/store/authStore.ts",
+      "source_location": "L6",
+      "weight": 1.0,
+      "source": "store_authstore",
+      "target": "store_authstore_getauthheaders",
+      "confidence_score": 1.0
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/store/authStore.ts",
       "source_location": "L22",
       "weight": 1.0,
       "confidence_score": 1.0,
@@ -6239,9 +6259,9 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_authstore",
-      "target": "types_index_fiatcurrency",
-      "confidence_score": 1.0
+      "target": "types_index_fiatcurrency"
     },
     {
       "relation": "imports",
@@ -6261,9 +6281,9 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L2",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "store_authstore",
-      "target": "types_index_paymentinvoice",
-      "confidence_score": 1.0
+      "target": "types_index_paymentinvoice"
     },
     {
       "relation": "imports_from",
@@ -6556,9 +6576,9 @@
       "source_file": "src/utils/upload.ts",
       "source_location": "L8",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_upload",
-      "target": "utils_upload_getauthheaders",
-      "confidence_score": 1.0
+      "target": "utils_upload_getauthheaders"
     },
     {
       "relation": "contains",
@@ -6587,9 +6607,9 @@
       "source_file": "src/utils/upload.ts",
       "source_location": "L30",
       "weight": 1.0,
+      "confidence_score": 1.0,
       "source": "utils_upload_uploadfile",
-      "target": "utils_upload_getauthheaders",
-      "confidence_score": 1.0
+      "target": "utils_upload_getauthheaders"
     },
     {
       "relation": "imports",
@@ -16400,5 +16420,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "1461a168e3132c492c2b0d153e9244538752e359"
+  "built_at_commit": "303443f1ccbbd1bf19be7d6130806ae476a1511f"
 }
