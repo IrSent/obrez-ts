@@ -1,16 +1,16 @@
-# Graph Report - obrez-ts  (2026-08-04)
+# Graph Report - obrez-ts  (2026-08-03)
 
 ## Corpus Check
-- 92 files · ~129,033 words
+- 92 files · ~128,914 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 589 nodes · 981 edges · 58 communities (43 shown, 15 thin omitted)
+- 588 nodes · 977 edges · 58 communities (43 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `1461a168`
+- Built from commit: `60c964c1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -94,7 +94,7 @@
 
 ### Community 0 - "Community 0"
 Cohesion: 0.12
-Nodes (23): DEFAULT_DICTIONARIES, createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop() (+15 more)
+Nodes (22): DEFAULT_DICTIONARIES, createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop() (+14 more)
 
 ### Community 1 - "Package Dependencies"
 Cohesion: 0.05
@@ -118,11 +118,11 @@ Nodes (16): compilerOptions, esModuleInterop, forceConsistentCasingInFileNames, 
 
 ### Community 6 - "Backend Config + Server"
 Cohesion: 0.07
-Nodes (40): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner() (+32 more)
+Nodes (38): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner() (+30 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.08
-Nodes (12): ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps, TextView(), findClosestSegment(), parseStage() (+4 more)
+Cohesion: 0.07
+Nodes (17): ConfirmationModal(), ConfirmationModalProps, formatDuration(), useProposedTimeBlink(), ShieldButton, ShieldButtonProps, EffectBadge, EffectModal (+9 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -149,8 +149,8 @@ Cohesion: 0.24
 Nodes (8): build(), buildVersion(), clients, DIST_DIR, getVersions(), PUBLIC_DIR, server, SRC_DIR
 
 ### Community 27 - "Community 27"
-Cohesion: 0.23
-Nodes (18): clearJournal(), clearSession(), contentHash(), deleteJournalEntriesForFile(), deleteJournalEntry(), ErrorEntry, getFromStore(), hasDuplicate() (+10 more)
+Cohesion: 0.12
+Nodes (22): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, clearJournal(), clearSession(), contentHash(), deleteJournalEntriesForFile() (+14 more)
 
 ### Community 34 - "Community 34"
 Cohesion: 0.50
@@ -189,28 +189,28 @@ Cohesion: 0.20
 Nodes (9): Console Diagnostics, Diagnostic Hooks, Playwright Config, Running Tests, Test Fixtures, Test Suite, Testing Guide, `window.__audioDiagnostic` (+1 more)
 
 ### Community 57 - "Community 57"
-Cohesion: 0.06
-Nodes (48): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, ConfirmationModal(), ConfirmationModalProps, formatDuration(), LoginModal() (+40 more)
+Cohesion: 0.07
+Nodes (41): LoginModal(), LoginModalProps, PaymentModal(), PaymentModalProps, TopupModal(), TopupModalProps, DebugTab(), ErrorEntry (+33 more)
 
 ## Knowledge Gaps
-- **214 isolated node(s):** `AuthStore`, `CODEC_LABELS`, `ExportFormat`, `DEFAULT_DICTIONARIES`, `TabKey` (+209 more)
+- **215 isolated node(s):** `CODEC_LABELS`, `ExportFormat`, `DEFAULT_DICTIONARIES`, `TabKey`, `TABS` (+210 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 57`?**
+- **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 57`, `Community 27`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `playerActions` connect `Community 0` to `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 7`, `Community 50`, `Community 57`?**
+- **Why does `playerActions` connect `Community 0` to `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 7`, `Community 50`, `Community 57`, `Community 27`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `AuthStore`, `CODEC_LABELS`, `ExportFormat` to the rest of the system?**
-  _214 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `CODEC_LABELS`, `ExportFormat`, `DEFAULT_DICTIONARIES` to the rest of the system?**
+  _215 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.11895161290322581 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12258064516129032 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `Dictionary + Aho-Corasick` be split into smaller, more focused modules?**
-  _Cohesion score 0.1425287356321839 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14022988505747128 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**
   _Cohesion score 0.14153846153846153 - nodes in this community are weakly interconnected._

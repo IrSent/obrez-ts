@@ -2,6 +2,16 @@ import { create } from 'zustand';
 import type { AuthUser, HourPackType, PaymentInvoice, FiatCurrency } from '../types';
 import { loadBackendUrl, backendHeaders } from '../config';
 
+/** Get backend auth headers: bypass-tunnel-reminder + Bearer token if available. */
+function getAuthHeaders(): Record<string, string> {
+  const headers = { ...backendHeaders() };
+  const token = localStorage.getItem('obrez_token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
 interface AuthState {
   user: AuthUser | null;
   isAuthenticated: boolean;
@@ -98,7 +108,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const url = await loadBackendUrl();
       const response = await fetch(`${url}/api/auth/me`, {
         credentials: 'include',
-        headers: backendHeaders(),
+        headers: getAuthHeaders(),
       });
       if (response.ok) {
         try {
@@ -144,14 +154,22 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
   },
 
   logout: async () => {
+    const token = localStorage.getItem('obrez_token');
     localStorage.removeItem('obrez_user');
     localStorage.removeItem('obrez_token');
     try {
       const url = await loadBackendUrl();
+      const headers: Record<string, string> = {
+        ...backendHeaders(),
+        'Content-Type': 'application/json',
+      };
+      if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+      }
       await fetch(`${url}/api/auth/logout`, {
         method: 'POST',
         credentials: 'include',
-        headers: { ...backendHeaders(), 'Content-Type': 'application/json' },
+        headers,
       });
     } catch {
       // ignore
@@ -165,7 +183,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const url = await loadBackendUrl();
       const response = await fetch(
         `${url}/api/hours/topup?hour_pack_type=${hourPackType}&fiat=${fiat}`,
-        { method: 'POST', credentials: 'include', headers: backendHeaders() },
+        { method: 'POST', credentials: 'include', headers: getAuthHeaders() },
       );
       if (!response.ok) {
         const err = await response.json().catch(() => ({ detail: 'Unknown error' }));
@@ -200,7 +218,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
       const url = await loadBackendUrl();
       const response = await fetch(
         `${url}/api/payments/status?invoice_id=${invoiceId}`,
-        { credentials: 'include', headers: backendHeaders() },
+        { credentials: 'include', headers: getAuthHeaders() },
       );
       if (!response.ok) return;
 
