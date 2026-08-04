@@ -5,12 +5,16 @@ set -euo pipefail
 FORCE=false
 VERSION=""
 BUILD=true
+SKIP_CF=false
+SKIP_GH=false
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --force)   FORCE=true; shift ;;
-    --version) VERSION="$2"; shift 2 ;;
+    --force)      FORCE=true; shift ;;
+    --version)    VERSION="$2"; shift 2 ;;
     --skip-build) BUILD=false; shift ;;
-    *)         echo "Unknown option: $1"; exit 1 ;;
+    --skip-cf)    SKIP_CF=true; shift ;;
+    --skip-gh)    SKIP_GH=true; shift ;;
+    *)            echo "Unknown option: $1"; exit 1 ;;
   esac
 done
 
@@ -18,16 +22,11 @@ REPO="git@github.com:IrSent/obrez-ts.git"
 REPO_DIR=$(pwd)
 WORKDIR=$(mktemp -d)
 
-echo "📂 Working dir: $WORKDIR"
-
-# ── clone gh-pages ──
-git clone --depth 1 -b gh-pages "$REPO" "$WORKDIR" > /dev/null 2>&1
-
 # ── backend URL (read from repo's backend-url.json, or environment override) ──
 BACKEND_URL="${BACKEND_URL:-$(python3 -c "import json,sys;print(json.load(open(sys.argv[1]))['url'])" "$REPO_DIR/public/backend-url.json")}"
 echo "🌐 Backend URL: $BACKEND_URL"
 
-# ── write backend-url.json (always) ──
+# ── write backend-url.json ──
 echo "{\"url\":\"$BACKEND_URL\"}" > "$WORKDIR/backend-url.json"
 
 # ── build versions ──
@@ -83,32 +82,43 @@ for v in d['versions']:
   cp "$VERSIONS_FILE" "$WORKDIR/stable-versions.json"
 fi
 
-# ── root index.html (redirects to default version) ──
-cat > "$WORKDIR/index.html" << 'REDIRECT'
-<!DOCTYPE html><html><head><meta charset="UTF-8"><title>Obrez</title>
-<meta http-equiv="refresh" content="3;url=master/">
-<script>
-fetch('stable-versions.json').then(r=>r.json()).then(d=>{
-  const v = localStorage.getItem('obrez-version');
-  const ver = (v && d.versions.includes(v)) ? v : d.default;
-  window.location.replace(ver + '/' + window.location.search);
-}).catch(function(){ window.location.replace('master/' + window.location.search); });
-</script></head><body></body></html>
-REDIRECT
+# ── root index.html ──
+cp "$REPO_DIR/public/root-index.html" "$WORKDIR/index.html"
 
-# ── settings-early and settings-ui (shared across versions) ──
-# Build copies them into master/; we need them at the root level (../ resolution)
-cp "$WORKDIR/master/settings-early."*.js "$WORKDIR/" 2>/dev/null || true
-cp "$WORKDIR/master/settings-ui."*.js "$WORKDIR/" 2>/dev/null || true
+# ── settings-early and settings-ui (shared across versions, ../ resolution) ──
+if [ -d "$WORKDIR/master" ]; then
+  cp "$WORKDIR/master/settings-early."*.js "$WORKDIR/" 2>/dev/null || true
+  cp "$WORKDIR/master/settings-ui."*.js "$WORKDIR/" 2>/dev/null || true
+fi
 
-# ── commit and push ──
-cd "$WORKDIR"
-git add -A
-git commit -q -m "deploy: $(date -u +%Y-%m-%dT%H:%M:%SZ)" --allow-empty
-git push -f origin gh-pages
+# ── deploy to GitHub Pages ──
+if [ "$SKIP_GH" = false ]; then
+  echo "🚀 Deploying to GitHub Pages..."
+  # Clone gh-pages to a separate temp dir to preserve WORKDIR
+  GH_WORKDIR=$(mktemp -d)
+  git clone --depth 1 -b gh-pages "$REPO" "$GH_WORKDIR" > /dev/null 2>&1
+
+  # Copy built content
+  cp -r "$WORKDIR/"* "$GH_WORKDIR/"
+
+  cd "$GH_WORKDIR"
+  git add -A
+  git commit -q -m "deploy: $(date -u +%Y-%m-%dT%H:%M:%SZ)" --allow-empty
+  git push -f origin gh-pages
+  rm -rf "$GH_WORKDIR"
+  echo "✅ Deployed to GitHub Pages!"
+fi
+
+# ── deploy to Cloudflare Pages ──
+if [ "$SKIP_CF" = false ]; then
+  echo "🚀 Deploying to Cloudflare Pages..."
+  cd "$REPO_DIR"
+  bunx wrangler pages deploy "$WORKDIR" --project-name obrez-ts --branch production --commit-message "deploy: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  echo "✅ Deployed to Cloudflare Pages!"
+fi
 
 # ── cleanup ──
 rm -rf "$WORKDIR"
 
 echo ""
-echo "✅ Deployed!"
+echo "🎉 Deploy complete!"
