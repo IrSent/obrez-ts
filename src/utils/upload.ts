@@ -1,6 +1,20 @@
 import { backendPath, backendHeaders } from '../config';
 
 /**
+ * Get backend auth headers: credentials + Bearer token if available.
+ * Mobile browsers block SameSite=None cross-site cookies, so the Bearer
+ * fallback ensures requests reach the backend authenticated.
+ */
+function getAuthHeaders(): Record<string, string> {
+  const headers = { ...backendHeaders() };
+  const token = localStorage.getItem('obrez_token');
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  return headers;
+}
+
+/**
  * Upload a Blob via XMLHttpRequest with live upload-progress callbacks.
  * Returns the parsed JSON response body.
  *
@@ -13,7 +27,7 @@ export function uploadFile(
   onProgress?: (info: { loaded: number; total: number; pct: number }) => void,
 ): Promise<any> {
   const url = backendPath(path);
-  const extraHeaders = backendHeaders();
+  const extraHeaders = getAuthHeaders();
 
   return new Promise<any>((resolve, reject) => {
     const xhr = new XMLHttpRequest();

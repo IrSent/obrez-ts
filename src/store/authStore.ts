@@ -74,6 +74,10 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
         try {
           const data = await response.json();
           localStorage.setItem('obrez_user', JSON.stringify(data.user));
+          // Store JWT for Bearer fallback on mobile (SameSite=None blocked)
+          if (data.token) {
+            localStorage.setItem('obrez_token', data.token);
+          }
           set({ user: data.user, isAuthenticated: true, error: null });
         } catch {
           set({ error: 'Invalid response from server' });
@@ -141,6 +145,7 @@ export const useAuthStore = create<AuthStore>((set, get) => ({
 
   logout: async () => {
     localStorage.removeItem('obrez_user');
+    localStorage.removeItem('obrez_token');
     try {
       const url = await loadBackendUrl();
       await fetch(`${url}/api/auth/logout`, {
