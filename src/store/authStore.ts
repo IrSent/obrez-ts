@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import type { AuthUser, HourPackType, PaymentInvoice, FiatCurrency } from '../types';
 import { loadBackendUrl, backendHeaders } from '../config';
 
-/** Get backend auth headers: bypass-tunnel-reminder + Bearer token if available. */
+/** Get backend auth headers: Bearer token if available. */
 function getAuthHeaders(): Record<string, string> {
   const headers = { ...backendHeaders() };
   const token = localStorage.getItem('obrez_token');
