@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 588 nodes, 977 edges, 58 communities. Commit: 8af8069</p>
+<p class="subtitle">Generated from graphify knowledge graph: 588 nodes, 977 edges, 58 communities. Commit: 60c964c</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -121,12 +121,12 @@ flowchart LR
     OUTPUTS_DOCS_ED82387C -->|imports x20| INGEST_CACHE_UPDATE_FF457338
     SERVE_API_35EC8E86 -->|imports x19| OUTPUTS_DOCS_ED82387C
     SERVE_API_35EC8E86 -->|imports x17| INGEST_CACHE_UPDATE_FF457338
+    COMMUNITY_27_99AD9ED4 -->|imports x13| OUTPUTS_DOCS_ED82387C
     COMMUNITY_27_99AD9ED4 -->|imports x11| COMMUNITY_57_508B74B3
     COMMUNITY_57_508B74B3 -->|imports x10| INGEST_CACHE_UPDATE_FF457338
     COMMUNITY_7_989501FC -->|imports x10| COMMUNITY_57_508B74B3
     COMMUNITY_7_989501FC -->|imports x10| OUTPUTS_DOCS_ED82387C
     OUTPUTS_DOCS_ED82387C -->|imports x9| COMMUNITY_57_508B74B3
-    COMMUNITY_27_99AD9ED4 -->|imports x9| OUTPUTS_DOCS_ED82387C
     SERVE_API_35EC8E86 -->|imports x8| COMMUNITY_57_508B74B3
     OUTPUTS_DOCS_ED82387C -->|imports x7| COMMUNITY_7_989501FC
     INGEST_CACHE_UPDATE_FF457338 -->|imports x7| OUTPUTS_DOCS_ED82387C
@@ -758,11 +758,11 @@ flowchart LR
         store_playerstore_useplayerstore_5d310b80("usePlayerStore<br/><small>src/store/playerStore.ts</small>")
         store_playerstore_useplayeractions_2de0ac0e("usePlayerActions()<br/><small>src/store/playerStore.ts</small>")
     end
+    action_buttons_actionbuttons_actionbuttons_ae391f9f("ActionButtons<br/><small>features/action-buttons/ActionButtons.tsx</small>")
     dictionary_dictionarymanager_dictionarymanagerin_b491595a("DictionaryManagerInner()<br/><small>features/dictionary/DictionaryManager.tsx</small>")
     player_playbackcontrols_playbackcontrolsinner_de05d3dd("PlaybackControlsInner()<br/><small>features/player/PlaybackControls.tsx</small>")
     player_progressbar_progressbarinner_03464bbb("ProgressBarInner()<br/><small>features/player/ProgressBar.tsx</small>")
     player_volumecontrols_volumecontrolsinner_305102a4("VolumeControlsInner()<br/><small>features/player/VolumeControls.tsx</small>")
-    transcription_importprogressmodal_importprogress_f1022770("ImportProgressModalInner()<br/><small>features/transcription/ImportProgressModal.tsx</small>")
     transcription_transcriptionresults_transcribepro_5576f37c("TranscribeProgress()<br/><small>features/transcription/TranscriptionResults.tsx</small>")
     context_mediaplayercontext_usemediaplayercontext_6e6b7797("useMediaPlayerContext()<br/><small>src/context/MediaPlayerContext.tsx</small>")
     src_export_writablebuffer_7323feaa("WritableBuffer<br/><small>src/export.ts</small>")
@@ -778,7 +778,6 @@ flowchart LR
     store_playerstore_useplayerstore_5d310b80 -->|calls| player_playbackcontrols_playbackcontrolsinner_de05d3dd
     store_playerstore_useplayerstore_5d310b80 -->|calls| player_progressbar_progressbarinner_03464bbb
     store_playerstore_useplayerstore_5d310b80 -->|calls| player_volumecontrols_volumecontrolsinner_305102a4
-    store_playerstore_useplayerstore_5d310b80 -->|calls| transcription_importprogressmodal_importprogress_f1022770
     store_playerstore_useplayeractions_2de0ac0e -->|calls| dictionary_dictionarymanager_dictionarymanagerin_b491595a
     store_playerstore_useplayeractions_2de0ac0e -->|calls| export_exportmodal_exportbuttoninner_4a68e111
     store_playerstore_useplayeractions_2de0ac0e -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
@@ -787,10 +786,11 @@ flowchart LR
     player_volumecontrols_volumecontrolsinner_305102a4 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_exportmodal_exportbuttoninner_4a68e111
     context_mediaplayercontext_usemediaplayercontext_6e6b7797 -->|calls| export_headerexportbutton_headerexportbuttoninne_d5e26d52
+    action_buttons_actionbuttons_actionbuttons_ae391f9f -->|imports| player_playerdisplay_96c04d4c
+    action_buttons_actionbuttons_actionbuttons_ae391f9f -->|imports| src_app_46efd68e
     src_app_46efd68e -->|imports| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     src_app_46efd68e -->|imports| player_playerdisplay_96c04d4c
-    src_app_46efd68e -->|imports| store_playerstore_useplayerstore_5d310b80
-    %% Omitted for readability: 89 nodes, 2 edges
+    %% Omitted for readability: 89 nodes, 3 edges
     class export_exportmodal_exportbuttoninner_4a68e111 ui;
     class export_exportmodal_exportprogressbar_da29b745 ui;
     class export_headerexportbutton_headerexportbuttoninne_d5e26d52 ui;
@@ -801,11 +801,11 @@ flowchart LR
     class src_app_sessionrestorer_2dba85a1 ui;
     class store_playerstore_useplayerstore_5d310b80 ui;
     class store_playerstore_useplayeractions_2de0ac0e ui;
+    class action_buttons_actionbuttons_actionbuttons_ae391f9f ui;
     class dictionary_dictionarymanager_dictionarymanagerin_b491595a ui;
     class player_playbackcontrols_playbackcontrolsinner_de05d3dd ui;
     class player_progressbar_progressbarinner_03464bbb ui;
     class player_volumecontrols_volumecontrolsinner_305102a4 ui;
-    class transcription_importprogressmodal_importprogress_f1022770 ui;
     class transcription_transcriptionresults_transcribepro_5576f37c ui;
     class context_mediaplayercontext_usemediaplayercontext_6e6b7797 ui;
     class src_export_writablebuffer_7323feaa klass;
@@ -832,14 +832,22 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>ExportButton</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br>+17 more</td>
-  <td>Module file in src/App.tsx.</td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
   <td>2</td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>ExportButton</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>FileLoader()</code><br><small style="color:var(--muted)">features/file-loader/FileLoader.tsx</small><br>+16 more</td>
+  <td>Module file in src/App.tsx.</td>
+</tr>
+<tr>
+  <td>3</td>
   <td><code>DEFAULT_DICTIONARIES</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -847,7 +855,7 @@ flowchart LR
   <td>DEFAULT_DICTIONARIES node in src/App.tsx.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>4</td>
   <td><code>SessionRestorer()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -855,7 +863,7 @@ flowchart LR
   <td>SessionRestorer() node in src/App.tsx.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>5</td>
   <td><code>App()</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -863,15 +871,15 @@ flowchart LR
   <td>App() node in src/App.tsx.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>6</td>
   <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br>+6 more</td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br><code>ProgressBar</code><br><small style="color:var(--muted)">features/player/ProgressBar.tsx</small><br>+5 more</td>
   <td>Module file in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>7</td>
   <td><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -879,7 +887,7 @@ flowchart LR
   <td>PlayerDisplayInner() node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>8</td>
   <td><code>PlayerDisplay</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -887,7 +895,7 @@ flowchart LR
   <td>PlayerDisplay node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>9</td>
   <td><code>SettingsModal()</code><br><small style="color:var(--muted)">features/settings/SettingsModal.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -895,7 +903,7 @@ flowchart LR
   <td>SettingsModal() node in features/settings/SettingsModal.tsx.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>10</td>
   <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -903,7 +911,7 @@ flowchart LR
   <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>11</td>
   <td><code>TranscriptionResults</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
@@ -911,7 +919,7 @@ flowchart LR
   <td>TranscriptionResults node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
+  <td>12</td>
   <td><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small><br>+1 more</td>
@@ -919,20 +927,12 @@ flowchart LR
   <td>usePlayerStore node in src/store/playerStore.ts.</td>
 </tr>
 <tr>
-  <td>12</td>
+  <td>13</td>
   <td><code>usePlayerActions()</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td><code>DictionaryManagerInner()</code><br><small style="color:var(--muted)">features/dictionary/DictionaryManager.tsx</small><br><code>ExportButtonInner()</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br><code>ExportModal.tsx</code><br><small style="color:var(--muted)">features/export/ExportModal.tsx</small><br>+4 more</td>
   <td>usePlayerActions() node in src/store/playerStore.ts.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td>No direct outbound edge</td>
-  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
   <td>14</td>
@@ -2840,11 +2840,10 @@ flowchart LR
         utils_idb_idberror_71d8b687("idbError()<br/><small>src/utils/idb.ts</small>")
         utils_idb_getfromstore_da024d86("getFromStore()<br/><small>src/utils/idb.ts</small>")
         utils_idb_hasduplicate_c7862beb("hasDuplicate()<br/><small>src/utils/idb.ts</small>")
-        utils_idb_1692414a("idb.ts")
+        utils_idb_savesession_413b5cf9("saveSession()<br/><small>src/utils/idb.ts</small>")
         utils_idb_clearsession_55d6bb92("clearSession()<br/><small>src/utils/idb.ts</small>")
         utils_idb_loadsession_7a3591e0("loadSession()<br/><small>src/utils/idb.ts</small>")
         utils_idb_savejournalentry_4c32ed6e("saveJournalEntry()<br/><small>src/utils/idb.ts</small>")
-        utils_idb_savesession_413b5cf9("saveSession()<br/><small>src/utils/idb.ts</small>")
         utils_idb_clearjournal_5ed4902f("clearJournal()<br/><small>src/utils/idb.ts</small>")
         utils_idb_deletejournalentriesforfile_0cac9fb6("deleteJournalEntriesForFile()<br/><small>src/utils/idb.ts</small>")
         utils_idb_deletejournalentry_b70534c9("deleteJournalEntry()<br/><small>src/utils/idb.ts</small>")
@@ -2854,9 +2853,12 @@ flowchart LR
         utils_idb_normalizeforhash_66b1e151("normalizeForHash()<br/><small>src/utils/idb.ts</small>")
     end
     subgraph community_27_features_action_buttons_ActionButto_eb55f0ee["features/action-buttons/ActionButtons.tsx"]
+        action_buttons_actionbuttons_78ab3197("ActionButtons.tsx")
         action_buttons_actionbuttons_codeclabel_52e9a5e9("codecLabel()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
         action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6("ActionButtonsInner()<br/><small>features/action-buttons/ActionButtons.tsx</small>")
     end
+    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
+    action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 -->|calls| utils_idb_savesession_413b5cf9
     utils_idb_idberror_71d8b687 -->|calls| utils_idb_clearsession_55d6bb92
     utils_idb_idberror_71d8b687 -->|calls| utils_idb_loadsession_7a3591e0
     utils_idb_idberror_71d8b687 -->|calls| utils_idb_savejournalentry_4c32ed6e
@@ -2872,22 +2874,20 @@ flowchart LR
     utils_idb_opendb_10880aed -->|calls| utils_idb_savesession_413b5cf9
     utils_idb_getfromstore_da024d86 -->|calls| utils_idb_loadsession_7a3591e0
     utils_idb_getfromstore_da024d86 -->|calls| utils_idb_savesession_413b5cf9
-    utils_idb_savesession_413b5cf9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
     utils_idb_journalid_7070f4de -->|calls| utils_idb_savejournalentry_4c32ed6e
     utils_idb_hasduplicate_c7862beb -->|calls| utils_idb_loadalljournalentries_d46f2890
     utils_idb_hasduplicate_c7862beb -->|calls| utils_idb_savejournalentry_4c32ed6e
     utils_idb_loadjournalentries_f69985e3 -->|calls| utils_idb_deletejournalentriesforfile_0cac9fb6
-    action_buttons_actionbuttons_codeclabel_52e9a5e9 -->|calls| action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6
+    action_buttons_actionbuttons_78ab3197 -->|imports| utils_idb_savesession_413b5cf9
     %% Omitted for readability: 12 nodes, 0 edges
     class utils_idb_opendb_10880aed function;
     class utils_idb_idberror_71d8b687 function;
     class utils_idb_getfromstore_da024d86 ui;
     class utils_idb_hasduplicate_c7862beb function;
-    class utils_idb_1692414a module;
+    class utils_idb_savesession_413b5cf9 function;
     class utils_idb_clearsession_55d6bb92 function;
     class utils_idb_loadsession_7a3591e0 function;
     class utils_idb_savejournalentry_4c32ed6e function;
-    class utils_idb_savesession_413b5cf9 function;
     class utils_idb_clearjournal_5ed4902f function;
     class utils_idb_deletejournalentriesforfile_0cac9fb6 function;
     class utils_idb_deletejournalentry_b70534c9 function;
@@ -2895,6 +2895,7 @@ flowchart LR
     class utils_idb_loadjournalentries_f69985e3 function;
     class utils_idb_journalid_7070f4de function;
     class utils_idb_normalizeforhash_66b1e151 function;
+    class action_buttons_actionbuttons_78ab3197 ui;
     class action_buttons_actionbuttons_codeclabel_52e9a5e9 ui;
     class action_buttons_actionbuttons_actionbuttonsinner_63ef0ff6 ui;
     classDef entry fill:#422006,stroke:#fbbf24,color:#fde68a,stroke-width:1px;
@@ -2920,166 +2921,14 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>idb.ts</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-class">Module</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td>Module file in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>2</td>
-  <td><code>ErrorEntry</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-class">Class</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>ErrorEntry node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>3</td>
-  <td><code>StoredSession</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td>No direct outbound edge</td>
-  <td>StoredSession node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>4</td>
-  <td><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>clearSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>loadSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br>+1 more</td>
-  <td>idbError() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>5</td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>clearJournal()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>clearSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>deleteJournalEntriesForFile()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br>+6 more</td>
-  <td>openDb() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>6</td>
-  <td><code>getFromStore()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>loadSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>saveSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>getFromStore() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>7</td>
-  <td><code>saveSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>getFromStore()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td>saveSession() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>8</td>
-  <td><code>loadSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>getFromStore()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>loadSession() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>9</td>
-  <td><code>clearSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>clearSession() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>10</td>
-  <td><code>journalId()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>journalId() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>11</td>
-  <td><code>normalizeForHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>contentHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>Caches analysis results or computes cache keys.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>contentHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>normalizeForHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>Caches analysis results or computes cache keys.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>hasDuplicate()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>loadAllJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>hasDuplicate() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>14</td>
-  <td><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>contentHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>hasDuplicate()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br>+2 more</td>
-  <td>No direct outbound edge</td>
-  <td>saveJournalEntry() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>15</td>
-  <td><code>loadJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><code>deleteJournalEntriesForFile()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>loadJournalEntries() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>16</td>
-  <td><code>loadAllJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>hasDuplicate()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>loadAllJournalEntries() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>17</td>
-  <td><code>deleteJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>deleteJournalEntry() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>18</td>
-  <td><code>deleteJournalEntriesForFile()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>loadJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>deleteJournalEntriesForFile() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>19</td>
-  <td><code>clearJournal()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td><span class="tag tag-func">Function</span></td>
-  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
-  <td>clearJournal() node in src/utils/idb.ts.</td>
-</tr>
-<tr>
-  <td>20</td>
   <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
   <td><code>idb.ts</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>saveSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
   <td>Module file in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>21</td>
+  <td>2</td>
   <td><code>FileIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3087,7 +2936,7 @@ flowchart LR
   <td>FileIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>22</td>
+  <td>3</td>
   <td><code>UrlIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3095,7 +2944,7 @@ flowchart LR
   <td>UrlIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>23</td>
+  <td>4</td>
   <td><code>TranscribeIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3103,7 +2952,7 @@ flowchart LR
   <td>TranscribeIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>24</td>
+  <td>5</td>
   <td><code>DownloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3111,7 +2960,7 @@ flowchart LR
   <td>DownloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>25</td>
+  <td>6</td>
   <td><code>UnloadIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3119,7 +2968,7 @@ flowchart LR
   <td>UnloadIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>26</td>
+  <td>7</td>
   <td><code>CloseIcon()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3127,7 +2976,7 @@ flowchart LR
   <td>CloseIcon() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>27</td>
+  <td>8</td>
   <td><code>CODEC_LABELS</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3135,7 +2984,7 @@ flowchart LR
   <td>CODEC_LABELS node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>28</td>
+  <td>9</td>
   <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3143,7 +2992,7 @@ flowchart LR
   <td>codecLabel() node in features/action-buttons/ActionButtons.tsx.</td>
 </tr>
 <tr>
-  <td>29</td>
+  <td>10</td>
   <td><code>ExportFormat</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -3151,12 +3000,164 @@ flowchart LR
   <td>Exports documentation data to a target format.</td>
 </tr>
 <tr>
-  <td>30</td>
+  <td>11</td>
   <td><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
-  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>saveSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
-  <td>No direct outbound edge</td>
+  <td><code>codecLabel()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>saveSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
   <td>ActionButtonsInner() node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>12</td>
+  <td><code>idb.ts</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-class">Module</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td>No direct outbound edge</td>
+  <td>Module file in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>ErrorEntry</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-class">Class</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>ErrorEntry node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>StoredSession</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td>No direct outbound edge</td>
+  <td>StoredSession node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>clearSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>loadSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br>+1 more</td>
+  <td>idbError() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>clearJournal()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>clearSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>deleteJournalEntriesForFile()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br>+6 more</td>
+  <td>openDb() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>17</td>
+  <td><code>getFromStore()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>loadSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>saveSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>getFromStore() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>18</td>
+  <td><code>saveSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>ActionButtons.tsx</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>ActionButtonsInner()</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small><br><code>getFromStore()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br>+2 more</td>
+  <td>No direct outbound edge</td>
+  <td>saveSession() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>19</td>
+  <td><code>loadSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>getFromStore()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>loadSession() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>20</td>
+  <td><code>clearSession()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>clearSession() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>21</td>
+  <td><code>journalId()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>journalId() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>22</td>
+  <td><code>normalizeForHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>contentHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>Caches analysis results or computes cache keys.</td>
+</tr>
+<tr>
+  <td>23</td>
+  <td><code>contentHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>normalizeForHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>Caches analysis results or computes cache keys.</td>
+</tr>
+<tr>
+  <td>24</td>
+  <td><code>hasDuplicate()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>loadAllJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>hasDuplicate() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>25</td>
+  <td><code>saveJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>contentHash()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>hasDuplicate()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>idbError()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br>+2 more</td>
+  <td>No direct outbound edge</td>
+  <td>saveJournalEntry() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>26</td>
+  <td><code>loadJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><code>deleteJournalEntriesForFile()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>loadJournalEntries() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>27</td>
+  <td><code>loadAllJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>hasDuplicate()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>loadAllJournalEntries() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>28</td>
+  <td><code>deleteJournalEntry()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>deleteJournalEntry() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>29</td>
+  <td><code>deleteJournalEntriesForFile()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>loadJournalEntries()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small><br><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>deleteJournalEntriesForFile() node in src/utils/idb.ts.</td>
+</tr>
+<tr>
+  <td>30</td>
+  <td><code>clearJournal()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td><span class="tag tag-func">Function</span></td>
+  <td><code>openDb()</code><br><small style="color:var(--muted)">src/utils/idb.ts</small></td>
+  <td>No direct outbound edge</td>
+  <td>clearJournal() node in src/utils/idb.ts.</td>
 </tr>
 </table>
 
@@ -4126,7 +4127,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-08-03 16:02 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-08-03 17:22 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

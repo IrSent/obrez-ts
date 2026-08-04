@@ -113,20 +113,30 @@ export const App = () => {
     if (code && state) {
       const savedState = sessionStorage.getItem('obrez_pkce_state');
       if (savedState === state) {
-        // Exchange code for auth
-        const authStore = useAuthStore.getState();
-        authStore.exchangeCode(code).then(() => {
-          // Clear URL params and sessionStorage
-          history.replaceState({}, '', window.location.pathname);
-          sessionStorage.removeItem('obrez_pkce_verifier');
-          sessionStorage.removeItem('obrez_pkce_state');
-          sessionStorage.removeItem('obrez_pkce_nonce');
+        (async () => {
+          const authStore = useAuthStore.getState();
+          try {
+            await authStore.exchangeCode(code);
+          } finally {
+            // ALWAYS clear URL params and sessionStorage — even if exchangeCode fails
+            // (localtunnel 502/timeout on mobile). If ?code= remains, SettingsContent
+            // sees it and closes immediately, making settings impossible to open.
+            history.replaceState({}, '', window.location.pathname);
+            sessionStorage.removeItem('obrez_pkce_verifier');
+            sessionStorage.removeItem('obrez_pkce_state');
+            sessionStorage.removeItem('obrez_pkce_nonce');
+          }
           // Don't call checkAuth() — exchangeCode already set user and isAuthenticated.
           // An extra backend request risks localtunnel flakiness (502/timeout)
           // which would clear isAuthenticated = false and show "Sign in required".
-        });
+        })();
       } else {
         console.error('OIDC state mismatch — possible CSRF');
+        // Still clear the URL so Settings can open
+        history.replaceState({}, '', window.location.pathname);
+        sessionStorage.removeItem('obrez_pkce_verifier');
+        sessionStorage.removeItem('obrez_pkce_state');
+        sessionStorage.removeItem('obrez_pkce_nonce');
       }
     }
   }, []);

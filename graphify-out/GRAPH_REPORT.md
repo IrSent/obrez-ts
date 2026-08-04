@@ -1,7 +1,7 @@
 # Graph Report - obrez-ts  (2026-08-03)
 
 ## Corpus Check
-- 92 files · ~128,870 words
+- 92 files · ~128,914 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8af8069c`
+- Built from commit: `60c964c1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -193,7 +193,7 @@ Cohesion: 0.07
 Nodes (41): LoginModal(), LoginModalProps, PaymentModal(), PaymentModalProps, TopupModal(), TopupModalProps, DebugTab(), ErrorEntry (+33 more)
 
 ## Knowledge Gaps
-- **215 isolated node(s):** `DEFAULT_DICTIONARIES`, `TabKey`, `TABS`, `VersionInfo`, `SettingsContentProps` (+210 more)
+- **215 isolated node(s):** `CODEC_LABELS`, `ExportFormat`, `DEFAULT_DICTIONARIES`, `TabKey`, `TABS` (+210 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -204,7 +204,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Why does `playerActions` connect `Community 0` to `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 7`, `Community 50`, `Community 57`, `Community 27`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `DEFAULT_DICTIONARIES`, `TabKey`, `TABS` to the rest of the system?**
+- **What connects `CODEC_LABELS`, `ExportFormat`, `DEFAULT_DICTIONARIES` to the rest of the system?**
   _215 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.12258064516129032 - nodes in this community are weakly interconnected._
