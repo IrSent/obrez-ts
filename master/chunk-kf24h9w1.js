@@ -50578,9 +50578,17 @@ function backendWsPath(path) {
 }
 
 // src/utils/upload.ts
+function getAuthHeaders() {
+  const headers = { ...backendHeaders() };
+  const token = localStorage.getItem("obrez_token");
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
 function uploadFile(file, fileName, path, onProgress) {
   const url2 = backendPath(path);
-  const extraHeaders = backendHeaders();
+  const extraHeaders = getAuthHeaders();
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest;
     xhr.open("POST", url2);
@@ -51801,6 +51809,14 @@ var import_react9 = __toESM(require_react(), 1);
 var import_react_dom = __toESM(require_react_dom(), 1);
 
 // src/store/authStore.ts
+function getAuthHeaders2() {
+  const headers = { ...backendHeaders() };
+  const token = localStorage.getItem("obrez_token");
+  if (token) {
+    headers["Authorization"] = `Bearer ${token}`;
+  }
+  return headers;
+}
 var useAuthStore = create((set, get) => ({
   user: null,
   isAuthenticated: false,
@@ -51841,6 +51857,9 @@ var useAuthStore = create((set, get) => ({
         try {
           const data = await response.json();
           localStorage.setItem("obrez_user", JSON.stringify(data.user));
+          if (data.token) {
+            localStorage.setItem("obrez_token", data.token);
+          }
           set({ user: data.user, isAuthenticated: true, error: null });
         } catch {
           set({ error: "Invalid response from server" });
@@ -51860,7 +51879,7 @@ var useAuthStore = create((set, get) => ({
       const url2 = await loadBackendUrl();
       const response = await fetch(`${url2}/api/auth/me`, {
         credentials: "include",
-        headers: backendHeaders()
+        headers: getAuthHeaders2()
       });
       if (response.ok) {
         try {
@@ -51896,13 +51915,22 @@ var useAuthStore = create((set, get) => ({
     }
   },
   logout: async () => {
+    const token = localStorage.getItem("obrez_token");
     localStorage.removeItem("obrez_user");
+    localStorage.removeItem("obrez_token");
     try {
       const url2 = await loadBackendUrl();
+      const headers = {
+        ...backendHeaders(),
+        "Content-Type": "application/json"
+      };
+      if (token) {
+        headers["Authorization"] = `Bearer ${token}`;
+      }
       await fetch(`${url2}/api/auth/logout`, {
         method: "POST",
         credentials: "include",
-        headers: { ...backendHeaders(), "Content-Type": "application/json" }
+        headers
       });
     } catch {}
     set({ user: null, isAuthenticated: false });
@@ -51911,7 +51939,7 @@ var useAuthStore = create((set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const url2 = await loadBackendUrl();
-      const response = await fetch(`${url2}/api/hours/topup?hour_pack_type=${hourPackType}&fiat=${fiat}`, { method: "POST", credentials: "include", headers: backendHeaders() });
+      const response = await fetch(`${url2}/api/hours/topup?hour_pack_type=${hourPackType}&fiat=${fiat}`, { method: "POST", credentials: "include", headers: getAuthHeaders2() });
       if (!response.ok) {
         const err = await response.json().catch(() => ({ detail: "Unknown error" }));
         throw new Error(err.detail || "Failed to top up");
@@ -51939,7 +51967,7 @@ var useAuthStore = create((set, get) => ({
   pollPaymentStatus: async (invoiceId) => {
     try {
       const url2 = await loadBackendUrl();
-      const response = await fetch(`${url2}/api/payments/status?invoice_id=${invoiceId}`, { credentials: "include", headers: backendHeaders() });
+      const response = await fetch(`${url2}/api/payments/status?invoice_id=${invoiceId}`, { credentials: "include", headers: getAuthHeaders2() });
       if (!response.ok)
         return;
       const data = await response.json();
@@ -57943,7 +57971,7 @@ function DebugTab() {
 
 // src/version.ts
 var BASE_VERSION = "1.0.0";
-var BUILD_NUM = "216";
+var BUILD_NUM = "220";
 var APP_VERSION = `${BASE_VERSION}.${BUILD_NUM}`;
 
 // src/features/settings/SettingsContent.tsx
@@ -58692,15 +58720,23 @@ var App = () => {
     if (code && state) {
       const savedState = sessionStorage.getItem("obrez_pkce_state");
       if (savedState === state) {
-        const authStore = useAuthStore.getState();
-        authStore.exchangeCode(code).then(() => {
-          history.replaceState({}, "", window.location.pathname);
-          sessionStorage.removeItem("obrez_pkce_verifier");
-          sessionStorage.removeItem("obrez_pkce_state");
-          sessionStorage.removeItem("obrez_pkce_nonce");
-        });
+        (async () => {
+          const authStore = useAuthStore.getState();
+          try {
+            await authStore.exchangeCode(code);
+          } finally {
+            history.replaceState({}, "", window.location.pathname);
+            sessionStorage.removeItem("obrez_pkce_verifier");
+            sessionStorage.removeItem("obrez_pkce_state");
+            sessionStorage.removeItem("obrez_pkce_nonce");
+          }
+        })();
       } else {
         console.error("OIDC state mismatch — possible CSRF");
+        history.replaceState({}, "", window.location.pathname);
+        sessionStorage.removeItem("obrez_pkce_verifier");
+        sessionStorage.removeItem("obrez_pkce_state");
+        sessionStorage.removeItem("obrez_pkce_nonce");
       }
     }
   }, []);
@@ -58797,4 +58833,4 @@ var jsx_dev_runtime23 = __toESM(require_jsx_dev_runtime(), 1);
 var root = document.getElementById("root");
 import_client.createRoot(root).render(/* @__PURE__ */ jsx_dev_runtime23.jsxDEV(App, {}, undefined, false, undefined, this));
 
-//# debugId=A1317A74890BD93364756E2164756E21
+//# debugId=1004AFE29E532B3364756E2164756E21
