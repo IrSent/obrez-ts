@@ -149,9 +149,12 @@ function normalizeForHash(
   return results.map(([start, end, text]) => [Math.round(start * 1e6) / 1e6, Math.round(end * 1e6) / 1e6, text]);
 }
 
-/** Compute a SHA-256 content hash from transcription results. */
-async function contentHash(transcriptionResults: Array<[number, number, string]>): Promise<string> {
-  const data = JSON.stringify(normalizeForHash(transcriptionResults));
+/** Compute a SHA-256 content hash from transcription results + effects. */
+async function contentHash(
+  transcriptionResults: Array<[number, number, string]>,
+  censoringEffects?: unknown[],
+): Promise<string> {
+  const data = JSON.stringify([normalizeForHash(transcriptionResults), censoringEffects ?? []]);
   const encoder = new TextEncoder();
   const hashBuffer = await crypto.subtle.digest('SHA-256', encoder.encode(data));
   return Array.from(new Uint8Array(hashBuffer)).map(b => b.toString(16).padStart(2, '0')).join('');
@@ -166,7 +169,7 @@ async function hasDuplicate(fileName: string, fileSize: number, hash: string): P
 /** Save a transcription to the journal. Skips if identical content for the same file already exists. */
 export async function saveJournalEntry(entry: Omit<JournalEntry, 'id' | 'savedAt' | 'contentHash'>): Promise<JournalEntry | null> {
   try {
-    const hash = await contentHash(entry.transcriptionResults);
+    const hash = await contentHash(entry.transcriptionResults, entry.censoringEffects);
 
     // Dedup check
     const isDuplicate = await hasDuplicate(entry.fileName, entry.fileSize, hash);
