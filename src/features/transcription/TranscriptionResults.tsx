@@ -1278,7 +1278,7 @@ function JournalEntryRow({
 
       {/* Date and segment count */}
       <span className="flex-1 min-w-0 text-zinc-300">
-        {dateStr} {timeStr} · {entry.transcriptionResults.length} segments
+        {dateStr} {timeStr} · {entry.transcriptionResults.length} segments · {entry.censoringEffects.length} effects
       </span>
 
       {/* Load button */}

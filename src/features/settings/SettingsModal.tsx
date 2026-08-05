@@ -653,7 +653,7 @@ function JournalContent() {
                   {/* Version, date and segment count */}
                   <span className="flex-1 min-w-0 text-zinc-400">
                     {versionLabel && <span className="text-zinc-500 mr-1">{versionLabel}</span>}
-                    {dateStr} {timeStr} · {entry.transcriptionResults.length} segments
+                    {dateStr} {timeStr} · {entry.transcriptionResults.length} segments · {entry.censoringEffects.length} effects
                   </span>
 
                   {/* Load into player */}
