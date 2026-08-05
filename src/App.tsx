@@ -46,6 +46,21 @@ function SessionRestorer() {
         if (session.duration != null) {
           playerActions.setDuration(session.duration);
         }
+
+        // No transcription in session — try the most recent journal entry for this file
+        if (!session.transcriptionResults) {
+          const { loadJournalEntries } = await import('./utils/idb');
+          const fileSize = usePlayerStore.getState().fileSize;
+          const entries = await loadJournalEntries(session.fileName, fileSize);
+          if (entries.length > 0) {
+            // Sort by savedAt descending → most recent first
+            entries.sort((a, b) => b.savedAt - a.savedAt);
+            const latest = entries[0];
+            playerActions.setTranscriptionResults(latest.transcriptionResults);
+            playerActions.setCensoringEffects(latest.censoringEffects as any);
+            playerActions.setDuration(latest.duration);
+          }
+        }
       } catch (err) {
         console.error('Failed to restore session:', err);
       }
