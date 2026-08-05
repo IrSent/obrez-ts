@@ -36,6 +36,7 @@ function WordTooltip({
   onSeekTo,
   onProposeStart,
   onProposeEnd,
+  onDeleteSegment,
   proposedTime,
   formatTime,
 }: {
@@ -47,6 +48,7 @@ function WordTooltip({
   onSeekTo: (time: number) => void;
   onProposeStart: () => void;
   onProposeEnd: () => void;
+  onDeleteSegment: (start: number) => void;
   proposedTime: number | null;
   formatTime: (s: number) => string;
 }) {
@@ -124,6 +126,23 @@ function WordTooltip({
             <polygon points="5 3 19 12 5 21 5 3" />
           </svg>
           Seek to
+        </button>
+
+        <div className="border-t border-zinc-600 my-1" />
+
+        {/* Delete */}
+        <button
+          onClick={() => {
+            onDeleteSegment(start);
+            onClose();
+          }}
+          className="text-left px-2 py-1 rounded bg-red-900/40 text-red-300 hover:bg-red-800/50 transition-colors flex items-center gap-1.5"
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <polyline points="3 6 5 6 21 6" />
+            <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+          </svg>
+          Delete
         </button>
       </div>
     </div>,
@@ -214,6 +233,7 @@ export function TextView({
   segments,
   onAddEffect,
   onSeekTo,
+  onDeleteSegment,
   formatTime,
   isWordMatched,
   searchQuery,
@@ -222,6 +242,7 @@ export function TextView({
   segments: [number, number, string][];
   onAddEffect: (start: number) => void;
   onSeekTo: (time: number) => void;
+  onDeleteSegment: (start: number) => void;
   formatTime: (s: number) => string;
   isWordMatched: (word: string) => boolean;
   searchQuery: string;
@@ -327,6 +348,7 @@ export function TextView({
           onClose={() => setTooltip(null)}
           onAddEffect={onAddEffect}
           onSeekTo={onSeekTo}
+          onDeleteSegment={onDeleteSegment}
           onProposeStart={handleProposeStart}
           onProposeEnd={handleProposeEnd}
           proposedTime={proposedTime}

@@ -93,6 +93,7 @@ const SegmentItem = memo(({
   onAddEffect,
   onRemoveEffect,
   onEditEffect,
+  onDeleteSegment,
   onProposeTime,
   formatTime,
 }: {
@@ -107,6 +108,7 @@ const SegmentItem = memo(({
   onAddEffect: (start: number) => void;
   onRemoveEffect: (id: string) => void;
   onEditEffect: (effect: SoundCensoringEffect) => void;
+  onDeleteSegment: (start: number) => void;
   onProposeTime: (time: number) => void;
   formatTime: (seconds: number) => string;
 }) => {
@@ -173,6 +175,13 @@ const SegmentItem = memo(({
           </svg>
           Effect
         </button>
+        <button
+          onClick={(e) => { e.stopPropagation(); onDeleteSegment(start); }}
+          className="text-xs text-red-400/60 hover:text-red-300 hover:bg-red-900/30 px-1 py-0.5 rounded transition-colors"
+          title="Delete this segment"
+        >
+          ✕
+        </button>
       </div>
     </div>
   );
@@ -202,6 +211,7 @@ function TranscriptionRow(props: { index: number; style: React.CSSProperties; ef
         onAddEffect={deps.onAddEffect}
         onRemoveEffect={deps.onRemoveEffect}
         onEditEffect={deps.onEditEffect}
+        onDeleteSegment={deps.onDeleteSegment}
         onProposeTime={deps.onProposeTime}
         formatTime={deps.formatTime}
       />
@@ -223,6 +233,7 @@ const rowRendererDeps = {
   onAddEffect: (_start: number) => {},
   onRemoveEffect: (_id: string) => {},
   onEditEffect: (_effect: SoundCensoringEffect) => {},
+  onDeleteSegment: (_start: number) => {},
   onProposeTime: (_time: number) => {},
   formatTime: (_seconds: number) => '',
 };
@@ -768,6 +779,16 @@ const TranscriptionResultsInner = () => {
   rowRendererDeps.onAddEffect = (start: number) => setModalSegment(start);
   rowRendererDeps.onRemoveEffect = handleRemoveEffect;
   rowRendererDeps.onEditEffect = (effect: SoundCensoringEffect) => setEditEffect(effect);
+  rowRendererDeps.onDeleteSegment = (start: number) => {
+    if (!transcriptionResults) return;
+    const next = transcriptionResults.filter(([s]) => s !== start);
+    actions.setTranscriptionResults(next.length ? next : null);
+    // Also remove effects tied to this segment
+    if (censoringEffects?.length) {
+      const nextEffects = censoringEffects.filter(e => e.effectType !== 'sound' || e.segmentStart !== start);
+      actions.setCensoringEffects(nextEffects);
+    }
+  };
   rowRendererDeps.onProposeTime = (time: number) => {
     const pt = usePlayerStore.getState().proposedTime;
     if (pt === time) {
@@ -1113,6 +1134,15 @@ const TranscriptionResultsInner = () => {
                   segments={filteredSegments}
                   onAddEffect={(start) => setModalSegment(start)}
                   onSeekTo={handleJumpToTime}
+                  onDeleteSegment={(start) => {
+                    if (!transcriptionResults) return;
+                    const next = transcriptionResults.filter(([s]) => s !== start);
+                    actions.setTranscriptionResults(next.length ? next : null);
+                    if (censoringEffects?.length) {
+                      const nextEffects = censoringEffects.filter(e => e.effectType !== 'sound' || e.segmentStart !== start);
+                      actions.setCensoringEffects(nextEffects);
+                    }
+                  }}
                   formatTime={formatTime}
                   isWordMatched={isWordMatched}
                   searchQuery={searchQuery}
