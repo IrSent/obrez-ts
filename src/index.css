@@ -70,3 +70,9 @@ span[data-highlight="current"] {
   border-radius: 2px;
   box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5);
 }
+
+/* Search highlight in Text view */
+.text-view-search {
+  background: rgba(234, 179, 8, 0.2);
+  border-radius: 2px;
+}

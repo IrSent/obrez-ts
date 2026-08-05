@@ -134,17 +134,20 @@ function WordTooltip({
 /**
  * A single word. Clicking opens the tooltip.
  * If matched by dictionary, shown with red wavy underline.
+ * If search query matches, shown with yellow highlight.
  */
 function WordSpan({
   word,
   segment,
   onClick,
   matched,
+  searchQuery,
 }: {
   word: string;
   segment: [number, number, string];
   onClick: (wordEl: HTMLElement, segment: [number, number, string]) => void;
   matched: boolean;
+  searchQuery: string;
 }) {
   const ref = useCallback(
     (el: HTMLElement | null) => {
@@ -153,11 +156,13 @@ function WordSpan({
     [onClick, segment],
   );
 
+  const searched = searchQuery && word.toLowerCase().includes(searchQuery.toLowerCase());
+
   return (
     <span
       ref={ref}
       data-segment={segment[0].toFixed(3)}
-      className={`cursor-pointer mr-1 break-words ${matched ? 'text-view-word' : ''}`}
+      className={`cursor-pointer mr-1 break-words ${matched ? 'text-view-word' : ''} ${searched ? 'text-view-search' : ''}`}
     >
       {word}
     </span>
@@ -171,10 +176,12 @@ function SentenceParagraph({
   segments,
   onWordClick,
   isWordMatched,
+  searchQuery,
 }: {
   segments: [number, number, string][];
   onWordClick: (wordEl: HTMLElement, segment: [number, number, string]) => void;
   isWordMatched: (word: string) => boolean;
+  searchQuery: string;
 }) {
   return (
     <p className="text-sm text-zinc-300 leading-relaxed mb-2">
@@ -188,6 +195,7 @@ function SentenceParagraph({
               segment={seg}
               onClick={onWordClick}
               matched={isWordMatched(w)}
+              searchQuery={searchQuery}
             />
           ) : (
             <span key={`${si}-${wi}`}>{w}</span>
@@ -208,6 +216,7 @@ export function TextView({
   onSeekTo,
   formatTime,
   isWordMatched,
+  searchQuery,
   closestRef,
 }: {
   segments: [number, number, string][];
@@ -215,6 +224,7 @@ export function TextView({
   onSeekTo: (time: number) => void;
   formatTime: (s: number) => string;
   isWordMatched: (word: string) => boolean;
+  searchQuery: string;
   closestRef: React.RefObject<number | null>;
 }) {
   const [tooltip, setTooltip] = useState<{
@@ -306,7 +316,7 @@ export function TextView({
   return (
     <div className="pt-2">
       {sentenceGroups.map((group, gi) => (
-        <SentenceParagraph key={gi} segments={group} onWordClick={handleWordClick} isWordMatched={isWordMatched} />
+        <SentenceParagraph key={gi} segments={group} onWordClick={handleWordClick} isWordMatched={isWordMatched} searchQuery={searchQuery} />
       ))}
 
       {tooltip && (

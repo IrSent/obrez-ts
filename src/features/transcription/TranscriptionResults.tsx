@@ -1077,11 +1077,12 @@ const TranscriptionResultsInner = () => {
             wordsTab === 'text' ? (
               <div className="max-h-[400px] overflow-y-auto pr-1">
                 <TextView
-                  segments={transcriptionResults}
+                  segments={filteredSegments}
                   onAddEffect={(start) => setModalSegment(start)}
                   onSeekTo={handleJumpToTime}
                   formatTime={formatTime}
                   isWordMatched={isWordMatched}
+                  searchQuery={searchQuery}
                   closestRef={closestRef}
                 />
               </div>
