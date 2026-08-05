@@ -99,6 +99,14 @@ export async function hydrateBleepSounds(): Promise<void> {
   try {
     const records = await getAllBleepRecords();
     const sounds = recordsToSounds(records);
+    // Inject the built-in 'silence' sound — no audio buffer, just dampens original
+    sounds['silence'] = {
+      id: 'silence',
+      label: 'Silence',
+      url: '',
+      dataUrl: '',
+      audioBuffer: null,
+    };
     usePlayerStore.setState({ bleepSounds: sounds });
   } catch (err) {
     console.error('Failed to hydrate bleep sounds:', err);

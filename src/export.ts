@@ -538,6 +538,8 @@ export async function exportCensoredVideo(
 
     const decodeCtx = new OfflineAudioContext(1, 1, sampleRate);
     for (const effect of soundEffects) {
+      // 'silence' has no audio to decode — skip
+      if (effect.soundId === 'silence') continue;
       const buf = await ensureBleepDecoded(effect.soundId, decodeCtx);
       if (!buf) {
         throw new Error(`Bleep sound "${effect.soundId}" could not be decoded`);

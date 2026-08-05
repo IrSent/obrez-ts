@@ -49,7 +49,24 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
     if (!ctx || !gainNode) return;
 
     const sound = usePlayerStore.getState().bleepSounds[effect.soundId];
-    if (!sound || !sound.audioBuffer) return;
+    if (!sound) return;
+
+    // 'silence' — no audio to play, only dampen original
+    if (effect.soundId === 'silence') {
+      if (effect.dampenOriginal) {
+        const ctx = deps.audioContextRef.current;
+        const gainNode = deps.gainNodeRef.current;
+        if (!ctx || !gainNode) return;
+        const segmentDuration = segmentEnd - effect.startTime;
+        const currentGain = gainNode.gain.value;
+        const dampenedGain = currentGain * (1 - effect.dampenAmount);
+        gainNode.gain.setValueAtTime(dampenedGain, ctx.currentTime + effect.delay);
+        gainNode.gain.setValueAtTime(currentGain, ctx.currentTime + effect.delay + segmentDuration);
+      }
+      return;
+    }
+
+    if (!sound.audioBuffer) return;
 
     const now = ctx.currentTime;
 

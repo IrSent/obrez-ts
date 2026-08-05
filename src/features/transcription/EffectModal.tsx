@@ -131,6 +131,7 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd, onUpdate, effect }: Ef
             className="w-full bg-zinc-700 rounded px-3 py-1.5 text-sm outline-none focus:ring-1 focus:ring-purple-500"
           >
             <option value="">— Select a sound —</option>
+            <option value="silence">Silence</option>
             {soundList.map((s) => (
               <option key={s.id} value={s.id}>
                 {s.label}
