@@ -1084,7 +1084,7 @@ const TranscriptionResultsInner = () => {
             <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>
           ) : transcriptionResults && transcriptionResults.length > 0 ? (
             wordsTab === 'text' ? (
-              <div className="max-h-[400px] overflow-y-auto pr-1">
+              <div className="max-h-[400px] overflow-y-auto pr-1" style={{ overscrollBehavior: 'contain' }}>
                 <TextView
                   segments={filteredSegments}
                   onAddEffect={(start) => setModalSegment(start)}
@@ -1103,7 +1103,7 @@ const TranscriptionResultsInner = () => {
                 // @ts-expect-error react-window v2 rowProps type inference bug
                 rowProps={{ effectVersion: censoringEffects?.length ?? 0 }}
                 overscanCount={5}
-                style={{ height: LIST_HEIGHT, width: '100%' }}
+                style={{ height: LIST_HEIGHT, width: '100%', overscrollBehavior: 'contain' }}
                 rowComponent={TranscriptionRow}
               />
             )
