@@ -980,8 +980,17 @@ const TranscriptionResultsInner = () => {
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search..."
-                className={`${cdInset} text-xs bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1.5 focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500 w-28`}
+                className={`${cdInset} text-xs bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1.5 focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500 w-28 pr-7`}
               />
+              {searchQuery && (
+                <button
+                  type="button"
+                  onClick={() => setSearchQuery('')}
+                  className="absolute right-5 text-zinc-500 hover:text-zinc-200 text-sm leading-none select-none"
+                >
+                  ✕
+                </button>
+              )}
               <span className={`absolute right-2 w-1.5 h-1.5 rounded-full ${
                 searchQuery ? 'bg-green-400 shadow-[0_0_4px_1px_rgba(74,222,128,0.7)]' : 'bg-red-800 shadow-none'
               }`} />
@@ -1009,7 +1018,7 @@ const TranscriptionResultsInner = () => {
               <input
                 ref={addWordStartRef}
                 type="number"
-                step="0.1"
+                step="0.001"
                 min="0"
                 max={duration?.toString()}
                 value={addWordStart}
@@ -1021,7 +1030,7 @@ const TranscriptionResultsInner = () => {
               <input
                 ref={addWordEndRef}
                 type="number"
-                step="0.1"
+                step="0.001"
                 min="0"
                 max={duration?.toString()}
                 value={addWordEnd}
