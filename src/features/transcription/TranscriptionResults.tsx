@@ -922,6 +922,31 @@ const TranscriptionResultsInner = () => {
             </svg>
             Export
           </button>
+          {/* Save to Journal */}
+          <button
+            onClick={async () => {
+              if (!transcriptionResults) return;
+              const { saveJournalEntry } = await import('../../utils/idb');
+              await saveJournalEntry({
+                fileName: usePlayerStore.getState().fileName,
+                fileSize: usePlayerStore.getState().fileSize,
+                transcriptionResults: transcriptionResults,
+                censoringEffects: censoringEffects ?? [],
+                duration: duration ?? 0,
+                method: 'manual',
+              });
+            }}
+            disabled={!transcriptionResults}
+            className={`${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1`}
+            title="Save current transcription + effects to journal"
+          >
+            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+              <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
+            </svg>
+            Save
+          </button>
           <input
             ref={importJsonRef}
             type="file"
@@ -1207,11 +1232,19 @@ function JournalEntryRow({
         className={`shrink-0 w-5 h-5 flex items-center justify-center rounded ${
           entry.method === 'transcribe'
             ? 'bg-purple-900/60 text-purple-300'
-            : 'bg-blue-900/60 text-blue-300'
+            : entry.method === 'manual'
+              ? 'bg-green-900/60 text-green-300'
+              : 'bg-blue-900/60 text-blue-300'
         }`}
-        title={entry.method === 'transcribe' ? 'Transcribed' : 'Imported'}
+        title={
+          entry.method === 'transcribe'
+            ? 'Transcribed'
+            : entry.method === 'manual'
+              ? 'Manually saved'
+              : 'Imported'
+        }
       >
-        {entry.method === 'transcribe' ? '🎙' : '📂'}
+        {entry.method === 'transcribe' ? '🎙' : entry.method === 'manual' ? '💾' : '📂'}
       </span>
 
       {/* Date and segment count */}

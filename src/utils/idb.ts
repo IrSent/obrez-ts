@@ -41,7 +41,7 @@ export interface JournalEntry {
   transcriptionResults: Array<[number, number, string]>;
   censoringEffects: unknown[];
   duration: number;
-  method: 'import' | 'transcribe';
+  method: 'import' | 'transcribe' | 'manual';
   savedAt: number; // epoch ms
   contentHash: string; // SHA-256 of transcriptionResults
 }

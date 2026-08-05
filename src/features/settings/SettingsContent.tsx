@@ -612,11 +612,19 @@ function JournalContent() {
                     className={`shrink-0 w-4 h-4 flex items-center justify-center rounded text-[10px] ${
                       entry.method === 'transcribe'
                         ? 'bg-purple-900/60 text-purple-300'
-                        : 'bg-blue-900/60 text-blue-300'
+                        : entry.method === 'manual'
+                          ? 'bg-green-900/60 text-green-300'
+                          : 'bg-blue-900/60 text-blue-300'
                     }`}
-                    title={entry.method === 'transcribe' ? 'Transcribed' : 'Imported'}
+                    title={
+                      entry.method === 'transcribe'
+                        ? 'Transcribed'
+                        : entry.method === 'manual'
+                          ? 'Manually saved'
+                          : 'Imported'
+                    }
                   >
-                    {entry.method === 'transcribe' ? 'T' : 'I'}
+                    {entry.method === 'transcribe' ? 'T' : entry.method === 'manual' ? 'S' : 'I'}
                   </span>
 
                   {/* Version, date and segment count */}
