@@ -63,3 +63,10 @@
 .text-view-word:hover {
   color: #fca5a5;
 }
+
+/* Current word highlight in Text view */
+span[data-highlight="current"] {
+  background: rgba(168, 85, 247, 0.3);
+  border-radius: 2px;
+  box-shadow: 0 0 0 2px rgba(168, 85, 247, 0.5);
+}

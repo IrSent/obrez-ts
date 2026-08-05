@@ -156,6 +156,7 @@ function WordSpan({
   return (
     <span
       ref={ref}
+      data-segment={segment[0].toFixed(3)}
       className={`cursor-pointer mr-1 break-words ${matched ? 'text-view-word' : ''}`}
     >
       {word}
@@ -207,12 +208,14 @@ export function TextView({
   onSeekTo,
   formatTime,
   isWordMatched,
+  closestRef,
 }: {
   segments: [number, number, string][];
   onAddEffect: (start: number) => void;
   onSeekTo: (time: number) => void;
   formatTime: (s: number) => string;
   isWordMatched: (word: string) => boolean;
+  closestRef: React.RefObject<number | null>;
 }) {
   const [tooltip, setTooltip] = useState<{
     segment: [number, number, string];
@@ -284,6 +287,21 @@ export function TextView({
       playerActions.setProposedTime(segment[1]);
     }
   }, [tooltip]);
+
+  // Highlight current word — DOM-only, no React re-render
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const closest = closestRef.current;
+      if (closest == null) return;
+      // Remove old highlight
+      const old = document.querySelector('[data-highlight="current"]');
+      if (old) old.removeAttribute('data-highlight');
+      // Add highlight to current word
+      const el = document.querySelector(`[data-segment="${closest.toFixed(3)}"]`);
+      if (el) el.setAttribute('data-highlight', 'current');
+    }, 100);
+    return () => clearInterval(interval);
+  }, [closestRef]);
 
   return (
     <div className="pt-2">

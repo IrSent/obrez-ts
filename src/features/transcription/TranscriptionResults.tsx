@@ -180,13 +180,12 @@ const SegmentItem = memo(({
 SegmentItem.displayName = 'SegmentItem';
 
 // ─── RowRenderer — receives index, style, and rowProps from react-window ───
-function TranscriptionRow(props: { index: number; style: React.CSSProperties; closestStart: number | null }) {
-  const { index, style, closestStart } = props;
+function TranscriptionRow(props: { index: number; style: React.CSSProperties; effectVersion: number }) {
+  const { index, style } = props;
   const deps = rowRendererDeps;
   const [start, end, text] = deps.filteredSegments[index];
   const triggered = deps.dictMatches?.get(start) ?? [];
   const rowEffects = deps.segmentEffects.get(start) ?? [];
-  const isHighlighted = start === closestStart;
   const highlightedText = deps.highlightCache.get(start) ?? null;
 
   return (
@@ -197,7 +196,7 @@ function TranscriptionRow(props: { index: number; style: React.CSSProperties; cl
         text={text}
         triggered={triggered}
         rowEffects={rowEffects}
-        isHighlighted={isHighlighted}
+        isHighlighted={false}
         highlightedText={highlightedText}
         onJump={deps.onJump}
         onAddEffect={deps.onAddEffect}
@@ -652,10 +651,9 @@ const TranscriptionResultsInner = () => {
     [activeDictionaries, loadedDictionaries],
   );
 
-  // closestSegmentStart — ref for interval comparison (avoids stale closure),
-  // state for react-window rowProps (triggers visible row re-render)
+  // closestSegmentStart — ref for interval comparison (avoids stale closure)
+  // Highlighting is done via DOM manipulation (classList), no React state
   const closestRef = useRef<number | null>(null);
-  const [closestStart, setClosestStart] = useState<number | null>(null);
 
   // react-window v2 list ref
   const rwListRef = useListRef(null);
@@ -671,16 +669,15 @@ const TranscriptionResultsInner = () => {
   }, [transcriptionResults, showMatchesOnly, dictMatches, searchQuery]);
 
   useEffect(() => {
+    if (!transcriptionResults) return;
+
     // Apply highlight to a segment — DOM-only, no React re-render
-    const applyHighlight = (closest: number | null, scroll: boolean) => {
+    const applyHighlight = (closest: number | null) => {
       if (closest == null) return;
       const el = document.getElementById(`seg-${closest}`);
       if (el) {
         el.classList.remove('bg-zinc-700');
         el.classList.add('bg-purple-900/40', 'ring-2', 'ring-purple-500/50');
-        if (scroll) {
-          el.scrollIntoView({ behavior: 'smooth', block: 'center' });
-        }
       }
     };
 
@@ -693,11 +690,10 @@ const TranscriptionResultsInner = () => {
       }
     };
 
-    // Initial highlight on mount / when transcriptionResults changes
     const t = getPlaybackTime();
     const newClosest = findClosestSegment(transcriptionResults, t);
     closestRef.current = newClosest;
-    applyHighlight(newClosest, false);
+    applyHighlight(newClosest);
 
     const interval = setInterval(() => {
       const t = getPlaybackTime();
@@ -706,11 +702,20 @@ const TranscriptionResultsInner = () => {
 
       removeHighlight(closestRef.current);
       closestRef.current = newClosest;
-      applyHighlight(newClosest, true);
-    }, 500);
+      applyHighlight(newClosest);
+
+      // Auto-scroll only when video is playing
+      const isPlaying = usePlayerStore.getState().isPlaying;
+      if (autoScroll && isPlaying && rwListRef.current && newClosest != null) {
+        const idx = findSegmentIndex(filteredSegments, newClosest);
+        if (idx >= 0) {
+          rwListRef.current.scrollToRow({ index: idx, behavior: 'smooth', align: 'center' });
+        }
+      }
+    }, 100);
 
     return () => clearInterval(interval);
-  }, [transcriptionResults, getPlaybackTime]);
+  }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
 
   // Optimized highlightSearch — returns null when no search
   const highlightSearch = useCallback((text: string): { key: string; highlighted: boolean; content: string }[] | null => {
@@ -773,35 +778,8 @@ const TranscriptionResultsInner = () => {
   };
   rowRendererDeps.formatTime = formatTime;
 
-  // Auto-scroll and highlight tracking
-  useEffect(() => {
-    if (!transcriptionResults) return;
-
-    const t = getPlaybackTime();
-    const newClosest = findClosestSegment(transcriptionResults, t);
-    closestRef.current = newClosest;
-    setClosestStart(newClosest);
-
-    const interval = setInterval(() => {
-      const t = getPlaybackTime();
-      const newClosest = findClosestSegment(transcriptionResults, t);
-      if (newClosest === closestRef.current) return;
-
-      closestRef.current = newClosest;
-      setClosestStart(newClosest);
-
-      // Auto-scroll only when video is playing
-      const isPlaying = usePlayerStore.getState().isPlaying;
-      if (autoScroll && isPlaying && rwListRef.current && newClosest != null) {
-        const idx = findSegmentIndex(filteredSegments, newClosest);
-        if (idx >= 0) {
-          rwListRef.current.scrollToRow({ index: idx, behavior: 'smooth', align: 'center' });
-        }
-      }
-    }, 100);
-
-    return () => clearInterval(interval);
-  }, [transcriptionResults, getPlaybackTime, autoScroll, filteredSegments, rwListRef, closestRef]);
+  // Highlight + auto-scroll merged into one effect above (DOM-only, no React re-render)
+  // closestStart state removed — highlighting is done via classList on the DOM element
 
   const _handleTranscribe = async () => {
     // 1. Check auth against backend (needed to get fresh balance)
@@ -1104,6 +1082,7 @@ const TranscriptionResultsInner = () => {
                   onSeekTo={handleJumpToTime}
                   formatTime={formatTime}
                   isWordMatched={isWordMatched}
+                  closestRef={closestRef}
                 />
               </div>
             ) : (
@@ -1112,7 +1091,7 @@ const TranscriptionResultsInner = () => {
                 rowCount={filteredSegments.length}
                 rowHeight={ROW_HEIGHT}
                 // @ts-expect-error react-window v2 rowProps type inference bug
-                rowProps={{ closestStart, effectVersion: censoringEffects?.length ?? 0 }}
+                rowProps={{ effectVersion: censoringEffects?.length ?? 0 }}
                 overscanCount={5}
                 style={{ height: LIST_HEIGHT, width: '100%' }}
                 rowComponent={TranscriptionRow}
