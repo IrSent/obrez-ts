@@ -86,10 +86,11 @@ fi
 cp "$REPO_DIR/public/root-index.html" "$WORKDIR/index.html"
 
 # ── settings-early and settings-ui (shared across versions, ../ resolution) ──
-if [ -d "$WORKDIR/master" ]; then
-  cp "$WORKDIR/master/settings-early."*.js "$WORKDIR/" 2>/dev/null || true
-  cp "$WORKDIR/master/settings-ui."*.js "$WORKDIR/" 2>/dev/null || true
-fi
+# Hash matches build.ts (MD5 of file content, first 8 chars)
+EARLY_HASH=$(md5sum "$REPO_DIR/public/settings-early.js" | cut -c1-8)
+UI_HASH=$(md5sum "$REPO_DIR/public/settings-ui.js" | cut -c1-8)
+cp "$REPO_DIR/public/settings-early.js" "$WORKDIR/settings-early.${EARLY_HASH}.js"
+cp "$REPO_DIR/public/settings-ui.js" "$WORKDIR/settings-ui.${UI_HASH}.js"
 
 # ── deploy to GitHub Pages ──
 if [ "$SKIP_GH" = false ]; then
@@ -113,7 +114,7 @@ fi
 if [ "$SKIP_CF" = false ]; then
   echo "🚀 Deploying to Cloudflare Pages..."
   cd "$REPO_DIR"
-  bunx wrangler pages deploy "$WORKDIR" --project-name obrez-ts --branch production --commit-message "deploy: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
+  bunx wrangler pages deploy "$WORKDIR" --project-name obrez-ts --commit-message "deploy: $(date -u +%Y-%m-%dT%H:%M:%SZ)"
   echo "✅ Deployed to Cloudflare Pages!"
 fi
 
