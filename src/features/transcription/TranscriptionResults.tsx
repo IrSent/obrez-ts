@@ -893,7 +893,7 @@ const TranscriptionResultsInner = () => {
       <div className="flex items-center justify-between mb-3 gap-3">
         <h2 className="block text-base sm:text-lg font-semibold text-zinc-300 shrink-0">Transcription</h2>
         <div className="flex items-center gap-2">
-          {/* Import JSON */}
+          {/* From File */}
           <button
             onClick={() => importJsonRef.current?.click()}
             disabled={!fileName}
@@ -901,13 +901,12 @@ const TranscriptionResultsInner = () => {
             title={fileName ? "Import transcription + effects from JSON" : "Load a media file first to import"}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-              <polyline points="17 8 12 3 7 8" />
-              <line x1="12" y1="3" x2="12" y2="15" />
+              <path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z" />
+              <polyline points="14 2 14 8 20 8" />
             </svg>
-            Import
+            From File
           </button>
-          {/* Export JSON */}
+          {/* To File */}
           <button
             data-testid="export-json"
             onClick={handleExportJson}
@@ -916,11 +915,11 @@ const TranscriptionResultsInner = () => {
             title="Export transcription + effects to JSON"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
-              <polyline points="7 10 12 15 17 10" />
-              <line x1="12" y1="15" x2="12" y2="3" />
+              <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+              <polyline points="17 21 17 13 7 13 7 21" />
+              <polyline points="7 3 7 8 15 8" />
             </svg>
-            Export
+            To File
           </button>
           {/* Save to Journal */}
           <button
