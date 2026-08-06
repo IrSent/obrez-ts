@@ -1,5 +1,5 @@
 import { memo, useRef, useCallback, useEffect, useState } from 'react';
-import { usePlayerStore } from '../../store/playerStore';
+import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 
 const ProgressBarInner = () => {
