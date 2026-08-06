@@ -167,7 +167,9 @@ async function hasDuplicate(fileName: string, fileSize: number, hash: string): P
 }
 
 /** Save a transcription to the journal. Skips if identical content for the same file already exists. */
-export async function saveJournalEntry(entry: Omit<JournalEntry, 'id' | 'savedAt' | 'contentHash'>): Promise<JournalEntry | null> {
+export async function saveJournalEntry(
+  entry: Omit<JournalEntry, 'id' | 'savedAt' | 'contentHash'>,
+): Promise<JournalEntry | null> {
   try {
     const hash = await contentHash(entry.transcriptionResults, entry.censoringEffects);
 

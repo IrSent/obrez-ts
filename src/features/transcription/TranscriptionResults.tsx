@@ -386,6 +386,31 @@ const TranscriptionResultsInner = () => {
 
   // Effect modal — add mode
   const [modalSegment, setModalSegment] = useState<number | null>(null);
+
+  // Save-to-journal confirm modal
+  const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+
+  /** Save the current transcription + effects as a manual journal entry. */
+  const saveManualEntry = async (overwriteId?: string) => {
+    const { saveJournalEntry, deleteJournalEntry } = await import('../../utils/idb');
+    const data = {
+      fileName: usePlayerStore.getState().fileName,
+      fileSize: usePlayerStore.getState().fileSize,
+      transcriptionResults: transcriptionResults!,
+      censoringEffects: censoringEffects ?? [],
+      duration: duration ?? 0,
+      method: 'manual' as const,
+    };
+    if (overwriteId) {
+      await deleteJournalEntry(overwriteId);
+    }
+    await saveJournalEntry(data);
+    // Refresh journal
+    const { loadJournalEntries } = await import('../../utils/idb');
+    const entries = await loadJournalEntries(usePlayerStore.getState().fileName, usePlayerStore.getState().fileSize);
+    setJournalEntries(entries);
+    setShowSaveConfirm(false);
+  };
   // Effect modal — edit mode
   const [editEffect, setEditEffect] = useState<SoundCensoringEffect | null>(null);
 
@@ -944,17 +969,14 @@ const TranscriptionResultsInner = () => {
           </button>
           {/* Save to Journal */}
           <button
-            onClick={async () => {
+            onClick={() => {
               if (!transcriptionResults) return;
-              const { saveJournalEntry } = await import('../../utils/idb');
-              await saveJournalEntry({
-                fileName: usePlayerStore.getState().fileName,
-                fileSize: usePlayerStore.getState().fileSize,
-                transcriptionResults: transcriptionResults,
-                censoringEffects: censoringEffects ?? [],
-                duration: duration ?? 0,
-                method: 'manual',
-              });
+              const manualEntries = journalEntries.filter(e => e.method === 'manual');
+              if (manualEntries.length > 0) {
+                setShowSaveConfirm(true);
+                return;
+              }
+              saveManualEntry();
             }}
             disabled={!transcriptionResults}
             className={`${cdBtn} text-xs font-semibold px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 shrink-0 disabled:opacity-30 disabled:cursor-not-allowed flex items-center gap-1`}
@@ -1223,6 +1245,68 @@ const TranscriptionResultsInner = () => {
             )}
           </>,
           document.body,
+        )}
+
+        {/* Save-to-Journal confirm modal */}
+        {showSaveConfirm && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
+            <div className="relative bg-zinc-800 rounded-xl p-5 w-full max-w-md space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
+              <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]" />
+              {/* Header */}
+              <div className="flex items-center justify-between">
+                <h3 className="text-sm font-semibold">Save to Journal</h3>
+                <button
+                  onClick={() => setShowSaveConfirm(false)}
+                  className="text-zinc-400 hover:text-zinc-200 rounded p-1"
+                  title="Close"
+                >
+                  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                    <line x1="18" y1="6" x2="6" y2="18" />
+                    <line x1="6" y1="6" x2="18" y2="18" />
+                  </svg>
+                </button>
+              </div>
+              {/* Body */}
+              <p className="text-xs text-zinc-300">
+                Manual entry already exists. Overwrite or create new?
+              </p>
+              <div className="max-h-48 overflow-y-auto space-y-1">
+                {journalEntries.filter(e => e.method === 'manual').map((entry) => {
+                  const d = new Date(entry.savedAt);
+                  const dateStr = d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
+                  const timeStr = d.toLocaleTimeString(undefined, { hour: '2-digit', minute: '2-digit' });
+                  return (
+                    <button
+                      key={entry.id}
+                      onClick={() => saveManualEntry(entry.id)}
+                      className="w-full text-left flex items-center gap-2 px-3 py-2 rounded bg-zinc-700 hover:bg-zinc-600 text-xs transition-colors"
+                    >
+                      <span className="text-green-400">💾</span>
+                      <span className="flex-1 text-zinc-300">
+                        {dateStr} {timeStr} · {entry.transcriptionResults.length} segments · {entry.censoringEffects.length} effects
+                      </span>
+                      <span className="text-red-400 font-semibold">Overwrite</span>
+                    </button>
+                  );
+                })}
+              </div>
+              {/* Actions */}
+              <div className="flex gap-2">
+                <button
+                  onClick={() => setShowSaveConfirm(false)}
+                  className="flex-1 text-xs font-semibold px-3 py-1.5 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 transition-colors"
+                >
+                  Cancel
+                </button>
+                <button
+                  onClick={() => saveManualEntry()}
+                  className="flex-1 text-xs font-semibold px-3 py-1.5 rounded bg-purple-600 hover:bg-purple-500 text-white transition-colors"
+                >
+                  Create New
+                </button>
+              </div>
+            </div>
+          </div>
         )}
     </div>
   );
