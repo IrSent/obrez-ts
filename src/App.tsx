@@ -162,7 +162,7 @@ export const App = () => {
   return (
     <MediaPlayerProvider>
         <SessionRestorer />
-        <div className="min-h-screen bg-zinc-900 text-zinc-100">
+        <div className="min-h-screen bg-zinc-900 text-zinc-100" style={{ overflow: 'hidden' }}>
           {/* Main view — slides left when settings opens */}
           <div
             style={{
