@@ -56,8 +56,8 @@ const PlayerDisplayInner = () => {
 
       {/* Filename badge — bottom-left, above progress bar */}
       {fileName && (
-        <div className="absolute bottom-16 left-4 z-30 pointer-events-none max-w-[40%]">
-          <span className="bg-black/50 backdrop-blur-sm text-[10px] text-zinc-300 px-2 py-0.5 rounded block truncate">
+        <div className="absolute bottom-16 left-4 z-30 pointer-events-none">
+          <span className="bg-black/50 backdrop-blur-sm text-[10px] text-zinc-300 px-2 py-0.5 rounded block">
             Loaded file: {fileName.split('/').pop()?.split('?')[0] ?? fileName}
           </span>
         </div>
