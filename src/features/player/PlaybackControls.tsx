@@ -95,7 +95,6 @@ const PlaybackControlsInner = () => {
             </svg>
             Scroll <LedIndicator on={autoScroll} />
           </button>
-        )}
 
         <VolumeControls />
 

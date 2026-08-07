@@ -54,11 +54,11 @@ const PlayerDisplayInner = () => {
         </div>
       )}
 
-      {/* Filename badge — top-left */}
+      {/* Filename badge — bottom-left, above progress bar */}
       {fileName && (
-        <div className="absolute top-3 left-3 z-30 pointer-events-none">
-          <span className="bg-black/50 backdrop-blur-sm text-[10px] text-zinc-300 px-2 py-0.5 rounded block">
-            {fileName}
+        <div className="absolute bottom-16 left-4 z-30 pointer-events-none max-w-[40%]">
+          <span className="bg-black/50 backdrop-blur-sm text-[10px] text-zinc-300 px-2 py-0.5 rounded block truncate">
+            Loaded file: {fileName.split('/').pop()?.split('?')[0] ?? fileName}
           </span>
         </div>
       )}
@@ -104,7 +104,7 @@ const PlayerDisplayInner = () => {
       )}
 
       {/* ActionButtons — full panel (desktop/portrait) or compact row (mobile landscape) */}
-      <div className="absolute right-3 top-3 z-30">
+      <div className="absolute right-3 top-3 z-30 max-w-[calc(100%-1.5rem)]">
         <ActionButtons />
       </div>
 

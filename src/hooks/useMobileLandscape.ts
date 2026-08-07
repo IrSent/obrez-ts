@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 
-const MQ = window.matchMedia('(orientation: landscape) and (max-width: 850px)');
+const MQ = window.matchMedia('(orientation: landscape) and (max-width: 950px)');
 
 export function useIsLandscape(): boolean {
   const [matches, setMatches] = useState(MQ.matches);
