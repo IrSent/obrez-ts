@@ -3,6 +3,7 @@ import { createPortal } from 'react-dom';
 import { MediaPlayerProvider } from './context/MediaPlayerContext';
 import { useMediaPlayerContext } from './context/MediaPlayerContext';
 import { PlayerDisplay } from './features/player/PlayerDisplay';
+import { MiniPlayer } from './features/player/MiniPlayer';
 import { PlaybackControls } from './features/player/PlaybackControls';
 import { TranscriptionResults } from './features/transcription/TranscriptionResults';
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
@@ -181,6 +182,7 @@ export const App = () => {
                   <h1 className="text-3xl font-semibold text-purple-500 leading-8">Obrez</h1>
                 </a>
                 <div className="flex items-center gap-1">
+                  <MiniPlayer />
                   <button id="obrez-gear" onClick={() => setSettingsOpen(true)} className="w-9 h-9 flex items-center justify-center rounded-lg cursor-pointer text-sm">⚙️</button>
                 </div>
               </div>

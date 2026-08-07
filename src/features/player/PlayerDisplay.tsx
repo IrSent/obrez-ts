@@ -103,7 +103,7 @@ const PlayerDisplayInner = () => {
         </div>
       )}
 
-      {/* ActionButtons — overlay on the right side */}
+      {/* ActionButtons — full panel (desktop/portrait) or compact row (mobile landscape) */}
       <div className="absolute right-3 top-3 z-30">
         <ActionButtons />
       </div>
