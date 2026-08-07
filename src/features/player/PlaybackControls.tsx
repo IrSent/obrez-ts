@@ -46,91 +46,113 @@ const PlaybackControlsInner = () => {
       {/* 3D inner bevel highlight */}
       <div className="absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none" />
 
-      <div className="flex items-center gap-3">
-        {/* Play/Pause — CD-style button */}
-        <button
-          onClick={() => {
-            if (isPlaying) void pause();
-            else void play();
-          }}
-          className={`${cdBtn} h-10 px-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0 flex items-center justify-center`}
-          aria-label={isPlaying ? 'Pause' : 'Play'}
+      {/* ── Carousel: horizontal snap-scroll ── */}
+      <>
+        <style>{`
+          .playback-carousel::-webkit-scrollbar { display: none; }
+        `}</style>
+        <div
+          className="playback-carousel overflow-x-auto snap-x snap-mandatory -mx-4 px-4"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
-          <img
-            src={isPlaying ? 'assets/pause-icon.svg' : 'assets/play-icon.svg'}
-            alt={isPlaying ? 'Pause' : 'Play'}
-            className="w-6 h-6"
-          />
-        </button>
+        <div className="flex items-center gap-3">
+          {/* Play/Pause */}
+          <div className="snap-start flex-shrink-0">
+            <button
+              onClick={() => {
+                if (isPlaying) void pause();
+                else void play();
+              }}
+              className={`${cdBtn} h-10 px-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0 flex items-center justify-center`}
+              aria-label={isPlaying ? 'Pause' : 'Play'}
+            >
+              <img
+                src={isPlaying ? 'assets/pause-icon.svg' : 'assets/play-icon.svg'}
+                alt={isPlaying ? 'Pause' : 'Play'}
+                className="w-6 h-6"
+              />
+            </button>
+          </div>
 
-        {/* Censoring mode toggle — always visible, disabled when no effects */}
-        <button
-          onClick={() => playerActions.setCensoringMode(!censoringMode)}
-          disabled={!(censoringEffects && censoringEffects.length > 0)}
-          className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center disabled:opacity-30 disabled:cursor-not-allowed ${
-            censoringMode
-              ? 'bg-red-800 text-white hover:bg-red-700 active:bg-red-900 border-t-red-400 border-l-red-400 border-b-red-950 border-r-red-950 active:border-t-red-950 active:border-l-red-950 active:border-b-red-400 active:border-r-red-400'
-              : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
-          }`}
-          title={censoringMode ? 'Censoring ON — click to play original audio' : 'Censoring OFF — click to play with effects'}
-        >
-          {censoringMode ? '⚡ CENSORED' : '🔊 ORIGINAL'} <LedIndicator on={censoringMode} />
-        </button>
+          {/* Censoring mode toggle */}
+          <div className="snap-start flex-shrink-0">
+            <button
+              onClick={() => playerActions.setCensoringMode(!censoringMode)}
+              disabled={!(censoringEffects && censoringEffects.length > 0)}
+              className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center disabled:opacity-30 disabled:cursor-not-allowed ${
+                censoringMode
+                  ? 'bg-zinc-600 text-zinc-200 hover:bg-zinc-500 active:bg-zinc-700'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
+              }`}
+              title={censoringMode ? 'Censoring ON — click to play original audio' : 'Censoring OFF — click to play with effects'}
+            >
+              ⚡ Censored <LedIndicator on={censoringMode} />
+            </button>
+          </div>
 
-        {/* Auto-scroll toggle — always visible, disabled when no transcription */}
-        <button
-          onClick={() => playerActions.toggleAutoScroll()}
-          disabled={!(transcriptionResults && transcriptionResults.length > 0)}
-          className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed ${
-            autoScroll
-              ? 'bg-zinc-600 text-zinc-200 hover:bg-zinc-500 active:bg-zinc-700'
-              : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
-          }`}
-          title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
-        >
-            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-              <rect x="3" y="2" width="18" height="20" rx="3" />
-              <line x1="12" y1="10" x2="12" y2="16" />
-              <polyline points="9 13 12 16 15 13" />
-            </svg>
-            Scroll <LedIndicator on={autoScroll} />
-          </button>
+          {/* Auto-scroll toggle */}
+          <div className="snap-start flex-shrink-0">
+            <button
+              onClick={() => playerActions.toggleAutoScroll()}
+              disabled={!(transcriptionResults && transcriptionResults.length > 0)}
+              className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex-shrink-0 flex items-center gap-1 disabled:opacity-30 disabled:cursor-not-allowed ${
+                autoScroll
+                  ? 'bg-zinc-600 text-zinc-200 hover:bg-zinc-500 active:bg-zinc-700'
+                  : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600'
+              }`}
+              title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                <rect x="3" y="2" width="18" height="20" rx="3" />
+                <line x1="12" y1="10" x2="12" y2="16" />
+                <polyline points="9 13 12 16 15 13" />
+              </svg>
+              Autoscroll <LedIndicator on={autoScroll} />
+            </button>
+          </div>
 
-        <VolumeControls />
+          {/* Volume */}
+          <div className="snap-start flex-shrink-0">
+            <VolumeControls />
+          </div>
 
-        {/* Playback speed selector — CD-style button */}
-        <div className="relative flex-shrink-0">
-          <button
-            onClick={() => setShowSpeedMenu((v) => !v)}
-            className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex items-center gap-1 bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600 ${
-              playbackSpeed !== 1 ? 'bg-zinc-600 text-zinc-200' : ''
-            }`}
-            title={`Playback speed: ${playbackSpeed}x`}
-          >
-            {playbackSpeed}x <ChevronDownIcon />
-          </button>
-          {showSpeedMenu && (
-            <div className="absolute bottom-full right-0 mb-1 bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1 z-20">
-              {SPEEDS.map((s) => (
-                <button
-                  key={s}
-                  onClick={() => {
-                    playerActions.setPlaybackSpeed(s);
-                    setShowSpeedMenu(false);
-                  }}
-                  className={`block w-full text-left px-3 py-1 text-xs transition-colors ${
-                    s === playbackSpeed
-                      ? 'bg-purple-600 text-white'
-                      : 'text-zinc-200 hover:bg-zinc-700'
-                  }`}
-                >
-                  {s}x
-                </button>
-              ))}
+          {/* Playback speed selector */}
+          <div className="snap-start flex-shrink-0">
+            <div className="relative">
+              <button
+                onClick={() => setShowSpeedMenu((v) => !v)}
+                className={`${cdBtn} h-10 px-2 rounded text-[11px] font-semibold flex items-center gap-1 bg-zinc-700 text-zinc-300 hover:bg-zinc-600 active:bg-zinc-600 ${
+                  playbackSpeed !== 1 ? 'bg-zinc-600 text-zinc-200' : ''
+                }`}
+                title={`Playback speed: ${playbackSpeed}x`}
+              >
+                {playbackSpeed}x <ChevronDownIcon />
+              </button>
+              {showSpeedMenu && (
+                <div className="absolute bottom-full right-0 mb-1 bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1 z-20">
+                  {SPEEDS.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => {
+                        playerActions.setPlaybackSpeed(s);
+                        setShowSpeedMenu(false);
+                      }}
+                      className={`block w-full text-left px-3 py-1 text-xs transition-colors ${
+                        s === playbackSpeed
+                          ? 'bg-purple-600 text-white'
+                          : 'text-zinc-200 hover:bg-zinc-700'
+                      }`}
+                    >
+                      {s}x
+                    </button>
+                  ))}
+                </div>
+              )}
             </div>
-          )}
+          </div>
         </div>
       </div>
+      </>
     </div>
   );
 };
