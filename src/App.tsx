@@ -118,6 +118,18 @@ export const App = () => {
     if (!isNaN(savedVol)) {
       playerActions.setVolume(savedVol);
     }
+
+    // Restore censoringMode from localStorage
+    const savedCensoringMode = localStorage.getItem('obrez_censoringMode');
+    if (savedCensoringMode !== null) {
+      usePlayerStore.setState({ censoringMode: savedCensoringMode === 'true' });
+    }
+
+    // Restore autoScroll from localStorage
+    const savedAutoScroll = localStorage.getItem('obrez_autoScroll');
+    if (savedAutoScroll !== null) {
+      usePlayerStore.setState({ autoScroll: savedAutoScroll === 'true' });
+    }
   }, []);
 
   // OIDC callback: handle Telegram auth code after redirect

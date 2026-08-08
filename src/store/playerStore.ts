@@ -138,7 +138,11 @@ export const playerActions = {
   setTranscribeFormat: (format: 'wav' | 'original') =>
     usePlayerStore.setState({ transcribeFormat: format }),
   toggleAutoScroll: () =>
-    usePlayerStore.setState((state) => ({ autoScroll: !state.autoScroll })),
+    usePlayerStore.setState((state) => {
+      const next = !state.autoScroll;
+      localStorage.setItem('obrez_autoScroll', String(next));
+      return { autoScroll: next };
+    }),
   setPlaybackSpeed: (speed: PlaybackSpeed) => {
     console.log(`[playerStore] setPlaybackSpeed: ${speed}`);
     usePlayerStore.setState({ playbackSpeed: speed });
@@ -223,6 +227,7 @@ export const playerActions = {
 
   setCensoringMode: (mode: boolean) => {
     usePlayerStore.setState({ censoringMode: mode });
+    localStorage.setItem('obrez_censoringMode', String(mode));
   },
 
   // Dictionary actions
