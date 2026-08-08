@@ -109,7 +109,10 @@ const HeaderExportButtonInner = () => {
               className="text-xs text-green-400 cursor-pointer hover:text-green-300 select-none p-1"
               onClick={() => actions.setExportDone()}
             >
-              ✅ File in downloads — click to dismiss
+              <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="inline mr-1">
+                <polyline points="20 6 9 17 4 12" />
+              </svg>
+              File in downloads — click to dismiss
             </div>
           ) : (
             <HeaderExportProgress />

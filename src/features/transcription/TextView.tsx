@@ -161,12 +161,14 @@ function WordSpan({
   onClick,
   matched,
   searchQuery,
+  hasEffect,
 }: {
   word: string;
   segment: [number, number, string];
   onClick: (wordEl: HTMLElement, segment: [number, number, string]) => void;
   matched: boolean;
   searchQuery: string;
+  hasEffect: boolean;
 }) {
   const ref = useCallback(
     (el: HTMLElement | null) => {
@@ -181,9 +183,18 @@ function WordSpan({
     <span
       ref={ref}
       data-segment={segment[0].toFixed(3)}
-      className={`cursor-pointer mr-1 break-words ${matched ? 'text-view-word' : ''} ${searched ? 'text-view-search' : ''}`}
+      className={`cursor-pointer mr-1 break-words inline-flex items-center relative ${
+        matched ? 'text-view-word' : ''
+      } ${searched ? 'text-view-search' : ''} ${hasEffect ? 'text-view-effect' : ''}`}
     >
       {word}
+      {hasEffect && (
+        <span className="text-view-effect-bolt">
+          <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
+          </svg>
+        </span>
+      )}
     </span>
   );
 }
@@ -196,11 +207,13 @@ function SentenceParagraph({
   onWordClick,
   isWordMatched,
   searchQuery,
+  segmentEffects,
 }: {
   segments: [number, number, string][];
   onWordClick: (wordEl: HTMLElement, segment: [number, number, string]) => void;
   isWordMatched: (word: string) => boolean;
   searchQuery: string;
+  segmentEffects: Map<number, unknown[]>;
 }) {
   return (
     <p className="text-sm text-zinc-300 leading-relaxed mb-2">
@@ -215,6 +228,7 @@ function SentenceParagraph({
               onClick={onWordClick}
               matched={isWordMatched(w)}
               searchQuery={searchQuery}
+              hasEffect={segmentEffects.has(seg[0])}
             />
           ) : (
             <span key={`${si}-${wi}`}>{w}</span>
@@ -238,6 +252,7 @@ export function TextView({
   isWordMatched,
   searchQuery,
   closestRef,
+  segmentEffects,
 }: {
   segments: [number, number, string][];
   onAddEffect: (start: number) => void;
@@ -247,6 +262,7 @@ export function TextView({
   isWordMatched: (word: string) => boolean;
   searchQuery: string;
   closestRef: React.RefObject<number | null>;
+  segmentEffects: Map<number, unknown[]>;
 }) {
   const [tooltip, setTooltip] = useState<{
     segment: [number, number, string];
@@ -337,7 +353,7 @@ export function TextView({
   return (
     <div className="pt-2">
       {sentenceGroups.map((group, gi) => (
-        <SentenceParagraph key={gi} segments={group} onWordClick={handleWordClick} isWordMatched={isWordMatched} searchQuery={searchQuery} />
+        <SentenceParagraph key={gi} segments={group} onWordClick={handleWordClick} isWordMatched={isWordMatched} searchQuery={searchQuery} segmentEffects={segmentEffects} />
       ))}
 
       {tooltip && (

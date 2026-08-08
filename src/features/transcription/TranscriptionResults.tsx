@@ -11,7 +11,8 @@ import { TextView } from './TextView';
 import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
-import type { SoundCensoringEffect, TranscriptionResultTuple } from '../../types';
+import { ConfirmModal } from '../auth/ConfirmModal';
+import type { CensoringEffect, SoundCensoringEffect, TranscriptionResultTuple } from '../../types';
 import { cdBtn, cdInset } from '../player/cdBtn';
 import { ShieldButton } from '../player/ShieldButton';
 import { useProposedTimeBlink } from '../../hooks/useProposedTimeBlink';
@@ -167,20 +168,26 @@ const SegmentItem = memo(({
         ))}
         <button
           onClick={(e) => { e.stopPropagation(); onAddEffect(start); }}
-          className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded flex items-center gap-1"
+          className="text-xs text-blue-400 hover:text-blue-300 px-1 py-0.5 hover:bg-blue-900/30 rounded flex items-center gap-0.5"
           title="Add effect"
         >
           <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor">
             <path d="M13 2L3 14h9l-1 10 10-12h-9l1-10z" />
           </svg>
-          Effect
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <line x1="12" y1="5" x2="12" y2="19" />
+            <line x1="5" y1="12" x2="19" y2="12" />
+          </svg>
         </button>
         <button
           onClick={(e) => { e.stopPropagation(); onDeleteSegment(start); }}
-          className="text-xs text-red-400/60 hover:text-red-300 hover:bg-red-900/30 px-1 py-0.5 rounded transition-colors"
+          className="text-xs text-red-400/60 hover:text-red-300 hover:bg-red-900/30 px-1 py-0.5 rounded transition-colors flex items-center"
           title="Delete this segment"
         >
-          ✕
+          <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <line x1="18" y1="6" x2="6" y2="18" />
+            <line x1="6" y1="6" x2="18" y2="18" />
+          </svg>
         </button>
       </div>
     </div>
@@ -389,6 +396,24 @@ const TranscriptionResultsInner = () => {
 
   // Save-to-journal confirm modal
   const [showSaveConfirm, setShowSaveConfirm] = useState(false);
+
+  // Pending delete — segment start or journal entry id
+  const [pendingDelete, setPendingDelete] = useState<{
+    type: 'segment' | 'journal';
+    segmentStart?: number;
+    journalId?: string;
+  } | null>(null);
+
+  /** Delete a segment by its start time (called after confirmation). */
+  const deleteSegment = (start: number) => {
+    if (!transcriptionResults) return;
+    const next = transcriptionResults.filter(([s]) => s !== start);
+    actions.setTranscriptionResults(next.length ? next : null);
+    if (censoringEffects?.length) {
+      const nextEffects = censoringEffects.filter(e => e.effectType !== 'sound' || e.segmentStart !== start);
+      actions.setCensoringEffects(nextEffects);
+    }
+  };
 
   /** Save the current transcription + effects as a manual journal entry. */
   const saveManualEntry = async (overwriteId?: string) => {
@@ -806,13 +831,7 @@ const TranscriptionResultsInner = () => {
   rowRendererDeps.onEditEffect = (effect: SoundCensoringEffect) => setEditEffect(effect);
   rowRendererDeps.onDeleteSegment = (start: number) => {
     if (!transcriptionResults) return;
-    const next = transcriptionResults.filter(([s]) => s !== start);
-    actions.setTranscriptionResults(next.length ? next : null);
-    // Also remove effects tied to this segment
-    if (censoringEffects?.length) {
-      const nextEffects = censoringEffects.filter(e => e.effectType !== 'sound' || e.segmentStart !== start);
-      actions.setCensoringEffects(nextEffects);
-    }
+    setPendingDelete({ type: 'segment', segmentStart: start });
   };
   rowRendererDeps.onProposeTime = (time: number) => {
     const pt = usePlayerStore.getState().proposedTime;
@@ -967,7 +986,7 @@ const TranscriptionResultsInner = () => {
             </svg>
             To File
           </button>
-          {/* Save to Journal */}
+          {/* To Journal */}
           <button
             onClick={() => {
               if (!transcriptionResults) return;
@@ -983,11 +1002,10 @@ const TranscriptionResultsInner = () => {
             title="Save current transcription + effects to journal"
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
-              <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
-              <polyline points="17 21 17 13 7 13 7 21" />
-              <polyline points="7 3 7 8 15 8" />
+              <circle cx="12" cy="12" r="10" />
+              <circle cx="12" cy="12" r="3" />
             </svg>
-            Save
+            To Journal
           </button>
           <input
             ref={importJsonRef}
@@ -1023,13 +1041,7 @@ const TranscriptionResultsInner = () => {
                     actions.setDuration(entry.duration);
                   }}
                   onDelete={async () => {
-                    try {
-                      const { deleteJournalEntry } = await import('../../utils/idb');
-                      await deleteJournalEntry(entry.id);
-                      setJournalEntries((prev) => prev.filter((e) => e.id !== entry.id));
-                    } catch (err) {
-                      console.error('Failed to delete journal entry:', err);
-                    }
+                    setPendingDelete({ type: 'journal', journalId: entry.id });
                   }}
                 />
               ))}
@@ -1158,17 +1170,13 @@ const TranscriptionResultsInner = () => {
                   onSeekTo={handleJumpToTime}
                   onDeleteSegment={(start) => {
                     if (!transcriptionResults) return;
-                    const next = transcriptionResults.filter(([s]) => s !== start);
-                    actions.setTranscriptionResults(next.length ? next : null);
-                    if (censoringEffects?.length) {
-                      const nextEffects = censoringEffects.filter(e => e.effectType !== 'sound' || e.segmentStart !== start);
-                      actions.setCensoringEffects(nextEffects);
-                    }
+                    setPendingDelete({ type: 'segment', segmentStart: start });
                   }}
                   formatTime={formatTime}
                   isWordMatched={isWordMatched}
                   searchQuery={searchQuery}
                   closestRef={closestRef}
+                  segmentEffects={segmentEffects}
                 />
               </div>
             ) : (
@@ -1205,6 +1213,7 @@ const TranscriptionResultsInner = () => {
           onClose={() => setEditEffect(null)}
           onAdd={handleAddEffect}
           onUpdate={handleUpdateEffect}
+          onRemove={handleRemoveEffect}
           effect={editEffect}
         />
       )}
@@ -1281,7 +1290,11 @@ const TranscriptionResultsInner = () => {
                       onClick={() => saveManualEntry(entry.id)}
                       className="w-full text-left flex items-center gap-2 px-3 py-2 rounded bg-zinc-700 hover:bg-zinc-600 text-xs transition-colors"
                     >
-                      <span className="text-green-400">💾</span>
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-green-400 shrink-0">
+                        <path d="M19 21H5a2 2 0 01-2-2V5a2 2 0 012-2h11l5 5v11a2 2 0 01-2 2z" />
+                        <polyline points="17 21 17 13 7 13 7 21" />
+                        <polyline points="7 3 7 8 15 8" />
+                      </svg>
                       <span className="flex-1 text-zinc-300">
                         {dateStr} {timeStr} · {entry.transcriptionResults.length} segments · {entry.censoringEffects.length} effects
                       </span>
@@ -1307,6 +1320,36 @@ const TranscriptionResultsInner = () => {
               </div>
             </div>
           </div>
+        )}
+
+        {/* Delete confirmation modal */}
+        {pendingDelete && (
+          <ConfirmModal
+            title="Delete Confirmation"
+            message={
+              pendingDelete.type === 'segment'
+                ? 'Delete this transcription segment? Effects tied to it will also be removed.'
+                : 'Delete this saved transcription?'
+            }
+            onConfirm={() => {
+              if (pendingDelete.type === 'segment' && pendingDelete.segmentStart != null) {
+                deleteSegment(pendingDelete.segmentStart);
+              } else if (pendingDelete.type === 'journal' && pendingDelete.journalId != null) {
+                (async () => {
+                  try {
+                    const { deleteJournalEntry } = await import('../../utils/idb');
+                    await deleteJournalEntry(pendingDelete.journalId!);
+                    setJournalEntries((prev) => prev.filter((e) => e.id !== pendingDelete.journalId));
+                  } catch (err) {
+                    console.error('Failed to delete journal entry:', err);
+                  }
+                })();
+              }
+            }}
+            onClose={() => setPendingDelete(null)}
+            confirmLabel="Delete"
+            confirmStyle="red"
+          />
         )}
     </div>
   );
@@ -1340,15 +1383,9 @@ function JournalEntryRow({
 
   return (
     <div className="flex items-center gap-2 text-xs bg-zinc-700/60 rounded-lg px-3 py-2">
-      {/* Method icon */}
+      {/* Method badge */}
       <span
-        className={`shrink-0 w-5 h-5 flex items-center justify-center rounded ${
-          entry.method === 'transcribe'
-            ? 'bg-purple-900/60 text-purple-300'
-            : entry.method === 'manual'
-              ? 'bg-green-900/60 text-green-300'
-              : 'bg-blue-900/60 text-blue-300'
-        }`}
+        className="shrink-0 w-5 h-5 flex items-center justify-center rounded bg-zinc-600 text-zinc-300 font-semibold text-[10px]"
         title={
           entry.method === 'transcribe'
             ? 'Transcribed'
@@ -1357,7 +1394,7 @@ function JournalEntryRow({
               : 'Imported'
         }
       >
-        {entry.method === 'transcribe' ? '🎙' : entry.method === 'manual' ? '💾' : '📂'}
+        {entry.method === 'transcribe' ? 'T' : entry.method === 'manual' ? 'S' : 'I'}
       </span>
 
       {/* Date and segment count */}

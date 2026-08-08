@@ -35,6 +35,7 @@ interface EffectModalProps {
   onClose: () => void;
   onAdd: (effect: SoundCensoringEffect) => void;
   onUpdate?: (id: string, updates: Partial<SoundCensoringEffect>) => void;
+  onRemove?: (id: string) => void;
   effect?: SoundCensoringEffect | null; // existing effect → edit mode
 }
 
@@ -42,7 +43,7 @@ function uid(): string {
   return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
-const EffectModal = memo(({ segmentStart, onClose, onAdd, onUpdate, effect }: EffectModalProps) => {
+const EffectModal = memo(({ segmentStart, onClose, onAdd, onUpdate, onRemove, effect }: EffectModalProps) => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
   const soundList = Object.values(bleepSounds);
   const isEdit = !!effect && !!onUpdate;
@@ -288,6 +289,16 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd, onUpdate, effect }: Ef
         >
           {isEdit ? 'Save Changes' : 'Add Effect'}
         </button>
+
+        {/* Delete button in edit mode */}
+        {isEdit && onRemove && effect && (
+          <button
+            onClick={() => onRemove(effect.id)}
+            className="w-full bg-red-900/40 hover:bg-red-800/50 text-red-300 text-xs font-semibold py-2 rounded transition-colors flex items-center justify-center gap-1.5"
+          >
+            <TrashIcon /> Delete Effect
+          </button>
+        )}
       </div>
     </div>
   );

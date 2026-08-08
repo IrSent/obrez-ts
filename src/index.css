@@ -76,3 +76,47 @@ span[data-highlight="current"] {
   background: rgba(234, 179, 8, 0.2);
   border-radius: 2px;
 }
+
+/* Word with censoring effect — faded, purple backing, lightning bolt */
+.text-view-effect {
+  opacity: 0.55;
+  background: rgba(139, 92, 246, 0.25);
+  border-radius: 6px;
+  padding: 1px 4px;
+}
+
+/* Lightning bolt centered on the word */
+.text-view-effect-bolt {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: rgba(196, 181, 253, 0.9);
+  pointer-events: none;
+  z-index: 2;
+}
+
+/* Custom scrollbar — thin dark style matching the app */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(82, 82, 91, 0.6);
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(113, 113, 122, 0.8);
+}
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Firefox scrollbar */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(82, 82, 91, 0.6) transparent;
+}

@@ -11,6 +11,7 @@ import { HourPackCard, HOUR_PACKS, CurrencySelector } from './HourPackCard';
 import { canFreeTopup, daysUntilFreeTopup, formatSeconds } from '../../utils/auth';
 import { LoginModal } from '../auth/LoginModal';
 import { PaymentModal } from '../auth/PaymentModal';
+import { ConfirmModal } from '../auth/ConfirmModal';
 import type { HourPackType, FiatCurrency, CensoringEffect } from '../../types';
 
 /**
@@ -64,13 +65,26 @@ function Tooltip({ text }: { text: string }) {
 
 type TabKey = 'user' | 'dictionaries' | 'bleep' | 'version' | 'debug' | 'journal';
 
-const TABS: { key: TabKey; emoji: string; tooltip: string }[] = [
-  { key: 'user', emoji: '👤', tooltip: 'Account & Balance' },
-  { key: 'dictionaries', emoji: '📚', tooltip: 'Dictionaries' },
-  { key: 'bleep', emoji: '🔊', tooltip: 'Bleep Sounds' },
-  { key: 'version', emoji: '🔄', tooltip: 'Version' },
-  { key: 'journal', emoji: '📋', tooltip: 'Transcription Journal' },
-  { key: 'debug', emoji: '🐛', tooltip: 'Debug' },
+/** Tab icon — SVG inline, same style as ActionButtons (stroke-based, inherits color) */
+function TabIcon({ type }: { type: TabKey }) {
+  const props = { xmlns: 'http://www.w3.org/2000/svg', width: '14', height: '14', viewBox: '0 0 24 24', fill: 'none', stroke: 'currentColor', strokeWidth: '2' };
+  switch (type) {
+    case 'user': return <svg {...props}><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>;
+    case 'dictionaries': return <svg {...props}><path d="M4 19.5A2.5 2.5 0 016.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 014 19.5v-15A2.5 2.5 0 016.5 2z" /></svg>;
+    case 'bleep': return <svg {...props}><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" /><path d="M15.54 8.46a5 5 0 010 7.07" /><path d="M19.07 4.93a10 10 0 010 14.14" /></svg>;
+    case 'version': return <svg {...props}><polyline points="23 4 23 10 17 10" /><path d="M20.49 15a9 9 0 11-2.12-9.36L23 10" /></svg>;
+    case 'journal': return <svg {...props}><path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2" /><rect x="8" y="2" width="8" height="4" rx="1" ry="1" /></svg>;
+    case 'debug': return <svg {...props}><path d="M8 2l1.88 1.88" /><path d="M14.12 3.88L16 2" /><path d="M9 7.13v-1a3.003 3.003 0 116 0v1" /><path d="M12 20c-3.3 0-6-2.7-6-6v-3.4a2 2 0 011.2-1.8L12 6l4.8 2.8A2 2 0 0118 10.6V14c0 3.3-2.7 6-6 6z" /><path d="M12 14v4" /><path d="M12 2v1" /></svg>;
+  }
+}
+
+const TABS: { key: TabKey; tooltip: string }[] = [
+  { key: 'user', tooltip: 'Account & Balance' },
+  { key: 'dictionaries', tooltip: 'Dictionaries' },
+  { key: 'bleep', tooltip: 'Bleep Sounds' },
+  { key: 'version', tooltip: 'Version' },
+  { key: 'journal', tooltip: 'Transcription Journal' },
+  { key: 'debug', tooltip: 'Debug' },
 ];
 
 interface VersionInfo {
@@ -153,7 +167,13 @@ export function SettingsContent({ onClose }: SettingsContentProps) {
     <div className="flex flex-col">
       {/* Header */}
       <div className="flex items-center justify-between px-5 py-4 border-b border-zinc-800 shrink-0">
-        <h2 className="text-lg font-semibold text-zinc-100">⚙ Настройки</h2>
+        <h2 className="text-lg font-semibold text-zinc-100 flex items-center gap-2">
+          <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+            <circle cx="12" cy="12" r="3" />
+            <path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06A1.65 1.65 0 004.68 15a1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06A1.65 1.65 0 009 4.68a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06A1.65 1.65 0 0019.4 9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51-1z" />
+          </svg>
+          Настройки
+        </h2>
         <button
           onClick={onClose}
           className="text-zinc-300 hover:text-zinc-100 transition-colors flex items-center gap-1 text-sm font-medium"
@@ -184,7 +204,7 @@ export function SettingsContent({ onClose }: SettingsContentProps) {
                 : 'text-zinc-400 hover:text-zinc-200 hover:bg-zinc-800/50'
             }`}
           >
-            {tab.emoji}
+            <TabIcon type={tab.key} />
           </button>
         ))}
       </div>
@@ -313,7 +333,10 @@ function UserContent({ onClose }: UserContentProps) {
   if (!isAuthenticated) {
     return (
       <div className="text-center py-8">
-        <div className="text-4xl mb-3">🔒</div>
+        <svg xmlns="http://www.w3.org/2000/svg" width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-zinc-400 mb-3">
+          <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
+          <path d="M7 11V7a5 5 0 0110 0v4" />
+        </svg>
         <p className="text-sm text-zinc-400">Not signed in</p>
         <p className="text-xs text-zinc-500 mt-1 mb-4">Sign in with Telegram to use transcription.</p>
         <button
@@ -463,6 +486,12 @@ function VersionContent({ versions, currentVersion, onSelect }: VersionContentPr
 function JournalContent() {
   const [entries, setEntries] = useState<JournalEntry[]>([]);
   const [loading, setLoading] = useState(true);
+  const [pendingDelete, setPendingDelete] = useState<{
+    type: 'all' | 'file' | 'entry';
+    fileName?: string;
+    fileSize?: number;
+    entryId?: string;
+  } | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -479,37 +508,39 @@ function JournalContent() {
   }, []);
 
   const handleDeleteAll = async () => {
-    if (!confirm('Delete all journal entries?')) return;
-    try {
-      const { clearJournal } = await import('../../utils/idb');
-      await clearJournal();
-      setEntries([]);
-    } catch (err) {
-      console.error('Failed to clear journal:', err);
-    }
+    setPendingDelete({ type: 'all' });
   };
 
   const handleDeleteFile = async (fileName: string, fileSize: number) => {
-    if (!confirm(`Delete all entries for "${fileName}"?`)) return;
-    try {
-      const { deleteJournalEntriesForFile } = await import('../../utils/idb');
-      await deleteJournalEntriesForFile(fileName, fileSize);
-      setEntries((prev) =>
-        prev.filter((e) => !(e.fileName === fileName && e.fileSize === fileSize)),
-      );
-    } catch (err) {
-      console.error('Failed to delete file entries:', err);
-    }
+    setPendingDelete({ type: 'file', fileName, fileSize });
   };
 
   const handleDeleteEntry = async (id: string) => {
+    setPendingDelete({ type: 'entry', entryId: id });
+  };
+
+  const confirmDelete = async () => {
+    if (!pendingDelete) return;
     try {
-      const { deleteJournalEntry } = await import('../../utils/idb');
-      await deleteJournalEntry(id);
-      setEntries((prev) => prev.filter((e) => e.id !== id));
+      if (pendingDelete.type === 'all') {
+        const { clearJournal } = await import('../../utils/idb');
+        await clearJournal();
+        setEntries([]);
+      } else if (pendingDelete.type === 'file') {
+        const { deleteJournalEntriesForFile } = await import('../../utils/idb');
+        await deleteJournalEntriesForFile(pendingDelete.fileName!, pendingDelete.fileSize!);
+        setEntries((prev) =>
+          prev.filter((e) => !(e.fileName === pendingDelete.fileName && e.fileSize === pendingDelete.fileSize)),
+        );
+      } else if (pendingDelete.type === 'entry') {
+        const { deleteJournalEntry } = await import('../../utils/idb');
+        await deleteJournalEntry(pendingDelete.entryId!);
+        setEntries((prev) => prev.filter((e) => e.id !== pendingDelete.entryId));
+      }
     } catch (err) {
-      console.error('Failed to delete entry:', err);
+      console.error('Failed to delete:', err);
     }
+    setPendingDelete(null);
   };
 
   const handleLoadEntry = (entry: JournalEntry) => {
@@ -607,15 +638,9 @@ function JournalContent() {
                   key={entry.id}
                   className="flex items-center gap-2 text-xs bg-zinc-800/60 rounded px-2 py-1.5"
                 >
-                  {/* Method icon */}
+                  {/* Method badge */}
                   <span
-                    className={`shrink-0 w-4 h-4 flex items-center justify-center rounded text-[10px] ${
-                      entry.method === 'transcribe'
-                        ? 'bg-purple-900/60 text-purple-300'
-                        : entry.method === 'manual'
-                          ? 'bg-green-900/60 text-green-300'
-                          : 'bg-blue-900/60 text-blue-300'
-                    }`}
+                    className="shrink-0 w-4 h-4 flex items-center justify-center rounded bg-zinc-600 text-zinc-300 text-[10px] font-semibold"
                     title={
                       entry.method === 'transcribe'
                         ? 'Transcribed'
@@ -636,28 +661,37 @@ function JournalContent() {
                   {/* Load into player */}
                   <button
                     onClick={() => handleLoadEntry(entry)}
-                    className="shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors"
+                    className="shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors flex items-center justify-center"
                     title="Load transcription into player"
                   >
-                    ▶️
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                      <polygon points="5 3 19 12 5 21 5 3" />
+                    </svg>
                   </button>
 
                   {/* Export as JSON */}
                   <button
                     onClick={() => handleExportEntry(entry)}
-                    className="shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors"
+                    className="shrink-0 bg-zinc-600 hover:bg-zinc-500 text-zinc-200 px-1.5 py-0.5 rounded text-[10px] transition-colors flex items-center justify-center"
                     title="Export transcription as JSON"
                   >
-                    💾
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4" />
+                      <polyline points="7 10 12 15 17 10" />
+                      <line x1="12" y1="15" x2="12" y2="3" />
+                    </svg>
                   </button>
 
                   {/* Delete */}
                   <button
                     onClick={() => handleDeleteEntry(entry.id)}
-                    className="shrink-0 text-zinc-500 hover:text-red-400 transition-colors"
+                    className="shrink-0 text-zinc-500 hover:text-red-400 transition-colors flex items-center justify-center"
                     title="Delete"
                   >
-                    ✕
+                    <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <line x1="18" y1="6" x2="6" y2="18" />
+                      <line x1="6" y1="6" x2="18" y2="18" />
+                    </svg>
                   </button>
                 </div>
               );
@@ -665,6 +699,24 @@ function JournalContent() {
           </div>
         );
       })}
+
+      {/* Delete confirmation */}
+      {pendingDelete && (
+        <ConfirmModal
+          title="Delete Confirmation"
+          message={
+            pendingDelete.type === 'all'
+              ? 'Delete all journal entries? This cannot be undone.'
+              : pendingDelete.type === 'file'
+                ? `Delete all entries for "${pendingDelete.fileName}"?`
+                : 'Delete this saved transcription?'
+          }
+          onConfirm={confirmDelete}
+          onClose={() => setPendingDelete(null)}
+          confirmLabel="Delete"
+          confirmStyle="red"
+        />
+      )}
     </div>
   );
 }

@@ -38,8 +38,30 @@ const PlaybackControlsInner = () => {
   const playbackSpeed = usePlayerStore((state) => state.playbackSpeed);
   const transcriptionResults = usePlayerStore((state) => state.transcriptionResults);
   const autoScroll = usePlayerStore((state) => state.autoScroll);
-  const { play, pause } = useMediaPlayerContext();
+  const currentTime = usePlayerStore((state) => state.currentTime);
+  const { play, pause, seekToTime, getPlaybackTime } = useMediaPlayerContext();
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
+
+  // Find previous/next segment by start time relative to current playback time
+  const seekToWord = (direction: 'prev' | 'next') => {
+    if (!transcriptionResults || transcriptionResults.length === 0) return;
+    const t = getPlaybackTime();
+    let idx = -1;
+    if (direction === 'next') {
+      // Find first segment with start > t
+      for (let i = 0; i < transcriptionResults.length; i++) {
+        if (transcriptionResults[i][0] > t) { idx = i; break; }
+      }
+      if (idx === -1) idx = transcriptionResults.length - 1; // last segment
+    } else {
+      // Find last segment with start <= t
+      for (let i = transcriptionResults.length - 1; i >= 0; i--) {
+        if (transcriptionResults[i][0] <= t) { idx = i; break; }
+      }
+      if (idx === -1) idx = 0; // first segment
+    }
+    seekToTime(transcriptionResults[idx][0]);
+  };
 
   return (
     <div className={`relative bg-zinc-800 rounded-xl p-4 ${MODAL_SHADOW}`}>
@@ -71,6 +93,36 @@ const PlaybackControlsInner = () => {
                 alt={isPlaying ? 'Pause' : 'Play'}
                 className="w-6 h-6"
               />
+            </button>
+          </div>
+
+          {/* Previous word */}
+          <div className="snap-start flex-shrink-0">
+            <button
+              onClick={() => seekToWord('prev')}
+              disabled={!transcriptionResults}
+              className={`${cdBtn} h-10 px-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed`}
+              title="Seek to previous word"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="19 20 9 12 19 4 19 20" />
+                <line x1="5" y1="19" x2="5" y2="5" style={{ stroke: 'currentColor', strokeWidth: 2 }} />
+              </svg>
+            </button>
+          </div>
+
+          {/* Next word */}
+          <div className="snap-start flex-shrink-0">
+            <button
+              onClick={() => seekToWord('next')}
+              disabled={!transcriptionResults}
+              className={`${cdBtn} h-10 px-2 rounded-md bg-zinc-700 hover:bg-zinc-600 active:bg-zinc-600 flex-shrink-0 flex items-center justify-center disabled:opacity-30 disabled:cursor-not-allowed`}
+              title="Seek to next word"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" stroke="none">
+                <polygon points="5 4 15 12 5 20 5 4" />
+                <line x1="19" y1="5" x2="19" y2="19" style={{ stroke: 'currentColor', strokeWidth: 2 }} />
+              </svg>
             </button>
           </div>
 
