@@ -366,13 +366,47 @@ const TranscriptionResultsInner = () => {
   const [error, setError] = useState<string | null>(null);
   const [showMatchesOnly, setShowMatchesOnly] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [wordsTab, setWordsTab] = useState<'list' | 'text'>('list');
+  const [wordsTab, setWordsTab] = useState<'list' | 'text' | 'deleted'>('list');
   const autoScroll = usePlayerStore((state) => state.autoScroll);
 
-  // Journal entries for the current file
+  // File info — needed for deleted segments and journal
   const fileName = usePlayerStore((state) => state.fileName);
   const fileSize = usePlayerStore((state) => state.fileSize);
   const [journalEntries, setJournalEntries] = useState<JournalEntry[]>([]);
+
+  // Deleted segments — stored in localStorage keyed by fileName
+  const DELETED_KEY = 'obrez_deleted_segments';
+  const loadDeletedSegments = (): TranscriptionResultTuple[] => {
+    try {
+      const data = JSON.parse(localStorage.getItem(DELETED_KEY) ?? '{}');
+      return (data[fileName] ?? []) as TranscriptionResultTuple[];
+    } catch {
+      return [];
+    }
+  };
+  const saveDeletedSegments = (segments: TranscriptionResultTuple[]) => {
+    try {
+      const data = JSON.parse(localStorage.getItem(DELETED_KEY) ?? '{}');
+      if (segments.length === 0) {
+        delete data[fileName];
+      } else {
+        data[fileName] = segments;
+      }
+      localStorage.setItem(DELETED_KEY, JSON.stringify(data));
+    } catch {
+      // ignore
+    }
+  };
+  const [deletedSegments, setDeletedSegments] = useState<TranscriptionResultTuple[]>([]);
+
+  // Load deleted segments when file changes
+  useEffect(() => {
+    if (!fileName) {
+      setDeletedSegments([]);
+      return;
+    }
+    setDeletedSegments(loadDeletedSegments());
+  }, [fileName]);
 
   // Load journal entries when file changes
   useEffect(() => {
@@ -407,6 +441,13 @@ const TranscriptionResultsInner = () => {
   /** Delete a segment by its start time (called after confirmation). */
   const deleteSegment = (start: number) => {
     if (!transcriptionResults) return;
+    // Save the deleted segment to the trash
+    const deletedSeg = transcriptionResults.find(([s]) => s === start);
+    if (deletedSeg) {
+      const newDeleted = [...deletedSegments, deletedSeg];
+      setDeletedSegments(newDeleted);
+      saveDeletedSegments(newDeleted);
+    }
     const next = transcriptionResults.filter(([s]) => s !== start);
     actions.setTranscriptionResults(next.length ? next : null);
     if (censoringEffects?.length) {
@@ -1155,9 +1196,75 @@ const TranscriptionResultsInner = () => {
             active={wordsTab === 'text'}
             onClick={() => setWordsTab('text')}
           />
+          <WordsTab
+            label="Deleted"
+            active={wordsTab === 'deleted'}
+            onClick={() => setWordsTab('deleted')}
+          />
         </div>
         <BorderedSection title="Words">
-          {transcribing ? (
+          {/* Deleted tab — always accessible, even without transcription results */}
+          {wordsTab === 'deleted' ? (
+            <div className="max-h-[400px] overflow-y-auto pr-1" style={{ overscrollBehavior: 'contain' }}>
+              {deletedSegments.length > 0 && (
+                <div className="flex justify-end mb-2">
+                  <button
+                    onClick={() => {
+                      setDeletedSegments([]);
+                      saveDeletedSegments([]);
+                    }}
+                    className="text-[10px] bg-zinc-700 hover:bg-zinc-600 text-zinc-300 px-2 py-1 rounded transition-colors flex items-center gap-1"
+                    title="Clear all deleted words"
+                  >
+                    <svg xmlns="http://www.w3.org/2000/svg" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                      <polyline points="3 6 5 6 21 6" />
+                      <path d="M19 6v14a2 2 0 01-2 2H7a2 2 0 01-2-2V6m3 0V4a2 2 0 012-2h4a2 2 0 012 2v2" />
+                    </svg>
+                    Clear all
+                  </button>
+                </div>
+              )}
+              {deletedSegments.length === 0 && (
+                <div className="text-xs text-zinc-500 py-2">No deleted words</div>
+              )}
+              {deletedSegments.map((seg, i) => {
+                const [start, end, text] = seg;
+                return (
+                  <div
+                    key={i}
+                    className="flex items-center gap-2 text-xs py-1.5 px-2 rounded mb-1 bg-zinc-700/60 hover:bg-zinc-600/60 transition-colors"
+                  >
+                    <span className="timestamp text-zinc-400 whitespace-nowrap cursor-pointer hover:text-purple-300" onClick={() => seekToTime(Number(start))}>
+                      {formatTime(Number(start))} — {formatTime(Number(end))}
+                    </span>
+                    <span className="text-zinc-200 flex-1 truncate" title={String(text)}>
+                      {String(text)}
+                    </span>
+                    <button
+                      onClick={() => {
+                        // Restore: add back to transcriptionResults
+                        const newResults: [number, number, string][] = [...(transcriptionResults ?? []), [Number(start), Number(end), String(text)]];
+                        newResults.sort((a, b) => a[0] - b[0]);
+                        actions.setTranscriptionResults(newResults);
+                        // Remove from deleted list
+                        const newDeleted = deletedSegments.filter((_, j) => j !== i);
+                        setDeletedSegments(newDeleted);
+                        saveDeletedSegments(newDeleted);
+                      }}
+                      className="shrink-0 text-purple-400 hover:text-purple-200 px-1.5 py-0.5 rounded bg-purple-900/30 hover:bg-purple-900/50 transition-colors flex items-center gap-0.5"
+                      title="Restore this segment"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                        <polyline points="1 4 1 10 7 10" />
+                        <path d="M3.51 15a9 9 0 102.13-9.36L1 10" />
+                      </svg>
+                      Restore
+                    </button>
+                  </div>
+                );
+              })}
+            </div>
+          ) : transcribing ? (
             <TranscribeProgress />
           ) : isLoading && !transcriptionResults ? (
             <div className="text-xs text-zinc-500 py-2">Loading transcription...</div>

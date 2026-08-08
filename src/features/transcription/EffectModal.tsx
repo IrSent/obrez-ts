@@ -69,10 +69,10 @@ const EffectModal = memo(({ segmentStart, onClose, onAdd, onUpdate, onRemove, ef
     }
   }, [isEdit, effect]);
 
-  // Pre-select the first bleep sound when the modal opens (add mode only).
+  // Pre-select "silence" as default bleep sound when the modal opens (add mode only).
   useEffect(() => {
-    if (!isEdit && !selectedSoundId && soundList.length > 0) {
-      setSelectedSoundId(soundList[0].id);
+    if (!isEdit && !selectedSoundId) {
+      setSelectedSoundId('silence');
     }
   }, [segmentStart, soundList, isEdit]);
 
