@@ -66,7 +66,7 @@ export const usePlayerStore = create<PlayerState>((set) => ({
   bleepSounds: {},
 
   // Censoring mode
-  censoringMode: false,
+  censoringMode: true,
 
   // Audio locked — AudioContext suspended after reload, needs user gesture
   audioLocked: false,
