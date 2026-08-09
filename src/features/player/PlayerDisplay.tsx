@@ -4,7 +4,7 @@ import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { ActionButtons } from '../action-buttons/ActionButtons';
 import { ProgressBar } from './ProgressBar';
 
-const PLAYER_SHADOW = 'shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]';
+const PLAYER_SHADOW = 'shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]';
 
 const PlayerDisplayInner = () => {
   const fileName = usePlayerStore((state) => state.fileName);
@@ -35,10 +35,12 @@ const PlayerDisplayInner = () => {
   return (
     <div
       data-testid="player-display-container"
-      className={`relative w-full max-h-[33vh] bg-zinc-900 rounded-xl overflow-hidden flex items-center justify-center ${PLAYER_SHADOW}`}
+      className={`relative w-full max-h-[33vh] bg-zinc-900 rounded-2xl overflow-hidden flex items-center justify-center ${PLAYER_SHADOW}`}
     >
-      {/* 3D inner bevel highlight */}
-      <div className="absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none z-10" />
+      {/* 3D inner bevel — deeper for volume */}
+      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none z-10" />
+      {/* Inner depth gradient */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.03)] to-transparent pointer-events-none z-10" />
 
       <canvas
         id="videoCanvas"

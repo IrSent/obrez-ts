@@ -1,16 +1,16 @@
-# Graph Report - obrez-ts  (2026-08-09)
+# Graph Report - obrez-ts  (2026-08-04)
 
 ## Corpus Check
-- 96 files · ~133,288 words
+- 92 files · ~129,088 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 598 nodes · 1001 edges · 58 communities (43 shown, 15 thin omitted)
+- 590 nodes · 982 edges · 58 communities (43 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9432f8c6`
+- Built from commit: `303443f1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -54,7 +54,7 @@
 - [[_COMMUNITY_Community 54|Community 54]]
 - [[_COMMUNITY_Community 55|Community 55]]
 - [[_COMMUNITY_Community 56|Community 56]]
-- [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 57|Community 57]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `usePlayerStore` - 39 edges
@@ -118,11 +118,11 @@ Nodes (16): compilerOptions, esModuleInterop, forceConsistentCasingInFileNames, 
 
 ### Community 6 - "Backend Config + Server"
 Cohesion: 0.07
-Nodes (40): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner() (+32 more)
+Nodes (37): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner() (+29 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.07
-Nodes (15): ConfirmationModal(), ConfirmationModalProps, formatDuration(), ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps (+7 more)
+Nodes (17): ConfirmationModal(), ConfirmationModalProps, formatDuration(), useProposedTimeBlink(), ShieldButton, ShieldButtonProps, EffectBadge, EffectModal (+9 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -188,24 +188,24 @@ Nodes (10): Build, Build process, Deploy, Dev server details, Development, Getti
 Cohesion: 0.20
 Nodes (9): Console Diagnostics, Diagnostic Hooks, Playwright Config, Running Tests, Test Fixtures, Test Suite, Testing Guide, `window.__audioDiagnostic` (+1 more)
 
-### Community 58 - "Community 58"
-Cohesion: 0.06
-Nodes (45): ConfirmModal(), ConfirmModalProps, LoginModal(), LoginModalProps, PaymentModal(), PaymentModalProps, TopupModal(), TopupModalProps (+37 more)
+### Community 57 - "Community 57"
+Cohesion: 0.07
+Nodes (43): LoginModal(), LoginModalProps, PaymentModal(), PaymentModalProps, TopupModal(), TopupModalProps, DebugTab(), ErrorEntry (+35 more)
 
 ## Knowledge Gaps
-- **215 isolated node(s):** `SPEEDS`, `SegmentItem`, `rowRendererDeps`, `DEFAULT_DICTIONARIES`, `ConfirmModalProps` (+210 more)
+- **214 isolated node(s):** `AuthStore`, `CODEC_LABELS`, `ExportFormat`, `DEFAULT_DICTIONARIES`, `TabKey` (+209 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 58`, `Community 27`?**
+- **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 57`, `Community 27`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `playerActions` connect `Community 0` to `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 7`, `Community 50`, `Community 58`, `Community 27`?**
+- **Why does `playerActions` connect `Community 0` to `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 7`, `Community 50`, `Community 57`, `Community 27`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `SPEEDS`, `SegmentItem`, `rowRendererDeps` to the rest of the system?**
-  _215 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `AuthStore`, `CODEC_LABELS`, `ExportFormat` to the rest of the system?**
+  _214 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.11895161290322581 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**

@@ -1,16 +1,16 @@
-# Graph Report - obrez-ts  (2026-08-09)
+# Graph Report - obrez-ts  (2026-08-08)
 
 ## Corpus Check
-- 96 files · ~133,288 words
+- 96 files · ~132,837 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 598 nodes · 1001 edges · 58 communities (43 shown, 15 thin omitted)
+- 595 nodes · 997 edges · 64 communities (49 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `9432f8c6`
+- Built from commit: `4c25c2ff`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -54,7 +54,13 @@
 - [[_COMMUNITY_Community 54|Community 54]]
 - [[_COMMUNITY_Community 55|Community 55]]
 - [[_COMMUNITY_Community 56|Community 56]]
+- [[_COMMUNITY_Community 57|Community 57]]
 - [[_COMMUNITY_Community 58|Community 58]]
+- [[_COMMUNITY_Community 59|Community 59]]
+- [[_COMMUNITY_Community 60|Community 60]]
+- [[_COMMUNITY_Community 61|Community 61]]
+- [[_COMMUNITY_Community 62|Community 62]]
+- [[_COMMUNITY_Community 63|Community 63]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `usePlayerStore` - 39 edges
@@ -90,11 +96,11 @@
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 - **E2E Test Fixtures (audio-only profanity test + full video AAC test)** — e2e_ru_profanity, e2e_valid_with_aac [EXTRACTED 1.00]
 
-## Communities (58 total, 15 thin omitted)
+## Communities (64 total, 15 thin omitted)
 
 ### Community 0 - "Community 0"
 Cohesion: 0.12
-Nodes (23): DEFAULT_DICTIONARIES, createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop() (+15 more)
+Nodes (22): createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, audioBuffersToWav(), WavProgress, writeString(), yieldToEventLoop(), backendHeaders() (+14 more)
 
 ### Community 1 - "Package Dependencies"
 Cohesion: 0.05
@@ -118,11 +124,11 @@ Nodes (16): compilerOptions, esModuleInterop, forceConsistentCasingInFileNames, 
 
 ### Community 6 - "Backend Config + Server"
 Cohesion: 0.07
-Nodes (40): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner() (+32 more)
+Nodes (41): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), CODEC_LABELS (+33 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.07
-Nodes (15): ConfirmationModal(), ConfirmationModalProps, formatDuration(), ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps (+7 more)
+Cohesion: 0.08
+Nodes (12): ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps, TextView(), findClosestSegment(), parseStage() (+4 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -149,8 +155,8 @@ Cohesion: 0.24
 Nodes (8): build(), buildVersion(), clients, DIST_DIR, getVersions(), PUBLIC_DIR, server, SRC_DIR
 
 ### Community 27 - "Community 27"
-Cohesion: 0.12
-Nodes (22): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, clearJournal(), clearSession(), contentHash(), deleteJournalEntriesForFile() (+14 more)
+Cohesion: 0.23
+Nodes (18): clearJournal(), clearSession(), contentHash(), deleteJournalEntriesForFile(), deleteJournalEntry(), ErrorEntry, getFromStore(), hasDuplicate() (+10 more)
 
 ### Community 34 - "Community 34"
 Cohesion: 0.50
@@ -169,7 +175,7 @@ Cohesion: 0.11
 Nodes (17): Ahead Rendering, Audio, audioProcess Callback, Boundary Computation, Codec Selection, Design, Error Handling, Export Pipeline (+9 more)
 
 ### Community 50 - "Community 50"
-Cohesion: 0.13
+Cohesion: 0.11
 Nodes (11): computeSegmentBoundaries(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects(), initProgress(), makeInitialPhases(), pickAudioCodec(), pickVideoCodec() (+3 more)
 
 ### Community 51 - "Community 51"
@@ -188,26 +194,50 @@ Nodes (10): Build, Build process, Deploy, Dev server details, Development, Getti
 Cohesion: 0.20
 Nodes (9): Console Diagnostics, Diagnostic Hooks, Playwright Config, Running Tests, Test Fixtures, Test Suite, Testing Guide, `window.__audioDiagnostic` (+1 more)
 
+### Community 57 - "Community 57"
+Cohesion: 0.13
+Nodes (9): DebugTab(), ErrorEntry, SettingsModal(), SettingsModalProps, TabKey, TABS, UserContentProps, VersionContentProps (+1 more)
+
 ### Community 58 - "Community 58"
-Cohesion: 0.06
-Nodes (45): ConfirmModal(), ConfirmModalProps, LoginModal(), LoginModalProps, PaymentModal(), PaymentModalProps, TopupModal(), TopupModalProps (+37 more)
+Cohesion: 0.12
+Nodes (10): ConfirmModal(), ConfirmModalProps, SettingsContent(), SettingsContentProps, TabKey, TABS, UserContentProps, VersionContentProps (+2 more)
+
+### Community 59 - "Community 59"
+Cohesion: 0.16
+Nodes (7): ActionButtonsInner(), CODEC_LABELS, codecLabel(), ExportFormat, ConfirmationModal(), ConfirmationModalProps, formatDuration()
+
+### Community 60 - "Community 60"
+Cohesion: 0.36
+Nodes (9): PaymentModal(), PaymentModalProps, TopupModal(), TopupModalProps, UserContent(), useAuthStore, canFreeTopup(), daysUntilFreeTopup() (+1 more)
+
+### Community 61 - "Community 61"
+Cohesion: 0.32
+Nodes (6): AuthActions, AuthState, AuthStore, AuthUser, FiatCurrency, PaymentInvoice
+
+### Community 62 - "Community 62"
+Cohesion: 0.43
+Nodes (5): LoginModal(), LoginModalProps, base64urlEncode(), generateCodeChallenge(), generateCodeVerifier()
+
+### Community 63 - "Community 63"
+Cohesion: 0.47
+Nodes (5): HOUR_PACKS, HourPack, HourPackCard, HourPackCardProps, HourPackType
 
 ## Knowledge Gaps
-- **215 isolated node(s):** `SPEEDS`, `SegmentItem`, `rowRendererDeps`, `DEFAULT_DICTIONARIES`, `ConfirmModalProps` (+210 more)
+- **215 isolated node(s):** `DEFAULT_DICTIONARIES`, `ConfirmModalProps`, `LoginModalProps`, `PaymentModalProps`, `ErrorEntry` (+210 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 58`, `Community 27`?**
+- **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 57`, `Community 59`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
-- **Why does `playerActions` connect `Community 0` to `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 7`, `Community 50`, `Community 58`, `Community 27`?**
+- **Why does `playerActions` connect `Community 0` to `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 7`, `Community 50`, `Community 57`, `Community 58`, `Community 59`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `SPEEDS`, `SegmentItem`, `rowRendererDeps` to the rest of the system?**
+- **What connects `DEFAULT_DICTIONARIES`, `ConfirmModalProps`, `LoginModalProps` to the rest of the system?**
   _215 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
-  _Cohesion score 0.11895161290322581 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.12413793103448276 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**

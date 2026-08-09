@@ -6,14 +6,14 @@ import type { PlaybackSpeed } from '../../types';
 
 const SPEEDS: PlaybackSpeed[] = [0.5, 0.75, 1, 1.25, 1.5, 1.75, 2, 2.5, 3];
 
-const MODAL_SHADOW = 'shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]';
+const MODAL_SHADOW = 'shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]';
 
 // ─── Thin divider between buttons (same as ActionButtons) ──────────────
 const Divider = () => (
   <div className="w-px h-6 bg-zinc-600 flex-shrink-0" />
 );
 
-// ─── Button style (same as ActionButtons RowBtn) ──────────────────────
+// ─── Button style — recessed into the surface like a CD-player slot ────
 const PBtn = ({
   disabled,
   active,
@@ -31,7 +31,9 @@ const PBtn = ({
 }) => (
   <button
     onClick={onClick}
-    className={`flex items-center justify-center gap-1 rounded-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold ${
+    className={`flex items-center justify-center gap-1 rounded-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold
+      shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]
+      ${
       disabled
         ? 'bg-zinc-700/40 text-zinc-500 cursor-not-allowed'
         : active
@@ -122,18 +124,24 @@ const PlaybackControlsInner = () => {
   const { ref: scrollRef } = useWheelScroll();
 
   return (
-    <div className={`relative bg-zinc-800 rounded-xl p-3 ${MODAL_SHADOW}`}>
-      {/* 3D inner bevel highlight */}
-      <div className="absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none" />
+    <div className={`relative bg-zinc-800 rounded-2xl p-4 ${MODAL_SHADOW}`}>
+      {/* 3D inner bevel — deeper for volume */}
+      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
+      {/* Inner depth gradient */}
+      <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
 
-      {/* ── Carousel: horizontal scroll, wheel → horizontal ── */}
+      {/* ── Carousel: recessed slot — horizontal scroll, wheel → horizontal ── */}
       <>
         <style>{`
           .playback-carousel::-webkit-scrollbar { display: none; }
         `}</style>
         <div
+          className="playback-carousel overflow-x-auto rounded-xl bg-zinc-900/60 shadow-[inset_0_3px_8px_rgba(0,0,0,0.5)] -mx-2 -my-1 p-2"
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+        <div
           ref={scrollRef}
-          className="playback-carousel overflow-x-auto -mx-1 px-1"
+          className="overflow-x-auto"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
         <div className="flex items-stretch gap-0">
@@ -247,6 +255,7 @@ const PlaybackControlsInner = () => {
             )}
           </div>
 
+        </div>
         </div>
         </div>
       </>

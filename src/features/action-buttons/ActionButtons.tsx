@@ -2,7 +2,6 @@ import { memo, useCallback } from 'react';
 import { createPortal } from 'react-dom';
 import { usePlayerStore } from '../../store/playerStore';
 import { useAuthStore } from '../../store/authStore';
-import { cdBtn } from '../player/cdBtn';
 import { LoginModal } from '../auth/LoginModal';
 import { TopupModal } from '../auth/TopupModal';
 import { ConfirmationModal } from '../auth/ConfirmationModal';
@@ -78,7 +77,9 @@ const RowBtn = ({
 }) => (
   <button
     onClick={onClick}
-    className={`flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2 flex-shrink-0 ${
+    className={`flex flex-col items-center justify-center gap-1 rounded-lg px-3 py-2 flex-shrink-0
+      shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]
+      ${
       disabled
         ? 'bg-zinc-700/40 text-zinc-500 cursor-not-allowed'
         : 'bg-zinc-700 hover:bg-zinc-600 text-zinc-200 active:bg-zinc-600'
@@ -107,7 +108,9 @@ const CompactBtn = ({
 }) => (
   <button
     onClick={onClick}
-    className={`flex flex-col items-center justify-center gap-1 rounded-lg px-2.5 py-2 flex-shrink-0 ${
+    className={`flex flex-col items-center justify-center gap-1 rounded-lg px-2.5 py-2 flex-shrink-0
+      shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]
+      ${
       disabled
         ? 'bg-zinc-700/40 text-zinc-500 cursor-not-allowed'
         : 'bg-zinc-700 text-zinc-200 active:bg-zinc-600'
@@ -167,9 +170,11 @@ const ActionButtonsInner = () => {
     <>
       {/* ─── Full panel — desktop / portrait (horizontal row with dividers) ─── */}
       {!isLandscape && (
-        <div className="relative bg-zinc-800 rounded-xl shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
-          {/* 3D inner bevel highlight */}
-          <div className="absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)] pointer-events-none" />
+        <div className="relative bg-zinc-800 rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
+          {/* 3D inner bevel — deeper for volume */}
+          <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
+          {/* Inner depth gradient */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
 
           <div className="flex items-stretch">
             <input
@@ -236,7 +241,11 @@ const ActionButtonsInner = () => {
 
       {/* ─── Compact row — mobile landscape (horizontal row with dividers) ─── */}
       {isLandscape && (
-        <div className="relative bg-zinc-800/80 backdrop-blur-sm rounded-lg">
+        <div className="relative bg-zinc-800/80 backdrop-blur-sm rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
+          {/* 3D inner bevel */}
+          <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
+          {/* Inner depth gradient */}
+          <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
           <div className="flex items-stretch">
             <input
               ref={fileInputRef}
@@ -307,23 +316,24 @@ const ActionButtonsInner = () => {
 
           {showExportModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-              <div className="relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
-                <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]" />
-                <div className="flex items-center justify-between">
+              <div className="relative bg-zinc-800 rounded-2xl p-5 w-full max-w-sm space-y-4 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
+                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent" />
+                <div className="flex items-center justify-between relative">
                   <h3 className="text-sm font-semibold flex items-center gap-2">
                     <DownloadIcon /> Export Video
                   </h3>
-                  <button onClick={() => setShowExportModal(false)} className={`${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`}>
+                  <button onClick={() => setShowExportModal(false)} className="p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]">
                     <CloseIcon />
                   </button>
                 </div>
-                <div>
+                <div className="relative">
                   <label className="block text-xs text-zinc-400 mb-1.5">Format</label>
                   <div className="flex gap-2">
                     <button
                       type="button"
                       onClick={() => setExportFormat('same')}
-                      className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
+                      className={`flex-1 text-xs py-2 px-2 rounded font-semibold shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)] ${
                         exportFormat === 'same' ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
                       }`}
                     >
@@ -334,7 +344,7 @@ const ActionButtonsInner = () => {
                     <button
                       type="button"
                       onClick={() => setExportFormat(altFormat)}
-                      className={`${cdBtn} flex-1 text-xs py-2 px-2 rounded font-semibold ${
+                      className={`flex-1 text-xs py-2 px-2 rounded font-semibold shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)] ${
                         exportFormat === altFormat ? 'bg-zinc-600 text-zinc-100' : 'bg-zinc-700 text-zinc-300 hover:bg-zinc-600'
                       }`}
                     >
@@ -345,7 +355,7 @@ const ActionButtonsInner = () => {
                 </div>
                 <button
                   onClick={() => { handleExport(); setShowExportModal(false); }}
-                  className={`${cdBtn} w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
+                  className={`w-full bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2 shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]`}
                 >
                   <DownloadIcon /> Export
                 </button>
@@ -358,33 +368,34 @@ const ActionButtonsInner = () => {
 
           {showUnloadConfirm && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-              <div className="relative bg-zinc-800 rounded-xl p-5 w-full max-w-sm space-y-4 shadow-[0_25px_80px_rgba(0,0,0,0.7),0_14px_40px_rgba(0,0,0,0.5),0_5px_16px_rgba(0,0,0,0.35),0_0_0_1px_rgba(113,113,122,0.5)]">
-                <div className="pointer-events-none absolute inset-0 rounded-xl border border-transparent border-t-[rgba(255,255,255,0.06)] border-b-[rgba(0,0,0,0.25)]" />
-                <div className="flex items-center justify-between">
+              <div className="relative bg-zinc-800 rounded-2xl p-5 w-full max-w-sm space-y-4 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
+                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent" />
+                <div className="flex items-center justify-between relative">
                   <h3 className="text-sm font-semibold flex items-center gap-2">
                     <UnloadIcon /> Unload File
                   </h3>
-                  <button onClick={() => setShowUnloadConfirm(false)} className={`${cdBtn} p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400`}>
+                  <button onClick={() => setShowUnloadConfirm(false)} className="p-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-400 shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]">
                     <CloseIcon />
                   </button>
                 </div>
-                <p className="text-xs text-zinc-300">
+                <p className="text-xs text-zinc-300 relative">
                   Transcription is saved to IndexedDB. Export JSON before unloading?
                 </p>
-                <div className="flex gap-2">
+                <div className="flex gap-2 relative">
                   <button
                     onClick={() => {
                       setShowUnloadConfirm(false);
                       const exportBtn = document.querySelector('[data-testid="export-json"]');
                       if (exportBtn) (exportBtn as HTMLElement).click();
                     }}
-                    className={`${cdBtn} flex-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
+                    className="flex-1 bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold py-2 rounded flex items-center justify-center gap-2 shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]"
                   >
                     Export JSON
                   </button>
                   <button
                     onClick={confirmUnload}
-                    className={`${cdBtn} flex-1 bg-red-800 hover:bg-red-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-2`}
+                    className="flex-1 bg-red-800 hover:bg-red-700 text-white text-xs font-semibold py-2 rounded flex items-center justify-center gap-2 shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]"
                   >
                     <UnloadIcon /> Unload
                   </button>
