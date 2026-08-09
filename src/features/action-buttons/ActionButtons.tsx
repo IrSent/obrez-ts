@@ -172,11 +172,11 @@ const ActionButtonsInner = () => {
       {!isLandscape && (
         <div className="relative bg-zinc-800 rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
           {/* 3D inner bevel — deeper for volume */}
-          <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
+          <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.2)] pointer-events-none" />
           {/* Inner depth gradient */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
 
-          <div className="rounded-xl bg-zinc-900/60 shadow-[inset_0_3px_8px_rgba(0,0,0,0.5)] -mx-1 p-1">
+          <div className="rounded-xl bg-zinc-900/60 shadow-[inset_0_2px_5px_rgba(0,0,0,0.4)] -mx-1 p-1">
             <div className="flex items-stretch">
               <input
                 ref={fileInputRef}
@@ -245,10 +245,10 @@ const ActionButtonsInner = () => {
       {isLandscape && (
         <div className="relative bg-zinc-800/80 backdrop-blur-sm rounded-2xl shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
           {/* 3D inner bevel */}
-          <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
+          <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.2)] pointer-events-none" />
           {/* Inner depth gradient */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
-          <div className="rounded-xl bg-zinc-900/60 shadow-[inset_0_3px_8px_rgba(0,0,0,0.5)] -mx-1 p-1">
+          <div className="rounded-xl bg-zinc-900/60 shadow-[inset_0_2px_5px_rgba(0,0,0,0.4)] -mx-1 p-1">
             <div className="flex items-stretch">
               <input
                 ref={fileInputRef}
@@ -321,7 +321,7 @@ const ActionButtonsInner = () => {
           {showExportModal && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
               <div className="relative bg-zinc-800 rounded-2xl p-5 w-full max-w-sm space-y-4 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
-                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.2)]" />
                 <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent" />
                 <div className="flex items-center justify-between relative">
                   <h3 className="text-sm font-semibold flex items-center gap-2">
@@ -373,7 +373,7 @@ const ActionButtonsInner = () => {
           {showUnloadConfirm && (
             <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
               <div className="relative bg-zinc-800 rounded-2xl p-5 w-full max-w-sm space-y-4 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
-                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)]" />
+                <div className="pointer-events-none absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.2)]" />
                 <div className="pointer-events-none absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent" />
                 <div className="flex items-center justify-between relative">
                   <h3 className="text-sm font-semibold flex items-center gap-2">

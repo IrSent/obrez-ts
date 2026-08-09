@@ -60,7 +60,7 @@ hr { border: none; border-top: 1px solid var(--border); margin: 40px 0; }
 <div class="container">
 
 <h1>obrez-ts — Complete Call Flow &amp; Architecture Documentation</h1>
-<p class="subtitle">Generated from graphify knowledge graph: 598 nodes, 1000 edges, 64 communities. Commit: 78675d4</p>
+<p class="subtitle">Generated from graphify knowledge graph: 598 nodes, 1000 edges, 64 communities. Commit: 0d547b6</p>
 
 <div class="nav">
     <a href="#overview">Architecture Overview</a>
@@ -124,8 +124,8 @@ flowchart LR
     COMMUNITY_7_989501FC -->|imports x15| OUTPUTS_DOCS_ED82387C
     COMMUNITY_57_508B74B3 -->|imports x11| OUTPUTS_DOCS_ED82387C
     COMMUNITY_60_E3CAD228 -->|imports x9| OTHER_D0941E68
-    COMMUNITY_57_508B74B3 -->|imports x8| OTHER_D0941E68
     OUTPUTS_DOCS_ED82387C -->|imports x8| SERVE_API_35EC8E86
+    COMMUNITY_57_508B74B3 -->|imports x8| OTHER_D0941E68
     COMMUNITY_7_989501FC -->|imports x7| SERVE_API_35EC8E86
     INGEST_CACHE_UPDATE_FF457338 -->|imports x7| OUTPUTS_DOCS_ED82387C
     COMMUNITY_7_989501FC -->|imports x6| OTHER_D0941E68
@@ -771,13 +771,13 @@ flowchart LR
     player_playbackcontrols_usewheelscroll_17a798a2 -->|calls| player_playbackcontrols_playbackcontrolsinner_de05d3dd
     player_playbackcontrols_playbackcontrolsinner_de05d3dd -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     player_playbackcontrols_playbackcontrolsinner_de05d3dd -->|calls| store_playerstore_useplayerstore_5d310b80
-    player_playerdisplay_playerdisplayinner_21501529 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
-    player_playerdisplay_playerdisplayinner_21501529 -->|calls| store_playerstore_useplayerstore_5d310b80
     transcription_transcriptionresults_transcribepro_5576f37c -->|calls| store_playerstore_useplayerstore_5d310b80
     transcription_transcriptionresults_transcription_d3874bb4 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     transcription_transcriptionresults_transcription_d3874bb4 -->|calls| hooks_useproposedtimeblink_useproposedtimeblink_ab6c73e2
     transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_playerstore_useplayeractions_2de0ac0e
     transcription_transcriptionresults_transcription_d3874bb4 -->|calls| store_playerstore_useplayerstore_5d310b80
+    player_playerdisplay_playerdisplayinner_21501529 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
+    player_playerdisplay_playerdisplayinner_21501529 -->|calls| store_playerstore_useplayerstore_5d310b80
     src_app_sessionrestorer_2dba85a1 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     export_headerexportbutton_headerexportbuttoninne_d5e26d52 -->|calls| context_mediaplayercontext_usemediaplayercontext_6e6b7797
     export_headerexportbutton_headerexportbuttoninne_d5e26d52 -->|calls| store_playerstore_useplayeractions_2de0ac0e
@@ -834,14 +834,6 @@ flowchart LR
 </tr>
 <tr>
   <td>1</td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
-</tr>
-<tr>
-  <td>2</td>
   <td><code>PlaybackControls.tsx</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -849,7 +841,7 @@ flowchart LR
   <td>Module file in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>3</td>
+  <td>2</td>
   <td><code>SPEEDS</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -857,7 +849,7 @@ flowchart LR
   <td>SPEEDS node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>4</td>
+  <td>3</td>
   <td><code>Divider()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -865,7 +857,7 @@ flowchart LR
   <td>Divider() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>5</td>
+  <td>4</td>
   <td><code>PBtn()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -873,7 +865,7 @@ flowchart LR
   <td>PBtn() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>6</td>
+  <td>5</td>
   <td><code>useWheelScroll()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -881,7 +873,7 @@ flowchart LR
   <td>useWheelScroll() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>7</td>
+  <td>6</td>
   <td><code>ChevronDownIcon()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -889,7 +881,7 @@ flowchart LR
   <td>ChevronDownIcon() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>8</td>
+  <td>7</td>
   <td><code>LedIndicator()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -897,7 +889,7 @@ flowchart LR
   <td>LedIndicator() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>9</td>
+  <td>8</td>
   <td><code>PlaybackControlsInner()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td><code>useWheelScroll()</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
@@ -905,7 +897,7 @@ flowchart LR
   <td>PlaybackControlsInner() node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>10</td>
+  <td>9</td>
   <td><code>PlaybackControls</code><br><small style="color:var(--muted)">features/player/PlaybackControls.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -913,31 +905,7 @@ flowchart LR
   <td>PlaybackControls node in features/player/PlaybackControls.tsx.</td>
 </tr>
 <tr>
-  <td>11</td>
-  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br>+6 more</td>
-  <td>Module file in features/player/PlayerDisplay.tsx.</td>
-</tr>
-<tr>
-  <td>12</td>
-  <td><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
-  <td>PlayerDisplayInner() node in features/player/PlayerDisplay.tsx.</td>
-</tr>
-<tr>
-  <td>13</td>
-  <td><code>PlayerDisplay</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
-  <td><span class="tag tag-hook">UI</span></td>
-  <td>External entry / no inbound edge</td>
-  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
-  <td>PlayerDisplay node in features/player/PlayerDisplay.tsx.</td>
-</tr>
-<tr>
-  <td>14</td>
+  <td>10</td>
   <td><code>TranscribeProgress()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -945,7 +913,7 @@ flowchart LR
   <td>TranscribeProgress() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>15</td>
+  <td>11</td>
   <td><code>TranscriptionResultsInner()</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
@@ -953,12 +921,44 @@ flowchart LR
   <td>TranscriptionResultsInner() node in features/transcription/TranscriptionResults.tsx.</td>
 </tr>
 <tr>
-  <td>16</td>
+  <td>12</td>
   <td><code>TranscriptionResults</code><br><small style="color:var(--muted)">features/transcription/TranscriptionResults.tsx</small></td>
   <td><span class="tag tag-hook">UI</span></td>
   <td>External entry / no inbound edge</td>
   <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
   <td>TranscriptionResults node in features/transcription/TranscriptionResults.tsx.</td>
+</tr>
+<tr>
+  <td>13</td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td>ActionButtons node in features/action-buttons/ActionButtons.tsx.</td>
+</tr>
+<tr>
+  <td>14</td>
+  <td><code>PlayerDisplay.tsx</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td><code>ActionButtons</code><br><small style="color:var(--muted)">features/action-buttons/ActionButtons.tsx</small></td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small><br><code>MediaPlayerContext.tsx</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>PlaybackSpeed</code><br><small style="color:var(--muted)">src/types/index.ts</small><br>+6 more</td>
+  <td>Module file in features/player/PlayerDisplay.tsx.</td>
+</tr>
+<tr>
+  <td>15</td>
+  <td><code>PlayerDisplayInner()</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>useMediaPlayerContext()</code><br><small style="color:var(--muted)">src/context/MediaPlayerContext.tsx</small><br><code>usePlayerStore</code><br><small style="color:var(--muted)">src/store/playerStore.ts</small></td>
+  <td>PlayerDisplayInner() node in features/player/PlayerDisplay.tsx.</td>
+</tr>
+<tr>
+  <td>16</td>
+  <td><code>PlayerDisplay</code><br><small style="color:var(--muted)">features/player/PlayerDisplay.tsx</small></td>
+  <td><span class="tag tag-hook">UI</span></td>
+  <td>External entry / no inbound edge</td>
+  <td><code>App.tsx</code><br><small style="color:var(--muted)">src/App.tsx</small></td>
+  <td>PlayerDisplay node in features/player/PlayerDisplay.tsx.</td>
 </tr>
 <tr>
   <td>17</td>
@@ -4131,7 +4131,7 @@ flowchart LR
 
 <div style="text-align:center; padding:40px 0; color: var(--muted); font-size:0.9rem;">
   <p>obrez-ts — Architecture Documentation</p>
-  <p>Generated: 2026-08-09 10:06 UTC · graphify callflow-html</p>
+  <p>Generated: 2026-08-09 11:42 UTC · graphify callflow-html</p>
 </div>
 
 </div><!-- .container -->

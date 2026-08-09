@@ -994,7 +994,7 @@ const TranscriptionResultsInner = () => {
   return (
     <div className="relative bg-zinc-800 rounded-2xl p-4 shadow-[0_30px_90px_rgba(0,0,0,0.8),0_18px_50px_rgba(0,0,0,0.6),0_8px_20px_rgba(0,0,0,0.4),0_0_0_1px_rgba(113,113,122,0.5)]">
       {/* 3D inner bevel — deeper for volume */}
-      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
+      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.2)] pointer-events-none" />
       {/* Inner depth gradient */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
       {/* Header — title + JSON actions */}

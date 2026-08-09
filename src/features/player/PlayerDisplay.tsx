@@ -38,7 +38,7 @@ const PlayerDisplayInner = () => {
       className={`relative w-full max-h-[33vh] bg-zinc-900 rounded-2xl overflow-hidden flex items-center justify-center ${PLAYER_SHADOW}`}
     >
       {/* 3D inner bevel — deeper for volume */}
-      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none z-10" />
+      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.2)] pointer-events-none z-10" />
       {/* Inner depth gradient */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.03)] to-transparent pointer-events-none z-10" />
 

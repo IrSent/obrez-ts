@@ -126,7 +126,7 @@ const PlaybackControlsInner = () => {
   return (
     <div className={`relative bg-zinc-800 rounded-2xl p-4 ${MODAL_SHADOW}`}>
       {/* 3D inner bevel — deeper for volume */}
-      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
+      <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.2)] pointer-events-none" />
       {/* Inner depth gradient */}
       <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
 
@@ -136,7 +136,7 @@ const PlaybackControlsInner = () => {
           .playback-carousel::-webkit-scrollbar { display: none; }
         `}</style>
         <div
-          className="playback-carousel overflow-x-auto rounded-xl bg-zinc-900/60 shadow-[inset_0_3px_8px_rgba(0,0,0,0.5)] -mx-2 -my-1 p-2"
+          className="playback-carousel overflow-x-auto rounded-xl bg-zinc-900/60 shadow-[inset_0_2px_5px_rgba(0,0,0,0.4)] -mx-2 -my-1 p-2"
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
         <div
