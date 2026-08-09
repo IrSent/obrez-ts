@@ -31,7 +31,7 @@ const PBtn = ({
 }) => (
   <button
     onClick={onClick}
-    className={`flex items-center justify-center gap-1 rounded-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold
+    className={`flex items-center justify-center gap-1 rounded-b-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold
       shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]
       ${
       disabled
