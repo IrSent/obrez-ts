@@ -176,23 +176,24 @@ const ActionButtonsInner = () => {
           {/* Inner depth gradient */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
 
-          <div className="flex items-stretch">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="video/*,video/x-matroska,video/mp2t,.ts,audio/*,audio/aac"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <RowBtn icon={<FileIcon />} label="Load" disabled={hasFile} onClick={triggerFileInput} />
-            <Divider />
-            <RowBtn icon={<UrlIcon />} label="URL" disabled={hasFile} onClick={handleUrlClick} />
-            <Divider />
-            <RowBtn icon={<UnloadIcon />} label="Unload" disabled={!hasFile} onClick={handleUnload} />
-            <Divider />
-            <RowBtn icon={<TranscribeIcon />} label="Transcribe" disabled={!hasFile} onClick={_handleTranscribe} />
-            <Divider />
-            <RowBtn icon={<DownloadIcon />} label="Export" disabled={!hasTranscription} onClick={() => { setExportError(null); setShowExportModal(true); }} />
+          <div className="rounded-xl bg-zinc-900/60 shadow-[inset_0_3px_8px_rgba(0,0,0,0.5)] -mx-1 p-1">
+            <div className="flex items-stretch">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/*,video/x-matroska,video/mp2t,.ts,audio/*,audio/aac"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <RowBtn icon={<FileIcon />} label="Load" disabled={hasFile} onClick={triggerFileInput} />
+              <Divider />
+              <RowBtn icon={<UrlIcon />} label="URL" disabled={hasFile} onClick={handleUrlClick} />
+              <Divider />
+              <RowBtn icon={<UnloadIcon />} label="Unload" disabled={!hasFile} onClick={handleUnload} />
+              <Divider />
+              <RowBtn icon={<TranscribeIcon />} label="Transcribe" disabled={!hasFile} onClick={_handleTranscribe} />
+              <Divider />
+              <RowBtn icon={<DownloadIcon />} label="Export" disabled={!hasTranscription} onClick={() => { setExportError(null); setShowExportModal(true); }} />
 
             {/* Export progress indicator */}
             {exporting && exportProgress && (
@@ -200,6 +201,7 @@ const ActionButtonsInner = () => {
                 ⟳ {exportProgress.phases.find((p: {status: string}) => p.status === 'active')?.pct ?? 0}%
               </span>
             )}
+          </div>
           </div>
 
           {/* Export error / progress detail */}
@@ -246,18 +248,19 @@ const ActionButtonsInner = () => {
           <div className="absolute inset-0 rounded-2xl border border-transparent border-t-[rgba(255,255,255,0.08)] border-b-[rgba(0,0,0,0.35)] pointer-events-none" />
           {/* Inner depth gradient */}
           <div className="absolute inset-0 rounded-2xl bg-gradient-to-b from-[rgba(255,255,255,0.04)] to-transparent pointer-events-none" />
-          <div className="flex items-stretch">
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept="video/*,video/x-matroska,video/mp2t,.ts,audio/*,audio/aac"
-              onChange={handleFileChange}
-              className="hidden"
-            />
-            <CompactBtn icon={<FileIcon />} label="Load" disabled={hasFile} onClick={triggerFileInput} />
-            <Divider />
-            <CompactBtn icon={<UrlIcon />} label="URL" disabled={hasFile} onClick={handleUrlClick} />
-            <Divider />
+          <div className="rounded-xl bg-zinc-900/60 shadow-[inset_0_3px_8px_rgba(0,0,0,0.5)] -mx-1 p-1">
+            <div className="flex items-stretch">
+              <input
+                ref={fileInputRef}
+                type="file"
+                accept="video/*,video/x-matroska,video/mp2t,.ts,audio/*,audio/aac"
+                onChange={handleFileChange}
+                className="hidden"
+              />
+              <CompactBtn icon={<FileIcon />} label="Load" disabled={hasFile} onClick={triggerFileInput} />
+              <Divider />
+              <CompactBtn icon={<UrlIcon />} label="URL" disabled={hasFile} onClick={handleUrlClick} />
+              <Divider />
             <CompactBtn icon={<UnloadIcon />} label="Unload" disabled={!hasFile} onClick={handleUnload} />
             <Divider />
             <CompactBtn icon={<TranscribeIcon />} label="Transcribe" disabled={!hasFile} onClick={_handleTranscribe} />
@@ -270,6 +273,7 @@ const ActionButtonsInner = () => {
                 ⟳ {exportProgress.phases.find((p: {status: string}) => p.status === 'active')?.pct ?? 0}%
               </span>
             )}
+          </div>
           </div>
         </div>
       )}
