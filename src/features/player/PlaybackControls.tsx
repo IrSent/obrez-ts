@@ -192,7 +192,6 @@ const PlaybackControlsInner = () => {
           <PBtn
             onClick={() => playerActions.setCensoringMode(!censoringMode)}
             disabled={!(censoringEffects && censoringEffects.length > 0)}
-            active={censoringMode}
             title={censoringMode ? 'Censoring ON — click to play original audio' : 'Censoring OFF — click to play with effects'}
           >
             ⚡ Censored <LedIndicator on={censoringMode} />
@@ -204,7 +203,6 @@ const PlaybackControlsInner = () => {
           <PBtn
             onClick={() => playerActions.toggleAutoScroll()}
             disabled={!(transcriptionResults && transcriptionResults.length > 0)}
-            active={autoScroll}
             title={autoScroll ? 'Auto-scroll to current segment (ON)' : 'Auto-scroll to current segment (OFF)'}
           >
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">

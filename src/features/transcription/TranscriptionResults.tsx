@@ -1185,7 +1185,7 @@ const TranscriptionResultsInner = () => {
         </BorderedSection>
       </div>
 
-      <div className="relative">
+      <div className="relative mt-8">
         {/* Folder-style tabs attached to the border */}
         <div className="absolute -top-[22px] left-3 flex gap-0.5 z-10">
           <WordsTab
