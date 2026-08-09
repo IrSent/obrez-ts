@@ -26,7 +26,7 @@ const ROW_HEIGHT = 36;
 const LIST_HEIGHT = 400;
 
 // ─── Shared border + subtitle section ────────────────────────────
-const BORDERED_SECTION = 'relative border border-zinc-600 rounded-xl p-3';
+const BORDERED_SECTION = 'relative border border-zinc-600 rounded-xl p-3 bg-zinc-900/30 shadow-[inset_0_2px_6px_rgba(0,0,0,0.3),inset_0_1px_2px_rgba(0,0,0,0.2)]';
 const SUBTITLE = 'absolute -top-[7px] right-3 bg-zinc-800 px-2 text-[10px] text-zinc-500 font-semibold uppercase tracking-wider';
 
 function BorderedSection({ title, children, className }: { title: string; children: React.ReactNode; className?: string }) {
