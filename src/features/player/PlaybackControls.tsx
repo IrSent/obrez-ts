@@ -100,25 +100,38 @@ const PlaybackControlsInner = () => {
   const { play, pause, seekToTime, getPlaybackTime } = useMediaPlayerContext();
   const [showSpeedMenu, setShowSpeedMenu] = useState(false);
 
-  // Find previous/next segment by start time relative to current playback time
+  // Find current segment, then navigate prev/next from there
   const seekToWord = (direction: 'prev' | 'next') => {
     if (!transcriptionResults || transcriptionResults.length === 0) return;
     const t = getPlaybackTime();
-    let idx = -1;
-    if (direction === 'next') {
-      // Find first segment with start > t
-      for (let i = 0; i < transcriptionResults.length; i++) {
-        if (transcriptionResults[i][0] > t) { idx = i; break; }
+
+    // Find the segment we're currently in (or the first one after t)
+    let currentIdx = -1;
+    for (let i = 0; i < transcriptionResults.length; i++) {
+      const [start, end] = transcriptionResults[i];
+      if (t >= start && t < end) {
+        currentIdx = i;
+        break;
       }
-      if (idx === -1) idx = transcriptionResults.length - 1; // last segment
-    } else {
-      // Find last segment with start <= t
-      for (let i = transcriptionResults.length - 1; i >= 0; i--) {
-        if (transcriptionResults[i][0] <= t) { idx = i; break; }
-      }
-      if (idx === -1) idx = 0; // first segment
     }
-    seekToTime(transcriptionResults[idx][0]);
+    if (currentIdx === -1) {
+      // Not in any segment — find first segment starting after t
+      for (let i = 0; i < transcriptionResults.length; i++) {
+        if (transcriptionResults[i][0] > t) {
+          currentIdx = i;
+          break;
+        }
+      }
+    }
+
+    let targetIdx = direction === 'next'
+      ? Math.min(transcriptionResults.length - 1, currentIdx + 1)
+      : Math.max(0, currentIdx - 1);
+
+    // If previous lands on the same segment (already at first), clamp
+    if (direction === 'prev' && targetIdx === currentIdx) targetIdx = 0;
+
+    seekToTime(transcriptionResults[targetIdx][0]);
   };
 
   const { ref: scrollRef } = useWheelScroll();
