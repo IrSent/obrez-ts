@@ -314,7 +314,7 @@ const EffectBadge = memo(({ effect, onRemove, onEdit }: {
   onEdit?: (effect: SoundCensoringEffect) => void;
 }) => {
   const bleepSounds = usePlayerStore((state) => state.bleepSounds);
-  const soundLabel = bleepSounds[effect.soundId]?.label ?? 'Unknown';
+  const soundLabel = bleepSounds[effect.soundId]?.label ?? (effect.soundId === 'silence' ? 'Silence' : 'Unknown');
   const volMode = (effect as any).volumeMode ?? 'manual';
 
   return (

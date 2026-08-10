@@ -216,9 +216,7 @@ const PlaybackControlsInner = () => {
           <Divider />
 
           {/* Volume */}
-          <div className="flex items-center flex-shrink-0 px-3">
-            <VolumeControls />
-          </div>
+          <VolumeControls />
 
           <Divider />
 
