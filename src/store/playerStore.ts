@@ -93,20 +93,35 @@ export const usePlayerStore = create<PlayerState>((set) => ({
 }));
 
 /**
+ * Built-in 'silence' sound — no audio buffer, just dampens original.
+ */
+export const SILENCE_BLEEP: BleepSound = {
+  id: 'silence',
+  label: 'Silence',
+  url: '',
+  dataUrl: '',
+  audioBuffer: null,
+};
+
+/**
+ * Initialize bleep sounds with built-in silence.
+ * Called on App startup — synchronous, no IndexedDB.
+ */
+export function initBleepSounds(): void {
+  usePlayerStore.setState((state) => ({
+    bleepSounds: { ...state.bleepSounds, silence: SILENCE_BLEEP },
+  }));
+}
+
+/**
  * Hydrate bleep sounds from IndexedDB on app start.
  */
 export async function hydrateBleepSounds(): Promise<void> {
   try {
     const records = await getAllBleepRecords();
     const sounds = recordsToSounds(records);
-    // Inject the built-in 'silence' sound — no audio buffer, just dampens original
-    sounds['silence'] = {
-      id: 'silence',
-      label: 'Silence',
-      url: '',
-      dataUrl: '',
-      audioBuffer: null,
-    };
+    // Inject the built-in 'silence' sound
+    sounds['silence'] = SILENCE_BLEEP;
     usePlayerStore.setState({ bleepSounds: sounds });
   } catch (err) {
     console.error('Failed to hydrate bleep sounds:', err);

@@ -9,7 +9,7 @@ import { TranscriptionResults } from './features/transcription/TranscriptionResu
 import { ImportProgressModal } from './features/transcription/ImportProgressModal';
 import { loadBackendUrl, backendPath, backendHeaders } from './config';
 import { SettingsContent } from './features/settings/SettingsContent';
-import { usePlayerStore, playerActions } from './store/playerStore';
+import { usePlayerStore, playerActions, initBleepSounds } from './store/playerStore';
 import { useAuthStore } from './store/authStore';
 import { FastAhoScanner } from './aho-corasick';
 
@@ -130,6 +130,9 @@ export const App = () => {
     if (savedAutoScroll !== null) {
       usePlayerStore.setState({ autoScroll: savedAutoScroll === 'true' });
     }
+
+    // Initialize built-in silence bleep sound
+    initBleepSounds();
   }, []);
 
   // OIDC callback: handle Telegram auth code after redirect

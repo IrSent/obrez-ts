@@ -57,11 +57,12 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
         const ctx = deps.audioContextRef.current;
         const gainNode = deps.gainNodeRef.current;
         if (!ctx || !gainNode) return;
-        const segmentDuration = segmentEnd - effect.startTime;
+        const spd = usePlayerStore.getState().playbackSpeed;
+        const segmentDuration = (segmentEnd - effect.segmentStart) / spd;
         const currentGain = gainNode.gain.value;
         const dampenedGain = currentGain * (1 - effect.dampenAmount);
-        gainNode.gain.setValueAtTime(dampenedGain, ctx.currentTime + effect.delay);
-        gainNode.gain.setValueAtTime(currentGain, ctx.currentTime + effect.delay + segmentDuration);
+        gainNode.gain.setValueAtTime(dampenedGain, ctx.currentTime);
+        gainNode.gain.setValueAtTime(currentGain, ctx.currentTime + segmentDuration);
       }
       return;
     }
