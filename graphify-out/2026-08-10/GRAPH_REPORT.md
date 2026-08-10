@@ -1,20 +1,21 @@
 # Graph Report - obrez-ts  (2026-08-10)
 
 ## Corpus Check
-- 96 files · ~134,540 words
+- 96 files · ~134,596 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
-- 601 nodes · 1003 edges · 63 communities (48 shown, 15 thin omitted)
+- 603 nodes · 1006 edges · 58 communities (43 shown, 15 thin omitted)
 - Extraction: 99% EXTRACTED · 1% INFERRED · 0% AMBIGUOUS · INFERRED: 11 edges (avg confidence: 0.88)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `07e929a8`
+- Built from commit: `a957aa28`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
+- [[_COMMUNITY_Community 0|Community 0]]
 - [[_COMMUNITY_Package Dependencies|Package Dependencies]]
 - [[_COMMUNITY_Dictionary + Aho-Corasick|Dictionary + Aho-Corasick]]
 - [[_COMMUNITY_Bleep Sounds + Icons|Bleep Sounds + Icons]]
@@ -53,13 +54,7 @@
 - [[_COMMUNITY_Community 54|Community 54]]
 - [[_COMMUNITY_Community 55|Community 55]]
 - [[_COMMUNITY_Community 56|Community 56]]
-- [[_COMMUNITY_Community 57|Community 57]]
-- [[_COMMUNITY_Community 58|Community 58]]
 - [[_COMMUNITY_Community 59|Community 59]]
-- [[_COMMUNITY_Community 60|Community 60]]
-- [[_COMMUNITY_Community 61|Community 61]]
-- [[_COMMUNITY_Community 62|Community 62]]
-- [[_COMMUNITY_Community 63|Community 63]]
 
 ## God Nodes (most connected - your core abstractions)
 1. `usePlayerStore` - 39 edges
@@ -95,15 +90,19 @@
 - **Volume Level Icon Set** — assets_volume_0_icon_speaker_only, assets_volume_1_icon_muted_cross, assets_volume_2_icon_low_volume, assets_volume_off_icon_high_volume, assets_volume_x_icon_muted_full [EXTRACTED 1.00]
 - **E2E Test Fixtures (audio-only profanity test + full video AAC test)** — e2e_ru_profanity, e2e_valid_with_aac [EXTRACTED 1.00]
 
-## Communities (63 total, 15 thin omitted)
+## Communities (58 total, 15 thin omitted)
+
+### Community 0 - "Community 0"
+Cohesion: 0.11
+Nodes (23): DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, audioBuffersToWav(), WavProgress (+15 more)
 
 ### Community 1 - "Package Dependencies"
 Cohesion: 0.05
 Nodes (40): author, bugs, url, dependencies, @fontsource-variable/rubik, mediabunny, node-web-audio-api, react (+32 more)
 
 ### Community 2 - "Dictionary + Aho-Corasick"
-Cohesion: 0.12
-Nodes (23): createSoundEffectsEngine(), SoundEffectsDeps, SoundEffectsEngine, FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords() (+15 more)
+Cohesion: 0.14
+Nodes (21): FastAhoScanner, DbRecord, dbUpdateUrl(), deleteBleepRecord(), getAllBleepRecords(), openDb(), putBleepRecord(), updateBleepLabel() (+13 more)
 
 ### Community 3 - "Bleep Sounds + Icons"
 Cohesion: 0.14
@@ -118,12 +117,12 @@ Cohesion: 0.12
 Nodes (16): compilerOptions, esModuleInterop, forceConsistentCasingInFileNames, jsx, lib, module, moduleResolution, outDir (+8 more)
 
 ### Community 6 - "Backend Config + Server"
-Cohesion: 0.05
-Nodes (57): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DEFAULT_DICTIONARIES, DictionaryManager, DictionaryManagerInner(), CODEC_LABELS (+49 more)
+Cohesion: 0.06
+Nodes (42): ActionButtons, MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), CODEC_LABELS, ExportButton, ExportButtonInner(), ExportFormat (+34 more)
 
 ### Community 7 - "Community 7"
-Cohesion: 0.07
-Nodes (15): useProposedTimeBlink(), ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps, TextView(), findClosestSegment() (+7 more)
+Cohesion: 0.08
+Nodes (12): ShieldButton, ShieldButtonProps, EffectBadge, EffectModal, EffectModalProps, TextView(), findClosestSegment(), parseStage() (+4 more)
 
 ### Community 9 - "Volume Icons"
 Cohesion: 0.80
@@ -171,7 +170,7 @@ Nodes (17): Ahead Rendering, Audio, audioProcess Callback, Boundary Computation,
 
 ### Community 50 - "Community 50"
 Cohesion: 0.11
-Nodes (12): HeaderExportButton, computeSegmentBoundaries(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects(), initProgress(), makeInitialPhases(), pickAudioCodec() (+4 more)
+Nodes (11): computeSegmentBoundaries(), ensureBleepDecoded(), exportCensoredVideo(), getSoundEffects(), initProgress(), makeInitialPhases(), pickAudioCodec(), pickVideoCodec() (+3 more)
 
 ### Community 51 - "Community 51"
 Cohesion: 0.12
@@ -189,53 +188,29 @@ Nodes (10): Build, Build process, Deploy, Dev server details, Development, Getti
 Cohesion: 0.20
 Nodes (9): Console Diagnostics, Diagnostic Hooks, Playwright Config, Running Tests, Test Fixtures, Test Suite, Testing Guide, `window.__audioDiagnostic` (+1 more)
 
-### Community 57 - "Community 57"
-Cohesion: 0.16
-Nodes (3): ConfirmationModal(), ConfirmationModalProps, formatDuration()
-
-### Community 58 - "Community 58"
-Cohesion: 0.13
-Nodes (9): ConfirmModal(), ConfirmModalProps, SettingsModal(), SettingsModalProps, TabKey, TABS, UserContentProps, VersionContentProps (+1 more)
-
 ### Community 59 - "Community 59"
-Cohesion: 0.12
-Nodes (10): DebugTab(), ErrorEntry, SettingsContent(), SettingsContentProps, TabKey, TABS, UserContentProps, VersionContentProps (+2 more)
-
-### Community 60 - "Community 60"
-Cohesion: 0.32
-Nodes (6): AuthActions, AuthState, AuthStore, AuthUser, FiatCurrency, PaymentInvoice
-
-### Community 61 - "Community 61"
-Cohesion: 0.33
-Nodes (10): ActionButtonsInner(), PaymentModal(), PaymentModalProps, TopupModal(), TopupModalProps, UserContent(), useAuthStore, canFreeTopup() (+2 more)
-
-### Community 62 - "Community 62"
-Cohesion: 0.47
-Nodes (5): HOUR_PACKS, HourPack, HourPackCard, HourPackCardProps, HourPackType
-
-### Community 63 - "Community 63"
-Cohesion: 0.43
-Nodes (5): LoginModal(), LoginModalProps, base64urlEncode(), generateCodeChallenge(), generateCodeVerifier()
+Cohesion: 0.05
+Nodes (48): ActionButtonsInner(), ConfirmationModal(), ConfirmationModalProps, formatDuration(), ConfirmModal(), ConfirmModalProps, LoginModal(), LoginModalProps (+40 more)
 
 ## Knowledge Gaps
-- **213 isolated node(s):** `SPEEDS`, `SegmentItem`, `rowRendererDeps`, `DEFAULT_DICTIONARIES`, `ConfirmModalProps` (+208 more)
+- **214 isolated node(s):** `DEFAULT_DICTIONARIES`, `SoundEffectsDeps`, `SoundEffectsEngine`, `SILENCE_BLEEP`, `SPEEDS` (+209 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `usePlayerStore` connect `Backend Config + Server` to `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 57`, `Community 59`, `Community 61`?**
+- **Why does `usePlayerStore` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Bleep Sounds + Icons`, `Community 7`, `Community 50`, `Community 59`?**
   _High betweenness centrality (0.033) - this node is a cross-community bridge._
-- **Why does `playerActions` connect `Backend Config + Server` to `Dictionary + Aho-Corasick`, `Community 7`, `Community 50`, `Community 57`, `Community 58`, `Community 59`?**
+- **Why does `playerActions` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Community 7`, `Community 50`, `Community 59`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `SPEEDS`, `SegmentItem`, `rowRendererDeps` to the rest of the system?**
-  _213 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `DEFAULT_DICTIONARIES`, `SoundEffectsDeps`, `SoundEffectsEngine` to the rest of the system?**
+  _214 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `Community 0` be split into smaller, more focused modules?**
+  _Cohesion score 0.11491935483870967 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
   _Cohesion score 0.04878048780487805 - nodes in this community are weakly interconnected._
 - **Should `Dictionary + Aho-Corasick` be split into smaller, more focused modules?**
-  _Cohesion score 0.125 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.1425287356321839 - nodes in this community are weakly interconnected._
 - **Should `Bleep Sounds + Icons` be split into smaller, more focused modules?**
   _Cohesion score 0.14153846153846153 - nodes in this community are weakly interconnected._
-- **Should `Community 4` be split into smaller, more focused modules?**
-  _Cohesion score 0.06666666666666667 - nodes in this community are weakly interconnected._

@@ -570,6 +570,7 @@ const TranscriptionResultsInner = () => {
 
   const handleRemoveEffect = (id: string) => {
     actions.removeSoundEffect(id);
+    setEditEffect(null); // close modal if open
   };
 
   // JSON export / import
