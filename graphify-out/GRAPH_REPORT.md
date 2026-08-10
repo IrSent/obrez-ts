@@ -1,7 +1,7 @@
 # Graph Report - obrez-ts  (2026-08-10)
 
 ## Corpus Check
-- 96 files · ~134,625 words
+- 96 files · ~134,631 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `6a884ebc`
+- Built from commit: `42479d79`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -193,7 +193,7 @@ Cohesion: 0.05
 Nodes (48): ActionButtonsInner(), ConfirmationModal(), ConfirmationModalProps, formatDuration(), ConfirmModal(), ConfirmModalProps, LoginModal(), LoginModalProps (+40 more)
 
 ## Knowledge Gaps
-- **214 isolated node(s):** `SPEEDS`, `DEFAULT_DICTIONARIES`, `SoundEffectsDeps`, `SoundEffectsEngine`, `SILENCE_BLEEP` (+209 more)
+- **214 isolated node(s):** `SegmentItem`, `rowRendererDeps`, `SPEEDS`, `DEFAULT_DICTIONARIES`, `SoundEffectsDeps` (+209 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -204,7 +204,7 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.033) - this node is a cross-community bridge._
 - **Why does `playerActions` connect `Backend Config + Server` to `Community 0`, `Dictionary + Aho-Corasick`, `Community 7`, `Community 50`, `Community 59`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `SPEEDS`, `DEFAULT_DICTIONARIES`, `SoundEffectsDeps` to the rest of the system?**
+- **What connects `SegmentItem`, `rowRendererDeps`, `SPEEDS` to the rest of the system?**
   _214 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.11491935483870967 - nodes in this community are weakly interconnected._
