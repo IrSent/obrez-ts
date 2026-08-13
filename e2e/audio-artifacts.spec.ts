@@ -30,7 +30,7 @@ test('audio artifacts at all speeds', async ({ page }) => {
 
   await page.goto('/');
   const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Load File' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles('e2e/valid-with-aac.mp4');
   const durationText = page.locator('span.text-xs.opacity-60').last();
@@ -45,7 +45,8 @@ test('audio artifacts at all speeds', async ({ page }) => {
       await page.locator('canvas[aria-label="Video canvas"]').hover();
       await page.waitForTimeout(300);
       await page.getByRole('button', { name: prevSpeedLabel }).click();
-      await page.waitForTimeout(300);
+      // Wait for speed menu to appear
+      await page.getByRole('button', { name: key }).waitFor({ state: 'visible', timeout: 5000 });
       await page.getByRole('button', { name: key }).click();
       await page.waitForTimeout(WARMUP);
       prevSpeedLabel = key;

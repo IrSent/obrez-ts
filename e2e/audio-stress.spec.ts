@@ -23,17 +23,18 @@ test.describe('Audio Stress Test', () => {
 
     await page.goto('/');
     const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Load File' }).click();
+    await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles('e2e/ru-profanity3.mp4');
     const durationText = page.locator('span.text-xs.opacity-60').last();
     await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15_000 });
 
-    // Switch to 2x
+    // Switch to 2x — click speed button, wait for menu, then select
     await page.locator('canvas[aria-label="Video canvas"]').hover();
     await page.waitForTimeout(300);
     await page.getByRole('button', { name: '1x' }).click();
-    await page.waitForTimeout(300);
+    // Wait for speed menu to appear
+    await page.getByRole('button', { name: '2x' }).waitFor({ state: 'visible', timeout: 5000 });
     await page.getByRole('button', { name: '2x' }).click();
     await page.waitForTimeout(2_000); // wait for transition
 

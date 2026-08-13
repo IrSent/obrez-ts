@@ -11,6 +11,16 @@ test('login redirects to Telegram OIDC, no popup', async ({ page }) => {
   await page.goto('/');
   await page.waitForLoadState('networkidle');
 
+  // Load a file first — Transcribe button requires a file
+  const fileChooserPromise = page.waitForEvent('filechooser');
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
+  const fileChooser = await fileChooserPromise;
+  await fileChooser.setFiles('e2e/valid-with-aac.mp4');
+
+  // Wait for duration to be computed
+  const durationText = page.locator('span.text-xs.opacity-60').last();
+  await expect(durationText).not.toHaveText(/^00:00/, { timeout: 15_000 });
+
   // Click Transcribe to trigger login modal
   await page.click('button:has-text("Transcribe")');
   const signInBtn = page.getByRole('button', { name: 'Sign in with Telegram' });

@@ -24,7 +24,7 @@ function parseTime(text: string | null): number {
 
 async function loadFile(page: import('@playwright/test').Page, file: string) {
   const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Load File' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fc = await fileChooserPromise;
   await fc.setFiles(`e2e/${file}`);
   const dur = page.locator('span.text-xs.opacity-60').last();
@@ -142,7 +142,8 @@ test.describe('Sequential Playback — No Overlap', () => {
     await page.locator('canvas[aria-label="Video canvas"]').hover();
     await page.waitForTimeout(300);
     await page.getByRole('button', { name: '1x' }).click();
-    await page.waitForTimeout(300);
+    // Wait for speed menu to appear
+    await page.getByRole('button', { name: '2x' }).waitFor({ state: 'visible', timeout: 5000 });
     await page.getByRole('button', { name: '2x' }).click();
 
     // Bootstrap + settle
@@ -203,7 +204,7 @@ test.describe('Sequential Playback — No Overlap', () => {
     await page.waitForTimeout(1000);
 
     // Seek к ~10s
-    const progressBar = page.locator('input[type="range"]').first();
+    const progressBar = page.getByRole('progressbar', { name: 'Playback progress' });
     const box = await progressBar.boundingBox();
     if (box) {
       const seekX = box.x + box.width * 0.04;
@@ -237,7 +238,7 @@ test.describe('Sequential Playback — No Overlap', () => {
     await page.locator('canvas[aria-label="Video canvas"]').hover();
     await page.waitForTimeout(300);
     await page.getByRole('button', { name: '1x' }).click();
-    await page.waitForTimeout(300);
+    await page.getByRole('button', { name: '2x' }).waitFor({ state: 'visible', timeout: 5000 });
     await page.getByRole('button', { name: '2x' }).click();
     await page.waitForTimeout(3000);
 
@@ -254,7 +255,7 @@ test.describe('Sequential Playback — No Overlap', () => {
     await page.locator('canvas[aria-label="Video canvas"]').hover();
     await page.waitForTimeout(300);
     await page.getByRole('button', { name: '2x' }).click();
-    await page.waitForTimeout(300);
+    await page.getByRole('button', { name: '1x' }).waitFor({ state: 'visible', timeout: 5000 });
     await page.getByRole('button', { name: '1x' }).click();
     await page.waitForTimeout(2000);
 

@@ -305,32 +305,41 @@ export function useMediaPlayer() {
     audioContextRef,
     gainNodeRef,
     queuedAudioNodesRef,
+    playbackSpeedRef,
   });
 
-  // === updateNextFrame — как в оригинале, без мютекса ===
+  // === updateNextFrame — mutex prevents concurrent calls from rAF + fallback ===
+  const updateNextFrameMutexRef = useRef<boolean>(false);
+
   const updateNextFrameRef = useRef(async () => {
-    const currentAsyncId = asyncIdRef.current;
+    if (updateNextFrameMutexRef.current) return;
+    updateNextFrameMutexRef.current = true;
+    try {
+      const currentAsyncId = asyncIdRef.current;
 
-    while (true) {
-      const iterator = videoFrameIteratorRef.current;
-      if (!iterator) break;
+      while (true) {
+        const iterator = videoFrameIteratorRef.current;
+        if (!iterator) break;
 
-      const newNextFrame = (await iterator.next()).value ?? null;
-      if (!newNextFrame) break;
+        const newNextFrame = (await iterator.next()).value ?? null;
+        if (!newNextFrame) break;
 
-      if (currentAsyncId !== asyncIdRef.current) break;
+        if (currentAsyncId !== asyncIdRef.current) break;
 
-      // Don't draw frames during 'transitioning' — audio isn't ready yet,
-      // so drawing would make video get ahead of audio (seek lag).
-      if (playbackStateRef.current === 'transitioning') break;
+        // Don't draw frames during 'transitioning' — audio isn't ready yet,
+        // so drawing would make video get ahead of audio (seek lag).
+        if (playbackStateRef.current === 'transitioning') break;
 
-      const playbackTime = utilsRef.current.getPlaybackTime();
-      if (newNextFrame.timestamp <= playbackTime) {
-        utilsRef.current.drawFrame(newNextFrame);
-      } else {
-        nextFrameRef.current = newNextFrame;
-        break;
+        const playbackTime = utilsRef.current.getPlaybackTime();
+        if (newNextFrame.timestamp <= playbackTime) {
+          utilsRef.current.drawFrame(newNextFrame);
+        } else {
+          nextFrameRef.current = newNextFrame;
+          break;
+        }
       }
+    } finally {
+      updateNextFrameMutexRef.current = false;
     }
   });
 
@@ -350,10 +359,10 @@ export function useMediaPlayer() {
     // so drawing would make video get ahead of audio (seek lag).
     // The rAF loop will draw these frames once state becomes 'playing'.
     if (playbackStateRef.current !== 'transitioning') {
-      nextFrameRef.current = secondFrame;
       if (firstFrame) {
         utilsRef.current.drawFrame(firstFrame);
       }
+      nextFrameRef.current = secondFrame;
     } else {
       // During transitioning, put first frame as nextFrame so the rAF
       // loop can draw it at the right time once audio is ready.
@@ -410,12 +419,17 @@ export function useMediaPlayer() {
     // The bridge silence (started before stopAudio) keeps PhaseVocoderNode fed.
     // FIX: 500ms timeout on return() — MediaBunny's return() may not propagate
     // to a consumer stuck in backpressure await.
+    // FIX: guard against return() throwing (MediaBunny resource pool exhausted).
     if (audioBufferIteratorRef.current) {
-      const returnPromise = audioBufferIteratorRef.current.return();
-      const timeoutPromise = new Promise(r => setTimeout(r, 500));
-      const result = await Promise.race([returnPromise, timeoutPromise]);
-      if (result === undefined && audioBufferIteratorRef.current) {
-        console.warn('[audio] stopAudio: iterator.return() timed out after 500ms');
+      try {
+        const returnPromise = audioBufferIteratorRef.current.return();
+        const timeoutPromise = new Promise(r => setTimeout(r, 500));
+        const result = await Promise.race([returnPromise, timeoutPromise]);
+        if (result === undefined && audioBufferIteratorRef.current) {
+          console.warn('[audio] stopAudio: iterator.return() timed out after 500ms');
+        }
+      } catch (e) {
+        console.error('[audio] stopAudio: iterator.return() threw:', e);
       }
       audioBufferIteratorRef.current = null;
 
@@ -721,7 +735,8 @@ export function useMediaPlayer() {
   // === rAF-цикл — работает ВСЕГДА, никогда не останавливается ===
   useEffect(() => {
     const renderLoop = () => {
-      const state = usePlayerStore.getState();
+      try {
+        const state = usePlayerStore.getState();
 
       if (state.fileName) {
         const playbackTime = utilsRef.current.getPlaybackTime();
@@ -738,7 +753,8 @@ export function useMediaPlayer() {
         // immediately while audio is still starting up → video ahead of audio.
         const isTransitioning = playbackStateRef.current === 'transitioning';
         if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
-          utilsRef.current.drawFrame(nextFrameRef.current);
+          const frame = nextFrameRef.current;
+          utilsRef.current.drawFrame(frame);
           nextFrameRef.current = null;
           void updateNextFrameRef.current();
         }
@@ -746,10 +762,25 @@ export function useMediaPlayer() {
         utilsRef.current.updateProgressBarTime(playbackTime);
 
         // Check and trigger sound effects
-        soundEffects.checkSoundEffects(playbackTime);
+        try {
+          soundEffects.checkSoundEffects(playbackTime);
+        } catch (e) {
+          console.error('[rAF] checkSoundEffects error:', e);
+          if (typeof (window as any).__obrezShowError === 'function') {
+            (window as any).__obrezShowError('Effects', String(e), (e as Error)?.stack);
+          }
+        }
       }
 
       playLoopRef.current = requestAnimationFrame(renderLoop);
+    } catch (e) {
+      console.error('[rAF] renderLoop error:', e);
+      if (typeof (window as any).__obrezShowError === 'function') {
+        (window as any).__obrezShowError('rAF Loop', String(e), (e as Error)?.stack);
+      }
+      playLoopRef.current = requestAnimationFrame(renderLoop);
+      return;
+    }
     };
 
     playLoopRef.current = requestAnimationFrame(renderLoop);
@@ -757,17 +788,26 @@ export function useMediaPlayer() {
     // Also call render on an interval to keep updating even if the tab isn't visible
     // (as in the original MediaBunny example)
     const fallbackInterval = setInterval(() => {
-      const state = usePlayerStore.getState();
-      if (state.fileName) {
-        const playbackTime = utilsRef.current.getPlaybackTime();
-        const isTransitioning = playbackStateRef.current === 'transitioning';
-        if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
-          utilsRef.current.drawFrame(nextFrameRef.current);
-          nextFrameRef.current = null;
-          void updateNextFrameRef.current();
+      try {
+        const state = usePlayerStore.getState();
+        if (state.fileName) {
+          const playbackTime = utilsRef.current.getPlaybackTime();
+          const isTransitioning = playbackStateRef.current === 'transitioning';
+          if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
+            const frame = nextFrameRef.current;
+            utilsRef.current.drawFrame(frame);
+            nextFrameRef.current = null;
+            void updateNextFrameRef.current();
+          }
+          utilsRef.current.updateProgressBarTime(playbackTime);
+          try {
+            soundEffects.checkSoundEffects(playbackTime);
+          } catch (e) {
+            console.error('[fallback] checkSoundEffects error:', e);
+          }
         }
-        utilsRef.current.updateProgressBarTime(playbackTime);
-        soundEffects.checkSoundEffects(playbackTime);
+      } catch (e) {
+        console.error('[fallback] interval error:', e);
       }
     }, 500);
 
@@ -795,6 +835,7 @@ export function useMediaPlayer() {
       analyserRef,
       bypassGainRef,
       stGainRef,
+      gainNodeRef,
     });
     return stop;
   }, []);
@@ -1154,6 +1195,17 @@ export function useMediaPlayer() {
       }
     } catch (e) {
       // Итератор остановлен (pause) — нормально
+      // But if it's a MediaBunny resource error, report it and pause playback.
+      if (e && typeof e === 'object' && 'message' in e && String(e.message).includes('can not be found')) {
+        console.error('[audio] MediaBunny iterator resource error:', e);
+        if (typeof (window as any).__obrezShowError === 'function') {
+          (window as any).__obrezShowError('Audio', `MediaBunny iterator error: ${e.message}`, (e as Error)?.stack);
+        }
+        // Pause playback to prevent video freeze — audio is broken.
+        playbackStateRef.current = 'paused';
+        playerActions.setIsPlaying(false);
+        playerActions.setError('Audio playback failed — try reloading the file');
+      }
     } finally {
       runAudioIteratorLockRef.current = false;
     }
@@ -1523,12 +1575,26 @@ export function useMediaPlayer() {
     await stopAudioRef.current();
     playbackStateRef.current = 'idle';
 
-    void videoFrameIteratorRef.current?.return();
+    try {
+      void videoFrameIteratorRef.current?.return();
+    } catch {}
     videoFrameIteratorRef.current = null;
 
-    // Clear canvas so the last frame doesn't linger
+    // Close any lingering VideoSample to prevent GC warnings
+    nextFrameRef.current = null;
+
+    // Clear canvas so the last frame doesn't linger (before nulling context)
     if (canvasRef.current && canvasCtxRef.current) {
       canvasCtxRef.current.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
+    canvasCtxRef.current = null;
+
+    // Dispose MediaBunny Input to release internal resources
+    if (inputRef.current) {
+      try {
+        inputRef.current.dispose();
+      } catch {}
+      inputRef.current = null;
     }
 
     if (audioContextRef.current) {

@@ -22,7 +22,7 @@ test('import JSON and export censored video', async ({ page }) => {
 
   // Load video
   const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Load File' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles('e2e/ru-profanity3.mp4');
 

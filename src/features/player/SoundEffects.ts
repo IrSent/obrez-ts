@@ -11,6 +11,7 @@ export interface SoundEffectsDeps {
   audioContextRef: React.RefObject<AudioContext | null>;
   gainNodeRef: React.RefObject<GainNode | null>;
   queuedAudioNodesRef: React.RefObject<Set<AudioBufferSourceNode>>;
+  playbackSpeedRef: React.RefObject<number>;
 }
 
 /**
@@ -54,11 +55,11 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
     // 'silence' — no audio to play, only dampen original
     if (effect.soundId === 'silence') {
       if (effect.dampenOriginal) {
-        const ctx = deps.audioContextRef.current;
-        const gainNode = deps.gainNodeRef.current;
-        if (!ctx || !gainNode) return;
-        const spd = usePlayerStore.getState().playbackSpeed;
+        const spd = deps.playbackSpeedRef.current;
         const segmentDuration = (segmentEnd - effect.segmentStart) / spd;
+        // Use nominal gain — the "intended" volume level, ignoring automation
+        // from other effects. For non-overlapping effects (the common case),
+        // this is correct: each effect dampens from nominal and restores to nominal.
         const currentGain = gainNode.gain.value;
         const dampenedGain = currentGain * (1 - effect.dampenAmount);
         gainNode.gain.setValueAtTime(dampenedGain, ctx.currentTime);
@@ -90,7 +91,7 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
       const currentGain = gainNode.gain.value;
       const dampenedGain = currentGain * (1 - effect.dampenAmount);
       // Convert media-time segment duration to wall-clock duration
-      const spd = usePlayerStore.getState().playbackSpeed;
+      const spd = deps.playbackSpeedRef.current;
       const segmentDuration = (segmentEnd - effect.segmentStart) / spd;
 
       if (effect.dampenType === 'sharp') {

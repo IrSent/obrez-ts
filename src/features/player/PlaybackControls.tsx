@@ -1,4 +1,4 @@
-import { memo, useEffect, useRef, useState } from 'react';
+import { memo, useEffect, useRef, useState, createPortal } from 'react';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { VolumeControls } from './VolumeControls';
@@ -240,30 +240,35 @@ const PlaybackControlsInner = () => {
               active={playbackSpeed !== 1}
               title={`Playback speed: ${playbackSpeed}x`}
             >
-              {playbackSpeed}x <ChevronDownIcon />
+              {playbackSpeed}x
+              <ChevronDownIcon />
             </PBtn>
-            {showSpeedMenu && (
-              <div className="absolute bottom-full right-0 mb-1 bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1 z-20">
-                {SPEEDS.map((s) => (
-                  <button
-                    key={s}
-                    onClick={() => {
-                      playerActions.setPlaybackSpeed(s);
-                      setShowSpeedMenu(false);
-                    }}
-                    className={`block w-full text-left px-3 py-1 text-xs transition-colors ${
-                      s === playbackSpeed
-                        ? 'bg-purple-600 text-white'
-                        : 'text-zinc-200 hover:bg-zinc-700'
-                    }`}
-                  >
-                    {s}x
-                  </button>
-                ))}
-              </div>
+            {/* Portal to escape overflow-x-auto carousel clipping */}
+            {showSpeedMenu && createPortal(
+              <div className="fixed bottom-10 right-4 z-50">
+                <div className="bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1">
+                  {SPEEDS.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => {
+                        playerActions.setPlaybackSpeed(s);
+                        setShowSpeedMenu(false);
+                      }}
+                      className={`block w-full text-left px-3 py-1 text-xs transition-colors ${
+                        s === playbackSpeed
+                          ? 'bg-purple-600 text-white'
+                          : 'text-zinc-200 hover:bg-zinc-700'
+                      }`}
+                    >
+                      {s}x
+                    </button>
+                  ))}
+                </div>
+              </div>,
+              document.body,
             )}
-          </div>
 
+        </div>
         </div>
         </div>
         </div>

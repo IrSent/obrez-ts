@@ -31,7 +31,7 @@ async function waitForDiagnostic(page: import('@playwright/test').Page): Promise
 // Shared helper to load a file
 async function loadFile(page: import('@playwright/test').Page, file: string) {
   const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Load File' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles(`e2e/${file}`);
   const durationText = page.locator('span.text-xs.opacity-60').last();
@@ -156,6 +156,7 @@ test.describe('Pause → Play Diagnostic', () => {
     await page.locator('canvas[aria-label="Video canvas"]').hover();
     await page.waitForTimeout(300);
     await page.getByRole('button', { name: '1x' }).click();
+    await page.getByRole('button', { name: '1.5x' }).waitFor({ state: 'visible', timeout: 5000 });
     await page.getByRole('button', { name: '1.5x' }).click();
     await page.waitForTimeout(2000);
 

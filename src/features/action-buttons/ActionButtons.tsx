@@ -189,11 +189,11 @@ const ActionButtonsInner = () => {
               <Divider />
               <RowBtn icon={<UrlIcon />} label="URL" disabled={hasFile} onClick={handleUrlClick} />
               <Divider />
-              <RowBtn icon={<UnloadIcon />} label="Unload" disabled={!hasFile} onClick={handleUnload} />
-              <Divider />
               <RowBtn icon={<TranscribeIcon />} label="Transcribe" disabled={!hasFile} onClick={_handleTranscribe} />
               <Divider />
               <RowBtn icon={<DownloadIcon />} label="Export" disabled={!hasTranscription} onClick={() => { setExportError(null); setShowExportModal(true); }} />
+              <Divider />
+              <RowBtn icon={<UnloadIcon />} label="Unload" disabled={!hasFile} onClick={handleUnload} />
 
             {/* Export progress indicator */}
             {exporting && exportProgress && (

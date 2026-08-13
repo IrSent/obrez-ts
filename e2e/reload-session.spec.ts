@@ -10,7 +10,7 @@ function parseTime(text: string | null): number {
 
 async function loadFile(page: import('@playwright/test').Page) {
   const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Load File' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles('e2e/valid-with-aac.mp4');
   const durationText = page.locator('span.text-xs.opacity-60').last();
@@ -60,7 +60,7 @@ test.describe('Reload session restore', () => {
     await page.waitForTimeout(3000);
 
     // "Load File" button should be visible
-    await expect(page.getByRole('button', { name: 'Load File' })).toBeVisible();
+    await expect(page.getByRole('button', { name: 'Load', exact: true })).toBeVisible();
 
     // Canvas should be fully blank
     const canvasCheck = await page.evaluate(() => {

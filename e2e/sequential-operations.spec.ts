@@ -22,7 +22,7 @@ async function checkNoMultipleStreams(page: import('@playwright/test').Page): Pr
 
 async function loadFile(page: import('@playwright/test').Page) {
   const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Load File' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles('e2e/valid-with-aac.mp4');
   const durationText = page.locator('span.text-xs.opacity-60').last();

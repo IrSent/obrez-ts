@@ -15,6 +15,7 @@ declare global {
       analyserRms: number;
       bypassGain: number | null;
       stGain: number | null;
+      gainNode: number | null;
     };
   }
 }
@@ -29,6 +30,7 @@ export interface AudioDiagnosticDeps {
   analyserRef: React.RefObject<AnalyserNode | null>;
   bypassGainRef: React.RefObject<GainNode | null>;
   stGainRef: React.RefObject<GainNode | null>;
+  gainNodeRef: React.RefObject<GainNode | null>;
 }
 
 /**
@@ -47,6 +49,7 @@ export function startAudioDiagnostic(deps: AudioDiagnosticDeps): () => void {
     analyserRef,
     bypassGainRef,
     stGainRef,
+    gainNodeRef,
   } = deps;
 
   const id = setInterval(() => {
@@ -90,6 +93,8 @@ export function startAudioDiagnostic(deps: AudioDiagnosticDeps): () => void {
       // Expose gain routing to detect dual-path overlap
       bypassGain: bypassGainRef.current?.gain.value ?? null,
       stGain: stGainRef.current?.gain.value ?? null,
+      // Expose master gain for silence effect checks
+      gainNode: gainNodeRef.current?.gain.value ?? null,
     };
   }, 100);
 

@@ -14,7 +14,7 @@ test.describe('Video Playback', () => {
 
     // 1. Click "Load File" to open the file picker
     const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Load File' }).click();
+    await page.getByRole('button', { name: 'Load', exact: true }).click();
     const fileChooser = await fileChooserPromise;
 
     // 2. Set the test video file
@@ -54,7 +54,7 @@ test.describe('Video Playback', () => {
     await page.goto('/');
 
     const fileChooserPromise = page.waitForEvent('filechooser');
-    await page.getByRole('button', { name: 'Load File' }).click();
+    await page.getByRole('button', { name: 'Load', exact: true }).click();
     const fileChooser = await fileChooserPromise;
     await fileChooser.setFiles('e2e/valid-with-aac.mp4');
 

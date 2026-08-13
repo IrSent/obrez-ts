@@ -22,7 +22,7 @@ async function checkNoMultipleStreams(page: import('@playwright/test').Page): Pr
 
 async function loadFile(page: import('@playwright/test').Page) {
   const fileChooserPromise = page.waitForEvent('filechooser');
-  await page.getByRole('button', { name: 'Load File' }).click();
+  await page.getByRole('button', { name: 'Load', exact: true }).click();
   const fileChooser = await fileChooserPromise;
   await fileChooser.setFiles('e2e/valid-with-aac.mp4');
   const durationText = page.locator('span.text-xs.opacity-60').last();
@@ -75,7 +75,7 @@ test.describe('Multi-segment race condition', () => {
 
     // Play + Seek simultaneously
     await page.evaluate(async () => {
-      const playButton = document.querySelector('[aria-label="Play"]');
+      const playButton = document.querySelector('button img[alt="Play"]')?.closest('button');
       const progressBar = document.querySelector('[role="progressbar"]');
       Promise.all([
         new Promise<void>(resolve => {
