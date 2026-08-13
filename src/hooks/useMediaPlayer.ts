@@ -338,6 +338,9 @@ export function useMediaPlayer() {
           break;
         }
       }
+    } catch (e) {
+      console.error('[video] updateNextFrame threw:', e);
+      console.error('[video] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
     } finally {
       updateNextFrameMutexRef.current = false;
     }
@@ -347,6 +350,7 @@ export function useMediaPlayer() {
   const startVideoIteratorRef = useRef(async () => {
     if (!videoSinkRef.current) return;
 
+    try {
     asyncIdRef.current++;
     await videoFrameIteratorRef.current?.return();
 
@@ -367,6 +371,13 @@ export function useMediaPlayer() {
       // During transitioning, put first frame as nextFrame so the rAF
       // loop can draw it at the right time once audio is ready.
       nextFrameRef.current = firstFrame ?? secondFrame;
+    }
+    } catch (e) {
+      console.error('[video] startVideoIterator threw:', e);
+      console.error('[video] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
+      if (typeof (window as any).__obrezShowError === 'function') {
+        (window as any).__obrezShowError('Video', `startVideoIterator error: ${e instanceof Error ? e.message : String(e)}`, (e as Error)?.stack);
+      }
     }
   });
 
@@ -430,6 +441,7 @@ export function useMediaPlayer() {
         }
       } catch (e) {
         console.error('[audio] stopAudio: iterator.return() threw:', e);
+        console.error('[audio] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
       }
       audioBufferIteratorRef.current = null;
 
@@ -500,7 +512,7 @@ export function useMediaPlayer() {
       console.warn('[audio] startAudio aborted: iterator already running');
       return; // already running
     }
-
+    try {
     const ctx = audioContextRef.current;
     const speed = playbackSpeedRef.current;
 
@@ -587,6 +599,14 @@ export function useMediaPlayer() {
     await firstBufferReady;
 
     console.log('[audio] startAudio done');
+    } catch (e) {
+      console.error('[audio] startAudio threw:', e);
+      console.error('[audio] Stack trace:', (e as Error).stack || new Error().stack);
+      if (typeof (window as any).__obrezShowError === 'function') {
+        (window as any).__obrezShowError('Audio', `startAudio error: ${e instanceof Error ? e.message : String(e)}`, (e as Error)?.stack);
+      }
+      throw e;
+    }
   };
 
   // Keep refs in sync so transitionRef + speed subscriber always call the latest.
@@ -726,6 +746,7 @@ export function useMediaPlayer() {
       // If something went wrong and state is still 'transitioning', reset to paused.
       if (playbackStateRef.current === 'transitioning') {
         console.warn('[audio] transition failed: state is still transitioning, resetting to paused');
+        console.warn('[audio] transition failed stack:', new Error().stack);
         playbackStateRef.current = 'paused';
         playerActions.setIsPlaying(false);
       }
@@ -775,6 +796,7 @@ export function useMediaPlayer() {
       playLoopRef.current = requestAnimationFrame(renderLoop);
     } catch (e) {
       console.error('[rAF] renderLoop error:', e);
+      console.error('[rAF] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
       if (typeof (window as any).__obrezShowError === 'function') {
         (window as any).__obrezShowError('rAF Loop', String(e), (e as Error)?.stack);
       }
@@ -808,6 +830,7 @@ export function useMediaPlayer() {
         }
       } catch (e) {
         console.error('[fallback] interval error:', e);
+        console.error('[fallback] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
       }
     }, 500);
 
@@ -1198,6 +1221,7 @@ export function useMediaPlayer() {
       // But if it's a MediaBunny resource error, report it and pause playback.
       if (e && typeof e === 'object' && 'message' in e && String(e.message).includes('can not be found')) {
         console.error('[audio] MediaBunny iterator resource error:', e);
+        console.error('[audio] Stack trace:', (e as Error).stack || new Error().stack);
         if (typeof (window as any).__obrezShowError === 'function') {
           (window as any).__obrezShowError('Audio', `MediaBunny iterator error: ${e.message}`, (e as Error)?.stack);
         }
@@ -1244,6 +1268,7 @@ export function useMediaPlayer() {
       await transitionRef.current('playing');
     } catch (error) {
       console.error('Playback error:', error);
+      console.error('Playback stack:', error instanceof Error ? error.stack : new Error().stack);
       playerActions.setError(error instanceof Error ? error.message : 'Playback failed');
     }
   }, []);
@@ -1267,6 +1292,7 @@ export function useMediaPlayer() {
       await transitionRef.current(wasPlaying ? 'playing' : 'paused', seconds);
     } catch (error) {
       console.error('Seek error:', error);
+      console.error('Seek stack:', error instanceof Error ? error.stack : new Error().stack);
       playerActions.setError(error instanceof Error ? error.message : 'Seek failed');
     }
   }, []);
@@ -1559,6 +1585,7 @@ export function useMediaPlayer() {
       }
     } catch (error) {
       console.error('Error initializing media player:', error);
+      console.error('Init stack:', error instanceof Error ? error.stack : new Error().stack);
       playerActions.setError(error instanceof Error ? error.message : 'Failed to load media');
     }
   }, []);
