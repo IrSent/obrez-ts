@@ -44,6 +44,7 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
   function triggerSoundEffect(
     effect: SoundCensoringEffect,
     segmentEnd: number,
+    pvnLatency: number,
   ): void {
     const ctx = deps.audioContextRef.current;
     const gainNode = deps.gainNodeRef.current;
@@ -52,18 +53,25 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
     const sound = usePlayerStore.getState().bleepSounds[effect.soundId];
     if (!sound) return;
 
+    const spd = deps.playbackSpeedRef.current;
+
     // 'silence' — no audio to play, only dampen original
     if (effect.soundId === 'silence') {
       if (effect.dampenOriginal) {
-        const spd = deps.playbackSpeedRef.current;
-        const segmentDuration = (segmentEnd - effect.segmentStart) / spd;
+        // The trigger fires early (pvnLatency before word start) so the
+        // PhaseVocoderNode doesn't let the word through before dampening.
+        // But silence itself must cover exactly the word: start→end.
+        // Audio at media time `start` reaches the gain node
+        // `pvnLatency / spd` wall-clock seconds after trigger.
+        const silenceStartDelay = pvnLatency / spd;
+        const wordDuration = (segmentEnd - effect.segmentStart) / spd;
         // Use nominal gain — the "intended" volume level, ignoring automation
         // from other effects. For non-overlapping effects (the common case),
         // this is correct: each effect dampens from nominal and restores to nominal.
         const currentGain = gainNode.gain.value;
         const dampenedGain = currentGain * (1 - effect.dampenAmount);
-        gainNode.gain.setValueAtTime(dampenedGain, ctx.currentTime);
-        gainNode.gain.setValueAtTime(currentGain, ctx.currentTime + segmentDuration);
+        gainNode.gain.setValueAtTime(dampenedGain, ctx.currentTime + silenceStartDelay);
+        gainNode.gain.setValueAtTime(currentGain, ctx.currentTime + silenceStartDelay + wordDuration);
       }
       return;
     }
@@ -85,26 +93,30 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
     deps.queuedAudioNodesRef.current.add(source);
     source.onended = () => deps.queuedAudioNodesRef.current.delete(source);
 
-    // Dampen original audio for the full segment duration,
+    // Dampen original audio — aligned to the exact word boundaries.
+    // The trigger fires early (pvnLatency before word start), so we must
+    // delay dampen until the word audio actually reaches the gain node.
     // independent of the bleep sound's playback rate.
     if (effect.dampenOriginal) {
       const currentGain = gainNode.gain.value;
       const dampenedGain = currentGain * (1 - effect.dampenAmount);
+      // Audio at media time `start` reaches the gain node
+      // `pvnLatency / spd` wall-clock seconds after trigger.
+      const delay = pvnLatency / spd;
       // Convert media-time segment duration to wall-clock duration
-      const spd = deps.playbackSpeedRef.current;
       const segmentDuration = (segmentEnd - effect.segmentStart) / spd;
 
       if (effect.dampenType === 'sharp') {
-        // Immediate drop, hold, immediate restore at segment end
-        gainNode.gain.setValueAtTime(dampenedGain, now);
-        gainNode.gain.setValueAtTime(currentGain, now + segmentDuration);
+        // Immediate drop at word start, hold, immediate restore at word end
+        gainNode.gain.setValueAtTime(dampenedGain, now + delay);
+        gainNode.gain.setValueAtTime(currentGain, now + delay + segmentDuration);
       } else {
         // Parabolic: smooth dip and restore using setTargetAtTime
         const tau = segmentDuration * 0.3;
-        gainNode.gain.setValueAtTime(dampenedGain, now);
-        gainNode.gain.setTargetAtTime(currentGain, now + tau, tau);
-        // Force-restore at segment end to avoid lingering drift
-        gainNode.gain.setValueAtTime(currentGain, now + segmentDuration);
+        gainNode.gain.setValueAtTime(dampenedGain, now + delay);
+        gainNode.gain.setTargetAtTime(currentGain, now + delay + tau, tau);
+        // Force-restore at word end to avoid lingering drift
+        gainNode.gain.setValueAtTime(currentGain, now + delay + segmentDuration);
       }
     }
   }
@@ -112,11 +124,24 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
   /**
    * Проверяет время воспроизведения против списка звуковых эффектов
    * и запускает те, которые ещё не сработали в текущей сессии.
+   *
+   * PhaseVocoderNode introduces latency (~43ms at fftSize=2048, 48kHz).
+   * Without compensation, the dampening starts after the segment audio
+   * has already been output → user hears the word before it's censored.
+   * We trigger earlier by the equivalent media-time latency so the
+   * gainNode automation aligns with the audio that reaches the listener.
    */
   function checkSoundEffects(playbackTime: number): void {
-    const { censoringEffects, transcriptionResults, censoringMode } =
-      usePlayerStore.getState();
+    const { censoringEffects, transcriptionResults, censoringMode, bleepSounds }
+      = usePlayerStore.getState();
     if (!censoringMode || !censoringEffects || !transcriptionResults) return;
+
+    const speed = deps.playbackSpeedRef.current;
+    // PhaseVocoderNode latency in audio-context seconds.
+    // At 1x the vocoder is bypassed → negligible latency.
+    // At >1x latency ≈ fftSize / sampleRate (2048 / 48000 ≈ 42.7ms).
+    // Convert to media-time: latency / speed.
+    const pvnLatency = speed > 1 ? 0.043 / speed : 0;
 
     for (const e of censoringEffects) {
       if (e.effectType !== 'sound') continue;
@@ -129,9 +154,11 @@ export function createSoundEffectsEngine(deps: SoundEffectsDeps): SoundEffectsEn
       if (!seg) continue;
 
       const [start, end] = seg;
-      if (playbackTime >= start && playbackTime < end) {
+      // Trigger earlier by the PhaseVocoderNode latency so dampening
+      // aligns with the audio that reaches the listener.
+      if (playbackTime >= start - pvnLatency && playbackTime < end) {
         triggeredEffectsRef.current.add(e.id);
-        triggerSoundEffect(e, end);
+        triggerSoundEffect(e, end, pvnLatency);
       }
     }
   }

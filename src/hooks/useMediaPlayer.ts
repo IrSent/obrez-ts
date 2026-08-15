@@ -332,15 +332,31 @@ export function useMediaPlayer() {
 
         const playbackTime = utilsRef.current.getPlaybackTime();
         if (newNextFrame.timestamp <= playbackTime) {
-          utilsRef.current.drawFrame(newNextFrame);
+          if (newNextFrame.canvas) {
+            utilsRef.current.drawFrame(newNextFrame);
+          }
         } else {
           nextFrameRef.current = newNextFrame;
           break;
         }
       }
     } catch (e) {
-      console.error('[video] updateNextFrame threw:', e);
-      console.error('[video] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('can not be found') || msg.includes('can not find')) {
+        // MediaBunny resource was destroyed (Safari GC / tab backgrounding).
+        // Attempt recovery: restart the video iterator if the sink is still valid.
+        console.warn('[video] updateNextFrame: MediaBunny resource lost, restarting iterator');
+        if (videoSinkRef.current && videoTrackRef.current) {
+          try {
+            await startVideoIteratorRef.current();
+          } catch (e2) {
+            console.error('[video] restart failed:', e2);
+          }
+        }
+      } else {
+        console.error('[video] updateNextFrame threw:', e);
+        console.error('[video] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
+      }
     } finally {
       updateNextFrameMutexRef.current = false;
     }
@@ -348,7 +364,10 @@ export function useMediaPlayer() {
 
   // === startVideoIterator ===
   const startVideoIteratorRef = useRef(async () => {
-    if (!videoSinkRef.current) return;
+    if (!videoSinkRef.current || !videoTrackRef.current) {
+      console.warn('[video] startVideoIterator: sink or track gone');
+      return;
+    }
 
     try {
     asyncIdRef.current++;
@@ -363,7 +382,7 @@ export function useMediaPlayer() {
     // so drawing would make video get ahead of audio (seek lag).
     // The rAF loop will draw these frames once state becomes 'playing'.
     if (playbackStateRef.current !== 'transitioning') {
-      if (firstFrame) {
+      if (firstFrame && firstFrame.canvas) {
         utilsRef.current.drawFrame(firstFrame);
       }
       nextFrameRef.current = secondFrame;
@@ -373,10 +392,17 @@ export function useMediaPlayer() {
       nextFrameRef.current = firstFrame ?? secondFrame;
     }
     } catch (e) {
-      console.error('[video] startVideoIterator threw:', e);
-      console.error('[video] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
+      const msg = e instanceof Error ? e.message : String(e);
+      if (msg.includes('can not be found') || msg.includes('can not find')) {
+        console.error('[video] startVideoIterator: MediaBunny resource lost — video track may be destroyed');
+        videoFrameIteratorRef.current = null;
+        nextFrameRef.current = null;
+      } else {
+        console.error('[video] startVideoIterator threw:', e);
+        console.error('[video] Stack trace:', e instanceof Error ? e.stack : new Error().stack);
+      }
       if (typeof (window as any).__obrezShowError === 'function') {
-        (window as any).__obrezShowError('Video', `startVideoIterator error: ${e instanceof Error ? e.message : String(e)}`, (e as Error)?.stack);
+        (window as any).__obrezShowError('Video', `startVideoIterator error: ${msg}`, (e as Error)?.stack);
       }
     }
   });
@@ -504,8 +530,24 @@ export function useMediaPlayer() {
   // =====================================================================
   const startAudio = async () => {
     console.log('[audio] startAudio start, state=', playbackStateRef.current, 'speed=', playbackSpeedRef.current, 'iterator=', !!audioBufferIteratorRef.current, 'lock=', runAudioIteratorLockRef.current);
-    if (!audioSinkRef.current || !audioContextRef.current) {
-      console.warn('[audio] startAudio aborted: missing sink or context');
+    if (!audioContextRef.current) {
+      console.warn('[audio] startAudio aborted: missing context');
+      return;
+    }
+    // Mobile Safari may destroy the AudioBufferSink's internal MediaBunny
+    // resources. If the sink is gone but the audio track is still valid,
+    // recreate the sink before proceeding.
+    if (!audioSinkRef.current && audioTrackRef.current) {
+      try {
+        console.warn('[audio] startAudio: sink is gone, recreating AudioBufferSink');
+        audioSinkRef.current = new AudioBufferSink(audioTrackRef.current);
+      } catch (e) {
+        console.error('[audio] startAudio: could not recreate sink:', e);
+        return;
+      }
+    }
+    if (!audioSinkRef.current) {
+      console.warn('[audio] startAudio aborted: missing sink');
       return;
     }
     if (audioBufferIteratorRef.current) {
@@ -773,9 +815,25 @@ export function useMediaPlayer() {
         // Without this guard, the first frame at the seek target is drawn
         // immediately while audio is still starting up → video ahead of audio.
         const isTransitioning = playbackStateRef.current === 'transitioning';
+
+        // Mobile Safari may destroy the video iterator (GC / tab backgrounding).
+        // If we're playing, have no pending frame, and the iterator is gone
+        // but the sink is still alive — restart it to unblock video.
+        if (!isTransitioning
+            && !nextFrameRef.current
+            && !videoFrameIteratorRef.current
+            && videoSinkRef.current
+            && videoTrackRef.current) {
+          console.warn('[rAF] video iterator is dead — restarting');
+          void startVideoIteratorRef.current();
+        }
+
         if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
           const frame = nextFrameRef.current;
-          utilsRef.current.drawFrame(frame);
+          // Guard: Safari may GC the canvas before we draw it.
+          if (frame.canvas) {
+            utilsRef.current.drawFrame(frame);
+          }
           nextFrameRef.current = null;
           void updateNextFrameRef.current();
         }
@@ -815,9 +873,22 @@ export function useMediaPlayer() {
         if (state.fileName) {
           const playbackTime = utilsRef.current.getPlaybackTime();
           const isTransitioning = playbackStateRef.current === 'transitioning';
+
+          // Mobile Safari may destroy the video iterator (GC / tab backgrounding).
+          if (!isTransitioning
+              && !nextFrameRef.current
+              && !videoFrameIteratorRef.current
+              && videoSinkRef.current
+              && videoTrackRef.current) {
+            console.warn('[fallback] video iterator is dead — restarting');
+            void startVideoIteratorRef.current();
+          }
+
           if (!isTransitioning && nextFrameRef.current && nextFrameRef.current.timestamp <= playbackTime) {
             const frame = nextFrameRef.current;
-            utilsRef.current.drawFrame(frame);
+            if (frame.canvas) {
+              utilsRef.current.drawFrame(frame);
+            }
             nextFrameRef.current = null;
             void updateNextFrameRef.current();
           }
@@ -934,6 +1005,8 @@ export function useMediaPlayer() {
       return;
     }
     runAudioIteratorLockRef.current = true;
+    // Buffer counter — declared OUTSIDE try so the catch block can reference it.
+    let bufferCount = 0;
     try {
       if (!audioBufferIteratorRef.current || !audioContextRef.current || !stNodeRef.current) return;
 
@@ -995,19 +1068,12 @@ export function useMediaPlayer() {
       // When speed decreases, it finishes later.
       let actualEndCorrection: number | null = null;
 
-      // Periodic yield counter: every 30 buffers (~1s of audio at 33ms/buffer)
-      // yield to the event loop so the rAF video render loop isn't starved.
-      // Without this, the iterator processes 4s of audio (aheadThreshold at 1x)
-      // in a single microtask drain → visible video stuttering.
-      let yieldCounter = 0;
-
       // Recalibrate audioContextStartTimeRef right before the first buffer starts.
       // startAudio() may not set it (or set it early), so we recalibrate to the
       // actual start time of the first buffer. This eliminates apparent rate < 1.0x
       // caused by the gap between startAudio() and the first buffer.
       let isFirstBuffer = true;
 
-      
       for await (const wrapped of audioBufferIteratorRef.current) {
                // GENERATION CHECK — primary defense. Must come FIRST because
         // abortAudioRef may be reset by startAudio while the old iterator
@@ -1027,6 +1093,12 @@ export function useMediaPlayer() {
         }
 
         const currentMediaT = utilsRef.current.getPlaybackTime();
+
+        // Debug: count buffers to diagnose mobile crash
+        bufferCount++;
+        if (bufferCount === 1 || bufferCount === 10 || bufferCount === 20 || bufferCount === 50 || bufferCount === 100) {
+          console.log(`[audio] runAudioIterator buffer #${bufferCount} at mediaT=${currentMediaT.toFixed(3)}s`);
+        }
 
         // Diagnostic: log gaps between buffers (gap → underrun → click)
         const gap = wrapped.timestamp - lastBufferEndRef.current;
@@ -1178,14 +1250,6 @@ export function useMediaPlayer() {
         // Use expected end as best estimate; actualEndCorrection will fix it.
         lastEnd = expectedEnd;
 
-        // Periodic yield: every 30 buffers (~1s of audio) yield to the
-        // event loop so the rAF video render loop isn't starved.
-        yieldCounter++;
-        if (yieldCounter >= 30) {
-          yieldCounter = 0;
-          await new Promise(r => setTimeout(r, 0));
-        }
-
         // Backpressure: slow down to avoid scheduling too far ahead.
         // At 1x, MediaBunny can be slow — keep 4s ahead to prevent gaps
         // (gap filler doesn't work at 1x).
@@ -1218,17 +1282,20 @@ export function useMediaPlayer() {
       }
     } catch (e) {
       // Итератор остановлен (pause) — нормально
-      // But if it's a MediaBunny resource error, report it and pause playback.
+      // But if it's a MediaBunny resource error, try to recover on mobile Safari.
       if (e && typeof e === 'object' && 'message' in e && String(e.message).includes('can not be found')) {
-        console.error('[audio] MediaBunny iterator resource error:', e);
+        console.error(`[audio] MediaBunny iterator resource error after ${bufferCount} buffers:`, e);
         console.error('[audio] Stack trace:', (e as Error).stack || new Error().stack);
         if (typeof (window as any).__obrezShowError === 'function') {
-          (window as any).__obrezShowError('Audio', `MediaBunny iterator error: ${e.message}`, (e as Error)?.stack);
+          (window as any).__obrezShowError('Audio', `MediaBunny iterator error after ${bufferCount} buffers: ${e.message}`, (e as Error)?.stack);
         }
-        // Pause playback to prevent video freeze — audio is broken.
+
+        // Give up — audio is broken.
+        audioSinkRef.current = null;
+        audioBufferIteratorRef.current = null;
         playbackStateRef.current = 'paused';
         playerActions.setIsPlaying(false);
-        playerActions.setError('Audio playback failed — try reloading the file');
+        playerActions.setError('Audio playback failed — press play to retry');
       }
     } finally {
       runAudioIteratorLockRef.current = false;
