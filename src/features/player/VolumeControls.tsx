@@ -58,7 +58,7 @@ const VolumeControlsInner = () => {
       {/* Volume button in the row */}
       <button
         onClick={() => setShowModal(true)}
-        className="flex items-center justify-center gap-1 rounded-b-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold
+        className="h-10 flex items-center justify-center gap-1 rounded-b-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold
           shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]
           bg-zinc-700 hover:bg-zinc-600 text-zinc-200 active:bg-zinc-600"
         title={`Volume: ${currentVal}%`}

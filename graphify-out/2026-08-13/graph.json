@@ -82,714 +82,14 @@
   },
   "nodes": [
     {
-      "label": "DebugTab.tsx",
-      "file_type": "code",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "debug_debugtab",
-      "community": 59,
-      "norm_label": "debugtab.tsx"
-    },
-    {
-      "label": "ErrorEntry",
-      "file_type": "code",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L5",
-      "_origin": "ast",
-      "id": "debug_debugtab_errorentry",
-      "community": 59,
-      "norm_label": "errorentry"
-    },
-    {
-      "label": "DebugTab()",
-      "file_type": "code",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L16",
-      "_origin": "ast",
-      "id": "debug_debugtab_debugtab",
-      "community": 59,
-      "norm_label": "debugtab()"
-    },
-    {
-      "label": "ClearAllData()",
-      "file_type": "code",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L216",
-      "_origin": "ast",
-      "id": "debug_debugtab_clearalldata",
-      "community": 59,
-      "norm_label": "clearalldata()"
-    },
-    {
-      "label": "audio-artifacts.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/audio-artifacts.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 38,
-      "norm_label": "audio-artifacts.spec.ts",
-      "id": "e2e_audio_artifacts_spec"
-    },
-    {
-      "label": "audio-stress.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/audio-stress.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 39,
-      "norm_label": "audio-stress.spec.ts",
-      "id": "e2e_audio_stress_spec"
-    },
-    {
-      "label": "censor-export.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/censor-export.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 42,
-      "norm_label": "censor-export.spec.ts",
-      "id": "e2e_censor_export_spec"
-    },
-    {
-      "label": "click-1x-ru-profanity3.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/click-1x-ru-profanity3.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 43,
-      "norm_label": "click-1x-ru-profanity3.spec.ts",
-      "id": "e2e_click_1x_ru_profanity3_spec"
-    },
-    {
-      "label": "json-import-export.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/json-import-export.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 44,
-      "norm_label": "json-import-export.spec.ts",
-      "id": "e2e_json_import_export_spec"
-    },
-    {
-      "label": "login-redirect.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/login-redirect.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 30,
-      "norm_label": "login-redirect.spec.ts",
-      "id": "e2e_login_redirect_spec"
-    },
-    {
-      "label": "multi-segment-race.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 31,
-      "norm_label": "multi-segment-race.spec.ts",
-      "id": "e2e_multi_segment_race_spec"
-    },
-    {
-      "label": "parseTime()",
-      "file_type": "code",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L8",
-      "_origin": "ast",
-      "community": 31,
-      "norm_label": "parsetime()",
-      "id": "e2e_multi_segment_race_spec_parsetime"
-    },
-    {
-      "label": "checkNoMultipleStreams()",
-      "file_type": "code",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L16",
-      "_origin": "ast",
-      "community": 31,
-      "norm_label": "checknomultiplestreams()",
-      "id": "e2e_multi_segment_race_spec_checknomultiplestreams"
-    },
-    {
-      "label": "loadFile()",
-      "file_type": "code",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L23",
-      "_origin": "ast",
-      "community": 31,
-      "norm_label": "loadfile()",
-      "id": "e2e_multi_segment_race_spec_loadfile"
-    },
-    {
-      "label": "ensurePlaying()",
-      "file_type": "code",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L36",
-      "_origin": "ast",
-      "community": 31,
-      "norm_label": "ensureplaying()",
-      "id": "e2e_multi_segment_race_spec_ensureplaying"
-    },
-    {
-      "label": "pause-play-diagnostic.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 45,
-      "norm_label": "pause-play-diagnostic.spec.ts",
-      "id": "e2e_pause_play_diagnostic_spec"
-    },
-    {
-      "label": "parseTime()",
-      "file_type": "code",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L8",
-      "_origin": "ast",
-      "community": 45,
-      "norm_label": "parsetime()",
-      "id": "e2e_pause_play_diagnostic_spec_parsetime"
-    },
-    {
-      "label": "checkNoMultipleStreams()",
-      "file_type": "code",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L16",
-      "_origin": "ast",
-      "community": 45,
-      "norm_label": "checknomultiplestreams()",
-      "id": "e2e_pause_play_diagnostic_spec_checknomultiplestreams"
-    },
-    {
-      "label": "waitForDiagnostic()",
-      "file_type": "code",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L23",
-      "_origin": "ast",
-      "community": 45,
-      "norm_label": "waitfordiagnostic()",
-      "id": "e2e_pause_play_diagnostic_spec_waitfordiagnostic"
-    },
-    {
-      "label": "loadFile()",
-      "file_type": "code",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L32",
-      "_origin": "ast",
-      "community": 45,
-      "norm_label": "loadfile()",
-      "id": "e2e_pause_play_diagnostic_spec_loadfile"
-    },
-    {
-      "label": "playback.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/playback.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "playback.spec.ts",
-      "id": "e2e_playback_spec"
-    },
-    {
-      "label": "parseTime()",
-      "file_type": "code",
-      "source_file": "e2e/playback.spec.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 20,
-      "norm_label": "parsetime()",
-      "id": "e2e_playback_spec_parsetime"
-    },
-    {
-      "label": "reload-session.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/reload-session.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 35,
-      "norm_label": "reload-session.spec.ts",
-      "id": "e2e_reload_session_spec"
-    },
-    {
-      "label": "parseTime()",
-      "file_type": "code",
-      "source_file": "e2e/reload-session.spec.ts",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 35,
-      "norm_label": "parsetime()",
-      "id": "e2e_reload_session_spec_parsetime"
-    },
-    {
-      "label": "loadFile()",
-      "file_type": "code",
-      "source_file": "e2e/reload-session.spec.ts",
-      "source_location": "L11",
-      "_origin": "ast",
-      "community": 35,
-      "norm_label": "loadfile()",
-      "id": "e2e_reload_session_spec_loadfile"
-    },
-    {
-      "label": "ru-profanity3-silence.json",
-      "file_type": "code",
-      "source_file": "e2e/ru-profanity3-silence.json",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 57,
-      "norm_label": "ru-profanity3-silence.json",
-      "id": "e2e_ru_profanity3_silence"
-    },
-    {
-      "label": "version",
-      "file_type": "code",
-      "source_file": "e2e/ru-profanity3-silence.json",
-      "source_location": "L2",
-      "_origin": "ast",
-      "community": 57,
-      "norm_label": "version",
-      "id": "e2e_ru_profanity3_silence_version"
-    },
-    {
-      "label": "transcription",
-      "file_type": "code",
-      "source_file": "e2e/ru-profanity3-silence.json",
-      "source_location": "L3",
-      "_origin": "ast",
-      "community": 57,
-      "norm_label": "transcription",
-      "id": "e2e_ru_profanity3_silence_transcription"
-    },
-    {
-      "label": "effects",
-      "file_type": "code",
-      "source_file": "e2e/ru-profanity3-silence.json",
-      "source_location": "L55",
-      "_origin": "ast",
-      "community": 57,
-      "norm_label": "effects",
-      "id": "e2e_ru_profanity3_silence_effects"
-    },
-    {
-      "label": "sequential-operations.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/sequential-operations.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 48,
-      "norm_label": "sequential-operations.spec.ts",
-      "id": "e2e_sequential_operations_spec"
-    },
-    {
-      "label": "parseTime()",
-      "file_type": "code",
-      "source_file": "e2e/sequential-operations.spec.ts",
-      "source_location": "L8",
-      "_origin": "ast",
-      "community": 48,
-      "norm_label": "parsetime()",
-      "id": "e2e_sequential_operations_spec_parsetime"
-    },
-    {
-      "label": "checkNoMultipleStreams()",
-      "file_type": "code",
-      "source_file": "e2e/sequential-operations.spec.ts",
-      "source_location": "L16",
-      "_origin": "ast",
-      "community": 48,
-      "norm_label": "checknomultiplestreams()",
-      "id": "e2e_sequential_operations_spec_checknomultiplestreams"
-    },
-    {
-      "label": "loadFile()",
-      "file_type": "code",
-      "source_file": "e2e/sequential-operations.spec.ts",
-      "source_location": "L23",
-      "_origin": "ast",
-      "community": 48,
-      "norm_label": "loadfile()",
-      "id": "e2e_sequential_operations_spec_loadfile"
-    },
-    {
-      "label": "sequential-playback.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 8,
-      "norm_label": "sequential-playback.spec.ts",
-      "id": "e2e_sequential_playback_spec"
-    },
-    {
-      "label": "parseTime()",
-      "file_type": "code",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L17",
-      "_origin": "ast",
-      "community": 8,
-      "norm_label": "parsetime()",
-      "id": "e2e_sequential_playback_spec_parsetime"
-    },
-    {
-      "label": "loadFile()",
-      "file_type": "code",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L25",
-      "_origin": "ast",
-      "community": 8,
-      "norm_label": "loadfile()",
-      "id": "e2e_sequential_playback_spec_loadfile"
-    },
-    {
-      "label": "waitForDiagnostic()",
-      "file_type": "code",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L34",
-      "_origin": "ast",
-      "community": 8,
-      "norm_label": "waitfordiagnostic()",
-      "id": "e2e_sequential_playback_spec_waitfordiagnostic"
-    },
-    {
-      "label": "collectSamples()",
-      "file_type": "code",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L46",
-      "_origin": "ast",
-      "community": 8,
-      "norm_label": "collectsamples()",
-      "id": "e2e_sequential_playback_spec_collectsamples"
-    },
-    {
-      "label": "silence-effects.spec.ts",
-      "file_type": "code",
-      "source_file": "e2e/silence-effects.spec.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 58,
-      "norm_label": "silence-effects.spec.ts",
-      "id": "e2e_silence_effects_spec"
-    },
-    {
-      "label": "ActionButtons.tsx",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "actionbuttons.tsx",
-      "id": "action_buttons_actionbuttons"
-    },
-    {
-      "label": "FileIcon()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L13",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "fileicon()",
-      "id": "action_buttons_actionbuttons_fileicon"
-    },
-    {
-      "label": "UrlIcon()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L20",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "urlicon()",
-      "id": "action_buttons_actionbuttons_urlicon"
-    },
-    {
-      "label": "TranscribeIcon()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L27",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "transcribeicon()",
-      "id": "action_buttons_actionbuttons_transcribeicon"
-    },
-    {
-      "label": "DownloadIcon()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L36",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "downloadicon()",
-      "id": "action_buttons_actionbuttons_downloadicon"
-    },
-    {
-      "label": "UnloadIcon()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L44",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "unloadicon()",
-      "id": "action_buttons_actionbuttons_unloadicon"
-    },
-    {
-      "label": "CloseIcon()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L53",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "closeicon()",
-      "id": "action_buttons_actionbuttons_closeicon"
-    },
-    {
-      "label": "Divider()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L61",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "divider()",
-      "id": "action_buttons_actionbuttons_divider"
-    },
-    {
-      "label": "RowBtn()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L67",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "rowbtn()",
-      "id": "action_buttons_actionbuttons_rowbtn"
-    },
-    {
-      "label": "CompactBtn()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L98",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "compactbtn()",
-      "id": "action_buttons_actionbuttons_compactbtn"
-    },
-    {
-      "label": "ActionButtonsInner()",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L129",
-      "_origin": "ast",
-      "community": 27,
-      "norm_label": "actionbuttonsinner()",
-      "id": "action_buttons_actionbuttons_actionbuttonsinner"
-    },
-    {
-      "label": "ActionButtons",
-      "file_type": "code",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L417",
-      "_origin": "ast",
-      "community": 59,
-      "norm_label": "actionbuttons",
-      "id": "action_buttons_actionbuttons_actionbuttons"
-    },
-    {
-      "label": "PlaybackControls.tsx",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "playbackcontrols.tsx",
-      "id": "player_playbackcontrols"
-    },
-    {
-      "label": "SPEEDS",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L7",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "speeds",
-      "id": "player_playbackcontrols_speeds"
-    },
-    {
-      "label": "Divider()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L12",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "divider()",
-      "id": "player_playbackcontrols_divider"
-    },
-    {
-      "label": "PBtn()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L17",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "pbtn()",
-      "id": "player_playbackcontrols_pbtn"
-    },
-    {
-      "label": "useWheelScroll()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L51",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "usewheelscroll()",
-      "id": "player_playbackcontrols_usewheelscroll"
-    },
-    {
-      "label": "ChevronDownIcon()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L74",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "chevrondownicon()",
-      "id": "player_playbackcontrols_chevrondownicon"
-    },
-    {
-      "label": "LedIndicator()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L83",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "ledindicator()",
-      "id": "player_playbackcontrols_ledindicator"
-    },
-    {
-      "label": "PlaybackControlsInner()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L93",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "playbackcontrolsinner()",
-      "id": "player_playbackcontrols_playbackcontrolsinner"
-    },
-    {
-      "label": "PlaybackControls",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L280",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "playbackcontrols",
-      "id": "player_playbackcontrols_playbackcontrols"
-    },
-    {
-      "label": "SoundEffects.ts",
-      "file_type": "code",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "soundeffects.ts",
-      "id": "player_soundeffects"
-    },
-    {
-      "label": "SoundEffectsDeps",
-      "file_type": "code",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L10",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "soundeffectsdeps",
-      "id": "player_soundeffects_soundeffectsdeps"
-    },
-    {
-      "label": "SoundEffectsEngine",
-      "file_type": "code",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L20",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "soundeffectsengine",
-      "id": "player_soundeffects_soundeffectsengine"
-    },
-    {
-      "label": "createSoundEffectsEngine()",
-      "file_type": "code",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L36",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "createsoundeffectsengine()",
-      "id": "player_soundeffects_createsoundeffectsengine"
-    },
-    {
-      "label": "useMediaPlayer.ts",
-      "file_type": "code",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "usemediaplayer.ts",
-      "id": "hooks_usemediaplayer"
-    },
-    {
-      "label": "useMediaPlayer()",
-      "file_type": "code",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L34",
-      "_origin": "ast",
-      "community": 6,
-      "norm_label": "usemediaplayer()",
-      "id": "hooks_usemediaplayer_usemediaplayer"
-    },
-    {
-      "label": "audioDiagnostic.ts",
-      "file_type": "code",
-      "source_file": "src/utils/audioDiagnostic.ts",
-      "source_location": "L1",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "audiodiagnostic.ts",
-      "id": "utils_audiodiagnostic"
-    },
-    {
-      "label": "Window",
-      "file_type": "code",
-      "source_file": "src/utils/audioDiagnostic.ts",
-      "source_location": "L5",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "window",
-      "id": "utils_audiodiagnostic_window"
-    },
-    {
-      "label": "AudioDiagnosticDeps",
-      "file_type": "code",
-      "source_file": "src/utils/audioDiagnostic.ts",
-      "source_location": "L23",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "audiodiagnosticdeps",
-      "id": "utils_audiodiagnostic_audiodiagnosticdeps"
-    },
-    {
-      "label": "startAudioDiagnostic()",
-      "file_type": "code",
-      "source_file": "src/utils/audioDiagnostic.ts",
-      "source_location": "L41",
-      "_origin": "ast",
-      "community": 0,
-      "norm_label": "startaudiodiagnostic()",
-      "id": "utils_audiodiagnostic_startaudiodiagnostic"
-    },
-    {
       "label": "App.tsx",
       "file_type": "code",
       "source_file": "src/App.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "src_app",
       "community": 6,
-      "norm_label": "app.tsx",
-      "id": "src_app"
+      "norm_label": "app.tsx"
     },
     {
       "label": "DEFAULT_DICTIONARIES",
@@ -797,9 +97,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L15",
       "_origin": "ast",
+      "id": "src_app_default_dictionaries",
       "community": 6,
-      "norm_label": "default_dictionaries",
-      "id": "src_app_default_dictionaries"
+      "norm_label": "default_dictionaries"
     },
     {
       "label": "SessionRestorer()",
@@ -807,9 +107,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L18",
       "_origin": "ast",
+      "id": "src_app_sessionrestorer",
       "community": 6,
-      "norm_label": "sessionrestorer()",
-      "id": "src_app_sessionrestorer"
+      "norm_label": "sessionrestorer()"
     },
     {
       "label": "App()",
@@ -817,9 +117,9 @@
       "source_file": "src/App.tsx",
       "source_location": "L74",
       "_origin": "ast",
+      "id": "src_app_app",
       "community": 6,
-      "norm_label": "app()",
-      "id": "src_app_app"
+      "norm_label": "app()"
     },
     {
       "label": "TranscriptionResults.tsx",
@@ -957,7 +257,7 @@
       "source_file": "src/features/transcription/TranscriptionResults.tsx",
       "source_location": "L356",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "transcriptionresultsinner()",
       "id": "transcription_transcriptionresults_transcriptionresultsinner"
     },
@@ -980,6 +280,136 @@
       "community": 7,
       "norm_label": "journalentryrow()",
       "id": "transcription_transcriptionresults_journalentryrow"
+    },
+    {
+      "label": "PlaybackControls.tsx",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "playbackcontrols.tsx",
+      "id": "player_playbackcontrols"
+    },
+    {
+      "label": "SPEEDS",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "speeds",
+      "id": "player_playbackcontrols_speeds"
+    },
+    {
+      "label": "Divider()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L12",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "divider()",
+      "id": "player_playbackcontrols_divider"
+    },
+    {
+      "label": "PBtn()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "pbtn()",
+      "id": "player_playbackcontrols_pbtn"
+    },
+    {
+      "label": "useWheelScroll()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L51",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "usewheelscroll()",
+      "id": "player_playbackcontrols_usewheelscroll"
+    },
+    {
+      "label": "ChevronDownIcon()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L74",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "chevrondownicon()",
+      "id": "player_playbackcontrols_chevrondownicon"
+    },
+    {
+      "label": "LedIndicator()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L83",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "ledindicator()",
+      "id": "player_playbackcontrols_ledindicator"
+    },
+    {
+      "label": "PlaybackControlsInner()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L93",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "playbackcontrolsinner()",
+      "id": "player_playbackcontrols_playbackcontrolsinner"
+    },
+    {
+      "label": "PlaybackControls",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L275",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "playbackcontrols",
+      "id": "player_playbackcontrols_playbackcontrols"
+    },
+    {
+      "label": "SoundEffects.ts",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "soundeffects.ts",
+      "id": "player_soundeffects"
+    },
+    {
+      "label": "SoundEffectsDeps",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L10",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "soundeffectsdeps",
+      "id": "player_soundeffects_soundeffectsdeps"
+    },
+    {
+      "label": "SoundEffectsEngine",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L19",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "soundeffectsengine",
+      "id": "player_soundeffects_soundeffectsengine"
+    },
+    {
+      "label": "createSoundEffectsEngine()",
+      "file_type": "code",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L35",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "createsoundeffectsengine()",
+      "id": "player_soundeffects_createsoundeffectsengine"
     },
     {
       "label": "playerStore.ts",
@@ -1047,7 +477,7 @@
       "source_file": "src/store/playerStore.ts",
       "source_location": "L135",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "playeractions",
       "id": "store_playerstore_playeractions"
     },
@@ -1202,6 +632,126 @@
       "id": "transcription_effectmodal_effectbadge"
     },
     {
+      "label": "ActionButtons.tsx",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "actionbuttons.tsx",
+      "id": "action_buttons_actionbuttons"
+    },
+    {
+      "label": "FileIcon()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L13",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "fileicon()",
+      "id": "action_buttons_actionbuttons_fileicon"
+    },
+    {
+      "label": "UrlIcon()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L20",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "urlicon()",
+      "id": "action_buttons_actionbuttons_urlicon"
+    },
+    {
+      "label": "TranscribeIcon()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L27",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "transcribeicon()",
+      "id": "action_buttons_actionbuttons_transcribeicon"
+    },
+    {
+      "label": "DownloadIcon()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L36",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "downloadicon()",
+      "id": "action_buttons_actionbuttons_downloadicon"
+    },
+    {
+      "label": "UnloadIcon()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L44",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "unloadicon()",
+      "id": "action_buttons_actionbuttons_unloadicon"
+    },
+    {
+      "label": "CloseIcon()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L53",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "closeicon()",
+      "id": "action_buttons_actionbuttons_closeicon"
+    },
+    {
+      "label": "Divider()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L61",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "divider()",
+      "id": "action_buttons_actionbuttons_divider"
+    },
+    {
+      "label": "RowBtn()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L67",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "rowbtn()",
+      "id": "action_buttons_actionbuttons_rowbtn"
+    },
+    {
+      "label": "CompactBtn()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L98",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "compactbtn()",
+      "id": "action_buttons_actionbuttons_compactbtn"
+    },
+    {
+      "label": "ActionButtonsInner()",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L129",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "actionbuttonsinner()",
+      "id": "action_buttons_actionbuttons_actionbuttonsinner"
+    },
+    {
+      "label": "ActionButtons",
+      "file_type": "code",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L417",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "actionbuttons",
+      "id": "action_buttons_actionbuttons_actionbuttons"
+    },
+    {
       "label": "PlayerDisplay.tsx",
       "file_type": "code",
       "source_file": "src/features/player/PlayerDisplay.tsx",
@@ -1267,7 +817,7 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "loginmodal.tsx",
       "id": "auth_loginmodal"
     },
@@ -1277,7 +827,7 @@
       "source_file": "src/features/auth/LoginModal.tsx",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "loginmodalprops",
       "id": "auth_loginmodal_loginmodalprops"
     },
@@ -1322,12 +872,42 @@
       "id": "auth_paymentmodal_paymentmodal"
     },
     {
+      "label": "DebugTab.tsx",
+      "file_type": "code",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "debugtab.tsx",
+      "id": "debug_debugtab"
+    },
+    {
+      "label": "ErrorEntry",
+      "file_type": "code",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L5",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "errorentry",
+      "id": "debug_debugtab_errorentry"
+    },
+    {
+      "label": "DebugTab()",
+      "file_type": "code",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L16",
+      "_origin": "ast",
+      "community": 59,
+      "norm_label": "debugtab()",
+      "id": "debug_debugtab_debugtab"
+    },
+    {
       "label": "HeaderExportButton.tsx",
       "file_type": "code",
       "source_file": "src/features/export/HeaderExportButton.tsx",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 50,
       "norm_label": "headerexportbutton.tsx",
       "id": "export_headerexportbutton"
     },
@@ -1337,7 +917,7 @@
       "source_file": "src/features/export/HeaderExportButton.tsx",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 6,
+      "community": 50,
       "norm_label": "downloadicon()",
       "id": "export_headerexportbutton_downloadicon"
     },
@@ -1377,7 +957,7 @@
       "source_file": "src/features/export/HeaderExportButton.tsx",
       "source_location": "L173",
       "_origin": "ast",
-      "community": 6,
+      "community": 50,
       "norm_label": "phaseicon()",
       "id": "export_headerexportbutton_phaseicon"
     },
@@ -1587,7 +1167,7 @@
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L102",
       "_origin": "ast",
-      "community": 6,
+      "community": 59,
       "norm_label": "settingsmodal()",
       "id": "settings_settingsmodal_settingsmodal"
     },
@@ -1707,7 +1287,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "authstore.ts",
       "id": "store_authstore"
     },
@@ -1717,7 +1297,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "getauthheaders()",
       "id": "store_authstore_getauthheaders"
     },
@@ -1727,7 +1307,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "authstate",
       "id": "store_authstore_authstate"
     },
@@ -1737,7 +1317,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L25",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "authactions",
       "id": "store_authstore_authactions"
     },
@@ -1747,7 +1327,7 @@
       "source_file": "src/store/authStore.ts",
       "source_location": "L36",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "authstore",
       "id": "store_authstore_authstore"
     },
@@ -1847,7 +1427,7 @@
       "source_file": "src/utils/idb.ts",
       "source_location": "L37",
       "_origin": "ast",
-      "community": 27,
+      "community": 59,
       "norm_label": "journalentry",
       "id": "utils_idb_journalentry"
     },
@@ -2147,7 +1727,7 @@
       "source_file": "src/types/index.ts",
       "source_location": "L225",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "authuser",
       "id": "types_index_authuser"
     },
@@ -2167,7 +1747,7 @@
       "source_file": "src/types/index.ts",
       "source_location": "L243",
       "_origin": "ast",
-      "community": 2,
+      "community": 59,
       "norm_label": "fiatcurrency",
       "id": "types_index_fiatcurrency"
     },
@@ -2217,7 +1797,7 @@
       "source_file": "src/hooks/useProposedTimeBlink.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "useproposedtimeblink.ts",
       "id": "hooks_useproposedtimeblink"
     },
@@ -2227,7 +1807,7 @@
       "source_file": "src/hooks/useProposedTimeBlink.ts",
       "source_location": "L16",
       "_origin": "ast",
-      "community": 7,
+      "community": 6,
       "norm_label": "useproposedtimeblink()",
       "id": "hooks_useproposedtimeblink_useproposedtimeblink"
     },
@@ -2257,7 +1837,7 @@
       "source_file": "src/features/transcription/useTranscribe.ts",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 0,
+      "community": 6,
       "norm_label": "usetranscribe()",
       "id": "transcription_usetranscribe_usetranscribe"
     },
@@ -2320,6 +1900,36 @@
       "community": 59,
       "norm_label": "topupmodal()",
       "id": "auth_topupmodal_topupmodal"
+    },
+    {
+      "label": "reload-session.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/reload-session.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "reload-session.spec.ts",
+      "id": "e2e_reload_session_spec"
+    },
+    {
+      "label": "parseTime()",
+      "file_type": "code",
+      "source_file": "e2e/reload-session.spec.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "parsetime()",
+      "id": "e2e_reload_session_spec_parsetime"
+    },
+    {
+      "label": "loadFile()",
+      "file_type": "code",
+      "source_file": "e2e/reload-session.spec.ts",
+      "source_location": "L11",
+      "_origin": "ast",
+      "community": 35,
+      "norm_label": "loadfile()",
+      "id": "e2e_reload_session_spec_loadfile"
     },
     {
       "label": "backend-url.json",
@@ -2514,6 +2124,186 @@
       "id": "dev_watchhandler"
     },
     {
+      "label": "audio-artifacts.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/audio-artifacts.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 38,
+      "norm_label": "audio-artifacts.spec.ts",
+      "id": "e2e_audio_artifacts_spec"
+    },
+    {
+      "label": "audio-stress.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/audio-stress.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 39,
+      "norm_label": "audio-stress.spec.ts",
+      "id": "e2e_audio_stress_spec"
+    },
+    {
+      "label": "censor-export.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/censor-export.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 42,
+      "norm_label": "censor-export.spec.ts",
+      "id": "e2e_censor_export_spec"
+    },
+    {
+      "label": "click-1x-ru-profanity3.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/click-1x-ru-profanity3.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 43,
+      "norm_label": "click-1x-ru-profanity3.spec.ts",
+      "id": "e2e_click_1x_ru_profanity3_spec"
+    },
+    {
+      "label": "json-import-export.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/json-import-export.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 44,
+      "norm_label": "json-import-export.spec.ts",
+      "id": "e2e_json_import_export_spec"
+    },
+    {
+      "label": "login-redirect.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/login-redirect.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 30,
+      "norm_label": "login-redirect.spec.ts",
+      "id": "e2e_login_redirect_spec"
+    },
+    {
+      "label": "multi-segment-race.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 31,
+      "norm_label": "multi-segment-race.spec.ts",
+      "id": "e2e_multi_segment_race_spec"
+    },
+    {
+      "label": "parseTime()",
+      "file_type": "code",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "community": 31,
+      "norm_label": "parsetime()",
+      "id": "e2e_multi_segment_race_spec_parsetime"
+    },
+    {
+      "label": "checkNoMultipleStreams()",
+      "file_type": "code",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L16",
+      "_origin": "ast",
+      "community": 31,
+      "norm_label": "checknomultiplestreams()",
+      "id": "e2e_multi_segment_race_spec_checknomultiplestreams"
+    },
+    {
+      "label": "loadFile()",
+      "file_type": "code",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "community": 31,
+      "norm_label": "loadfile()",
+      "id": "e2e_multi_segment_race_spec_loadfile"
+    },
+    {
+      "label": "ensurePlaying()",
+      "file_type": "code",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L36",
+      "_origin": "ast",
+      "community": 31,
+      "norm_label": "ensureplaying()",
+      "id": "e2e_multi_segment_race_spec_ensureplaying"
+    },
+    {
+      "label": "pause-play-diagnostic.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 45,
+      "norm_label": "pause-play-diagnostic.spec.ts",
+      "id": "e2e_pause_play_diagnostic_spec"
+    },
+    {
+      "label": "parseTime()",
+      "file_type": "code",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "community": 45,
+      "norm_label": "parsetime()",
+      "id": "e2e_pause_play_diagnostic_spec_parsetime"
+    },
+    {
+      "label": "checkNoMultipleStreams()",
+      "file_type": "code",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L16",
+      "_origin": "ast",
+      "community": 45,
+      "norm_label": "checknomultiplestreams()",
+      "id": "e2e_pause_play_diagnostic_spec_checknomultiplestreams"
+    },
+    {
+      "label": "waitForDiagnostic()",
+      "file_type": "code",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "community": 45,
+      "norm_label": "waitfordiagnostic()",
+      "id": "e2e_pause_play_diagnostic_spec_waitfordiagnostic"
+    },
+    {
+      "label": "loadFile()",
+      "file_type": "code",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L32",
+      "_origin": "ast",
+      "community": 45,
+      "norm_label": "loadfile()",
+      "id": "e2e_pause_play_diagnostic_spec_loadfile"
+    },
+    {
+      "label": "playback.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/playback.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "playback.spec.ts",
+      "id": "e2e_playback_spec"
+    },
+    {
+      "label": "parseTime()",
+      "file_type": "code",
+      "source_file": "e2e/playback.spec.ts",
+      "source_location": "L3",
+      "_origin": "ast",
+      "community": 20,
+      "norm_label": "parsetime()",
+      "id": "e2e_playback_spec_parsetime"
+    },
+    {
       "label": "ru-profanity3.json",
       "file_type": "code",
       "source_file": "e2e/ru-profanity3.json",
@@ -2552,6 +2342,96 @@
       "community": 34,
       "norm_label": "effects",
       "id": "e2e_ru_profanity3_effects"
+    },
+    {
+      "label": "sequential-operations.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/sequential-operations.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 48,
+      "norm_label": "sequential-operations.spec.ts",
+      "id": "e2e_sequential_operations_spec"
+    },
+    {
+      "label": "parseTime()",
+      "file_type": "code",
+      "source_file": "e2e/sequential-operations.spec.ts",
+      "source_location": "L8",
+      "_origin": "ast",
+      "community": 48,
+      "norm_label": "parsetime()",
+      "id": "e2e_sequential_operations_spec_parsetime"
+    },
+    {
+      "label": "checkNoMultipleStreams()",
+      "file_type": "code",
+      "source_file": "e2e/sequential-operations.spec.ts",
+      "source_location": "L16",
+      "_origin": "ast",
+      "community": 48,
+      "norm_label": "checknomultiplestreams()",
+      "id": "e2e_sequential_operations_spec_checknomultiplestreams"
+    },
+    {
+      "label": "loadFile()",
+      "file_type": "code",
+      "source_file": "e2e/sequential-operations.spec.ts",
+      "source_location": "L23",
+      "_origin": "ast",
+      "community": 48,
+      "norm_label": "loadfile()",
+      "id": "e2e_sequential_operations_spec_loadfile"
+    },
+    {
+      "label": "sequential-playback.spec.ts",
+      "file_type": "code",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 8,
+      "norm_label": "sequential-playback.spec.ts",
+      "id": "e2e_sequential_playback_spec"
+    },
+    {
+      "label": "parseTime()",
+      "file_type": "code",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 8,
+      "norm_label": "parsetime()",
+      "id": "e2e_sequential_playback_spec_parsetime"
+    },
+    {
+      "label": "loadFile()",
+      "file_type": "code",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L25",
+      "_origin": "ast",
+      "community": 8,
+      "norm_label": "loadfile()",
+      "id": "e2e_sequential_playback_spec_loadfile"
+    },
+    {
+      "label": "waitForDiagnostic()",
+      "file_type": "code",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L34",
+      "_origin": "ast",
+      "community": 8,
+      "norm_label": "waitfordiagnostic()",
+      "id": "e2e_sequential_playback_spec_waitfordiagnostic"
+    },
+    {
+      "label": "collectSamples()",
+      "file_type": "code",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L46",
+      "_origin": "ast",
+      "community": 8,
+      "norm_label": "collectsamples()",
+      "id": "e2e_sequential_playback_spec_collectsamples"
     },
     {
       "label": "valid-with-aac-test.json",
@@ -3849,7 +3729,7 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 6,
+      "community": 0,
       "norm_label": "dictionarymanagerinner()",
       "id": "dictionary_dictionarymanager_dictionarymanagerinner"
     },
@@ -3859,7 +3739,7 @@
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L131",
       "_origin": "ast",
-      "community": 59,
+      "community": 0,
       "norm_label": "dictionarymanager",
       "id": "dictionary_dictionarymanager_dictionarymanager"
     },
@@ -4134,6 +4014,26 @@
       "id": "transcription_importprogressmodal_importprogressmodal"
     },
     {
+      "label": "useMediaPlayer.ts",
+      "file_type": "code",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "usemediaplayer.ts",
+      "id": "hooks_usemediaplayer"
+    },
+    {
+      "label": "useMediaPlayer()",
+      "file_type": "code",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L34",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "usemediaplayer()",
+      "id": "hooks_usemediaplayer_usemediaplayer"
+    },
+    {
       "label": "json-export.worker.ts",
       "file_type": "code",
       "source_file": "src/json-export.worker.ts",
@@ -4264,12 +4164,52 @@
       "id": "store_bleepdb_upsertbleepdata"
     },
     {
+      "label": "audioDiagnostic.ts",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "audiodiagnostic.ts",
+      "id": "utils_audiodiagnostic"
+    },
+    {
+      "label": "Window",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L5",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "window",
+      "id": "utils_audiodiagnostic_window"
+    },
+    {
+      "label": "AudioDiagnosticDeps",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L22",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "audiodiagnosticdeps",
+      "id": "utils_audiodiagnostic_audiodiagnosticdeps"
+    },
+    {
+      "label": "startAudioDiagnostic()",
+      "file_type": "code",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L39",
+      "_origin": "ast",
+      "community": 0,
+      "norm_label": "startaudiodiagnostic()",
+      "id": "utils_audiodiagnostic_startaudiodiagnostic"
+    },
+    {
       "label": "audioMonitor.ts",
       "file_type": "code",
       "source_file": "src/utils/audioMonitor.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 6,
+      "community": 0,
       "norm_label": "audiomonitor.ts",
       "id": "utils_audiomonitor"
     },
@@ -4279,7 +4219,7 @@
       "source_file": "src/utils/audioMonitor.ts",
       "source_location": "L8",
       "_origin": "ast",
-      "community": 6,
+      "community": 0,
       "norm_label": "startaudiomonitor()",
       "id": "utils_audiomonitor_startaudiomonitor"
     },
@@ -4329,7 +4269,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L1",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "pkce-browser.ts",
       "id": "utils_pkce_browser"
     },
@@ -4339,7 +4279,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L6",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "generatecodeverifier()",
       "id": "utils_pkce_browser_generatecodeverifier"
     },
@@ -4349,7 +4289,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L15",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "generatecodechallenge()",
       "id": "utils_pkce_browser_generatecodechallenge"
     },
@@ -4359,7 +4299,7 @@
       "source_file": "src/utils/pkce-browser.ts",
       "source_location": "L24",
       "_origin": "ast",
-      "community": 0,
+      "community": 59,
       "norm_label": "base64urlencode()",
       "id": "utils_pkce_browser_base64urlencode"
     },
@@ -6239,719 +6179,6 @@
   ],
   "links": [
     {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L216",
-      "weight": 1.0,
-      "source": "debug_debugtab",
-      "target": "debug_debugtab_clearalldata",
-      "confidence_score": 1.0
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "debug_debugtab",
-      "target": "debug_debugtab_debugtab"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "debug_debugtab",
-      "target": "debug_debugtab_errorentry"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "debug_debugtab",
-      "target": "store_authstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "debug_debugtab",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "debug_debugtab",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "debug_debugtab",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/settings/SettingsContent.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "settings_settingscontent",
-      "target": "debug_debugtab"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/settings/SettingsModal.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "settings_settingsmodal",
-      "target": "debug_debugtab"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L19",
-      "weight": 1.0,
-      "source": "debug_debugtab_debugtab",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/debug/DebugTab.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "source": "debug_debugtab_debugtab",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/settings/SettingsContent.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "settings_settingscontent",
-      "target": "debug_debugtab_debugtab"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/settings/SettingsModal.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "settings_settingsmodal",
-      "target": "debug_debugtab_debugtab"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L24",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_multi_segment_race_spec",
-      "target": "e2e_multi_segment_race_spec_checknomultiplestreams"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L36",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_multi_segment_race_spec",
-      "target": "e2e_multi_segment_race_spec_ensureplaying"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L23",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_multi_segment_race_spec",
-      "target": "e2e_multi_segment_race_spec_loadfile"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/multi-segment-race.spec.ts",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_multi_segment_race_spec",
-      "target": "e2e_multi_segment_race_spec_parsetime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L28",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_pause_play_diagnostic_spec",
-      "target": "e2e_pause_play_diagnostic_spec_checknomultiplestreams"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L32",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_pause_play_diagnostic_spec",
-      "target": "e2e_pause_play_diagnostic_spec_loadfile"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_pause_play_diagnostic_spec",
-      "target": "e2e_pause_play_diagnostic_spec_parsetime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L44",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_pause_play_diagnostic_spec",
-      "target": "e2e_pause_play_diagnostic_spec_waitfordiagnostic"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/pause-play-diagnostic.spec.ts",
-      "source_location": "L39",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_pause_play_diagnostic_spec_loadfile",
-      "target": "e2e_pause_play_diagnostic_spec_waitfordiagnostic"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/playback.spec.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_playback_spec",
-      "target": "e2e_playback_spec_parsetime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/reload-session.spec.ts",
-      "source_location": "L11",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_reload_session_spec",
-      "target": "e2e_reload_session_spec_loadfile"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/reload-session.spec.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_reload_session_spec",
-      "target": "e2e_reload_session_spec_parsetime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/ru-profanity3-silence.json",
-      "source_location": "L55",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_ru_profanity3_silence",
-      "target": "e2e_ru_profanity3_silence_effects"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/ru-profanity3-silence.json",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_ru_profanity3_silence",
-      "target": "e2e_ru_profanity3_silence_transcription"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/ru-profanity3-silence.json",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_ru_profanity3_silence",
-      "target": "e2e_ru_profanity3_silence_version"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/sequential-operations.spec.ts",
-      "source_location": "L18",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_sequential_operations_spec",
-      "target": "e2e_sequential_operations_spec_checknomultiplestreams"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/sequential-operations.spec.ts",
-      "source_location": "L23",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_sequential_operations_spec",
-      "target": "e2e_sequential_operations_spec_loadfile"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/sequential-operations.spec.ts",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_sequential_operations_spec",
-      "target": "e2e_sequential_operations_spec_parsetime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L46",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_sequential_playback_spec",
-      "target": "e2e_sequential_playback_spec_collectsamples"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L25",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_sequential_playback_spec",
-      "target": "e2e_sequential_playback_spec_loadfile"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_sequential_playback_spec",
-      "target": "e2e_sequential_playback_spec_parsetime"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "e2e/sequential-playback.spec.ts",
-      "source_location": "L34",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "e2e_sequential_playback_spec",
-      "target": "e2e_sequential_playback_spec_waitfordiagnostic"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L534",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_actionbuttons"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L75",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_actionbuttonsinner"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L54",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_closeicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L98",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_compactbtn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L61",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_divider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L39",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_downloadicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L16",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_fileicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L67",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_rowbtn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L30",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_transcribeicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L47",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_unloadicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L23",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "action_buttons_actionbuttons_urlicon"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "auth_confirmationmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "auth_confirmationmodal_confirmationmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "auth_loginmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "auth_loginmodal_loginmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "auth_topupmodal"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "auth_topupmodal_topupmodal"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "context_mediaplayercontext"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "player_cdbtn"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L13",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "src_config"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "src_export"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "src_export_exportcensoredvideo"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "store_authstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "store_playerstore_playeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "utils_auth"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "utils_auth_canfreetopup"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "utils_idb"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons",
-      "target": "utils_idb_savesession"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlayerDisplay.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playerdisplay",
-      "target": "action_buttons_actionbuttons"
-    },
-    {
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -6963,83 +6190,6 @@
       "target": "action_buttons_actionbuttons"
     },
     {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L81",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons_actionbuttonsinner",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L319",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons_actionbuttonsinner",
-      "target": "src_export_exportcensoredvideo"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L192",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons_actionbuttonsinner",
-      "target": "store_authstore_useauthstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L76",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons_actionbuttonsinner",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L238",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons_actionbuttonsinner",
-      "target": "utils_auth_canfreetopup"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/action-buttons/ActionButtons.tsx",
-      "source_location": "L102",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "action_buttons_actionbuttons_actionbuttonsinner",
-      "target": "utils_idb_savesession"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlayerDisplay.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playerdisplay",
-      "target": "action_buttons_actionbuttons_actionbuttons"
-    },
-    {
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
@@ -7049,629 +6199,6 @@
       "confidence_score": 1.0,
       "source": "src_app",
       "target": "action_buttons_actionbuttons_actionbuttons"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "context_mediaplayercontext"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_cdbtn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_chevrondownicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L12",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_divider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L24",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_ledindicator"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_pbtn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L130",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_playbackcontrols"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_playbackcontrolsinner"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_speeds"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L49",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_usewheelscroll"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_progressbar_progressbar"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_volumecontrols"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_volumecontrols_volumecontrols"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "store_playerstore_playeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "types_index"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "types_index_playbackspeed"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "player_playbackcontrols"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L122",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols_playbackcontrolsinner",
-      "target": "player_playbackcontrols_usewheelscroll"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L27",
-      "weight": 1.0,
-      "source": "player_playbackcontrols_playbackcontrolsinner",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "player_playbackcontrols_playbackcontrolsinner",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "player_playbackcontrols_playbackcontrols"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "player_soundeffects"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L35",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_soundeffects",
-      "target": "player_soundeffects_createsoundeffectsengine"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L10",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_soundeffects",
-      "target": "player_soundeffects_soundeffectsdeps"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L19",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_soundeffects",
-      "target": "player_soundeffects_soundeffectsengine"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_soundeffects",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_soundeffects",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_soundeffects",
-      "target": "types_index"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/SoundEffects.ts",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_soundeffects",
-      "target": "types_index_soundcensoringeffect"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L7",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "player_soundeffects_createsoundeffectsengine"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L302",
-      "weight": 1.0,
-      "source": "hooks_usemediaplayer_usemediaplayer",
-      "target": "player_soundeffects_createsoundeffectsengine"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/context/MediaPlayerContext.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "context_mediaplayercontext",
-      "target": "hooks_usemediaplayer"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L29",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "hooks_usemediaplayer_usemediaplayer"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_audio"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_audio_audiobufferstowav"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L41",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_backendheaders"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_backendpath"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_backendwspath"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L41",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "src_config_loadbackendurl"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "store_playerstore_playeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "transcription_usetranscribe"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "transcription_usetranscribe_usetranscribe"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "utils_audiodiagnostic"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "utils_audiodiagnostic_startaudiodiagnostic"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "utils_audiomonitor"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "hooks_usemediaplayer",
-      "target": "utils_audiomonitor_startaudiomonitor"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/context/MediaPlayerContext.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "context_mediaplayercontext",
-      "target": "hooks_usemediaplayer_usemediaplayer"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/context/MediaPlayerContext.tsx",
-      "source_location": null,
-      "weight": 1.0,
-      "source": "context_mediaplayercontext_mediaplayerprovider",
-      "target": "hooks_usemediaplayer_usemediaplayer"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/hooks/useMediaPlayer.ts",
-      "source_location": "L1399",
-      "weight": 1.0,
-      "source": "hooks_usemediaplayer_usemediaplayer",
-      "target": "transcription_usetranscribe_usetranscribe"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/audioDiagnostic.ts",
-      "source_location": "L22",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "utils_audiodiagnostic",
-      "target": "utils_audiodiagnostic_audiodiagnosticdeps"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/audioDiagnostic.ts",
-      "source_location": "L39",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "utils_audiodiagnostic",
-      "target": "utils_audiodiagnostic_startaudiodiagnostic"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/utils/audioDiagnostic.ts",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "utils_audiodiagnostic",
-      "target": "utils_audiodiagnostic_window"
     },
     {
       "relation": "imports_from",
@@ -7815,6 +6342,28 @@
       "confidence_score": 1.0,
       "source": "src_app",
       "target": "file_loader_fileloader_fileloader"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "player_playbackcontrols"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "player_playbackcontrols_playbackcontrols"
     },
     {
       "relation": "imports_from",
@@ -8748,11 +7297,374 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "context_mediaplayercontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_cdbtn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_chevrondownicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_divider"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_ledindicator"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_pbtn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L130",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_playbackcontrols"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_playbackcontrolsinner"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_speeds"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_usewheelscroll"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_progressbar_progressbar"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_volumecontrols"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_volumecontrols_volumecontrols"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "store_playerstore_playeractions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "types_index"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "types_index_playbackspeed"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L122",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols_playbackcontrolsinner",
+      "target": "player_playbackcontrols_usewheelscroll"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "player_playbackcontrols_playbackcontrolsinner",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "player_playbackcontrols_playbackcontrolsinner",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "player_soundeffects"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L35",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_soundeffects",
+      "target": "player_soundeffects_createsoundeffectsengine"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_soundeffects",
+      "target": "player_soundeffects_soundeffectsdeps"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L19",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_soundeffects",
+      "target": "player_soundeffects_soundeffectsengine"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_soundeffects",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_soundeffects",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_soundeffects",
+      "target": "types_index"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/SoundEffects.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_soundeffects",
+      "target": "types_index_soundcensoringeffect"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "player_soundeffects_createsoundeffectsengine"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L302",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer_usemediaplayer",
+      "target": "player_soundeffects_createsoundeffectsengine"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "bleep_sounds_bleepsoundmanager",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "debug_debugtab",
       "target": "store_playerstore"
     },
     {
@@ -8797,6 +7709,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "file_loader_fileloader",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
       "target": "store_playerstore"
     },
     {
@@ -9214,6 +8137,28 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L76",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons_actionbuttonsinner",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/bleep-sounds/BleepSoundManager.tsx",
       "source_location": "L2",
       "weight": 1.0,
@@ -9230,6 +8175,28 @@
       "source_location": "L357",
       "weight": 1.0,
       "source": "bleep_sounds_bleepsoundmanager_bleepsoundmanagerinner",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "debug_debugtab",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "source": "debug_debugtab_debugtab",
       "target": "store_playerstore_useplayerstore"
     },
     {
@@ -9318,6 +8285,17 @@
       "source_location": "L130",
       "weight": 1.0,
       "source": "export_headerexportbutton_headerexportprogress",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
       "target": "store_playerstore_useplayerstore"
     },
     {
@@ -9517,6 +8495,28 @@
       "weight": 1.0,
       "source": "store_playerstore_hydratebleepsounds",
       "target": "store_bleepdb_getallbleeprecords"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "store_playerstore_playeractions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "store_playerstore_playeractions"
     },
     {
       "relation": "imports",
@@ -9923,6 +8923,391 @@
       "confidence_score": 1.0,
       "source": "transcription_effectmodal_effectmodalprops",
       "target": "types_index_soundcensoringeffect"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L534",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_actionbuttons"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L75",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_actionbuttonsinner"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L54",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_closeicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L98",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_compactbtn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L61",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_divider"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L39",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_downloadicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_fileicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L67",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_rowbtn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L30",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_transcribeicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L47",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_unloadicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "action_buttons_actionbuttons_urlicon"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "auth_confirmationmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "auth_confirmationmodal_confirmationmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "auth_loginmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "auth_loginmodal_loginmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "auth_topupmodal"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "auth_topupmodal_topupmodal"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "context_mediaplayercontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "player_cdbtn"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L13",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "src_config"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "src_export"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "src_export_exportcensoredvideo"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "store_authstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "utils_auth"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "utils_auth_canfreetopup"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "utils_idb"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L7",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons",
+      "target": "utils_idb_savesession"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlayerDisplay.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playerdisplay",
+      "target": "action_buttons_actionbuttons"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L81",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons_actionbuttonsinner",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L319",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons_actionbuttonsinner",
+      "target": "src_export_exportcensoredvideo"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L192",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons_actionbuttonsinner",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L238",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons_actionbuttonsinner",
+      "target": "utils_auth_canfreetopup"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/action-buttons/ActionButtons.tsx",
+      "source_location": "L102",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "action_buttons_actionbuttons_actionbuttonsinner",
+      "target": "utils_idb_savesession"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlayerDisplay.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playerdisplay",
+      "target": "action_buttons_actionbuttons_actionbuttons"
     },
     {
       "relation": "imports_from",
@@ -10366,6 +9751,103 @@
       "confidence_score": 1.0,
       "source": "settings_settingsmodal",
       "target": "auth_paymentmodal_paymentmodal"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "debug_debugtab",
+      "target": "debug_debugtab_debugtab"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "debug_debugtab",
+      "target": "debug_debugtab_errorentry"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "debug_debugtab",
+      "target": "store_authstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "debug_debugtab",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/settings/SettingsContent.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "settings_settingscontent",
+      "target": "debug_debugtab"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/settings/SettingsModal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "settings_settingsmodal",
+      "target": "debug_debugtab"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/debug/DebugTab.tsx",
+      "source_location": "L19",
+      "weight": 1.0,
+      "source": "debug_debugtab_debugtab",
+      "target": "store_authstore_useauthstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/settings/SettingsContent.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "settings_settingscontent",
+      "target": "debug_debugtab_debugtab"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/settings/SettingsModal.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "settings_settingsmodal",
+      "target": "debug_debugtab_debugtab"
     },
     {
       "relation": "imports_from",
@@ -12467,6 +11949,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "transcription_usetranscribe"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/transcription/useTranscribe.ts",
       "source_location": "L14",
       "weight": 1.0,
@@ -12558,6 +12051,28 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "transcription_usetranscribe",
+      "target": "transcription_usetranscribe_usetranscribe"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "transcription_usetranscribe_usetranscribe"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L1399",
+      "weight": 1.0,
+      "source": "hooks_usemediaplayer_usemediaplayer",
       "target": "transcription_usetranscribe_usetranscribe"
     },
     {
@@ -12709,6 +12224,26 @@
       "weight": 1.0,
       "source": "auth_topupmodal_topupmodal",
       "target": "utils_auth_formatseconds"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/reload-session.spec.ts",
+      "source_location": "L11",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_reload_session_spec",
+      "target": "e2e_reload_session_spec_loadfile"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/reload-session.spec.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_reload_session_spec",
+      "target": "e2e_reload_session_spec_parsetime"
     },
     {
       "relation": "contains",
@@ -12886,6 +12421,107 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_multi_segment_race_spec",
+      "target": "e2e_multi_segment_race_spec_checknomultiplestreams"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L36",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_multi_segment_race_spec",
+      "target": "e2e_multi_segment_race_spec_ensureplaying"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_multi_segment_race_spec",
+      "target": "e2e_multi_segment_race_spec_loadfile"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/multi-segment-race.spec.ts",
+      "source_location": "L16",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_multi_segment_race_spec",
+      "target": "e2e_multi_segment_race_spec_parsetime"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L28",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_pause_play_diagnostic_spec",
+      "target": "e2e_pause_play_diagnostic_spec_checknomultiplestreams"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L32",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_pause_play_diagnostic_spec",
+      "target": "e2e_pause_play_diagnostic_spec_loadfile"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_pause_play_diagnostic_spec",
+      "target": "e2e_pause_play_diagnostic_spec_parsetime"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L44",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_pause_play_diagnostic_spec",
+      "target": "e2e_pause_play_diagnostic_spec_waitfordiagnostic"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/pause-play-diagnostic.spec.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_pause_play_diagnostic_spec_loadfile",
+      "target": "e2e_pause_play_diagnostic_spec_waitfordiagnostic"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/playback.spec.ts",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_playback_spec",
+      "target": "e2e_playback_spec_parsetime"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "e2e/ru-profanity3.json",
       "source_location": "L3410",
       "weight": 1.0,
@@ -12912,6 +12548,76 @@
       "confidence_score": 1.0,
       "source": "e2e_ru_profanity3",
       "target": "e2e_ru_profanity3_version"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/sequential-operations.spec.ts",
+      "source_location": "L18",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_sequential_operations_spec",
+      "target": "e2e_sequential_operations_spec_checknomultiplestreams"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/sequential-operations.spec.ts",
+      "source_location": "L23",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_sequential_operations_spec",
+      "target": "e2e_sequential_operations_spec_loadfile"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/sequential-operations.spec.ts",
+      "source_location": "L10",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_sequential_operations_spec",
+      "target": "e2e_sequential_operations_spec_parsetime"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L46",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_sequential_playback_spec",
+      "target": "e2e_sequential_playback_spec_collectsamples"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L25",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_sequential_playback_spec",
+      "target": "e2e_sequential_playback_spec_loadfile"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_sequential_playback_spec",
+      "target": "e2e_sequential_playback_spec_parsetime"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "e2e/sequential-playback.spec.ts",
+      "source_location": "L34",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "e2e_sequential_playback_spec",
+      "target": "e2e_sequential_playback_spec_waitfordiagnostic"
     },
     {
       "relation": "contains",
@@ -13490,6 +13196,17 @@
       "target": "src_aho_corasick_fastahoscanner_isterminal"
     },
     {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_audio"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/audio.ts",
@@ -13552,6 +13269,17 @@
       "target": "src_audio_yieldtoeventloop"
     },
     {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_audio_audiobufferstowav"
+    },
+    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/censor-worker.ts",
@@ -13601,6 +13329,17 @@
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
+      "target": "src_config"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
       "target": "src_config"
     },
     {
@@ -13658,11 +13397,33 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config_loadbackendurl"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/dictionary/DictionaryManager.tsx",
       "source_location": "L3",
       "weight": 1.0,
       "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
+      "target": "src_config_backendpath"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
       "target": "src_config_backendpath"
     },
     {
@@ -13675,6 +13436,28 @@
       "confidence_score": 1.0,
       "source": "dictionary_dictionarymanager",
       "target": "src_config_backendheaders"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L41",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config_backendheaders"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "src_config_backendwspath"
     },
     {
       "relation": "contains",
@@ -13710,6 +13493,28 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/context/MediaPlayerContext.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "context_mediaplayercontext",
+      "target": "hooks_usemediaplayer"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/context/MediaPlayerContext.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "context_mediaplayercontext",
+      "target": "hooks_usemediaplayer_usemediaplayer"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/export/ExportModal.tsx",
       "source_location": "L3",
       "weight": 1.0,
@@ -13737,6 +13542,17 @@
       "weight": 1.0,
       "source": "context_mediaplayercontext_usemediaplayercontext",
       "target": "context_mediaplayercontext_mediaplayercontext"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/context/MediaPlayerContext.tsx",
+      "source_location": null,
+      "weight": 1.0,
+      "source": "context_mediaplayercontext_mediaplayerprovider",
+      "target": "hooks_usemediaplayer_usemediaplayer"
     },
     {
       "relation": "imports",
@@ -14909,6 +14725,60 @@
     {
       "relation": "contains",
       "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L29",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "hooks_usemediaplayer_usemediaplayer"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiodiagnostic"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiodiagnostic_startaudiodiagnostic"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiomonitor"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/hooks/useMediaPlayer.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "hooks_usemediaplayer",
+      "target": "utils_audiomonitor_startaudiomonitor"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
       "source_file": "src/store/bleepDb.ts",
       "source_location": "L17",
       "weight": 1.0,
@@ -15111,6 +14981,36 @@
       "confidence_score": 1.0,
       "source": "store_bleepdb_upsertbleepdata",
       "target": "store_bleepdb_opendb"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L22",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "utils_audiodiagnostic",
+      "target": "utils_audiodiagnostic_audiodiagnosticdeps"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L39",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "utils_audiodiagnostic",
+      "target": "utils_audiodiagnostic_startaudiodiagnostic"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/utils/audioDiagnostic.ts",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "utils_audiodiagnostic",
+      "target": "utils_audiodiagnostic_window"
     },
     {
       "relation": "contains",
@@ -16902,5 +16802,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "ccbe447d970bec5d5f2aa7c18a4eec084a4722c2"
+  "built_at_commit": "6d064856b7c1053df5c8c6710dd10de86d233650"
 }

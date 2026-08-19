@@ -1,4 +1,5 @@
-import { memo, useEffect, useRef, useState, createPortal } from 'react';
+import { memo, useEffect, useRef, useState, forwardRef } from 'react';
+import { createPortal } from 'react-dom';
 import { usePlayerStore, playerActions } from '../../store/playerStore';
 import { useMediaPlayerContext } from '../../context/MediaPlayerContext';
 import { VolumeControls } from './VolumeControls';
@@ -14,24 +15,18 @@ const Divider = () => (
 );
 
 // ─── Button style — recessed into the surface like a CD-player slot ────
-const PBtn = ({
-  disabled,
-  active,
-  children,
-  onClick,
-  title,
-  className = '',
-}: {
+const PBtn = forwardRef<HTMLButtonElement, {
   disabled?: boolean;
   active?: boolean;
   children: React.ReactNode;
   onClick: () => void;
   title?: string;
   className?: string;
-}) => (
+}>(({ disabled, active, children, onClick, title, className = '' }, ref) => (
   <button
+    ref={ref}
     onClick={onClick}
-    className={`flex items-center justify-center gap-1 rounded-b-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold
+    className={`h-10 flex items-center justify-center gap-1 rounded-b-lg px-3 py-2 flex-shrink-0 text-[11px] font-semibold
       shadow-[inset_0_2px_4px_rgba(0,0,0,0.35),inset_0_1px_2px_rgba(0,0,0,0.25)]
       ${
       disabled
@@ -45,7 +40,7 @@ const PBtn = ({
   >
     {children}
   </button>
-);
+));
 
 // ─── Wheel-to-scroll handler (vertical wheel → horizontal scroll) ─────
 const useWheelScroll = () => {
@@ -136,6 +131,15 @@ const PlaybackControlsInner = () => {
 
   const { ref: scrollRef } = useWheelScroll();
 
+  const speedBtnRef = useRef<HTMLButtonElement>(null);
+  const [menuPos, setMenuPos] = useState<{ top: number; left: number } | null>(null);
+
+  useEffect(() => {
+    if (!showSpeedMenu || !speedBtnRef.current) return;
+    const rect = speedBtnRef.current.getBoundingClientRect();
+    setMenuPos({ top: rect.top - 2, left: rect.left });
+  }, [showSpeedMenu]);
+
   return (
     <div className={`relative bg-zinc-800 rounded-2xl p-4 ${MODAL_SHADOW}`}>
       {/* 3D inner bevel — deeper for volume */}
@@ -201,6 +205,53 @@ const PlaybackControlsInner = () => {
 
           <Divider />
 
+          {/* Volume */}
+          <VolumeControls />
+
+          <Divider />
+
+          {/* Playback speed selector */}
+          <div className="relative flex-shrink-0">
+            <PBtn
+              ref={speedBtnRef}
+              onClick={() => setShowSpeedMenu((v) => !v)}
+              active={playbackSpeed !== 1}
+              title={`Playback speed: ${playbackSpeed}x`}
+            >
+              {playbackSpeed}x
+              <ChevronDownIcon />
+            </PBtn>
+            {/* Portal to escape overflow-x-auto carousel clipping */}
+            {showSpeedMenu && menuPos && createPortal(
+              <div
+                className="fixed z-[90]"
+                style={{ top: menuPos.top, left: menuPos.left }}
+              >
+                <div className="bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1">
+                  {SPEEDS.map((s) => (
+                    <button
+                      key={s}
+                      onClick={() => {
+                        playerActions.setPlaybackSpeed(s);
+                        setShowSpeedMenu(false);
+                      }}
+                      className={`block w-full text-left px-3 py-1 text-xs transition-colors ${
+                        s === playbackSpeed
+                          ? 'bg-purple-600 text-white'
+                          : 'text-zinc-200 hover:bg-zinc-700'
+                      }`}
+                    >
+                      {s}x
+                    </button>
+                  ))}
+                </div>
+              </div>,
+              document.body,
+            )}
+          </div>
+
+          <Divider />
+
           {/* Censoring mode toggle */}
           <PBtn
             onClick={() => playerActions.setCensoringMode(!censoringMode)}
@@ -226,49 +277,6 @@ const PlaybackControlsInner = () => {
             Autoscroll <LedIndicator on={autoScroll} />
           </PBtn>
 
-          <Divider />
-
-          {/* Volume */}
-          <VolumeControls />
-
-          <Divider />
-
-          {/* Playback speed selector */}
-          <div className="relative flex-shrink-0">
-            <PBtn
-              onClick={() => setShowSpeedMenu((v) => !v)}
-              active={playbackSpeed !== 1}
-              title={`Playback speed: ${playbackSpeed}x`}
-            >
-              {playbackSpeed}x
-              <ChevronDownIcon />
-            </PBtn>
-            {/* Portal to escape overflow-x-auto carousel clipping */}
-            {showSpeedMenu && createPortal(
-              <div className="fixed bottom-10 right-4 z-50">
-                <div className="bg-zinc-800 border border-zinc-600 rounded-lg shadow-lg py-1">
-                  {SPEEDS.map((s) => (
-                    <button
-                      key={s}
-                      onClick={() => {
-                        playerActions.setPlaybackSpeed(s);
-                        setShowSpeedMenu(false);
-                      }}
-                      className={`block w-full text-left px-3 py-1 text-xs transition-colors ${
-                        s === playbackSpeed
-                          ? 'bg-purple-600 text-white'
-                          : 'text-zinc-200 hover:bg-zinc-700'
-                      }`}
-                    >
-                      {s}x
-                    </button>
-                  ))}
-                </div>
-              </div>,
-              document.body,
-            )}
-
-        </div>
         </div>
         </div>
         </div>
