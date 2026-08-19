@@ -1133,59 +1133,6 @@ const TranscriptionResultsInner = () => {
         </BorderedSection>
       </div>
 
-      <div className="mb-3 flex justify-end">
-        {/* Add Word */}
-        <BorderedSection title="Add Word" className="shrink-0 max-w-xs">
-          <form onSubmit={(e) => { e.preventDefault(); handleAddWordSubmit(); }} className="flex flex-col gap-1.5">
-            <div className="flex gap-1.5 items-center">
-              <input
-                ref={addWordStartRef}
-                type="number"
-                step="0.001"
-                min="0"
-                max={duration?.toString()}
-                value={addWordStart}
-                onChange={(e) => setAddWordStart(e.target.value)}
-                placeholder="Start"
-                className={`${cdInset} w-20 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
-                required
-              />
-              <input
-                ref={addWordEndRef}
-                type="number"
-                step="0.001"
-                min="0"
-                max={duration?.toString()}
-                value={addWordEnd}
-                onChange={(e) => setAddWordEnd(e.target.value)}
-                placeholder="End"
-                className={`${cdInset} w-20 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
-                required
-              />
-            </div>
-            <div className="flex gap-1.5">
-              <input
-                type="text"
-                value={addWordText}
-                onChange={(e) => setAddWordText(e.target.value)}
-                placeholder="Word…"
-                className={`${cdInset} flex-1 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
-                required
-              />
-              <button
-                type="submit"
-                className={`${cdBtn} px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold flex items-center gap-1 shrink-0`}
-              >
-                <PlusIcon /> Add
-              </button>
-            </div>
-            {addWordError && (
-              <div className="text-[10px] text-red-400">{addWordError}</div>
-            )}
-          </form>
-        </BorderedSection>
-      </div>
-
       <div className="relative mt-8">
         {/* Folder-style tabs attached to the border */}
         <div className="absolute -top-[22px] left-3 flex gap-0.5 z-10">
@@ -1304,6 +1251,59 @@ const TranscriptionResultsInner = () => {
           ) : (
             <div className="text-xs text-zinc-500 py-2">No transcription data</div>
           )}
+        </BorderedSection>
+      </div>
+
+      {/* Add Word */}
+      <div className="mb-3 flex justify-end mt-3">
+        <BorderedSection title="Add Word" className="shrink-0 max-w-xs">
+          <form onSubmit={(e) => { e.preventDefault(); handleAddWordSubmit(); }} className="flex flex-col gap-1.5">
+            <div className="flex gap-1.5 items-center">
+              <input
+                ref={addWordStartRef}
+                type="number"
+                step="0.001"
+                min="0"
+                max={duration?.toString()}
+                value={addWordStart}
+                onChange={(e) => setAddWordStart(e.target.value)}
+                placeholder="Start"
+                className={`${cdInset} w-20 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
+                required
+              />
+              <input
+                ref={addWordEndRef}
+                type="number"
+                step="0.001"
+                min="0"
+                max={duration?.toString()}
+                value={addWordEnd}
+                onChange={(e) => setAddWordEnd(e.target.value)}
+                placeholder="End"
+                className={`${cdInset} w-20 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
+                required
+              />
+            </div>
+            <div className="flex gap-1.5">
+              <input
+                type="text"
+                value={addWordText}
+                onChange={(e) => setAddWordText(e.target.value)}
+                placeholder="Word…"
+                className={`${cdInset} flex-1 bg-zinc-900 text-zinc-200 placeholder-zinc-500 rounded px-2 py-1 text-xs focus:outline-none focus:border-t-purple-500 focus:border-l-purple-500`}
+                required
+              />
+              <button
+                type="submit"
+                className={`${cdBtn} px-2 py-1 rounded bg-zinc-700 hover:bg-zinc-600 text-zinc-200 text-xs font-semibold flex items-center gap-1 shrink-0`}
+              >
+                <PlusIcon /> Add
+              </button>
+            </div>
+            {addWordError && (
+              <div className="text-[10px] text-red-400">{addWordError}</div>
+            )}
+          </form>
         </BorderedSection>
       </div>
 

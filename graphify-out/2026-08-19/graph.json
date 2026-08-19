@@ -82,164 +82,14 @@
   },
   "nodes": [
     {
-      "label": "PlaybackControls.tsx",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "player_playbackcontrols",
-      "community": 6,
-      "norm_label": "playbackcontrols.tsx"
-    },
-    {
-      "label": "SPEEDS",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L8",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_speeds",
-      "community": 6,
-      "norm_label": "speeds"
-    },
-    {
-      "label": "Divider()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L13",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_divider",
-      "community": 6,
-      "norm_label": "divider()"
-    },
-    {
-      "label": "PBtn",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L18",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_pbtn",
-      "community": 6,
-      "norm_label": "pbtn"
-    },
-    {
-      "label": "useWheelScroll()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L46",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_usewheelscroll",
-      "community": 6,
-      "norm_label": "usewheelscroll()"
-    },
-    {
-      "label": "ChevronDownIcon()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L69",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_chevrondownicon",
-      "community": 6,
-      "norm_label": "chevrondownicon()"
-    },
-    {
-      "label": "LedIndicator()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L78",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_ledindicator",
-      "community": 6,
-      "norm_label": "ledindicator()"
-    },
-    {
-      "label": "PlaybackControlsInner()",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L88",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_playbackcontrolsinner",
-      "community": 6,
-      "norm_label": "playbackcontrolsinner()"
-    },
-    {
-      "label": "PlaybackControls",
-      "file_type": "code",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L288",
-      "_origin": "ast",
-      "id": "player_playbackcontrols_playbackcontrols",
-      "community": 6,
-      "norm_label": "playbackcontrols"
-    },
-    {
-      "label": "VolumeControls.tsx",
-      "file_type": "code",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L1",
-      "_origin": "ast",
-      "id": "player_volumecontrols",
-      "community": 6,
-      "norm_label": "volumecontrols.tsx"
-    },
-    {
-      "label": "VolumeUpIcon()",
-      "file_type": "code",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L9",
-      "_origin": "ast",
-      "id": "player_volumecontrols_volumeupicon",
-      "community": 6,
-      "norm_label": "volumeupicon()"
-    },
-    {
-      "label": "VolumeOffIcon()",
-      "file_type": "code",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L20",
-      "_origin": "ast",
-      "id": "player_volumecontrols_volumeofficon",
-      "community": 6,
-      "norm_label": "volumeofficon()"
-    },
-    {
-      "label": "VolumeControlsInner()",
-      "file_type": "code",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L30",
-      "_origin": "ast",
-      "id": "player_volumecontrols_volumecontrolsinner",
-      "community": 6,
-      "norm_label": "volumecontrolsinner()"
-    },
-    {
-      "label": "VerticalSlider()",
-      "file_type": "code",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L159",
-      "_origin": "ast",
-      "id": "player_volumecontrols_verticalslider",
-      "community": 6,
-      "norm_label": "verticalslider()"
-    },
-    {
-      "label": "VolumeControls",
-      "file_type": "code",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L333",
-      "_origin": "ast",
-      "id": "player_volumecontrols_volumecontrols",
-      "community": 6,
-      "norm_label": "volumecontrols"
-    },
-    {
       "label": "DebugTab.tsx",
       "file_type": "code",
       "source_file": "src/features/debug/DebugTab.tsx",
       "source_location": "L1",
       "_origin": "ast",
+      "id": "debug_debugtab",
       "community": 59,
-      "norm_label": "debugtab.tsx",
-      "id": "debug_debugtab"
+      "norm_label": "debugtab.tsx"
     },
     {
       "label": "ErrorEntry",
@@ -247,9 +97,9 @@
       "source_file": "src/features/debug/DebugTab.tsx",
       "source_location": "L5",
       "_origin": "ast",
+      "id": "debug_debugtab_errorentry",
       "community": 59,
-      "norm_label": "errorentry",
-      "id": "debug_debugtab_errorentry"
+      "norm_label": "errorentry"
     },
     {
       "label": "DebugTab()",
@@ -257,9 +107,9 @@
       "source_file": "src/features/debug/DebugTab.tsx",
       "source_location": "L16",
       "_origin": "ast",
+      "id": "debug_debugtab_debugtab",
       "community": 59,
-      "norm_label": "debugtab()",
-      "id": "debug_debugtab_debugtab"
+      "norm_label": "debugtab()"
     },
     {
       "label": "ClearAllData()",
@@ -267,9 +117,9 @@
       "source_file": "src/features/debug/DebugTab.tsx",
       "source_location": "L216",
       "_origin": "ast",
+      "id": "debug_debugtab_clearalldata",
       "community": 59,
-      "norm_label": "clearalldata()",
-      "id": "debug_debugtab_clearalldata"
+      "norm_label": "clearalldata()"
     },
     {
       "label": "audio-artifacts.spec.ts",
@@ -742,6 +592,96 @@
       "id": "action_buttons_actionbuttons_actionbuttons"
     },
     {
+      "label": "PlaybackControls.tsx",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "playbackcontrols.tsx",
+      "id": "player_playbackcontrols"
+    },
+    {
+      "label": "SPEEDS",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L7",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "speeds",
+      "id": "player_playbackcontrols_speeds"
+    },
+    {
+      "label": "Divider()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L12",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "divider()",
+      "id": "player_playbackcontrols_divider"
+    },
+    {
+      "label": "PBtn()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L17",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "pbtn()",
+      "id": "player_playbackcontrols_pbtn"
+    },
+    {
+      "label": "useWheelScroll()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L51",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "usewheelscroll()",
+      "id": "player_playbackcontrols_usewheelscroll"
+    },
+    {
+      "label": "ChevronDownIcon()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L74",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "chevrondownicon()",
+      "id": "player_playbackcontrols_chevrondownicon"
+    },
+    {
+      "label": "LedIndicator()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L83",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "ledindicator()",
+      "id": "player_playbackcontrols_ledindicator"
+    },
+    {
+      "label": "PlaybackControlsInner()",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L93",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "playbackcontrolsinner()",
+      "id": "player_playbackcontrols_playbackcontrolsinner"
+    },
+    {
+      "label": "PlaybackControls",
+      "file_type": "code",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L280",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "playbackcontrols",
+      "id": "player_playbackcontrols_playbackcontrols"
+    },
+    {
       "label": "SoundEffects.ts",
       "file_type": "code",
       "source_file": "src/features/player/SoundEffects.ts",
@@ -1120,6 +1060,66 @@
       "community": 6,
       "norm_label": "useplayeractions()",
       "id": "store_playerstore_useplayeractions"
+    },
+    {
+      "label": "VolumeControls.tsx",
+      "file_type": "code",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L1",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "volumecontrols.tsx",
+      "id": "player_volumecontrols"
+    },
+    {
+      "label": "VolumeUpIcon()",
+      "file_type": "code",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L9",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "volumeupicon()",
+      "id": "player_volumecontrols_volumeupicon"
+    },
+    {
+      "label": "VolumeOffIcon()",
+      "file_type": "code",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L20",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "volumeofficon()",
+      "id": "player_volumecontrols_volumeofficon"
+    },
+    {
+      "label": "VolumeControlsInner()",
+      "file_type": "code",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L30",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "volumecontrolsinner()",
+      "id": "player_volumecontrols_volumecontrolsinner"
+    },
+    {
+      "label": "VerticalSlider()",
+      "file_type": "code",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L159",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "verticalslider()",
+      "id": "player_volumecontrols_verticalslider"
+    },
+    {
+      "label": "VolumeControls",
+      "file_type": "code",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L333",
+      "_origin": "ast",
+      "community": 6,
+      "norm_label": "volumecontrols",
+      "id": "player_volumecontrols_volumecontrols"
     },
     {
       "label": "EffectModal.tsx",
@@ -6239,408 +6239,14 @@
   ],
   "links": [
     {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "context_mediaplayercontext"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_cdbtn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L15",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_chevrondownicon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L12",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_divider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L24",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_ledindicator"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L17",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_pbtn"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L130",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_playbackcontrols"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L21",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_playbackcontrolsinner"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_speeds"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L49",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_playbackcontrols_usewheelscroll"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_progressbar_progressbar"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L4",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_volumecontrols"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "player_volumecontrols_volumecontrols"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "store_playerstore_playeractions"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "types_index"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols",
-      "target": "types_index_playbackspeed"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "player_playbackcontrols"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L122",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playbackcontrols_playbackcontrolsinner",
-      "target": "player_playbackcontrols_usewheelscroll"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L27",
-      "weight": 1.0,
-      "source": "player_playbackcontrols_playbackcontrolsinner",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "src/features/player/PlaybackControls.tsx",
-      "source_location": "L21",
-      "weight": 1.0,
-      "source": "player_playbackcontrols_playbackcontrolsinner",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/App.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "src_app",
-      "target": "player_playbackcontrols_playbackcontrols"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlayerDisplay.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playerdisplay",
-      "target": "player_volumecontrols"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "context_mediaplayercontext"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L3",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L159",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "player_volumecontrols_verticalslider"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L48",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "player_volumecontrols_volumecontrols"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "player_volumecontrols_volumecontrolsinner"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L20",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "player_volumecontrols_volumeofficon"
-    },
-    {
-      "relation": "contains",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L9",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "player_volumecontrols_volumeupicon"
-    },
-    {
-      "relation": "imports_from",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "store_playerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L2",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L8",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols_volumecontrolsinner",
-      "target": "context_mediaplayercontext_usemediaplayercontext"
-    },
-    {
-      "relation": "calls",
-      "context": "call",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/VolumeControls.tsx",
-      "source_location": "L6",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_volumecontrols_volumecontrolsinner",
-      "target": "store_playerstore_useplayerstore"
-    },
-    {
-      "relation": "imports",
-      "context": "import",
-      "confidence": "EXTRACTED",
-      "source_file": "src/features/player/PlayerDisplay.tsx",
-      "source_location": "L5",
-      "weight": 1.0,
-      "confidence_score": 1.0,
-      "source": "player_playerdisplay",
-      "target": "player_volumecontrols_volumecontrols"
-    },
-    {
       "relation": "contains",
       "confidence": "EXTRACTED",
       "source_file": "src/features/debug/DebugTab.tsx",
       "source_location": "L216",
       "weight": 1.0,
-      "confidence_score": 1.0,
       "source": "debug_debugtab",
-      "target": "debug_debugtab_clearalldata"
+      "target": "debug_debugtab_clearalldata",
+      "confidence_score": 1.0
     },
     {
       "relation": "contains",
@@ -7443,6 +7049,262 @@
       "confidence_score": 1.0,
       "source": "src_app",
       "target": "action_buttons_actionbuttons_actionbuttons"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "context_mediaplayercontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_cdbtn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L15",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_chevrondownicon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L12",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_divider"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L24",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_ledindicator"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L17",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_pbtn"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L130",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_playbackcontrols"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_playbackcontrolsinner"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_speeds"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L49",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_playbackcontrols_usewheelscroll"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_progressbar_progressbar"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L4",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_volumecontrols"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "player_volumecontrols_volumecontrols"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "store_playerstore_playeractions"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "types_index"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols",
+      "target": "types_index_playbackspeed"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "player_playbackcontrols"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L122",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playbackcontrols_playbackcontrolsinner",
+      "target": "player_playbackcontrols_usewheelscroll"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L27",
+      "weight": 1.0,
+      "source": "player_playbackcontrols_playbackcontrolsinner",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/features/player/PlaybackControls.tsx",
+      "source_location": "L21",
+      "weight": 1.0,
+      "source": "player_playbackcontrols_playbackcontrolsinner",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/App.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "src_app",
+      "target": "player_playbackcontrols_playbackcontrols"
     },
     {
       "relation": "imports_from",
@@ -8974,6 +8836,17 @@
       "relation": "imports_from",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "store_playerstore"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/features/settings/SettingsModal.tsx",
       "source_location": "L8",
       "weight": 1.0,
@@ -9517,6 +9390,28 @@
       "relation": "imports",
       "context": "import",
       "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L2",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L6",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols_volumecontrolsinner",
+      "target": "store_playerstore_useplayerstore"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
       "source_file": "src/export.ts",
       "source_location": "L11",
       "weight": 1.0,
@@ -9820,6 +9715,111 @@
       "weight": 1.0,
       "source": "file_loader_fileloader_fileloader",
       "target": "store_playerstore_useplayeractions"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlayerDisplay.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playerdisplay",
+      "target": "player_volumecontrols"
+    },
+    {
+      "relation": "imports_from",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "context_mediaplayercontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L3",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L159",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "player_volumecontrols_verticalslider"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L48",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "player_volumecontrols_volumecontrols"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "player_volumecontrols_volumecontrolsinner"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L20",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "player_volumecontrols_volumeofficon"
+    },
+    {
+      "relation": "contains",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L9",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols",
+      "target": "player_volumecontrols_volumeupicon"
+    },
+    {
+      "relation": "calls",
+      "context": "call",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/VolumeControls.tsx",
+      "source_location": "L8",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_volumecontrols_volumecontrolsinner",
+      "target": "context_mediaplayercontext_usemediaplayercontext"
+    },
+    {
+      "relation": "imports",
+      "context": "import",
+      "confidence": "EXTRACTED",
+      "source_file": "src/features/player/PlayerDisplay.tsx",
+      "source_location": "L5",
+      "weight": 1.0,
+      "confidence_score": 1.0,
+      "source": "player_playerdisplay",
+      "target": "player_volumecontrols_volumecontrols"
     },
     {
       "relation": "contains",
@@ -16902,5 +16902,5 @@
       "source_file": "e2e/ru-profanity.mp4"
     }
   ],
-  "built_at_commit": "3272cf94da84ad4dc9596de85a051fe4315fcd68"
+  "built_at_commit": "ccbe447d970bec5d5f2aa7c18a4eec084a4722c2"
 }

@@ -1,7 +1,7 @@
-# Graph Report - obrez-ts  (2026-08-19)
+# Graph Report - obrez-ts  (2026-08-15)
 
 ## Corpus Check
-- 98 files · ~137,295 words
+- 98 files · ~137,119 words
 - Verdict: corpus is large enough that graph structure adds value.
 
 ## Summary
@@ -10,7 +10,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `3272cf94`
+- Built from commit: `ccbe447d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -119,7 +119,7 @@ Nodes (16): compilerOptions, esModuleInterop, forceConsistentCasingInFileNames, 
 
 ### Community 6 - "Backend Config + Server"
 Cohesion: 0.05
-Nodes (44): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner(), ExportFormat (+36 more)
+Nodes (43): MediaPlayerContext, MediaPlayerProvider(), useMediaPlayerContext(), DictionaryManagerInner(), CODEC_LABELS, ExportButton, ExportButtonInner(), ExportFormat (+35 more)
 
 ### Community 7 - "Community 7"
 Cohesion: 0.07
@@ -198,7 +198,7 @@ Cohesion: 0.06
 Nodes (38): ActionButtons, ConfirmationModal(), ConfirmationModalProps, formatDuration(), ConfirmModal(), ConfirmModalProps, LoginModal(), PaymentModal() (+30 more)
 
 ## Knowledge Gaps
-- **218 isolated node(s):** `SPEEDS`, `PBtn`, `ErrorEntry`, `version`, `transcription` (+213 more)
+- **217 isolated node(s):** `ErrorEntry`, `version`, `transcription`, `effects`, `SPEEDS` (+212 more)
   These have ≤1 connection - possible missing edges or undocumented components.
 - **15 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
@@ -209,8 +209,8 @@ _Questions this graph is uniquely positioned to answer:_
   _High betweenness centrality (0.033) - this node is a cross-community bridge._
 - **Why does `playerActions` connect `Community 7` to `Community 0`, `Dictionary + Aho-Corasick`, `Backend Config + Server`, `Community 50`, `Community 59`?**
   _High betweenness centrality (0.012) - this node is a cross-community bridge._
-- **What connects `SPEEDS`, `PBtn`, `ErrorEntry` to the rest of the system?**
-  _218 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **What connects `ErrorEntry`, `version`, `transcription` to the rest of the system?**
+  _217 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `Community 0` be split into smaller, more focused modules?**
   _Cohesion score 0.1066066066066066 - nodes in this community are weakly interconnected._
 - **Should `Package Dependencies` be split into smaller, more focused modules?**
